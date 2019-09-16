@@ -8,7 +8,13 @@ class Commands:
         self.config = config
 
     def _get_all_commands(self):
-        return [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith('_')]
+        result = []
+        for f in dir(self):
+             if callable(getattr(self, f)) and not f.startswith('_'):
+                 result.append(f)
+        for f in self.config.custom_commands.keys():
+            result.append(f)
+        return result
 
     def _get_available_commands(self, message):
         result = []
@@ -33,21 +39,25 @@ class Commands:
         await message.channel.send('\n'.join(result))
 
     async def cmd(self, message, command):
-        """Commands settings: !cmd <command_name> <option> <value> <scope>"""
+        """Commands settings
+        Examples:
+            !cmd ping enable on global
+            !cmd hello add Hello!
+        """
         if len(command) < 3:
             await message.channel.send("Too few arguments for command 'cmd'")
         else:
             command_name = command[1]
             option = command[2]
-            value = command[3]
+            value = command[3] if len(command) > 3 else ""
             scope = command[4] if len(command) >= 5 else "channel"
-            if command_name not in self._get_all_commands():
-                await message.channel.send("Unknown command: " + command_name)
-                return
             if scope not in ("channel", "guild", "global"):
                 await message.channel.send("Unknown scope: " + scope)
                 return
             if option == "enable":
+                if command_name not in self._get_all_commands():
+                    await message.channel.send("Unknown command: " + command_name)
+                    return
                 if value == "on":
                     if scope == "channel":
                         self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
@@ -69,6 +79,35 @@ class Commands:
                 else:
                     await message.channel.send("Unknown value: " + value)
                     return
+            elif option == "add":
+                if command_name in self._get_all_commands():
+                    await message.channel.send("Command {} already exists".format(command_name))
+                    return
+                self.config.custom_commands[command_name] = ' '.join(command[3:])
+                await message.channel.send("Command '{}' -> '{}' successfully created".format(command_name, self.config.custom_commands[command_name]))
+                self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
+            elif option == "update":
+                if command_name not in self._get_all_commands():
+                    await message.channel.send("Command {} does not exist".format(command_name))
+                    return
+                if command_name not in self.config.custom_commands:
+                    await message.channel.send("You can not modify built-in commands")
+                    return
+                self.config.custom_commands[command_name] = ' '.join(command[3:])
+                await message.channel.send("Command '{}' -> '{}' successfully updated".format(command_name, self.config.custom_commands[command_name]))
+            elif option == "remove":
+                if command_name not in self._get_all_commands():
+                    await message.channel.send("Command {} does not exist".format(command_name))
+                    return
+                if command_name not in self.config.custom_commands:
+                    await message.channel.send("You can not delete built-in commands")
+                    return
+                self.config.custom_commands.pop(command_name)
+                self.config.available_commands.discard(command_name)
+                for guild in self.config.guilds:
+                    for channel in self.config.guilds[guild]:
+                            self.config.guilds[guild][channel]["available_commands"].discard(command_name)
+                await message.channel.send("Command {} successfully removed".format(command_name))
             else:
                 await message.channel.send("Unknown option: " + option)
                 return
@@ -87,6 +126,8 @@ class Config:
                 "help",
                 "cmd"
             }
+        if not hasattr(self, "custom_commands"):
+            self.custom_commands = dict()
 
 
 class WalBot(discord.Client):
@@ -114,9 +155,12 @@ class WalBot(discord.Client):
             command = message.content.split(' ')
             command[0] = command[0][1:]
             if command[0] in self.config.commands._get_available_commands(message):
-                command_name = (self.config.commands._get_available_commands(message)
-                    [self.config.commands._get_available_commands(message).index(command[0])])
-                await getattr(self.config.commands, command_name)(message, command)
+                if command[0] not in self.config.custom_commands:
+                    command_name = (self.config.commands._get_available_commands(message)
+                        [self.config.commands._get_available_commands(message).index(command[0])])
+                    await getattr(self.config.commands, command_name)(message, command)
+                else:
+                    await message.channel.send(self.config.custom_commands[command[0]])
             else:
                 await message.channel.send("Unknown command. !help for more information")
 
