@@ -3,15 +3,30 @@ import os
 import yaml
 
 
+class Commands:
+    def _get_member_list(self):
+        return [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith('_')]
+
+    async def ping(self, message):
+        """Check whether the bot is active"""
+        await message.channel.send("Pong! " + message.author.mention)
+
+    async def help(self, message):
+        """Print list of commands"""
+        result = [method_name + ": " + getattr(self, method_name).__doc__
+                for method_name in self._get_member_list()
+                if getattr(self, method_name).__doc__ is not None]
+        await message.channel.send('\n'.join(result))
+
+
 class Config:
-    def add_attributes(self):
-        if not hasattr(self, "guilds"):
-            self.guilds = {}
-        if not hasattr(self, "token"):
-            self.token = None
 
     def __init__(self):
-        self.add_attributes()
+        self.commands = Commands()
+        if not hasattr(self, "guilds"):
+            self.guilds = dict()
+        if not hasattr(self, "token"):
+            self.token = None
 
 
 class WalBot(discord.Client):
@@ -32,15 +47,22 @@ class WalBot(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        if message.content.startswith("!ping"):
-            await message.channel.send("Pong! " + message.author.mention)
+        if message.content.startswith('!'):
+            command = message.content.split(' ')
+            command[0] = command[0][1:]
+            if command[0] in self.config.commands._get_member_list():
+                command_name = self.config.commands._get_member_list()[self.config.commands._get_member_list().index(command[0])]
+                await getattr(self.config.commands, command_name)(message)
+            else:
+                await message.channel.send("Unknown command. !help for more information")
+
 
 def main():
     config = None
     if os.path.isfile("config.yaml"):
         with open("config.yaml", 'r') as f:
             config = yaml.load(f.read())
-        config.add_attributes()
+        config.__init__()
     if config is None:
         config = Config()
     walBot = WalBot(config)
@@ -50,7 +72,7 @@ def main():
     print("Disconnected")
     print(config.guilds)
     with open('config.yaml', 'wb') as f:
-        f.write(bytes(yaml.dump(config), encoding='utf8'))
+        f.write(yaml.dump(config, encoding='utf-8'))
 
 if __name__ == "__main__":
     main()
