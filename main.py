@@ -44,15 +44,27 @@ class Commands:
             if command_name not in self._get_all_commands():
                 await message.channel.send("Unknown command: " + command_name)
                 return
-            if scope not in ("channel", "global"):
+            if scope not in ("channel", "guild", "global"):
                 await message.channel.send("Unknown scope: " + scope)
                 return
             if option == "enable":
                 if value == "on":
-                    self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
+                    if scope == "channel":
+                        self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
+                    elif scope == "guild":
+                        for channel in self.config.guilds[message.channel.guild.id]:
+                            self.config.guilds[message.channel.guild.id][channel]["available_commands"].add(command_name)
+                    elif scope == "global":
+                        self.config.available_commands.add(command_name)
                     await message.channel.send("Successfully enabled command {} in scope {}".format(command_name, scope))
                 elif value == "off":
-                    self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].discard(command_name)
+                    if scope == "channel":
+                        self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].discard(command_name)
+                    elif scope == "guild":
+                        for channel in self.config.guilds[message.channel.guild.id]:
+                            self.config.guilds[message.channel.guild.id][channel]["available_commands"].discard(command_name)
+                    elif scope == "global":
+                        self.config.available_commands.discard(command_name)
                     await message.channel.send("Successfully disabled command {} in scope {}".format(command_name, scope))
                 else:
                     await message.channel.send("Unknown value: " + value)
@@ -72,7 +84,8 @@ class Config:
         if not hasattr(self, "available_commands"):
             self.available_commands = {
                 "ping",
-                "help"
+                "help",
+                "cmd"
             }
 
 
