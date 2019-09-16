@@ -21,16 +21,45 @@ class Commands:
         result.sort()
         return result
 
-    async def ping(self, message):
+    async def ping(self, message, command):
         """Check whether the bot is active"""
         await message.channel.send("Pong! " + message.author.mention)
 
-    async def help(self, message):
+    async def help(self, message, command):
         """Print list of commands"""
         result = [method_name + ": " + getattr(self, method_name).__doc__
                 for method_name in self._get_available_commands(message)
                 if getattr(self, method_name).__doc__ is not None]
         await message.channel.send('\n'.join(result))
+
+    async def cmd(self, message, command):
+        """Commands settings: !cmd <command_name> <option> <value> <scope>"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command 'cmd'")
+        else:
+            command_name = command[1]
+            option = command[2]
+            value = command[3]
+            scope = command[4] if len(command) >= 5 else "channel"
+            if command_name not in self._get_all_commands():
+                await message.channel.send("Unknown command: " + command_name)
+                return
+            if scope not in ("channel", "global"):
+                await message.channel.send("Unknown scope: " + scope)
+                return
+            if option == "enable":
+                if value == "on":
+                    self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
+                    await message.channel.send("Successfully enabled command {} in scope {}".format(command_name, scope))
+                elif value == "off":
+                    self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].discard(command_name)
+                    await message.channel.send("Successfully disabled command {} in scope {}".format(command_name, scope))
+                else:
+                    await message.channel.send("Unknown value: " + value)
+                    return
+            else:
+                await message.channel.send("Unknown option: " + option)
+                return
 
 
 class Config:
@@ -74,7 +103,7 @@ class WalBot(discord.Client):
             if command[0] in self.config.commands._get_available_commands(message):
                 command_name = (self.config.commands._get_available_commands(message)
                     [self.config.commands._get_available_commands(message).index(command[0])])
-                await getattr(self.config.commands, command_name)(message)
+                await getattr(self.config.commands, command_name)(message, command)
             else:
                 await message.channel.send("Unknown command. !help for more information")
 
