@@ -51,12 +51,12 @@ class Commands:
             option = command[2]
             value = command[3] if len(command) > 3 else ""
             scope = command[4] if len(command) >= 5 else "channel"
-            if scope not in ("channel", "guild", "global"):
-                await message.channel.send("Unknown scope: " + scope)
-                return
             if option == "enable":
                 if command_name not in self._get_all_commands():
                     await message.channel.send("Unknown command: " + command_name)
+                    return
+                if scope not in ("channel", "guild", "global"):
+                    await message.channel.send("Unknown scope: " + scope)
                     return
                 if value == "on":
                     if scope == "channel":
@@ -160,7 +160,12 @@ class WalBot(discord.Client):
                         [self.config.commands._get_available_commands(message).index(command[0])])
                     await getattr(self.config.commands, command_name)(message, command)
                 else:
-                    await message.channel.send(self.config.custom_commands[command[0]])
+                    respond = self.config.custom_commands[command[0]]
+                    respond = respond.replace("@author@", message.author.mention)
+                    respond = respond.replace("@args@", ' '.join(command[1:]))
+                    for i in range(len(command)):
+                        respond = respond.replace("@arg" + str(i) + "@", ' '.join(command[1:]))
+                    await message.channel.send(respond)
             else:
                 await message.channel.send("Unknown command. !help for more information")
 
