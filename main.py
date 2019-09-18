@@ -120,6 +120,13 @@ class Commands:
                 await message.channel.send("Unknown option: " + option)
                 return
 
+    async def wme(self, message, command):
+        """Send direct message to author with something"""
+        if message.author.dm_channel is None:
+            print("DMChannel is not created")
+            await message.author.create_dm()
+        await message.author.dm_channel.send(' '.join(command[1:]))
+
 
 class Config:
     def __init__(self):
