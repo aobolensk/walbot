@@ -80,14 +80,14 @@ class Commands:
                     await message.channel.send("Unknown value: " + value)
                     return
             elif option == "add":
-                if command_name in self._get_all_commands():
+                if command_name in self._get_available_commands(message):
                     await message.channel.send("Command {} already exists".format(command_name))
                     return
                 self.config.custom_commands[command_name] = ' '.join(command[3:])
                 await message.channel.send("Command '{}' -> '{}' successfully created".format(command_name, self.config.custom_commands[command_name]))
                 self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
             elif option == "update":
-                if command_name not in self._get_all_commands():
+                if command_name not in self._get_available_commands(message):
                     await message.channel.send("Command {} does not exist".format(command_name))
                     return
                 if command_name not in self.config.custom_commands:
@@ -96,7 +96,7 @@ class Commands:
                 self.config.custom_commands[command_name] = ' '.join(command[3:])
                 await message.channel.send("Command '{}' -> '{}' successfully updated".format(command_name, self.config.custom_commands[command_name]))
             elif option == "remove":
-                if command_name not in self._get_all_commands():
+                if command_name not in self._get_available_commands(message):
                     await message.channel.send("Command {} does not exist".format(command_name))
                     return
                 if command_name not in self.config.custom_commands:
@@ -108,6 +108,14 @@ class Commands:
                     for channel in self.config.guilds[guild]:
                             self.config.guilds[guild][channel]["available_commands"].discard(command_name)
                 await message.channel.send("Command {} successfully removed".format(command_name))
+            elif option == "show":
+                if command_name not in self._get_available_commands(message):
+                    await message.channel.send("Command {} does not exist".format(command_name))
+                    return
+                if command_name not in self.config.custom_commands:
+                    await message.channel.send("You can not show built-in commands")
+                    return
+                await message.channel.send("Command '{}' -> '{}'".format(command_name, self.config.custom_commands[command_name]))
             else:
                 await message.channel.send("Unknown option: " + option)
                 return
