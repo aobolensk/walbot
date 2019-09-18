@@ -33,10 +33,17 @@ class Commands:
 
     async def help(self, message, command):
         """Print list of commands"""
-        result = [method_name + ": " + getattr(self, method_name).__doc__
-                for method_name in self._get_available_commands(message)
-                if getattr(self, method_name).__doc__ is not None]
-        await message.channel.send('\n'.join(result))
+        result = ""
+        for command_name in self._get_available_commands(message):
+            if command_name not in self.config.custom_commands:
+                if getattr(self, command_name).__doc__ is not None:
+                    result += command_name + ": " + getattr(self, command_name).__doc__
+            else:
+                result += "{}: '{}'".format(command_name, self.config.custom_commands[command_name])
+            if result[-1] != '\n':
+                result += '\n'
+
+        await message.channel.send(result)
 
     async def cmd(self, message, command):
         """Commands settings
