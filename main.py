@@ -3,131 +3,175 @@ import os
 import yaml
 
 
+class Command:
+    def __init__(self, name, perform=None, message=None):
+        self.name = name
+        self.perform = perform
+        self.message = message
+        self.is_global = False
+        self.channels = []
+
+    def is_available(self, channel_id):
+        return self.is_global or (channel_id in self.channels)
+
+
 class Commands:
     def __init__(self, config):
         self.config = config
+        self.data = dict()
 
-    def _get_all_commands(self):
-        result = []
-        for f in dir(self):
-             if callable(getattr(self, f)) and not f.startswith('_'):
-                 result.append(f)
-        for f in self.config.custom_commands.keys():
-            result.append(f)
-        return result
+    def update_builtins(self):
+        if "ping" not in self.data.keys():
+            self.data["ping"] = Command("ping", perform=self._ping)
+            self.data["ping"].is_global = True
+        if "help" not in self.data.keys():
+            self.data["help"] = Command("help", perform=self._help)
+            self.data["help"].is_global = True
+        if "addcmd" not in self.data.keys():
+            self.data["addcmd"] = Command("addcmd", perform=self._addcmd)
+            self.data["addcmd"].is_global = True
+        if "updcmd" not in self.data.keys():
+            self.data["updcmd"] = Command("updcmd", perform=self._updcmd)
+            self.data["updcmd"].is_global = True
+        if "delcmd" not in self.data.keys():
+            self.data["delcmd"] = Command("delcmd", perform=self._delcmd)
+            self.data["delcmd"].is_global = True
+        if "enablecmd" not in self.data.keys():
+            self.data["enablecmd"] = Command("enablecmd", perform=self._enablecmd)
+            self.data["enablecmd"].is_global = True
+        if "disablecmd" not in self.data.keys():
+            self.data["disablecmd"] = Command("disablecmd", perform=self._disablecmd)
+            self.data["disablecmd"].is_global = True
+        if "wme" not in self.data.keys():
+            self.data["wme"] = Command("wme", perform=self._wme)
+            self.data["wme"].is_global = True
 
-    def _get_available_commands(self, message):
-        result = []
-        for func in self._get_all_commands():
-            if (func in self.config.available_commands or
-                (message.channel.guild.id in self.config.guilds and
-                message.channel.id in self.config.guilds[message.channel.guild.id] and
-                func in self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"])):
-                result.append(func)
-        result.sort()
-        return result
 
-    async def ping(self, message, command):
+    async def _ping(self, message, command):
         """Check whether the bot is active"""
         await message.channel.send("Pong! " + message.author.mention)
 
-    async def help(self, message, command):
+    async def _help(self, message, command):
         """Print list of commands"""
         result = ""
-        for command_name in self._get_available_commands(message):
-            if command_name not in self.config.custom_commands:
-                if getattr(self, command_name).__doc__ is not None:
-                    result += command_name + ": " + getattr(self, command_name).__doc__
+        for command in self.data:
+            command = self.data[command]
+            result += command.name + ": "
+            if command.perform is not None:
+                result += command.perform.__doc__
             else:
-                result += "{}: '{}'".format(command_name, self.config.custom_commands[command_name])
-            if result[-1] != '\n':
-                result += '\n'
-
+                result += command.message
+            result += '\n'
         await message.channel.send(result)
 
-    async def cmd(self, message, command):
-        """Commands settings
-        Examples:
-            !cmd ping enable on global
-            !cmd hello add Hello!
-        """
+    async def _addcmd(self, message, command):
+        """Add command
+        Example: !addcmd hello Hello!"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'cmd'")
-        else:
-            command_name = command[1]
-            option = command[2]
-            value = command[3] if len(command) > 3 else ""
-            scope = command[4] if len(command) >= 5 else "channel"
-            if option == "enable":
-                if command_name not in self._get_all_commands():
-                    await message.channel.send("Unknown command: " + command_name)
-                    return
-                if scope not in ("channel", "guild", "global"):
-                    await message.channel.send("Unknown scope: " + scope)
-                    return
-                if value == "on":
-                    if scope == "channel":
-                        self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
-                    elif scope == "guild":
-                        for channel in self.config.guilds[message.channel.guild.id]:
-                            self.config.guilds[message.channel.guild.id][channel]["available_commands"].add(command_name)
-                    elif scope == "global":
-                        self.config.available_commands.add(command_name)
-                    await message.channel.send("Successfully enabled command {} in scope {}".format(command_name, scope))
-                elif value == "off":
-                    if scope == "channel":
-                        self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].discard(command_name)
-                    elif scope == "guild":
-                        for channel in self.config.guilds[message.channel.guild.id]:
-                            self.config.guilds[message.channel.guild.id][channel]["available_commands"].discard(command_name)
-                    elif scope == "global":
-                        self.config.available_commands.discard(command_name)
-                    await message.channel.send("Successfully disabled command {} in scope {}".format(command_name, scope))
-                else:
-                    await message.channel.send("Unknown value: " + value)
-                    return
-            elif option == "add":
-                if command_name in self._get_available_commands(message):
-                    await message.channel.send("Command {} already exists".format(command_name))
-                    return
-                self.config.custom_commands[command_name] = ' '.join(command[3:])
-                await message.channel.send("Command '{}' -> '{}' successfully created".format(command_name, self.config.custom_commands[command_name]))
-                self.config.guilds[message.channel.guild.id][message.channel.id]["available_commands"].add(command_name)
-            elif option == "update":
-                if command_name not in self._get_available_commands(message):
-                    await message.channel.send("Command {} does not exist".format(command_name))
-                    return
-                if command_name not in self.config.custom_commands:
-                    await message.channel.send("You can not modify built-in commands")
-                    return
-                self.config.custom_commands[command_name] = ' '.join(command[3:])
-                await message.channel.send("Command '{}' -> '{}' successfully updated".format(command_name, self.config.custom_commands[command_name]))
-            elif option == "remove":
-                if command_name not in self._get_available_commands(message):
-                    await message.channel.send("Command {} does not exist".format(command_name))
-                    return
-                if command_name not in self.config.custom_commands:
-                    await message.channel.send("You can not delete built-in commands")
-                    return
-                self.config.custom_commands.pop(command_name)
-                self.config.available_commands.discard(command_name)
-                for guild in self.config.guilds:
-                    for channel in self.config.guilds[guild]:
-                            self.config.guilds[guild][channel]["available_commands"].discard(command_name)
-                await message.channel.send("Command {} successfully removed".format(command_name))
-            elif option == "show":
-                if command_name not in self._get_available_commands(message):
-                    await message.channel.send("Command {} does not exist".format(command_name))
-                    return
-                if command_name not in self.config.custom_commands:
-                    await message.channel.send("You can not show built-in commands")
-                    return
-                await message.channel.send("Command '{}' -> '{}'".format(command_name, self.config.custom_commands[command_name]))
-            else:
-                await message.channel.send("Unknown option: " + option)
-                return
+            await message.channel.send("Too few arguments for command 'addcmd'")
+            return
+        command_name = command[1]
+        if command_name in self.data.keys():
+            await message.channel.send("Command {} already exists".format(command_name))
+            return
+        self.data[command_name] = Command(command_name, message=' '.join(command[2:]))
+        self.data[command_name].channels.append(message.channel.id)
+        await message.channel.send("Command '{}' -> '{}' successfully added".format(command_name, self.data[command_name].message))
 
-    async def wme(self, message, command):
+    async def _updcmd(self, message, command):
+        """Update command (works only for commands that already exist)
+        Example: !updcmd hello Hello!"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command 'updcmd'")
+            return
+        command_name = command[1]
+        if command_name in self.data.keys():
+            if self.data[command_name].message is None:
+                await message.channel.send("Command '{}' is not editable".format(command_name))
+                return
+            self.data[command_name].message = ' '.join(command[2:])
+            await message.channel.send("Command '{}' -> '{}' successfully updated".format(command_name, self.data[command_name].message))
+            return
+        await message.channel.send("Command '{}' does not exist".format(command_name))
+
+    async def _delcmd(self, message, command):
+        """Delete command
+        Example: !delcmd hello"""
+        if len(command) < 2:
+            await message.channel.send("Too few arguments for command 'delcmd'")
+            return
+        if len(command) > 2:
+            await message.channel.send("Too many arguments for command 'delcmd'")
+            return
+        command_name = command[1]
+        if command_name in self.data.keys():
+            self.data.pop(command_name, None)
+            await message.channel.send("Command '{}' -> '{}' successfully deleted".format(command_name))
+            return
+        await message.channel.send("Command '{}' does not exist".format(command_name))
+
+    async def _enablecmd(self, message, command):
+        """Enable command in specified scope
+        Examples:
+                !enablecmd hello channel
+                !enablecmd hello guild
+                !enablecmd hello global"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command 'enablecmd'")
+            return
+        if len(command) > 3:
+            await message.channel.send("Too many arguments for command 'enablecmd'")
+            return
+        command_name = command[1]
+        if command_name in self.data.keys():
+            if command[2] == "channel":
+                self.data[command_name].channels.append(message.channel.id)
+                await message.channel.send("Command '{}' is enabled in this channel".format(command_name))
+            elif command[2] == "guild":
+                for channel in message.channel.guild.text_channels:
+                    if channel.id not in self.data[command_name].channels:
+                        self.data[command_name].channels.append(channel.id)
+                await message.channel.send("Command '{}' is enabled in this guild".format(command_name))
+            elif command[2] == "global":
+                self.data[command_name].is_global = True
+                await message.channel.send("Command '{}' is enabled in global scope".format(command_name))
+            else:
+                await message.channel.send("Unknown scope '{}'".format(command[2]))
+            return
+        await message.channel.send("Command '{}' does not exist".format(command_name))
+
+    async def _disablecmd(self, message, command):
+        """Disable command in specified scope
+        Examples:
+                !disablecmd hello channel
+                !disablecmd hello guild
+                !disablecmd hello global"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command 'disablecmd'")
+            return
+        if len(command) > 3:
+            await message.channel.send("Too many arguments for command 'disablecmd'")
+            return
+        command_name = command[1]
+        if command_name in self.data.keys():
+            if command[2] == "channel":
+                if message.channel.id in self.data[command_name].channels:
+                    self.data[command_name].channels.remove(message.channel.id)
+                await message.channel.send("Command '{}' is disabled in this channel".format(command_name))
+            elif command[2] == "guild":
+                for channel in message.channel.guild.text_channels:
+                    if channel.id in self.data[command_name].channels:
+                        self.data[command_name].channels.remove(channel.id)
+                await message.channel.send("Command '{}' is disabled in this guild".format(command_name))
+            elif command[2] == "global":
+                self.data[command_name].is_global = False
+                await message.channel.send("Command '{}' is disabled in global scope".format(command_name))
+            else:
+                await message.channel.send("Unknown scope '{}'".format(command[2]))
+            return
+        await message.channel.send("Command '{}' does not exist".format(command_name))
+
+    async def _wme(self, message, command):
         """Send direct message to author with something"""
         if message.author.dm_channel is None:
             print("DMChannel is not created")
@@ -137,19 +181,11 @@ class Commands:
 
 class Config:
     def __init__(self):
-        self.commands = Commands(self)
-        if not hasattr(self, "guilds"):
-            self.guilds = dict()
+        if not hasattr(self, "commands"):
+            self.commands = Commands(self)
+        self.commands.update_builtins()
         if not hasattr(self, "token"):
             self.token = None
-        if not hasattr(self, "available_commands"):
-            self.available_commands = {
-                "ping",
-                "help",
-                "cmd"
-            }
-        if not hasattr(self, "custom_commands"):
-            self.custom_commands = dict()
 
 
 class WalBot(discord.Client):
@@ -159,37 +195,31 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         print("Logged in as: {} {}".format(self.user.name, self.user.id))
-        for guild in self.guilds:
-            if guild.id not in self.config.guilds:
-                self.config.guilds[guild.id] = dict()
-            for channel in guild.channels:
-                if channel.id not in self.config.guilds[guild.id]:
-                    if isinstance(channel, discord.TextChannel):
-                        self.config.guilds[guild.id][channel.id] = {
-                            "available_commands": set()
-                        }
 
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
-
         if message.content.startswith('!'):
             command = message.content.split(' ')
             command[0] = command[0][1:]
-            if command[0] in self.config.commands._get_available_commands(message):
-                if command[0] not in self.config.custom_commands:
-                    command_name = (self.config.commands._get_available_commands(message)
-                        [self.config.commands._get_available_commands(message).index(command[0])])
-                    await getattr(self.config.commands, command_name)(message, command)
+            if command[0] in self.config.commands.data.keys():
+                actor = self.config.commands.data[command[0]]
+                if actor.is_available(message.channel.id):
+                    if actor.perform is not None:
+                        await self.config.commands.data[command[0]].perform(message, command)
+                    elif actor.message is not None:
+                        respond = actor.message
+                        respond = respond.replace("@author@", message.author.mention)
+                        respond = respond.replace("@args@", ' '.join(command[1:]))
+                        for i in range(len(command)):
+                            respond = respond.replace("@arg" + str(i) + "@", command[i])
+                        await message.channel.send(respond)
+                    else:
+                        await message.channel.send("Command '{}' is not callable".format(command[0]))
                 else:
-                    respond = self.config.custom_commands[command[0]]
-                    respond = respond.replace("@author@", message.author.mention)
-                    respond = respond.replace("@args@", ' '.join(command[1:]))
-                    for i in range(len(command)):
-                        respond = respond.replace("@arg" + str(i) + "@", ' '.join(command[1:]))
-                    await message.channel.send(respond)
+                    await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
             else:
-                await message.channel.send("Unknown command. !help for more information")
+                await message.channel.send("Unknown command '{}'".format(command[0]))
 
 
 def main():
@@ -205,7 +235,6 @@ def main():
         config.token = input("Enter your token: ")
     walBot.run(config.token)
     print("Disconnected")
-    print(config.guilds)
     with open('config.yaml', 'wb') as f:
         f.write(yaml.dump(config, encoding='utf-8'))
 
