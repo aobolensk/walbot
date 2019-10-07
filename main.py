@@ -42,6 +42,9 @@ class Commands:
         if "disablecmd" not in self.data.keys():
             self.data["disablecmd"] = Command("disablecmd", perform=self._disablecmd)
             self.data["disablecmd"].is_global = True
+        if "whitelist" not in self.data.keys():
+            self.data["whitelist"] = Command("whitelist", perform=self._whitelist)
+            self.data["whitelist"].is_global = True
         if "wme" not in self.data.keys():
             self.data["wme"] = Command("wme", perform=self._wme)
             self.data["wme"].is_global = True
@@ -128,7 +131,7 @@ class Commands:
                 self.data[command_name].channels.append(message.channel.id)
                 await message.channel.send("Command '{}' is enabled in this channel".format(command_name))
             elif command[2] == "guild":
-                for channel in message.channel.guild.text_channels:
+                for channel in message.guild.text_channels:
                     if channel.id not in self.data[command_name].channels:
                         self.data[command_name].channels.append(channel.id)
                 await message.channel.send("Command '{}' is enabled in this guild".format(command_name))
@@ -171,12 +174,46 @@ class Commands:
             return
         await message.channel.send("Command '{}' does not exist".format(command_name))
 
+    async def _whitelist(self, message, command):
+        """Bot's whitelist
+        Examples:
+                !whitelist enable/disable
+                !whitelist add
+                !whitelist remove"""
+        if len(command) < 2:
+            await message.channel.send("Too few arguments for command 'whitelist'")
+            return
+        if len(command) > 2:
+            await message.channel.send("Too many arguments for command 'whitelist'")
+            return
+        if command[1] == "enable":
+            self.config.guilds[message.guild.id].is_whitelisted = True
+            await message.channel.send("This guild is whitelisted for bot")
+        elif command[1] == "disable":
+            self.config.guilds[message.guild.id].is_whitelisted = False
+            await message.channel.send("This guild is not whitelisted for bot")
+        elif command[1] == "add":
+            self.config.guilds[message.guild.id].whilelist.add(message.channel.id)
+            await message.channel.send("This channel is added to bot's whitelist")
+        elif command[1] == "remove":
+            self.config.guilds[message.guild.id].whilelist.discard(message.channel.id)
+            await message.channel.send("This channel is removed from bot's whitelist")
+        else:
+            await message.channel.send("Unknown argument '{}'".format(command[1]))
+
     async def _wme(self, message, command):
         """Send direct message to author with something"""
         if message.author.dm_channel is None:
             print("DMChannel is not created")
             await message.author.create_dm()
         await message.author.dm_channel.send(' '.join(command[1:]))
+
+
+class GuildSettings:
+    def __init__(self, id):
+        self.id = id
+        self.is_whitelisted = False
+        self.whilelist = set()
 
 
 class Config:
@@ -186,6 +223,8 @@ class Config:
         self.commands.update_builtins()
         if not hasattr(self, "token"):
             self.token = None
+        if not hasattr(self, "guilds"):
+            self.guilds = dict()
 
 
 class WalBot(discord.Client):
@@ -195,10 +234,16 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         print("Logged in as: {} {}".format(self.user.name, self.user.id))
+        for guild in self.guilds:
+            if guild.id not in self.config.guilds.keys():
+                self.config.guilds[guild.id] = GuildSettings(guild.id)
 
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
+        if self.config.guilds[message.guild.id].is_whitelisted:
+            if message.channel.id not in self.config.guilds[message.guild.id].whilelist:
+                return
         if message.content.startswith('!'):
             command = message.content.split(' ')
             command[0] = command[0][1:]
