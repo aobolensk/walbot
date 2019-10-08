@@ -4,9 +4,10 @@ import yaml
 
 
 class Command:
-    def __init__(self, name, perform=None, message=None):
+    def __init__(self, name, perform=None, message=None, permission=0):
         self.name = name
         self.perform = perform
+        self.permission = permission
         self.message = message
         self.is_global = False
         self.channels = []
@@ -22,31 +23,40 @@ class Commands:
 
     def update_builtins(self):
         if "ping" not in self.data.keys():
-            self.data["ping"] = Command("ping", perform=self._ping)
+            self.data["ping"] = Command("ping",
+                perform=self._ping, permission=0)
             self.data["ping"].is_global = True
         if "help" not in self.data.keys():
-            self.data["help"] = Command("help", perform=self._help)
+            self.data["help"] = Command("help",
+                perform=self._help, permission=0)
             self.data["help"].is_global = True
         if "addcmd" not in self.data.keys():
-            self.data["addcmd"] = Command("addcmd", perform=self._addcmd)
+            self.data["addcmd"] = Command("addcmd",
+                perform=self._addcmd, permission=1)
             self.data["addcmd"].is_global = True
         if "updcmd" not in self.data.keys():
-            self.data["updcmd"] = Command("updcmd", perform=self._updcmd)
+            self.data["updcmd"] = Command("updcmd",
+                perform=self._updcmd, permission=1)
             self.data["updcmd"].is_global = True
         if "delcmd" not in self.data.keys():
-            self.data["delcmd"] = Command("delcmd", perform=self._delcmd)
+            self.data["delcmd"] = Command("delcmd",
+                perform=self._delcmd, permission=1)
             self.data["delcmd"].is_global = True
         if "enablecmd" not in self.data.keys():
-            self.data["enablecmd"] = Command("enablecmd", perform=self._enablecmd)
+            self.data["enablecmd"] = Command("enablecmd",
+                perform=self._enablecmd, permission=1)
             self.data["enablecmd"].is_global = True
         if "disablecmd" not in self.data.keys():
-            self.data["disablecmd"] = Command("disablecmd", perform=self._disablecmd)
+            self.data["disablecmd"] = Command("disablecmd",
+                perform=self._disablecmd, permission=1)
             self.data["disablecmd"].is_global = True
         if "whitelist" not in self.data.keys():
-            self.data["whitelist"] = Command("whitelist", perform=self._whitelist)
+            self.data["whitelist"] = Command("whitelist",
+                perform=self._whitelist, permission=1)
             self.data["whitelist"].is_global = True
         if "wme" not in self.data.keys():
-            self.data["wme"] = Command("wme", perform=self._wme)
+            self.data["wme"] = Command("wme",
+                perform=self._wme, permission=1)
             self.data["wme"].is_global = True
 
 
@@ -232,6 +242,12 @@ class GuildSettings:
         self.whilelist = set()
 
 
+class User:
+    def __init__(self, id):
+        self.id = id
+        self.permission_level = 0
+
+
 class Config:
     def __init__(self):
         if not hasattr(self, "commands"):
@@ -241,6 +257,8 @@ class Config:
             self.token = None
         if not hasattr(self, "guilds"):
             self.guilds = dict()
+        if not hasattr(self, "users"):
+            self.users = dict()
 
 
 class WalBot(discord.Client):
@@ -260,24 +278,29 @@ class WalBot(discord.Client):
         if self.config.guilds[message.guild.id].is_whitelisted:
             if message.channel.id not in self.config.guilds[message.guild.id].whilelist:
                 return
+        if message.author.id not in self.config.users.keys():
+            self.config.users[message.author.id] = User(message.author.id)
         if message.content.startswith('!'):
             command = message.content.split(' ')
             command[0] = command[0][1:]
             if command[0] in self.config.commands.data.keys():
                 actor = self.config.commands.data[command[0]]
                 if actor.is_available(message.channel.id):
-                    if actor.perform is not None:
-                        await self.config.commands.data[command[0]].perform(message, command)
-                    elif actor.message is not None:
-                        respond = actor.message
-                        respond = respond.replace("@author@", message.author.mention)
-                        respond = respond.replace("@args@", ' '.join(command[1:]))
-                        for i in range(len(command)):
-                            respond = respond.replace("@arg" + str(i) + "@", command[i])
-                        if (len(respond.strip()) > 0):
-                            await message.channel.send(respond)
+                    if actor.permission <= self.config.users[message.author.id].permission_level:
+                        if actor.perform is not None:
+                            await self.config.commands.data[command[0]].perform(message, command)
+                        elif actor.message is not None:
+                            respond = actor.message
+                            respond = respond.replace("@author@", message.author.mention)
+                            respond = respond.replace("@args@", ' '.join(command[1:]))
+                            for i in range(len(command)):
+                                respond = respond.replace("@arg" + str(i) + "@", command[i])
+                            if (len(respond.strip()) > 0):
+                                await message.channel.send(respond)
+                        else:
+                            await message.channel.send("Command '{}' is not callable".format(command[0]))
                     else:
-                        await message.channel.send("Command '{}' is not callable".format(command[0]))
+                        await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
                 else:
                     await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
             else:
