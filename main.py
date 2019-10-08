@@ -55,17 +55,33 @@ class Commands:
         await message.channel.send("Pong! " + message.author.mention)
 
     async def _help(self, message, command):
-        """Print list of commands"""
+        """Print list of commands and get examples
+        Examples:
+                !help
+                !help help"""
         result = ""
-        for command in self.data:
-            command = self.data[command]
+        if len(command) == 1:
+            for command in self.data:
+                command = self.data[command]
+                result += command.name + ": "
+                if command.perform is not None:
+                    result += command.perform.__doc__.split('\n')[0]
+                else:
+                    result += command.message
+                result += '\n'
+            await message.channel.send(result)
+        elif len(command) == 2:
+            if command[1] in self.data:
+                command = self.data[command[1]]
             result += command.name + ": "
             if command.perform is not None:
                 result += command.perform.__doc__
             else:
                 result += command.message
             result += '\n'
-        await message.channel.send(result)
+            await message.channel.send(result)
+        else:
+            await message.channel.send("Too many arguments for command 'help'")
 
     async def _addcmd(self, message, command):
         """Add command
