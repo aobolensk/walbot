@@ -288,7 +288,7 @@ def main():
     config = None
     if os.path.isfile("config.yaml"):
         with open("config.yaml", 'r') as f:
-            config = yaml.load(f.read())
+            config = yaml.load(f.read(), Loader=yaml.Loader)
         config.__init__()
     if config is None:
         config = Config()
