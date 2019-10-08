@@ -274,7 +274,8 @@ class WalBot(discord.Client):
                         respond = respond.replace("@args@", ' '.join(command[1:]))
                         for i in range(len(command)):
                             respond = respond.replace("@arg" + str(i) + "@", command[i])
-                        await message.channel.send(respond)
+                        if (len(respond.strip()) > 0):
+                            await message.channel.send(respond)
                     else:
                         await message.channel.send("Command '{}' is not callable".format(command[0]))
                 else:
