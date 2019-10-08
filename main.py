@@ -280,7 +280,8 @@ class Commands:
         if message.author.dm_channel is None:
             print("DMChannel is not created")
             await message.author.create_dm()
-        await message.author.dm_channel.send(' '.join(command[1:]))
+        if len(message.content) > 0:
+            await message.author.dm_channel.send(' '.join(command[1:]))
 
 
 class Reaction:
