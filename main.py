@@ -59,6 +59,14 @@ class Commands:
             self.data["addreaction"] = Command("addreaction",
                 perform=self._addreaction, permission=1)
             self.data["addreaction"].is_global = True
+        if "delreaction" not in self.data.keys():
+            self.data["delreaction"] = Command("delreaction",
+                perform=self._delreaction, permission=1)
+            self.data["delreaction"].is_global = True
+        if "listreaction" not in self.data.keys():
+            self.data["listreaction"] = Command("listreaction",
+                perform=self._listreaction, permission=0)
+            self.data["listreaction"].is_global = True
         if "wme" not in self.data.keys():
             self.data["wme"] = Command("wme",
                 perform=self._wme, permission=1)
@@ -240,6 +248,32 @@ class Commands:
             return
         self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
         await message.channel.send("Reaction '{}' on '{}' successfully added".format(command[1], ' '.join(command[2:])))
+
+    async def _delreaction(self, message, command):
+        """Delete reaction
+        Example: !delreaction emoji"""
+        if len(command) < 2:
+            await message.channel.send("Too few arguments for command 'delreaction'")
+            return
+        if len(command) > 2:
+            await message.channel.send("Too many arguments for command 'delreaction'")
+            return
+        i = 0
+        while i < len(self.config.reactions):
+            if self.config.reactions[i].emoji == command[1]:
+                self.config.reactions.pop(i)
+            else:
+                i += 1
+        await message.channel.send("Reaction '{}' successsfully removed".format(command[1]))
+
+    async def _listreaction(self, message, command):
+        """Show list of reactions
+        Example: !listreaction"""
+        result = ""
+        for reaction in self.config.reactions:
+            result += reaction.emoji + ": " + reaction.regex + '\n'
+        if len(result) > 0:
+            await message.channel.send(result)
 
     async def _wme(self, message, command):
         """Send direct message to author with something"""
