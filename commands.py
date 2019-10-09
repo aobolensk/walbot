@@ -1,3 +1,5 @@
+import asyncio
+
 class Command:
     def __init__(self, name, perform=None, message=None, permission=0):
         self.name = name
@@ -65,6 +67,10 @@ class Commands:
             self.data["wme"] = Command("wme",
                 perform=self._wme, permission=1)
             self.data["wme"].is_global = True
+        if "poll" not in self.data.keys():
+            self.data["poll"] = Command("poll",
+                perform=self._poll, permission=0)
+            self.data["poll"].is_global = True
 
 
     async def _ping(self, message, command):
@@ -275,3 +281,35 @@ class Commands:
             await message.author.create_dm()
         if len(' '.join(command[1:])) > 0:
             await message.author.dm_channel.send(' '.join(command[1:]))
+
+    async def _poll(self, message, command):
+        """Create poll
+        Example: !poll 60 option 1;option 2;option 3"""
+        try:
+            duration = int(command[1])
+        except ValueError:
+            await message.channel.send("Second parameter for 'poll' should be duration in seconds")
+            return
+        options = ' '.join(command[2:])
+        options = options.split(';')
+        alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+        if len(options) > 26:
+            await message.channel.send("Too many options for poll")
+            return
+        poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
+        for i in range(len(options)):
+            poll_message += alphabet[i] + " -> " + options[i] + '\n'
+        poll_message = await message.channel.send(poll_message)
+        for i in range(len(options)):
+            await poll_message.add_reaction(alphabet[i])
+        poll_message = poll_message.id
+        await asyncio.sleep(duration)
+        poll_message = await message.channel.fetch_message(poll_message)
+        results = []
+        for index, reaction in enumerate(poll_message.reactions):
+            results.append((reaction, options[index], reaction.count - 1))
+        results.sort(key=lambda option: option[2], reverse=True)
+        result_message = "Time is up! Results:\n"
+        for result in results:
+            result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
+        await message.channel.send(result_message)
