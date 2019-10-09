@@ -47,6 +47,10 @@ class Commands:
             self.data["disablecmd"] = Command("disablecmd",
                 perform=self._disablecmd, permission=1)
             self.data["disablecmd"].is_global = True
+        if "permcmd" not in self.data.keys():
+            self.data["permcmd"] = Command("permcmd",
+                perform=self._permcmd, permission=1)
+            self.data["permcmd"].is_global = True
         if "whitelist" not in self.data.keys():
             self.data["whitelist"] = Command("whitelist",
                 perform=self._whitelist, permission=1)
@@ -210,6 +214,26 @@ class Commands:
                 await message.channel.send("Command '{}' is disabled in global scope".format(command_name))
             else:
                 await message.channel.send("Unknown scope '{}'".format(command[2]))
+            return
+        await message.channel.send("Command '{}' does not exist".format(command_name))
+
+    async def _permcmd(self, message, command):
+        """Set commands permission
+        Example: !permcmd hello 0"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command 'permcmd'")
+            return
+        if len(command) > 3:
+            await message.channel.send("Too many arguments for command 'permcmd'")
+            return
+        command_name = command[1]
+        try:
+            perm = int(command[2])
+        except ValueError:
+            await message.channel.send("Second argument of command 'permcmd' should be an integer")
+        if command_name in self.data.keys():
+            self.data[command_name].permission = perm
+            await message.channel.send("Set permission level {} for command '{}'".format(command[2], command_name))
             return
         await message.channel.send("Command '{}' does not exist".format(command_name))
 
