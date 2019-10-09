@@ -67,11 +67,11 @@ class WalBot(discord.Client):
                     return
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
-            for reaction in self.config.reactions:
-                if re.search(reaction.regex, message.content):
-                    log.info("Added reaction " + reaction.emoji)
-                    await message.add_reaction(reaction.emoji)
             if not message.content.startswith(COMMANDS_PREFIX):
+                for reaction in self.config.reactions:
+                    if re.search(reaction.regex, message.content):
+                        log.info("Added reaction " + reaction.emoji)
+                        await message.add_reaction(reaction.emoji)
                 return
             command = message.content.split(' ')
             command[0] = command[0][1:]
