@@ -69,32 +69,34 @@ class WalBot(discord.Client):
                 self.config.users[message.author.id] = User(message.author.id)
             for reaction in self.config.reactions:
                 if re.search(reaction.regex, message.content):
+                    log.info("Added reaction " + reaction.emoji)
                     await message.add_reaction(reaction.emoji)
-            if message.content.startswith(COMMANDS_PREFIX):
-                command = message.content.split(' ')
-                command[0] = command[0][1:]
-                if command[0] in self.config.commands.data.keys():
-                    actor = self.config.commands.data[command[0]]
-                    if actor.is_available(message.channel.id):
-                        if actor.permission <= self.config.users[message.author.id].permission_level:
-                            if actor.perform is not None:
-                                await self.config.commands.data[command[0]].perform(message, command)
-                            elif actor.message is not None:
-                                respond = actor.message
-                                respond = respond.replace("@author@", message.author.mention)
-                                respond = respond.replace("@args@", ' '.join(command[1:]))
-                                for i in range(len(command)):
-                                    respond = respond.replace("@arg" + str(i) + "@", command[i])
-                                if (len(respond.strip()) > 0):
-                                    await message.channel.send(respond)
-                            else:
-                                await message.channel.send("Command '{}' is not callable".format(command[0]))
-                        else:
-                            await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
-                    else:
-                        await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
-                else:
-                    await message.channel.send("Unknown command '{}'".format(command[0]))
+            if not message.content.startswith(COMMANDS_PREFIX):
+                return
+            command = message.content.split(' ')
+            command[0] = command[0][1:]
+            if command[0] not in self.config.commands.data.keys():
+                await message.channel.send("Unknown command '{}'".format(command[0]))
+                return
+            actor = self.config.commands.data[command[0]]
+            if not actor.is_available(message.channel.id):
+                await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
+                return
+            if actor.permission > self.config.users[message.author.id].permission_level:
+                await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
+                return
+            if actor.perform is not None:
+                await self.config.commands.data[command[0]].perform(message, command)
+            elif actor.message is not None:
+                respond = actor.message
+                respond = respond.replace("@author@", message.author.mention)
+                respond = respond.replace("@args@", ' '.join(command[1:]))
+                for i in range(len(command)):
+                    respond = respond.replace("@arg" + str(i) + "@", command[i])
+                if (len(respond.strip()) > 0):
+                    await message.channel.send(respond)
+            else:
+                await message.channel.send("Command '{}' is not callable".format(command[0]))
         except Exception:
             log.error("on_message failed", exc_info=True)
 
