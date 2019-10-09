@@ -272,7 +272,6 @@ class Commands:
     async def _wme(self, message, command):
         """Send direct message to author with something"""
         if message.author.dm_channel is None:
-            print("DMChannel is not created")
             await message.author.create_dm()
-        if len(message.content) > 0:
+        if len(' '.join(command[1:])) > 0:
             await message.author.dm_channel.send(' '.join(command[1:]))
