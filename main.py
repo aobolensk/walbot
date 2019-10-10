@@ -80,24 +80,7 @@ class WalBot(discord.Client):
                 await message.channel.send("Unknown command '{}'".format(command[0]))
                 return
             actor = self.config.commands.data[command[0]]
-            if not actor.is_available(message.channel.id):
-                await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
-                return
-            if actor.permission > self.config.users[message.author.id].permission_level:
-                await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
-                return
-            if actor.perform is not None:
-                await self.config.commands.data[command[0]].perform(message, command)
-            elif actor.message is not None:
-                respond = actor.message
-                respond = respond.replace("@author@", message.author.mention)
-                respond = respond.replace("@args@", ' '.join(command[1:]))
-                for i in range(len(command)):
-                    respond = respond.replace("@arg" + str(i) + "@", command[i])
-                if (len(respond.strip()) > 0):
-                    await message.channel.send(respond)
-            else:
-                await message.channel.send("Command '{}' is not callable".format(command[0]))
+            await actor.run(message, command, self.config.users[message.author.id])
         except Exception:
             log.error("on_message failed", exc_info=True)
 
