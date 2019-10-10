@@ -13,6 +13,26 @@ class Command:
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)
 
+    async def run(self, message, command, user):
+        if not self.is_available(message.channel.id):
+            await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
+            return
+        if self.permission > user.permission_level:
+            await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
+            return
+        if self.perform is not None:
+            await self.perform(message, command)
+        elif self.message is not None:
+            respond = self.message
+            respond = respond.replace("@author@", message.author.mention)
+            respond = respond.replace("@args@", ' '.join(command[1:]))
+            for i in range(len(command)):
+                respond = respond.replace("@arg" + str(i) + "@", command[i])
+            if (len(respond.strip()) > 0):
+                await message.channel.send(respond)
+        else:
+            await message.channel.send("Command '{}' is not callable".format(command[0]))
+
 
 class Commands:
     def __init__(self, config):
