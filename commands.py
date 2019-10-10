@@ -86,21 +86,22 @@ class Commands:
         Examples:
                 !help
                 !help help"""
-        result = ""
         if len(command) == 1:
+            result = []
             for command in self.data:
                 command = self.data[command]
-                result += command.name + ": "
+                s = command.name + ": "
                 if command.perform is not None:
-                    result += command.perform.__doc__.split('\n')[0]
+                    s += command.perform.__doc__.split('\n')[0]
                 else:
-                    result += command.message
-                result += '\n'
-            await message.channel.send(result)
+                    s += command.message
+                result.append(s)
+            result.sort()
+            await message.channel.send('\n'.join(result))
         elif len(command) == 2:
             if command[1] in self.data:
                 command = self.data[command[1]]
-            result += command.name + ": "
+            result = command.name + ": "
             if command.perform is not None:
                 result += command.perform.__doc__
             else:
