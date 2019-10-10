@@ -1,13 +1,16 @@
+import asyncio
 import discord
 import logging
 import logging.config
 import os
 import re
+import threading
 import yaml
 
 from commands import *
 
 log = None
+
 
 class Reaction:
     def __init__(self, regex, emoji):
@@ -44,13 +47,32 @@ class Config:
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 
+    def save(self, filename):
+        mutex = threading.Lock()
+        mutex.acquire()
+        log.info("Saving of config is started")
+        with open(filename, 'wb') as f:
+            try:
+                f.write(yaml.dump(self, encoding='utf-8'))
+                log.info("Saving of config is finished")
+            except Exception:
+                log.error("yaml.dump failed", exc_info=True)
+        mutex.release()
+
 
 class WalBot(discord.Client):
     def __init__(self, config):
         global runtime_config
         super(WalBot, self).__init__()
         self.config = config
+        self.loop.create_task(self.config_autosave())
         runtime_config.background_loop = self.loop
+
+    async def config_autosave(self):
+        await self.wait_until_ready()
+        while not self.is_closed():
+            self.config.save("config.yaml")
+            await asyncio.sleep(10 * 60)
 
     async def on_ready(self):
         log.info("Logged in as: {} {}".format(self.user.name, self.user.id))
@@ -129,11 +151,7 @@ def main():
         event.cancel()
     runtime_config.background_loop = None
     log.info("Bot is disconnected!")
-    with open('config.yaml', 'wb') as f:
-        try:
-            f.write(yaml.dump(config, encoding='utf-8'))
-        except Exception:
-            log.error("yaml.dump failed", exc_info=True)
+    config.save("config.yaml")
 
 
 if __name__ == "__main__":
