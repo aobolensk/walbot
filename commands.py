@@ -170,13 +170,13 @@ class Commands:
             result += '\n'
             await message.channel.send(result)
         else:
-            await message.channel.send("Too many arguments for command 'help'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
 
     async def _addcmd(self, message, command):
         """Add command
         Example: !addcmd hello Hello!"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'addcmd'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -190,7 +190,7 @@ class Commands:
         """Update command (works only for commands that already exist)
         Example: !updcmd hello Hello!"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'updcmd'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -206,10 +206,10 @@ class Commands:
         """Delete command
         Example: !delcmd hello"""
         if len(command) < 2:
-            await message.channel.send("Too few arguments for command 'delcmd'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 2:
-            await message.channel.send("Too many arguments for command 'delcmd'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -225,10 +225,10 @@ class Commands:
                 !enablecmd hello guild
                 !enablecmd hello global"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'enablecmd'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 3:
-            await message.channel.send("Too many arguments for command 'enablecmd'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -255,10 +255,10 @@ class Commands:
                 !disablecmd hello guild
                 !disablecmd hello global"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'disablecmd'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 3:
-            await message.channel.send("Too many arguments for command 'disablecmd'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -283,16 +283,16 @@ class Commands:
         """Set commands permission
         Example: !permcmd hello 0"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'permcmd'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 3:
-            await message.channel.send("Too many arguments for command 'permcmd'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         command_name = command[1]
         try:
             perm = int(command[2])
         except ValueError:
-            await message.channel.send("Second argument of command 'permcmd' should be an integer")
+            await message.channel.send("Second argument of command '{}' should be an integer".format(command[0]))
         if command_name in self.data.keys():
             self.data[command_name].permission = perm
             await message.channel.send("Set permission level {} for command '{}'".format(command[2], command_name))
@@ -306,10 +306,10 @@ class Commands:
                 !whitelist add
                 !whitelist remove"""
         if len(command) < 2:
-            await message.channel.send("Too few arguments for command 'whitelist'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 2:
-            await message.channel.send("Too many arguments for command 'whitelist'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         if command[1] == "enable":
             self.config.guilds[message.guild.id].is_whitelisted = True
@@ -330,7 +330,7 @@ class Commands:
         """Add reaction
         Example: !addreaction emoji regex"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'addreaction'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
         await message.channel.send("Reaction '{}' on '{}' successfully added".format(command[1], ' '.join(command[2:])))
@@ -339,10 +339,10 @@ class Commands:
         """Delete reaction
         Example: !delreaction emoji"""
         if len(command) < 2:
-            await message.channel.send("Too few arguments for command 'delreaction'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 2:
-            await message.channel.send("Too many arguments for command 'delreaction'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         i = 0
         while i < len(self.config.reactions):
@@ -374,7 +374,7 @@ class Commands:
         try:
             duration = int(command[1])
         except ValueError:
-            await message.channel.send("Second parameter for 'poll' should be duration in seconds")
+            await message.channel.send("Second parameter for '{}' should be duration in seconds".format(command[0]))
             return
         options = ' '.join(command[2:])
         options = options.split(';')
@@ -425,15 +425,15 @@ class Commands:
         """Add background event
         Example: !addbgevent 60 hello"""
         if len(command) < 3:
-            await message.channel.send("Too few arguments for command 'addbgevent'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 3:
-            await message.channel.send("Too many arguments for command 'addbgevent'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         try:
             duration = int(command[1])
         except ValueError:
-            await message.channel.send("Second parameter for 'addbgevent' should be duration in seconds")
+            await message.channel.send("Second parameter for '{}' should be duration in seconds".format(command[0]))
             return
         message.content = self.config.commands_prefix + ' '.join(command[2:])
         self.config.background_events.append(BackgroundEvent(
@@ -456,15 +456,15 @@ class Commands:
         """Delete background event
         Example: !delbgevent 0"""
         if len(command) < 2:
-            await message.channel.send("Too few arguments for command 'delbgevent'")
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
         if len(command) > 2:
-            await message.channel.send("Too many arguments for command 'delbgevent'")
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
             return
         try:
             index = int(command[1])
         except ValueError:
-            await message.channel.send("Second parameter for 'delbgevent' should be an index of background event")
+            await message.channel.send("Second parameter for '{}' should be an index of background event".format(command[0]))
             return
         if index >= 0 and index < len(self.config.background_events):
             print(index)
