@@ -1,6 +1,7 @@
 import asyncio
 import os
 
+
 class Command:
     def __init__(self, name, perform=None, message=None, permission=0):
         self.name = name
@@ -17,7 +18,7 @@ class Command:
         if not self.is_available(message.channel.id):
             await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
             return
-        if self.permission > user.permission_level:
+        if user is not None and self.permission > user.permission_level:
             await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
             return
         if self.perform is not None:
@@ -32,6 +33,29 @@ class Command:
                 await message.channel.send(respond)
         else:
             await message.channel.send("Command '{}' is not callable".format(command[0]))
+
+
+class BackgroundEvent:
+    def __init__(self, config, channel, message, period):
+        self.config = config
+        self.channel = channel
+        self.message = message
+        self.period = period
+        self.task = self.config.background_loop.create_task(self.run())
+
+    async def run(self):
+        command = self.message.content.split(' ')
+        command[0] = command[0][1:]
+        while True:
+            await asyncio.sleep(self.period)
+            if command[0] not in self.config.commands.data.keys():
+                await self.channel.send("Unknown command '{}'".format(command[0]))
+            else:
+                actor = self.config.commands.data[command[0]]
+                await actor.run(self.message, command, None)
+
+    def cancel(self):
+        self.task.cancel()
 
 
 class Commands:
@@ -100,6 +124,18 @@ class Commands:
             self.data["version"] = Command("version",
                 perform=self._version, permission=0)
             self.data["version"].is_global = True
+        if "addbgevent" not in self.data.keys():
+            self.data["addbgevent"] = Command("addbgevent",
+                perform=self._addbgevent, permission=1)
+            self.data["addbgevent"].is_global = True
+        if "listbgevent" not in self.data.keys():
+            self.data["listbgevent"] = Command("listbgevent",
+                perform=self._listbgevent, permission=0)
+            self.data["listbgevent"].is_global = True
+        if "delbgevent" not in self.data.keys():
+            self.data["delbgevent"] = Command("delbgevent",
+                perform=self._delbgevent, permission=1)
+            self.data["delbgevent"].is_global = True
 
 
     async def _ping(self, message, command):
@@ -384,3 +420,54 @@ class Commands:
         with open(os.path.join(os.getcwd(), ".git/" + branch)) as f:
             commit_hash = f.readline()
         await message.channel.send(commit_hash)
+
+    async def _addbgevent(self, message, command):
+        """Add background event
+        Example: !addbgevent 60 hello"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command 'addbgevent'")
+            return
+        if len(command) > 3:
+            await message.channel.send("Too many arguments for command 'addbgevent'")
+            return
+        try:
+            duration = int(command[1])
+        except ValueError:
+            await message.channel.send("Second parameter for 'addbgevent' should be duration in seconds")
+            return
+        message.content = self.config.commands_prefix + ' '.join(command[2:])
+        self.config.background_events.append(BackgroundEvent(
+            self.config, message.channel, message, duration))
+        await message.channel.send("Successfully added background event '{}' with period {}".format(
+            message.content, str(duration)
+        ))
+
+    async def _listbgevent(self, message, command):
+        """Print a list of background events
+        Example: !listbgevent"""
+        result = ""
+        for index, event in enumerate(self.config.background_events):
+            result += "{}: '{}' every {} seconds\n".format(
+                str(index), event.message.content, str(event.period)
+            )
+        await message.channel.send(result)
+
+    async def _delbgevent(self, message, command):
+        """Delete background event
+        Example: !delbgevent 0"""
+        if len(command) < 2:
+            await message.channel.send("Too few arguments for command 'delbgevent'")
+            return
+        if len(command) > 2:
+            await message.channel.send("Too many arguments for command 'delbgevent'")
+            return
+        try:
+            index = int(command[1])
+        except ValueError:
+            await message.channel.send("Second parameter for 'delbgevent' should be an index of background event")
+            return
+        if index >= 0 and index < len(self.config.background_events):
+            print(index)
+            self.config.background_events[index].cancel()
+            del self.config.background_events[index]
+        await message.channel.send("Successfully deleted background task!")
