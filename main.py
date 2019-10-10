@@ -8,7 +8,6 @@ import yaml
 from commands import *
 
 log = None
-COMMANDS_PREFIX = '!'
 
 class Reaction:
     def __init__(self, regex, emoji):
@@ -42,6 +41,8 @@ class Config:
             self.guilds = dict()
         if not hasattr(self, "users"):
             self.users = dict()
+        if not hasattr(self, "commands_prefix"):
+            self.commands_prefix = "!"
 
 
 class WalBot(discord.Client):
@@ -67,7 +68,7 @@ class WalBot(discord.Client):
                     return
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
-            if not message.content.startswith(COMMANDS_PREFIX):
+            if not message.content.startswith(self.config.commands_prefix):
                 for reaction in self.config.reactions:
                     if re.search(reaction.regex, message.content):
                         log.info("Added reaction " + reaction.emoji)
