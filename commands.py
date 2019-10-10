@@ -1,5 +1,6 @@
 import asyncio
 import os
+import random
 
 
 class Command:
@@ -136,6 +137,10 @@ class Commands:
             self.data["delbgevent"] = Command("delbgevent",
                 perform=self._delbgevent, permission=1)
             self.data["delbgevent"].is_global = True
+        if "random" not in self.data.keys():
+            self.data["random"] = Command("random",
+                perform=self._random, permission=0)
+            self.data["random"].is_global = True
 
 
     async def _ping(self, message, command):
@@ -471,3 +476,23 @@ class Commands:
             self.config.background_events[index].cancel()
             del self.config.background_events[index]
         await message.channel.send("Successfully deleted background task!")
+
+    async def _random(self, message, command):
+        """Get random number in range [left, right]
+        Example: !random 5 10"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
+            return
+        if len(command) > 3:
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
+            return
+        try:
+            left = int(command[1])
+            right = int(command[2])
+        except ValueError:
+            await message.channel.send("Range should be an integer!")
+            return
+        if left > right:
+            await message.channel.send("Left border should be less or equal than right")
+            return
+        await message.channel.send(random.randint(left, right))
