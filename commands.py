@@ -3,6 +3,15 @@ import os
 import random
 
 
+class RuntimeConfig:
+    def __init__(self):
+        self.background_events = []
+        self.background_loop = None
+
+
+runtime_config = RuntimeConfig()
+
+
 class Command:
     def __init__(self, name, perform=None, message=None, permission=0):
         self.name = name
@@ -42,7 +51,7 @@ class BackgroundEvent:
         self.channel = channel
         self.message = message
         self.period = period
-        self.task = self.config.background_loop.create_task(self.run())
+        self.task = runtime_config.background_loop.create_task(self.run())
 
     async def run(self):
         command = self.message.content.split(' ')
@@ -445,7 +454,7 @@ class Commands:
             await message.channel.send("Second parameter for '{}' should be duration in seconds".format(command[0]))
             return
         message.content = self.config.commands_prefix + ' '.join(command[2:])
-        self.config.background_events.append(BackgroundEvent(
+        runtime_config.background_events.append(BackgroundEvent(
             self.config, message.channel, message, duration))
         await message.channel.send("Successfully added background event '{}' with period {}".format(
             message.content, str(duration)
@@ -455,7 +464,7 @@ class Commands:
         """Print a list of background events
         Example: !listbgevent"""
         result = ""
-        for index, event in enumerate(self.config.background_events):
+        for index, event in enumerate(runtime_config.background_events):
             result += "{}: '{}' every {} seconds\n".format(
                 str(index), event.message.content, str(event.period)
             )
@@ -475,10 +484,9 @@ class Commands:
         except ValueError:
             await message.channel.send("Second parameter for '{}' should be an index of background event".format(command[0]))
             return
-        if index >= 0 and index < len(self.config.background_events):
-            print(index)
-            self.config.background_events[index].cancel()
-            del self.config.background_events[index]
+        if index >= 0 and index < len(runtime_config.background_events):
+            runtime_config.background_events[index].cancel()
+            del runtime_config.background_events[index]
         await message.channel.send("Successfully deleted background task!")
 
     async def _random(self, message, command):
