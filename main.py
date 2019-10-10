@@ -35,8 +35,6 @@ class Config:
         self.commands.update_builtins()
         if not hasattr(self, "reactions"):
             self.reactions = []
-        if not hasattr(self, "background_events"):
-            self.background_events = []
         if not hasattr(self, "token"):
             self.token = None
         if not hasattr(self, "guilds"):
@@ -49,9 +47,10 @@ class Config:
 
 class WalBot(discord.Client):
     def __init__(self, config):
+        global runtime_config
         super(WalBot, self).__init__()
         self.config = config
-        self.config.background_loop = self.loop
+        runtime_config.background_loop = self.loop
 
     async def on_ready(self):
         log.info("Logged in as: {} {}".format(self.user.name, self.user.id))
@@ -121,14 +120,14 @@ def main():
         config.__init__()
     if config is None:
         config = Config()
+    runtime_config = RuntimeConfig()
     walBot = WalBot(config)
     if config.token is None:
         config.token = input("Enter your token: ")
     walBot.run(config.token)
-    for event in config.background_events:
+    for event in runtime_config.background_events:
         event.cancel()
-    config.background_events = []
-    config.background_loop = None
+    runtime_config.background_loop = None
     log.info("Bot is disconnected!")
     with open('config.yaml', 'wb') as f:
         try:
