@@ -171,7 +171,7 @@ class Commands:
         command_name = command[1]
         if command_name in self.data.keys():
             self.data.pop(command_name, None)
-            await message.channel.send("Command '{}' -> '{}' successfully deleted".format(command_name))
+            await message.channel.send("Command '{}' successfully deleted".format(command_name))
             return
         await message.channel.send("Command '{}' does not exist".format(command_name))
 
