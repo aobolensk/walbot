@@ -78,6 +78,7 @@ class WalBot(discord.Client):
                         await message.add_reaction(reaction.emoji)
                 return
             command = message.content.split(' ')
+            command = list(filter(None, command))
             command[0] = command[0][1:]
             if command[0] not in self.config.commands.data.keys():
                 await message.channel.send("Unknown command '{}'".format(command[0]))
