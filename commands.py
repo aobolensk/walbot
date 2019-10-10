@@ -46,6 +46,7 @@ class BackgroundEvent:
 
     async def run(self):
         command = self.message.content.split(' ')
+        command = list(filter(None, command))
         command[0] = command[0][1:]
         while True:
             await asyncio.sleep(self.period)
@@ -167,6 +168,9 @@ class Commands:
         elif len(command) == 2:
             if command[1] in self.data:
                 command = self.data[command[1]]
+            else:
+                await message.channel.send("Unknown command '{}'".format(command[1]))
+                return
             result = command.name + ": "
             if command.perform is not None:
                 result += command.perform.__doc__
