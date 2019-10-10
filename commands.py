@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 class Command:
     def __init__(self, name, perform=None, message=None, permission=0):
@@ -75,6 +76,10 @@ class Commands:
             self.data["poll"] = Command("poll",
                 perform=self._poll, permission=0)
             self.data["poll"].is_global = True
+        if "version" not in self.data.keys():
+            self.data["version"] = Command("version",
+                perform=self._version, permission=0)
+            self.data["version"].is_global = True
 
 
     async def _ping(self, message, command):
@@ -338,3 +343,24 @@ class Commands:
         for result in results:
             result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
         await message.channel.send(result_message)
+
+    async def _version(self, message, command):
+        """Get version of the bot"""
+        if not os.path.exists(os.path.join(os.getcwd(), ".git")):
+            await message.channel.send("Unable to get version (.git folder is not found)")
+            return
+        if not os.path.exists(os.path.join(os.getcwd(), ".git/HEAD")):
+            await message.channel.send("Unable to get version (.git/HEAD file is not found)")
+            return
+        with open(os.path.join(os.getcwd(), ".git/HEAD")) as f:
+            branch = f.readline()
+            if branch[:5] != "ref: ":
+                await message.channel.send("Unable to get version (.git/HEAD format is unknown)")
+                return
+            branch = branch[5:].strip()
+        if not os.path.exists(os.path.join(os.getcwd(), ".git/" + branch)):
+            await message.channel.send("Unable to get version (.git/" + branch + " file is not found)")
+            return
+        with open(os.path.join(os.getcwd(), ".git/" + branch)) as f:
+            commit_hash = f.readline()
+        await message.channel.send(commit_hash)
