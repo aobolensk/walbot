@@ -349,8 +349,10 @@ class Commands:
         await asyncio.sleep(duration)
         poll_message = await message.channel.fetch_message(poll_message)
         results = []
+        possible_answers = alphabet[:len(options)]
         for index, reaction in enumerate(poll_message.reactions):
-            results.append((reaction, options[index], reaction.count - 1))
+            if str(reaction) in possible_answers:
+                results.append((reaction, options[index], reaction.count - 1))
         results.sort(key=lambda option: option[2], reverse=True)
         result_message = "Time is up! Results:\n"
         for result in results:
