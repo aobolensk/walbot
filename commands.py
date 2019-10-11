@@ -358,6 +358,8 @@ class Commands:
         for result in results:
             result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
         await message.channel.send(result_message)
+        for i in range(len(options)):
+            await poll_message.remove_reaction(alphabet[i], poll_message.author)
 
     async def _version(self, message, command):
         """Get version of the bot"""
