@@ -46,6 +46,10 @@ class Commands:
             self.data["permcmd"] = Command("permcmd",
                 perform=self._permcmd, permission=1)
             self.data["permcmd"].is_global = True
+        if "permuser" not in self.data.keys():
+            self.data["permuser"] = Command("permuser",
+                perform=self._permuser, permission=1)
+            self.data["permuser"].is_global = True
         if "whitelist" not in self.data.keys():
             self.data["whitelist"] = Command("whitelist",
                 perform=self._whitelist, permission=1)
@@ -255,6 +259,27 @@ class Commands:
             await message.channel.send("Set permission level {} for command '{}'".format(command[2], command_name))
             return
         await message.channel.send("Command '{}' does not exist".format(command_name))
+
+    async def _permuser(self, message, command):
+        """Set user permission
+        Example: !permcmd @nickname 0"""
+        if len(command) < 3:
+            await message.channel.send("Too few arguments for command '{}'".format(command[0]))
+            return
+        if len(command) > 3:
+            await message.channel.send("Too many arguments for command '{}'".format(command[0]))
+            return
+        try:
+            perm = int(command[2])
+        except ValueError:
+            await message.channel.send("Second argument of command '{}' should be an integer".format(command[0]))
+        user_id = int(command[1][2:-1])
+        for user in self.config.users.keys():
+            if self.config.users[user].id == user_id:
+                self.config.users[user].permission_level = perm
+                await message.channel.send("User permissions are set to {}".format(command[2]))
+                return
+        await message.channel.send("User '{}' is not found".format(command[1]))
 
     async def _whitelist(self, message, command):
         """Bot's whitelist
