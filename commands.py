@@ -114,28 +114,45 @@ class Commands:
                 "random", perform=self._random, permission=0
             )
             self.data["random"].is_global = True
+        self.export_help()
 
+    def export_help(self):
+        with open(os.path.join(os.getcwd(), "docs", "Help.md"), "w") as f:
+            result = []
+            for command in self.data:
+                command = self.data[command]
+                if command.perform is not None:
+                    s = "**" + command.name + "**: "
+                    s += "  \n".join(command.perform.__doc__.split('\n')) + '\n'
+                result.append(s)
+            result.sort()
+            f.write('\n'.join(result))
 
     async def _ping(self, message, command):
-        """Check whether the bot is active"""
+        """Check whether the bot is active
+    Example: !ping"""
         await message.channel.send("Pong! " + message.author.mention)
 
     async def _help(self, message, command):
         """Print list of commands and get examples
-        Examples:
-                !help
-                !help help"""
+    Examples:
+        !help
+        !help help"""
         if len(command) == 1:
             result = []
             for command in self.data:
                 command = self.data[command]
-                s = command.name + ": "
-                if command.perform is not None:
-                    s += command.perform.__doc__.split('\n')[0]
-                else:
+                if command.perform is None:
+                    s = command.name + ": "
                     s += command.message
-                result.append(s)
+                    result.append(s)
             result.sort()
+            version = self.config.get_version()
+            if ' ' in version:
+                version = "master"
+            result.insert(0, "Built-in commands: " +
+                "<https://github.com/gooddoog/walbot/blob/" +
+                version + "/docs/Help.md>")
             await message.channel.send('\n'.join(result))
         elif len(command) == 2:
             if command[1] in self.data:
@@ -155,7 +172,7 @@ class Commands:
 
     async def _addcmd(self, message, command):
         """Add command
-        Example: !addcmd hello Hello!"""
+    Example: !addcmd hello Hello!"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -169,7 +186,7 @@ class Commands:
 
     async def _updcmd(self, message, command):
         """Update command (works only for commands that already exist)
-        Example: !updcmd hello Hello!"""
+    Example: !updcmd hello Hello!"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -185,7 +202,7 @@ class Commands:
 
     async def _delcmd(self, message, command):
         """Delete command
-        Example: !delcmd hello"""
+    Example: !delcmd hello"""
         if len(command) < 2:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -201,10 +218,10 @@ class Commands:
 
     async def _enablecmd(self, message, command):
         """Enable command in specified scope
-        Examples:
-                !enablecmd hello channel
-                !enablecmd hello guild
-                !enablecmd hello global"""
+    Examples:
+        !enablecmd hello channel
+        !enablecmd hello guild
+        !enablecmd hello global"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -231,10 +248,10 @@ class Commands:
 
     async def _disablecmd(self, message, command):
         """Disable command in specified scope
-        Examples:
-                !disablecmd hello channel
-                !disablecmd hello guild
-                !disablecmd hello global"""
+    Examples:
+        !disablecmd hello channel
+        !disablecmd hello guild
+        !disablecmd hello global"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -262,7 +279,7 @@ class Commands:
 
     async def _permcmd(self, message, command):
         """Set commands permission
-        Example: !permcmd hello 0"""
+    Example: !permcmd hello 0"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -282,7 +299,7 @@ class Commands:
 
     async def _permuser(self, message, command):
         """Set user permission
-        Example: !permcmd @nickname 0"""
+    Example: !permcmd @nickname 0"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -303,10 +320,10 @@ class Commands:
 
     async def _whitelist(self, message, command):
         """Bot's whitelist
-        Examples:
-                !whitelist enable/disable
-                !whitelist add
-                !whitelist remove"""
+    Examples:
+        !whitelist enable/disable
+        !whitelist add
+        !whitelist remove"""
         if len(command) < 2:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -330,7 +347,7 @@ class Commands:
 
     async def _addreaction(self, message, command):
         """Add reaction
-        Example: !addreaction emoji regex"""
+    Example: !addreaction emoji regex"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -339,7 +356,7 @@ class Commands:
 
     async def _delreaction(self, message, command):
         """Delete reaction
-        Example: !delreaction emoji"""
+    Example: !delreaction emoji"""
         if len(command) < 2:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -356,7 +373,7 @@ class Commands:
 
     async def _listreaction(self, message, command):
         """Show list of reactions
-        Example: !listreaction"""
+    Example: !listreaction"""
         result = ""
         for reaction in self.config.reactions:
             result += reaction.emoji + ": " + reaction.regex + '\n'
@@ -364,7 +381,8 @@ class Commands:
             await message.channel.send(result)
 
     async def _wme(self, message, command):
-        """Send direct message to author with something"""
+        """Send direct message to author with something
+    Example: !wme Hello!"""
         if message.author.dm_channel is None:
             await message.author.create_dm()
         if len(' '.join(command[1:])) > 0:
@@ -372,7 +390,7 @@ class Commands:
 
     async def _poll(self, message, command):
         """Create poll
-        Example: !poll 60 option 1;option 2;option 3"""
+    Example: !poll 60 option 1;option 2;option 3"""
         try:
             duration = int(command[1])
         except ValueError:
@@ -407,29 +425,13 @@ class Commands:
             await poll_message.remove_reaction(alphabet[i], poll_message.author)
 
     async def _version(self, message, command):
-        """Get version of the bot"""
-        if not os.path.exists(os.path.join(os.getcwd(), ".git")):
-            await message.channel.send("Unable to get version (.git folder is not found)")
-            return
-        if not os.path.exists(os.path.join(os.getcwd(), ".git/HEAD")):
-            await message.channel.send("Unable to get version (.git/HEAD file is not found)")
-            return
-        with open(os.path.join(os.getcwd(), ".git/HEAD")) as f:
-            branch = f.readline()
-            if branch[:5] != "ref: ":
-                await message.channel.send("Unable to get version (.git/HEAD format is unknown)")
-                return
-            branch = branch[5:].strip()
-        if not os.path.exists(os.path.join(os.getcwd(), ".git/" + branch)):
-            await message.channel.send("Unable to get version (.git/" + branch + " file is not found)")
-            return
-        with open(os.path.join(os.getcwd(), ".git/" + branch)) as f:
-            commit_hash = f.readline()
-        await message.channel.send(commit_hash)
+        """Get version of the bot
+    Example: !version"""
+        await message.channel.send(self.config.get_version())
 
     async def _addbgevent(self, message, command):
         """Add background event
-        Example: !addbgevent 60 hello"""
+    Example: !addbgevent 60 hello"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -450,7 +452,7 @@ class Commands:
 
     async def _listbgevent(self, message, command):
         """Print a list of background events
-        Example: !listbgevent"""
+    Example: !listbgevent"""
         result = ""
         for index, event in enumerate(runtime_config.background_events):
             result += "{}: '{}' every {} seconds\n".format(
@@ -460,7 +462,7 @@ class Commands:
 
     async def _delbgevent(self, message, command):
         """Delete background event
-        Example: !delbgevent 0"""
+    Example: !delbgevent 0"""
         if len(command) < 2:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
@@ -479,7 +481,7 @@ class Commands:
 
     async def _random(self, message, command):
         """Get random number in range [left, right]
-        Example: !random 5 10"""
+    Example: !random 5 10"""
         if len(command) < 3:
             await message.channel.send("Too few arguments for command '{}'".format(command[0]))
             return
