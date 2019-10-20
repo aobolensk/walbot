@@ -142,13 +142,13 @@ class Commands:
             result = []
             for command in self.data:
                 command = self.data[command]
-                s = command.name + ": "
-                if command.perform is not None:
-                    s += command.perform.__doc__.split('\n')[0]
-                else:
+                if command.perform is None:
+                    s = command.name + ": "
                     s += command.message
-                result.append(s)
+                    result.append(s)
             result.sort()
+            result.insert(0, "Built-in commands: " +
+                "https://github.com/gooddoog/walbot/blob/master/docs/Help.md")
             await message.channel.send('\n'.join(result))
         elif len(command) == 2:
             if command[1] in self.data:
