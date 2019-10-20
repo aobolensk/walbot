@@ -147,8 +147,12 @@ class Commands:
                     s += command.message
                     result.append(s)
             result.sort()
+            version = self.config.get_version()
+            if ' ' in version:
+                version = "master"
             result.insert(0, "Built-in commands: " +
-                "https://github.com/gooddoog/walbot/blob/master/docs/Help.md")
+                "https://github.com/gooddoog/walbot/blob/" +
+                version + "/docs/Help.md")
             await message.channel.send('\n'.join(result))
         elif len(command) == 2:
             if command[1] in self.data:
@@ -423,24 +427,7 @@ class Commands:
     async def _version(self, message, command):
         """Get version of the bot
     Example: !version"""
-        if not os.path.exists(os.path.join(os.getcwd(), ".git")):
-            await message.channel.send("Unable to get version (.git folder is not found)")
-            return
-        if not os.path.exists(os.path.join(os.getcwd(), ".git/HEAD")):
-            await message.channel.send("Unable to get version (.git/HEAD file is not found)")
-            return
-        with open(os.path.join(os.getcwd(), ".git/HEAD")) as f:
-            branch = f.readline()
-            if branch[:5] != "ref: ":
-                await message.channel.send("Unable to get version (.git/HEAD format is unknown)")
-                return
-            branch = branch[5:].strip()
-        if not os.path.exists(os.path.join(os.getcwd(), ".git/" + branch)):
-            await message.channel.send("Unable to get version (.git/" + branch + " file is not found)")
-            return
-        with open(os.path.join(os.getcwd(), ".git/" + branch)) as f:
-            commit_hash = f.readline()
-        await message.channel.send(commit_hash)
+        await message.channel.send(self.config.get_version())
 
     async def _addbgevent(self, message, command):
         """Add background event
