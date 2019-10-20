@@ -151,8 +151,8 @@ class Commands:
             if ' ' in version:
                 version = "master"
             result.insert(0, "Built-in commands: " +
-                "https://github.com/gooddoog/walbot/blob/" +
-                version + "/docs/Help.md")
+                "<https://github.com/gooddoog/walbot/blob/" +
+                version + "/docs/Help.md>")
             await message.channel.send('\n'.join(result))
         elif len(command) == 2:
             if command[1] in self.data:
