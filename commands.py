@@ -412,24 +412,37 @@ class Commands:
                 await poll_message.add_reaction(alphabet[i])
             except Exception:
                 pass
-        poll_message = poll_message.id
-        await asyncio.sleep(duration)
-        poll_message = await message.channel.fetch_message(poll_message)
-        results = []
-        possible_answers = alphabet[:len(options)]
-        for index, reaction in enumerate(poll_message.reactions):
-            if str(reaction) in possible_answers:
-                results.append((reaction, options[index], reaction.count - 1))
-        results.sort(key=lambda option: option[2], reverse=True)
-        result_message = "Time is up! Results:\n"
-        for result in results:
-            result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
-        await message.channel.send(result_message)
-        for i in range(len(options)):
-            try:
-                await poll_message.remove_reaction(alphabet[i], poll_message.author)
-            except Exception:
-                pass
+        timestamps = [60]
+        timestamps = [x for x in timestamps if x < duration]
+        timestamps.append(duration)
+        timestamps = ([timestamps[0]] +
+            [timestamps[i] - timestamps[i - 1] for i in range(1, len(timestamps))])
+        timestamps.reverse()
+        remaining = duration
+        for timestamp in timestamps:
+            await asyncio.sleep(timestamp)
+            remaining -= timestamp
+            if remaining > 0:
+                await message.channel.send("Poll is still going! {} seconds left".format(remaining))
+            else:
+                poll_message = poll_message.id
+                poll_message = await message.channel.fetch_message(poll_message)
+                results = []
+                possible_answers = alphabet[:len(options)]
+                for index, reaction in enumerate(poll_message.reactions):
+                    if str(reaction) in possible_answers:
+                        results.append((reaction, options[index], reaction.count - 1))
+                results.sort(key=lambda option: option[2], reverse=True)
+                result_message = "Time is up! Results:\n"
+                for result in results:
+                    result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
+                await message.channel.send(result_message)
+                for i in range(len(options)):
+                    try:
+                        await poll_message.remove_reaction(alphabet[i], poll_message.author)
+                    except Exception:
+                        pass
+                return
 
     async def _version(self, message, command):
         """Get version of the bot
