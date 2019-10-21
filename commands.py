@@ -399,7 +399,8 @@ class Commands:
         options = ' '.join(command[2:])
         options = options.split(';')
         alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
-        if len(options) > 26:
+        MAX_POLL_OPTIONS = 20
+        if len(options) > MAX_POLL_OPTIONS:
             await message.channel.send("Too many options for poll")
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
@@ -407,7 +408,10 @@ class Commands:
             poll_message += alphabet[i] + " -> " + options[i] + '\n'
         poll_message = await message.channel.send(poll_message)
         for i in range(len(options)):
-            await poll_message.add_reaction(alphabet[i])
+            try:
+                await poll_message.add_reaction(alphabet[i])
+            except Exception:
+                pass
         poll_message = poll_message.id
         await asyncio.sleep(duration)
         poll_message = await message.channel.fetch_message(poll_message)
@@ -422,7 +426,10 @@ class Commands:
             result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
         await message.channel.send(result_message)
         for i in range(len(options)):
-            await poll_message.remove_reaction(alphabet[i], poll_message.author)
+            try:
+                await poll_message.remove_reaction(alphabet[i], poll_message.author)
+            except Exception:
+                pass
 
     async def _version(self, message, command):
         """Get version of the bot
