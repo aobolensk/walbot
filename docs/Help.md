@@ -54,6 +54,9 @@
 **random**: Get random number in range [left, right]  
     Example: !random 5 10
 
+**silent**: Make the following command silent (without any output to the chat)  
+    Example: !silent hello
+
 **updcmd**: Update command (works only for commands that already exist)  
     Example: !updcmd hello Hello!
 
