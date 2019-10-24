@@ -231,9 +231,9 @@ class Commands:
     async def _enablecmd(self, message, command, silent=False):
         """Enable command in specified scope
     Examples:
-        !enablecmd hello channel
-        !enablecmd hello guild
-        !enablecmd hello global"""
+        !enablecmd ping channel
+        !enablecmd ping guild
+        !enablecmd ping global"""
         if len(command) < 3:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
@@ -261,9 +261,9 @@ class Commands:
     async def _disablecmd(self, message, command, silent=False):
         """Disable command in specified scope
     Examples:
-        !disablecmd hello channel
-        !disablecmd hello guild
-        !disablecmd hello global"""
+        !disablecmd ping channel
+        !disablecmd ping guild
+        !disablecmd ping global"""
         if len(command) < 3:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
@@ -291,7 +291,7 @@ class Commands:
 
     async def _permcmd(self, message, command, silent=False):
         """Set commands permission
-    Example: !permcmd hello 0"""
+    Example: !permcmd ping 0"""
         if len(command) < 3:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
@@ -465,7 +465,7 @@ class Commands:
 
     async def _addbgevent(self, message, command, silent=False):
         """Add background event
-    Example: !addbgevent 60 hello"""
+    Example: !addbgevent 60 ping"""
         if len(command) < 3:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
@@ -535,7 +535,7 @@ class Commands:
 
     async def _silent(self, message, command, silent=False):
         """Make the following command silent (without any output to the chat)
-    Example: !silent hello"""
+    Example: !silent ping"""
         if len(command) == 1:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
