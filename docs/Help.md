@@ -1,5 +1,5 @@
 **addbgevent**: Add background event  
-    Example: !addbgevent 60 hello
+    Example: !addbgevent 60 ping
 
 **addcmd**: Add command  
     Example: !addcmd hello Hello!
@@ -18,15 +18,15 @@
 
 **disablecmd**: Disable command in specified scope  
     Examples:  
-        !disablecmd hello channel  
-        !disablecmd hello guild  
-        !disablecmd hello global
+        !disablecmd ping channel  
+        !disablecmd ping guild  
+        !disablecmd ping global
 
 **enablecmd**: Enable command in specified scope  
     Examples:  
-        !enablecmd hello channel  
-        !enablecmd hello guild  
-        !enablecmd hello global
+        !enablecmd ping channel  
+        !enablecmd ping guild  
+        !enablecmd ping global
 
 **help**: Print list of commands and get examples  
     Examples:  
@@ -40,7 +40,7 @@
     Example: !listreaction
 
 **permcmd**: Set commands permission  
-    Example: !permcmd hello 0
+    Example: !permcmd ping 0
 
 **permuser**: Set user permission  
     Example: !permcmd @nickname 0
@@ -55,7 +55,7 @@
     Example: !random 5 10
 
 **silent**: Make the following command silent (without any output to the chat)  
-    Example: !silent hello
+    Example: !silent ping
 
 **updcmd**: Update command (works only for commands that already exist)  
     Example: !updcmd hello Hello!
