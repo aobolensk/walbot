@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import os
 import random
 
@@ -120,6 +121,16 @@ class Commands:
                 "silent", perform=self._silent, permission=0
             )
             self.data["silent"].is_global = True
+        if "time" not in self.data.keys():
+            self.data["time"] = Command(
+                "time", perform=self._time, permission=0
+            )
+            self.data["time"].is_global = True
+        if "uptime" not in self.data.keys():
+            self.data["uptime"] = Command(
+                "uptime", perform=self._uptime, permission=0
+            )
+            self.data["uptime"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -545,3 +556,24 @@ class Commands:
         else:
             actor = self.config.commands.data[command[0]]
             await actor.run(message, command, None, silent=True)
+
+    async def _time(self, message, command, silent=False):
+        """Show current time and bot deployment time
+    Example: !time"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        result = "Deployment time: " + str(runtime_config.deployment_time).split('.')[0] + '\n'
+        result += "Current time: " + str(datetime.datetime.now()).split('.')[0]
+        await self.response(message, result, silent)
+
+    async def _uptime(self, message, command, silent=False):
+        """Show bot uptime
+    Example: !uptime"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        days, remainder = divmod(int((datetime.datetime.now() - runtime_config.deployment_time).total_seconds()), 24 * 3600)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        await self.response(message, "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds), silent)

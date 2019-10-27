@@ -57,8 +57,14 @@
 **silent**: Make the following command silent (without any output to the chat)  
     Example: !silent ping
 
+**time**: Show current time and bot deployment time  
+    Example: !time
+
 **updcmd**: Update command (works only for commands that already exist)  
     Example: !updcmd hello Hello!
+
+**uptime**: Show bot uptime  
+    Example: !uptime
 
 **version**: Get version of the bot  
     Example: !version
