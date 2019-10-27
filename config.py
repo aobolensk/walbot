@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import logging
 import logging.config
 import os
@@ -10,6 +11,7 @@ class RuntimeConfig:
     def __init__(self):
         self.background_events = []
         self.background_loop = None
+        self.deployment_time = datetime.datetime.now()
 
 
 def setup_logging():
