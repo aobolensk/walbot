@@ -7,6 +7,9 @@
 **addreaction**: Add reaction  
     Example: !addreaction emoji regex
 
+**channelid**: Get channel ID  
+    Example: !channelid
+
 **delbgevent**: Delete background event  
     Example: !delbgevent 0
 

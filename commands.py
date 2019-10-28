@@ -142,6 +142,11 @@ class Commands:
                 "forchannel", perform=self._forchannel, permission=1
             )
             self.data["forchannel"].is_global = True
+        if "channelid" not in self.data.keys():
+            self.data["channelid"] = Command(
+                "channelid", perform=self._channelid, permission=1
+            )
+            self.data["channelid"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -623,3 +628,11 @@ class Commands:
         else:
             actor = self.config.commands.data[command[0]]
             await actor.run(message, command, None, silent)
+
+    async def _channelid(self, message, command, silent=False):
+        """Get channel ID
+    Example: !channelid"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        await self.response(message, str(message.channel.id), silent)
