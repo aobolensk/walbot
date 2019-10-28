@@ -504,7 +504,7 @@ class Commands:
             self.config, message.channel, message, duration))
         await self.response(message, "Successfully added background event '{}' with period {}".format(
             message.content, str(duration)
-        ))
+        ), silent)
 
     async def _listbgevent(self, message, command, silent=False):
         """Print a list of background events
