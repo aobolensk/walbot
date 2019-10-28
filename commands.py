@@ -502,7 +502,7 @@ class Commands:
         message.content = self.config.commands_prefix + ' '.join(command[2:])
         runtime_config.background_events.append(BackgroundEvent(
             self.config, message.channel, message, duration))
-        await self.response(message, "Successfully added background event '{}' with period {}".format, silent(
+        await self.response(message, "Successfully added background event '{}' with period {}".format(
             message.content, str(duration)
         ))
 
