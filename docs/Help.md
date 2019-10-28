@@ -57,6 +57,10 @@
 **silent**: Make the following command silent (without any output to the chat)  
     Example: !silent ping
 
+**status**: Change bot status  
+    Example: !status playing Dota 2  
+    Possible activities: [playing, streaming, watching, listening]
+
 **time**: Show current time and bot deployment time  
     Example: !time
 

@@ -18,6 +18,10 @@ class WalBot(discord.Client):
         self.config = config
         self.loop.create_task(self.config_autosave())
         runtime_config.background_loop = self.loop
+        runtime_config.change_status = self.change_status
+
+    async def change_status(self, string, type):
+        await self.change_presence(activity=discord.Activity(name=string, type=type))
 
     async def config_autosave(self):
         await self.wait_until_ready()
