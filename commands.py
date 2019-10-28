@@ -137,6 +137,11 @@ class Commands:
                 "status", perform=self._status, permission=0
             )
             self.data["status"].is_global = True
+        if "forchannel" not in self.data.keys():
+            self.data["forchannel"] = Command(
+                "forchannel", perform=self._forchannel, permission=1
+            )
+            self.data["forchannel"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -600,3 +605,21 @@ class Commands:
             await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.listening)
         else:
             await self.response(message, "Unknown type of activity", silent)
+
+    async def _forchannel(self, message, command, silent=False):
+        """Executes command for channel
+    Example: !forchannel <channel_id> ping"""
+        if len(command) < 3:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        try:
+            channel_id = int(command[1])
+        except ValueError:
+            await self.response(message, "Second argument of command '{}' should be an integer".format(command[0]), silent)
+        message.channel.id = channel_id
+        command = command[2:]
+        if command[0] not in self.config.commands.data.keys():
+            await self.response(message, "Unknown command '{}'".format(command[0]), silent)
+        else:
+            actor = self.config.commands.data[command[0]]
+            await actor.run(message, command, None, silent)

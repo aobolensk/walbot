@@ -28,6 +28,9 @@
         !enablecmd ping guild  
         !enablecmd ping global
 
+**forchannel**: Executes command for channel  
+    Example: !forchannel <channel_id> ping
+
 **help**: Print list of commands and get examples  
     Examples:  
         !help  
