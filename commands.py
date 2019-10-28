@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import discord
 import os
 import random
 
@@ -131,6 +132,11 @@ class Commands:
                 "uptime", perform=self._uptime, permission=0
             )
             self.data["uptime"].is_global = True
+        if "status" not in self.data.keys():
+            self.data["status"] = Command(
+                "status", perform=self._status, permission=0
+            )
+            self.data["status"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -577,3 +583,20 @@ class Commands:
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         await self.response(message, "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds), silent)
+
+    async def _status(self, message, command, silent=False):
+        """Change bot status
+    Example: !status playing Dota 2
+    Possible activities: [playing, streaming, watching, listening]"""
+        if len(command) == 1:
+            await runtime_config.change_status("", discord.ActivityType.playing)
+        elif command[1] == "playing":
+            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.playing)
+        elif command[1] == "streaming":
+            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
+        elif command[1] == "watching":
+            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.watching)
+        elif command[1] == "listening":
+            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.listening)
+        else:
+            await self.response(message, "Unknown type of activity", silent)
