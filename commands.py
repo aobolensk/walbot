@@ -163,11 +163,11 @@ class Commands:
             result.sort()
             f.write('\n'.join(result))
 
-    async def response(self, message, string, silent):
+    async def response(self, message, content, silent, embed=None):
         if not silent:
-            await message.channel.send(string)
+            await message.channel.send(content, embed=embed)
         else:
-            log.info("[SILENT] -> " + string)
+            log.info("[SILENT] -> " + content)
 
     async def _ping(self, message, command, silent=False):
         """Check whether the bot is active
@@ -180,21 +180,26 @@ class Commands:
         !help
         !help help"""
         if len(command) == 1:
-            result = []
+            commands = []
             for command in self.data:
                 command = self.data[command]
                 if command.perform is None:
-                    s = command.name + ": "
-                    s += command.message
-                    result.append(s)
-            result.sort()
+                    s = (command.name, command.message)
+                    commands.append(s)
+            commands.sort()
             version = self.config.get_version()
             if ' ' in version:
                 version = "master"
-            result.insert(0, "Built-in commands: " +
-                "<https://github.com/gooddoog/walbot/blob/" +
-                version + "/docs/Help.md>")
-            await self.response(message, '\n'.join(result), silent)
+            embed = discord.Embed(title="Help", color=0x717171)
+            embed.add_field(
+                name="Built-in commands",
+                value="<https://github.com/gooddoog/walbot/blob/" +
+                        version + "/docs/Help.md>",
+                inline=False
+            )
+            for command in commands:
+                embed.add_field(name=command[0], value=command[1], inline=False)
+            await self.response(message, None, silent, embed=embed)
         elif len(command) == 2:
             if command[1] in self.data:
                 command = self.data[command[1]]
