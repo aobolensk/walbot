@@ -621,6 +621,7 @@ class Commands:
             channel_id = int(command[1])
         except ValueError:
             await self.response(message, "Second argument of command '{}' should be an integer".format(command[0]), silent)
+        current_channel_id = message.channel.id
         message.channel.id = channel_id
         command = command[2:]
         if command[0] not in self.config.commands.data.keys():
@@ -628,6 +629,7 @@ class Commands:
         else:
             actor = self.config.commands.data[command[0]]
             await actor.run(message, command, None, silent)
+        message.channel.id = current_channel_id
 
     async def _channelid(self, message, command, silent=False):
         """Get channel ID
