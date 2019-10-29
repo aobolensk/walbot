@@ -155,6 +155,11 @@ class Commands:
                 "addalias", perform=self._addalias, permission=1
             )
             self.data["addalias"].is_global = True
+        if "delalias" not in self.data.keys():
+            self.data["delalias"] = Command(
+                "delalias", perform=self._delalias, permission=1
+            )
+            self.data["delalias"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -681,4 +686,20 @@ class Commands:
             await self.response(message, "Alias '{}' already exists".format(command[2]), silent)
             return
         self.config.commands.aliases[command[2]] = command[1]
-        await self.response(message, "Alias '{}' for '{}' successfully created".format(command[2], command[1]), silent)
+        await self.response(message, "Alias '{}' for '{}' was successfully created".format(command[2], command[1]), silent)
+
+    async def _delalias(self, message, command, silent=False):
+        """Delete command alias
+    Usage: !delalias <alias>
+    Example: !delalias pong"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        if command[1] not in self.config.commands.aliases.keys():
+            await self.response(message, "Alias '{}' does not exist".format(command[1]), silent)
+            return
+        self.config.commands.aliases.pop(command[1])
+        await self.response(message, "Alias '{}' was successfully deleted".format(command[1], command[1]), silent)
