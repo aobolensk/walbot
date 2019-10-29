@@ -490,7 +490,9 @@ class Commands:
     async def _version(self, message, command, silent=False):
         """Get version of the bot
     Example: !version"""
-        await self.response(message, self.config.get_version(), silent)
+        result = self.config.get_version()
+        await self.response(message, result, silent)
+        return result
 
     async def _addbgevent(self, message, command, silent=False):
         """Add background event
@@ -586,6 +588,7 @@ class Commands:
         result = "Deployment time: " + str(runtime_config.deployment_time).split('.')[0] + '\n'
         result += "Current time: " + str(datetime.datetime.now()).split('.')[0]
         await self.response(message, result, silent)
+        return result
 
     async def _uptime(self, message, command, silent=False):
         """Show bot uptime
@@ -596,7 +599,9 @@ class Commands:
         days, remainder = divmod(int((datetime.datetime.now() - runtime_config.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
-        await self.response(message, "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds), silent)
+        result = "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
+        await self.response(message, result, silent)
+        return result
 
     async def _status(self, message, command, silent=False):
         """Change bot status
@@ -639,4 +644,6 @@ class Commands:
         if len(command) > 1:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        await self.response(message, str(message.channel.id), silent)
+        result = str(message.channel.id)
+        await self.response(message, result, silent)
+        return result
