@@ -159,6 +159,7 @@ class Commands:
                     s = "**" + command.name + "**: "
                     s += "  \n".join(command.perform.__doc__.split('\n')) + '\n'
                 result.append(s)
+            result = list(set(result))
             result.sort()
             f.write('\n'.join(result))
 
