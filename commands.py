@@ -595,10 +595,10 @@ class Commands:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         command = command[1:]
-        if command[0] not in self.config.commands.data.keys():
+        if command[0] not in self.data.keys():
             await self.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
-            actor = self.config.commands.data[command[0]]
+            actor = self.data[command[0]]
             await actor.run(message, command, None, silent=True)
 
     async def _time(self, message, command, silent=False):
@@ -654,10 +654,10 @@ class Commands:
         current_channel_id = message.channel.id
         message.channel.id = channel_id
         command = command[2:]
-        if command[0] not in self.config.commands.data.keys():
+        if command[0] not in self.data.keys():
             await self.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
-            actor = self.config.commands.data[command[0]]
+            actor = self.data[command[0]]
             await actor.run(message, command, None, silent)
         message.channel.id = current_channel_id
 
@@ -681,16 +681,16 @@ class Commands:
         if len(command) > 3:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        if command[1] not in self.config.commands.data.keys():
+        if command[1] not in self.data.keys():
             await self.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
-        if command[2] in self.config.commands.data.keys():
+        if command[2] in self.data.keys():
             await self.response(message, "Command '{}' already exists".format(command[2]), silent)
             return
-        if command[2] in self.config.commands.aliases.keys():
+        if command[2] in self.aliases.keys():
             await self.response(message, "Alias '{}' already exists".format(command[2]), silent)
             return
-        self.config.commands.aliases[command[2]] = command[1]
+        self.aliases[command[2]] = command[1]
         await self.response(message, "Alias '{}' for '{}' was successfully created".format(command[2], command[1]), silent)
 
     async def _delalias(self, message, command, silent=False):
@@ -703,10 +703,10 @@ class Commands:
         if len(command) > 2:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        if command[1] not in self.config.commands.aliases.keys():
+        if command[1] not in self.aliases.keys():
             await self.response(message, "Alias '{}' does not exist".format(command[1]), silent)
             return
-        self.config.commands.aliases.pop(command[1])
+        self.aliases.pop(command[1])
         await self.response(message, "Alias '{}' was successfully deleted".format(command[1]), silent)
 
     async def _listalias(self, message, command, silent=False):
@@ -716,7 +716,7 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = ""
-        for alias, command in self.config.commands.aliases.items():
+        for alias, command in self.aliases.items():
             result += alias + " -> " + command + '\n'
         if len(result) > 0:
             await self.response(message, result, silent)
