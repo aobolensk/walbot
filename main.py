@@ -57,8 +57,11 @@ class WalBot(discord.Client):
             command = list(filter(None, command))
             command[0] = command[0][1:]
             if command[0] not in self.config.commands.data.keys():
-                await message.channel.send("Unknown command '{}'".format(command[0]))
-                return
+                if command[0] in self.config.commands.aliases.keys():
+                    command[0] = self.config.commands.aliases[command[0]]
+                else:
+                    await message.channel.send("Unknown command '{}'".format(command[0]))
+                    return
             actor = self.config.commands.data[command[0]]
             await actor.run(message, command, self.config.users[message.author.id])
         except Exception:
