@@ -1,3 +1,7 @@
+**addalias**: Add alias for commands  
+    Usage: !addalias <command> <alias>  
+    Example: !addalias ping pong
+
 **addbgevent**: Add background event  
     Example: !addbgevent 60 ping
 
@@ -9,6 +13,10 @@
 
 **channelid**: Get channel ID  
     Example: !channelid
+
+**delalias**: Delete command alias  
+    Usage: !delalias <alias>  
+    Example: !delalias pong
 
 **delbgevent**: Delete background event  
     Example: !delbgevent 0
@@ -38,6 +46,9 @@
     Examples:  
         !help  
         !help help
+
+**listalias**: Show list of aliases  
+    Example: !listalias
 
 **listbgevent**: Print a list of background events  
     Example: !listbgevent
