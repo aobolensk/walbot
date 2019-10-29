@@ -14,6 +14,10 @@
 **channelid**: Get channel ID  
     Example: !channelid
 
+**delalias**: Delete command alias  
+    Usage: !delalias <alias>  
+    Example: !delalias pong
+
 **delbgevent**: Delete background event  
     Example: !delbgevent 0
 
