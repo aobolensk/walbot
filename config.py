@@ -51,7 +51,7 @@ class Command:
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)
 
-    async def process_subcommands(self, response, message):
+    async def process_subcommands(self, response, message, user):
         percent_pos = -1
         for i in range(len(response)):
             if response[i] == '%':
@@ -62,8 +62,9 @@ class Command:
                     command = message.content.split()
                     result = ""
                     if command[0] in runtime_config.commands.data.keys():
+                        print("sub", command[0])
                         actor = runtime_config.commands.data[command[0]]
-                        result = await actor.run(message, command, None, silent=True)
+                        result = await actor.run(message, command, user, silent=True)
                         if result is None:
                             result = ""
                     response = response[:percent_pos] + result + response[i + 1:]
@@ -80,18 +81,19 @@ class Command:
         if self.perform is not None:
             return await self.perform(message, command, silent)
         elif self.message is not None:
-            if not silent:
-                response = self.message
-                response = response.replace("@author@", message.author.mention)
-                response = response.replace("@args@", ' '.join(command[1:]))
-                for i in range(len(command)):
-                    response = response.replace("@arg" + str(i) + "@", command[i])
-                while True:
-                    response, done = await self.process_subcommands(response, message)
-                    if done:
-                        break
-                if (len(response.strip()) > 0):
+            response = self.message
+            response = response.replace("@author@", message.author.mention)
+            response = response.replace("@args@", ' '.join(command[1:]))
+            for i in range(len(command)):
+                response = response.replace("@arg" + str(i) + "@", command[i])
+            while True:
+                response, done = await self.process_subcommands(response, message, user)
+                if done:
+                    break
+            if (len(response.strip()) > 0):
+                if not silent:
                     await message.channel.send(response)
+                return response
         else:
             await message.channel.send("Command '{}' is not callable".format(command[0]))
 
