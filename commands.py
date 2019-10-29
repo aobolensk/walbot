@@ -585,8 +585,7 @@ class Commands:
         if len(command) > 1:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        result = "Deployment time: " + str(runtime_config.deployment_time).split('.')[0] + '\n'
-        result += "Current time: " + str(datetime.datetime.now()).split('.')[0]
+        result = str(datetime.datetime.now()).split('.')[0]
         await self.response(message, result, silent)
         return result
 
