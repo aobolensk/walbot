@@ -17,6 +17,8 @@ class Commands:
         self.data = dict()
 
     def update_builtins(self):
+        if not hasattr(self, "aliases"):
+            self.aliases = dict()
         runtime_config.commands = self
         if "ping" not in self.data.keys():
             self.data["ping"] = Command(
@@ -148,6 +150,11 @@ class Commands:
                 "channelid", perform=self._channelid, permission=1
             )
             self.data["channelid"].is_global = True
+        if "addalias" not in self.data.keys():
+            self.data["addalias"] = Command(
+                "addalias", perform=self._addalias, permission=1
+            )
+            self.data["addalias"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -653,3 +660,25 @@ class Commands:
         result = str(message.channel.id)
         await self.response(message, result, silent)
         return result
+
+    async def _addalias(self, message, command, silent=False):
+        """Add alias for commands
+    Usage: !addalias <command> <alias>
+    Example: !addalias ping pong"""
+        if len(command) < 3:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) > 3:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        if command[1] not in self.config.commands.data.keys():
+            await self.response(message, "Unknown command '{}'".format(command[1]), silent)
+            return
+        if command[2] in self.config.commands.data.keys():
+            await self.response(message, "Command '{}' already exists".format(command[2]), silent)
+            return
+        if command[2] in self.config.commands.aliases.keys():
+            await self.response(message, "Alias '{}' already exists".format(command[2]), silent)
+            return
+        self.config.commands.aliases[command[2]] = command[1]
+        await self.response(message, "Alias '{}' for '{}' successfully created".format(command[2], command[1]), silent)

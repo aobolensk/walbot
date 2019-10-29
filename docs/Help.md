@@ -1,3 +1,7 @@
+**addalias**: Add alias for commands  
+    Usage: !addalias <command> <alias>  
+    Example: !addalias ping pong
+
 **addbgevent**: Add background event  
     Example: !addbgevent 60 ping
 
