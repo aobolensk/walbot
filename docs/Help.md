@@ -47,6 +47,9 @@
         !help  
         !help help
 
+**listalias**: Show list of aliases  
+    Example: !listalias
+
 **listbgevent**: Print a list of background events  
     Example: !listbgevent
 
