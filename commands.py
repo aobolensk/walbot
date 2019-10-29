@@ -17,6 +17,7 @@ class Commands:
         self.data = dict()
 
     def update_builtins(self):
+        runtime_config.commands = self
         if "ping" not in self.data.keys():
             self.data["ping"] = Command(
                 "ping", perform=self._ping, permission=0
@@ -558,7 +559,9 @@ class Commands:
         if left > right:
             await self.response(message, "Left border should be less or equal than right", silent)
             return
-        await self.response(message, str(random.randint(left, right)), silent)
+        result = str(random.randint(left, right))
+        await self.response(message, result, silent)
+        return result
 
     async def _silent(self, message, command, silent=False):
         """Make the following command silent (without any output to the chat)
