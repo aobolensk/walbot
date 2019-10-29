@@ -160,6 +160,11 @@ class Commands:
                 "delalias", perform=self._delalias, permission=1
             )
             self.data["delalias"].is_global = True
+        if "listalias" not in self.data.keys():
+            self.data["listalias"] = Command(
+                "listalias", perform=self._listalias, permission=0
+            )
+            self.data["listalias"].is_global = True
         self.export_help()
 
     def export_help(self):
@@ -702,4 +707,16 @@ class Commands:
             await self.response(message, "Alias '{}' does not exist".format(command[1]), silent)
             return
         self.config.commands.aliases.pop(command[1])
-        await self.response(message, "Alias '{}' was successfully deleted".format(command[1], command[1]), silent)
+        await self.response(message, "Alias '{}' was successfully deleted".format(command[1]), silent)
+
+    async def _listalias(self, message, command, silent=False):
+        """Show list of aliases
+    Example: !listalias"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        result = ""
+        for alias, command in self.config.commands.aliases.items():
+            result += alias + " -> " + command + '\n'
+        if len(result) > 0:
+            await self.response(message, result, silent)
