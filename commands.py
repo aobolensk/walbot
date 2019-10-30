@@ -165,6 +165,11 @@ class Commands:
                 "listalias", perform=self._listalias, permission=0
             )
             self.data["listalias"].is_global = True
+        if "echo" not in self.data.keys():
+            self.data["echo"] = Command(
+                "echo", message="@args@", permission=0
+            )
+            self.data["echo"].is_global = True
         self.export_help()
 
     def export_help(self):
