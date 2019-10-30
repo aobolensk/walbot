@@ -32,11 +32,11 @@ def setup_logging():
     log.addHandler(fh)
     log.addHandler(ch)
     log.info("Logging system is set up")
+    return log
 
 
 runtime_config = RuntimeConfig()
-log = None
-setup_logging()
+log = setup_logging()
 
 
 class Command:
