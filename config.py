@@ -54,14 +54,14 @@ class Command:
     async def process_subcommands(self, response, message, user):
         percent_pos = -1
         for i in range(len(response)):
-            if response[i] == '%':
+            if response[i] == '%' and (i == 0 or response[i-1] != '\\'):
                 if percent_pos == -1:
                     percent_pos = i
                 else:
                     message.content = response[percent_pos + 1:i]
                     command = message.content.split()
                     result = ""
-                    if command[0] in runtime_config.commands.data.keys():
+                    if len(command) > 0 and command[0] in runtime_config.commands.data.keys():
                         print("sub", command[0])
                         actor = runtime_config.commands.data[command[0]]
                         result = await actor.run(message, command, user, silent=True)
