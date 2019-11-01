@@ -464,19 +464,19 @@ class Commands:
         try:
             duration = int(command[1])
         except ValueError:
-            await message.channel.send(message, "Second parameter for '{}' should be duration in seconds".format(command[0]), silent)
+            await message.channel.send("Second parameter for '{}' should be duration in seconds".format(command[0]))
             return
         options = ' '.join(command[2:])
         options = options.split(';')
         alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
         MAX_POLL_OPTIONS = 20
         if len(options) > MAX_POLL_OPTIONS:
-            await message.channel.send(message, "Too many options for poll", silent)
+            await message.channel.send("Too many options for poll")
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
             poll_message += alphabet[i] + " -> " + options[i] + '\n'
-        poll_message = await message.channel.send(poll_message, silent)
+        poll_message = await message.channel.send(poll_message)
         for i in range(len(options)):
             try:
                 await poll_message.add_reaction(alphabet[i])
@@ -493,7 +493,7 @@ class Commands:
             await asyncio.sleep(timestamp)
             remaining -= timestamp
             if remaining > 0:
-                await message.channel.send(message, "Poll is still going! {} seconds left".format(remaining), silent)
+                await message.channel.send("Poll is still going! {} seconds left".format(remaining))
             else:
                 poll_message = poll_message.id
                 poll_message = await message.channel.fetch_message(poll_message)
@@ -506,7 +506,7 @@ class Commands:
                 result_message = "Time is up! Results:\n"
                 for result in results:
                     result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
-                await message.channel.send(message, result_message, silent)
+                await message.channel.send(result_message)
                 for i in range(len(options)):
                     try:
                         await poll_message.remove_reaction(alphabet[i], poll_message.author)
