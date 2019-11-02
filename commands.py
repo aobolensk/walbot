@@ -424,20 +424,32 @@ class Commands:
 
     async def _delreaction(self, message, command, silent=False):
         """Delete reaction
-    Example: !delreaction emoji"""
+    Examples:
+        !delreaction emoji
+        !delreaction index"""
         if len(command) < 2:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        i = 0
-        while i < len(self.config.reactions):
-            if self.config.reactions[i].emoji == command[1]:
-                self.config.reactions.pop(i)
-            else:
-                i += 1
-        await self.response(message, "Reaction '{}' successsfully removed".format(command[1]), silent)
+        index = -1
+        try:
+            index = int(command[1])
+            if not (index >= 0 and index < len(self.config.reactions)):
+                await self.response(message, "Incorrect index of reaction!", silent)
+                return
+            reaction = self.config.reactions[index]
+            self.config.reactions.pop(index)
+            await self.response(message, "Reaction '{}' -> '{}' successfully removed".format(reaction.regex, reaction.emoji), silent)
+        except:
+            i = 0
+            while i < len(self.config.reactions):
+                if self.config.reactions[i].emoji == command[1]:
+                    self.config.reactions.pop(i)
+                else:
+                    i += 1
+            await self.response(message, "Reaction '{}' successfully removed".format(command[1]), silent)
 
     async def _listreaction(self, message, command, silent=False):
         """Show list of reactions
@@ -447,6 +459,8 @@ class Commands:
             result += reaction.emoji + ": " + reaction.regex + '\n'
         if len(result) > 0:
             await self.response(message, result, silent)
+        else:
+            await self.response(message, "No reactions found!", silent)
 
     async def _wme(self, message, command, silent=False):
         """Send direct message to author with something

@@ -25,7 +25,9 @@
     Example: !delcmd hello
 
 **delreaction**: Delete reaction  
-    Example: !delreaction emoji
+    Examples:  
+        !delreaction emoji  
+        !delreaction index
 
 **disablecmd**: Disable command in specified scope  
     Examples:  
