@@ -51,7 +51,10 @@ class WalBot(discord.Client):
                 for reaction in self.config.reactions:
                     if re.search(reaction.regex, message.content):
                         log.info("Added reaction " + reaction.emoji)
-                        await message.add_reaction(reaction.emoji)
+                        try:
+                            await message.add_reaction(reaction.emoji)
+                        except HTTPException:
+                            pass
                 return
             command = message.content.split(' ')
             command = list(filter(None, command))
