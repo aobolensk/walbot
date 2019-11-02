@@ -86,6 +86,9 @@
 **updcmd**: Update command (works only for commands that already exist)  
     Example: !updcmd hello Hello!
 
+**updreaction**: Update reaction  
+    Example: !updreaction index emoji regex
+
 **uptime**: Show bot uptime  
     Example: !uptime
 

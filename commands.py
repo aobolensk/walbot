@@ -75,6 +75,11 @@ class Commands:
                 "addreaction", perform=self._addreaction, permission=1
             )
             self.data["addreaction"].is_global = True
+        if "updreaction" not in self.data.keys():
+            self.data["updreaction"] = Command(
+                "updreaction", perform=self._updreaction, permission=1
+            )
+            self.data["updreaction"].is_global = True
         if "delreaction" not in self.data.keys():
             self.data["delreaction"] = Command(
                 "delreaction", perform=self._delreaction, permission=1
@@ -421,6 +426,22 @@ class Commands:
             return
         self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
         await self.response(message, "Reaction '{}' on '{}' successfully added".format(command[1], ' '.join(command[2:])), silent)
+
+    async def _updreaction(self, message, command, silent=False):
+        """Update reaction
+    Example: !updreaction index emoji regex"""
+        if len(command) < 4:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        try:
+            index = int(command[1])
+        except Exception:
+            await self.response(message, "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
+        if not (index >= 0 and index < len(self.config.reactions)):
+            await self.response(message, "Incorrect index of reaction!", silent)
+            return
+        self.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
+        await self.response(message, "Reaction '{}' on '{}' successfully updated".format(command[1], ' '.join(command[2:])), silent)
 
     async def _delreaction(self, message, command, silent=False):
         """Delete reaction
