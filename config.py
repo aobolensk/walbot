@@ -13,6 +13,8 @@ class RuntimeConfig:
         self.background_loop = None
         self.deployment_time = datetime.datetime.now()
 
+log = None
+runtime_config = RuntimeConfig()
 
 def setup_logging():
     global log
@@ -33,10 +35,6 @@ def setup_logging():
     log.addHandler(ch)
     log.info("Logging system is set up")
     return log
-
-
-runtime_config = RuntimeConfig()
-log = setup_logging()
 
 
 class Command:
