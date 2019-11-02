@@ -7,6 +7,7 @@ import yaml
 
 from config import runtime_config
 from config import log
+from config import setup_logging
 from config import GuildSettings
 from config import User
 from config import Config
@@ -28,7 +29,7 @@ class WalBot(discord.Client):
         await self.wait_until_ready()
         while not self.is_closed():
             self.config.save("config.yaml")
-            await asyncio.sleep(10 * 60)
+            await asyncio.sleep(10)
 
     async def on_ready(self):
         log.info("Logged in as: {} {}".format(self.user.name, self.user.id))
@@ -72,6 +73,9 @@ class WalBot(discord.Client):
             log.error("on_message failed", exc_info=True)
 
 def start():
+    # Before starting the bot
+    global log
+    log = setup_logging()
     config = None
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
@@ -87,7 +91,9 @@ def start():
     walBot = WalBot(config)
     if config.token is None:
         config.token = input("Enter your token: ")
+    # Starting the bot
     walBot.run(config.token)
+    # After stopping the bot
     for event in runtime_config.background_events:
         event.cancel()
     runtime_config.background_loop = None
