@@ -73,6 +73,8 @@ class WalBot(discord.Client):
 
 def main():
     config = None
+    with open(".bot_cache", 'w') as f:
+        f.write(str(os.getpid()))
     if os.path.isfile("config.yaml"):
         with open("config.yaml", 'r') as f:
             try:
@@ -91,6 +93,7 @@ def main():
     runtime_config.background_loop = None
     log.info("Bot is disconnected!")
     config.save("config.yaml")
+    os.remove(".bot_cache")
 
 
 if __name__ == "__main__":
