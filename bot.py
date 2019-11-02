@@ -29,7 +29,7 @@ class WalBot(discord.Client):
         await self.wait_until_ready()
         while not self.is_closed():
             self.config.save("config.yaml")
-            await asyncio.sleep(10)
+            await asyncio.sleep(10 * 60)
 
     async def on_ready(self):
         log.info("Logged in as: {} {}".format(self.user.name, self.user.id))
