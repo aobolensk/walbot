@@ -1,6 +1,6 @@
 import sys
 
-import bot
+from src.bot import start, stop
 
 def help():
     print("Usage: " + sys.executable + ' ' + __file__ + " <action>\n\
@@ -16,9 +16,9 @@ def main():
         help()
     elif len(sys.argv) == 2:
         if sys.argv[1] == "start":
-            bot.start()
+            start()
         elif sys.argv[1] == "stop":
-            bot.stop()
+            stop()
         elif sys.argv[1] == "help":
             help()
         else:

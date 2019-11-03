@@ -5,12 +5,12 @@ import signal
 import re
 import yaml
 
-from config import runtime_config
-from config import log
-from config import setup_logging
-from config import GuildSettings
-from config import User
-from config import Config
+from .config import runtime_config
+from .config import log
+from .config import setup_logging
+from .config import GuildSettings
+from .config import User
+from .config import Config
 
 
 class WalBot(discord.Client):

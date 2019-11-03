@@ -4,11 +4,11 @@ import discord
 import os
 import random
 
-from config import Command
-from config import runtime_config
-from config import BackgroundEvent
-from config import Reaction
-from config import log
+from .config import Command
+from .config import runtime_config
+from .config import BackgroundEvent
+from .config import Reaction
+from .config import log
 
 
 class Commands:
