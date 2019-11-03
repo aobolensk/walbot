@@ -2,6 +2,7 @@ import sys
 
 from src.bot import start, stop
 
+
 def help():
     print("Usage: " + sys.executable + ' ' + __file__ + " <action>\n\
     Possible actions:\n\

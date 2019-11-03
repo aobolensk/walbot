@@ -55,7 +55,7 @@ class WalBot(discord.Client):
                         log.info("Added reaction " + reaction.emoji)
                         try:
                             await message.add_reaction(reaction.emoji)
-                        except HTTPException:
+                        except discord.HTTPException:
                             pass
                 return
             command = message.content.split(' ')
@@ -71,6 +71,7 @@ class WalBot(discord.Client):
             await actor.run(message, command, self.config.users[message.author.id])
         except Exception:
             log.error("on_message failed", exc_info=True)
+
 
 def start():
     # Before starting the bot
@@ -100,6 +101,7 @@ def start():
     log.info("Bot is disconnected!")
     config.save("config.yaml")
     os.remove(".bot_cache")
+
 
 def stop():
     cache = None
