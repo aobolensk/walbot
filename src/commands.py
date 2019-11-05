@@ -170,6 +170,11 @@ class Commands:
                 "listalias", perform=self._listalias, permission=0
             )
             self.data["listalias"].is_global = True
+        if "markov" not in self.data.keys():
+            self.data["markov"] = Command(
+                "markov", perform=self._markov, permission=0
+            )
+            self.data["markov"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -760,3 +765,13 @@ class Commands:
             result += alias + " -> " + command + '\n'
         if len(result) > 0:
             await self.response(message, result, silent)
+
+    async def _markov(self, message, command, silent=False):
+        """Generate message using Markov chain
+    Example: !markov"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        result = message.author.mention + ' ' + runtime_config.markov.generate()
+        await self.response(message, result, silent)
+        return result
