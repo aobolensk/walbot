@@ -58,6 +58,9 @@
 **listreaction**: Show list of reactions  
     Example: !listreaction
 
+**markov**: Generate message using Markov chain  
+    Example: !markov
+
 **permcmd**: Set commands permission  
     Example: !permcmd ping 0
 
