@@ -175,6 +175,16 @@ class Commands:
                 "markov", perform=self._markov, permission=0
             )
             self.data["markov"].is_global = True
+        if "img" not in self.data.keys():
+            self.data["img"] = Command(
+                "img", perform=self._img, permission=0
+            )
+            self.data["img"].is_global = True
+        if "listimg" not in self.data.keys():
+            self.data["listimg"] = Command(
+                "listimg", perform=self._listimg, permission=0
+            )
+            self.data["listimg"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -775,3 +785,36 @@ class Commands:
         result += runtime_config.markov.generate()
         await self.response(message, result, silent)
         return result
+
+    async def _img(self, message, command, silent=False):
+        """Send image (use !listimg for list of available images)
+    Example: !img"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        for root, _, files in os.walk("images"):
+            if root.endswith("images"):
+                for file in files:
+                    if not silent and os.path.splitext(os.path.basename(file))[0] == command[1]:
+                        await message.channel.send(file=discord.File(os.path.join("images", file)))
+                        return
+        await self.response(message, "Image {} is not found!".format(command[1]), silent)
+
+    async def _listimg(self, message, command, silent=False):
+        """List of available images for !img command
+    Example: !listimg"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        result = ""
+        for root, _, files in os.walk("images"):
+            if root.endswith("images"):
+                for file in files:
+                    result += os.path.splitext(os.path.basename(file))[0] + ', '
+        if len(result) > 0:
+            await self.response(message, "List of avaliable images: [" + result[:-2] + "]", silent)
+        else:
+            await self.response(message, "No available images found!", silent)

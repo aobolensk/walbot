@@ -49,11 +49,17 @@
         !help  
         !help help
 
+**img**: Send image (use !listimg for list of available images)  
+    Example: !img
+
 **listalias**: Show list of aliases  
     Example: !listalias
 
 **listbgevent**: Print a list of background events  
     Example: !listbgevent
+
+**listimg**: List of available images for !img command  
+    Example: !listimg
 
 **listreaction**: Show list of reactions  
     Example: !listreaction
