@@ -157,8 +157,8 @@ class Config:
             self.commands_prefix = "!"
 
     def save(self, filename):
-        mutex = threading.Lock()
-        mutex.acquire()
+        config_mutex = threading.Lock()
+        config_mutex.acquire()
         log.info("Saving of config is started")
         with open(filename, 'wb') as f:
             try:
@@ -166,7 +166,16 @@ class Config:
                 log.info("Saving of config is finished")
             except Exception:
                 log.error("yaml.dump failed", exc_info=True)
-        mutex.release()
+        config_mutex.release()
+        markov_mutex = threading.Lock()
+        markov_mutex.acquire()
+        log.info("Saving of Markov module data is started")
+        try:
+            runtime_config.markov.serialize("markov.yaml")
+            log.info("Saving of Markov module data is finished")
+        except Exception:
+            log.error("Saving of Markov module data is finished", exc_info=True)
+        markov_mutex.release()
 
     def get_version(self):
         if not os.path.exists(os.path.join(os.getcwd(), ".git")):
