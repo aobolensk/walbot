@@ -61,6 +61,9 @@ class Markov:
                     result += (k if k is not None else "") + ' '
                     current_node = current_node.get_next(k)
                     break
+            else:
+                if len(current_node.next.items()) > 0:
+                    return "<Markov database is empty>"
         return result.strip()
 
     def serialize(self, filename):
