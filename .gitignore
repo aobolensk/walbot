@@ -1,5 +1,6 @@
 .vscode
 config.yaml
+markov.yaml
 .bot_cache
 __pycache__
 log.txt
