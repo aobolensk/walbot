@@ -11,6 +11,7 @@ from .config import setup_logging
 from .config import GuildSettings
 from .config import User
 from .config import Config
+from .markov import Markov
 
 
 class WalBot(discord.Client):
@@ -21,6 +22,11 @@ class WalBot(discord.Client):
         self.loop.create_task(self.config_autosave())
         runtime_config.background_loop = self.loop
         runtime_config.change_status = self.change_status
+        if not os.path.exists("markov.yaml"):
+            runtime_config.markov = Markov()
+        else:
+            with open("markov.yaml", 'rb') as f:
+                runtime_config.markov = yaml.load(f.read(), Loader=yaml.Loader)
 
     async def change_status(self, string, type):
         await self.change_presence(activity=discord.Activity(name=string, type=type))
@@ -50,6 +56,7 @@ class WalBot(discord.Client):
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
             if not message.content.startswith(self.config.commands_prefix):
+                runtime_config.markov.add_string(message.content)
                 for reaction in self.config.reactions:
                     if re.search(reaction.regex, message.content):
                         log.info("Added reaction " + reaction.emoji)
