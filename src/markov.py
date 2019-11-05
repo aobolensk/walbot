@@ -16,13 +16,13 @@ class MarkovNode:
             self.next[word] += 1
         else:
             self.next[word] = 1
+        self.total_next += 1
 
     def get_next(self, word):
         if word is not None:
             return self.markov.model[word]
         else:
             return self.markov.end_node
-        self.total_next += 1
 
 
 class Markov:
