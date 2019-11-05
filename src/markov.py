@@ -22,6 +22,7 @@ class MarkovNode:
             return self.markov.model[word]
         else:
             return self.markov.end_node
+        self.total_next += 1
 
 
 class Markov:
@@ -40,7 +41,6 @@ class Markov:
         current_node = self.model[""]
         for word in words:
             current_node.add_next(word)
-            current_node.total_next += 1
             if word in self.model.keys():
                 current_node = current_node.get_next(word)
             else:
@@ -53,7 +53,7 @@ class Markov:
         current_node = self.model[""]
         result = ""
         while current_node != self.end_node:
-            index = random.randint(0, current_node.total_next)
+            index = random.randint(0, max(0, current_node.total_next - 1))
             s = 0
             for k, v in current_node.next.items():
                 s += v
