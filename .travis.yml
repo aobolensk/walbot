@@ -1,0 +1,12 @@
+matrix:
+  include:
+    - os: linux
+      language: python
+      dist: bionic
+      python:
+        - "3.8"
+      name: flake8 linter
+      install:
+        - python -m pip install flake8
+      script:
+        - python -m flake8 --max-line-length 120

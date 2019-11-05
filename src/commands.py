@@ -235,8 +235,8 @@ class Commands:
             embed = discord.Embed(title="Help", color=0x717171)
             embed.add_field(
                 name="Built-in commands",
-                value="<https://github.com/gooddoog/walbot/blob/" +
-                        version + "/docs/Help.md>",
+                value=("<https://github.com/gooddoog/walbot/blob/" +
+                       version + "/docs/Help.md>"),
                 inline=False
             )
             for command in commands:
@@ -270,7 +270,8 @@ class Commands:
             return
         self.data[command_name] = Command(command_name, message=' '.join(command[2:]))
         self.data[command_name].channels.append(message.channel.id)
-        await self.response(message, "Command '{}' -> '{}' successfully added".format(command_name, self.data[command_name].message), silent)
+        await self.response(message, "Command '{}' -> '{}' successfully added".format(
+            command_name, self.data[command_name].message), silent)
 
     async def _updcmd(self, message, command, silent=False):
         """Update command (works only for commands that already exist)
@@ -284,7 +285,8 @@ class Commands:
                 await self.response(message, "Command '{}' is not editable".format(command_name), silent)
                 return
             self.data[command_name].message = ' '.join(command[2:])
-            await self.response(message, "Command '{}' -> '{}' successfully updated".format(command_name, self.data[command_name].message), silent)
+            await self.response(message, "Command '{}' -> '{}' successfully updated".format(
+                command_name, self.data[command_name].message), silent)
             return
         await self.response(message, "Command '{}' does not exist".format(command_name), silent)
 
@@ -378,10 +380,12 @@ class Commands:
         try:
             perm = int(command[2])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(command[0]), silent)
+            await self.response(message, "Second argument of command '{}' should be an integer".format(
+                command[0]), silent)
         if command_name in self.data.keys():
             self.data[command_name].permission = perm
-            await self.response(message, "Set permission level {} for command '{}'".format(command[2], command_name), silent)
+            await self.response(message, "Set permission level {} for command '{}'".format(
+                command[2], command_name), silent)
             return
         await self.response(message, "Command '{}' does not exist".format(command_name), silent)
 
@@ -397,7 +401,8 @@ class Commands:
         try:
             perm = int(command[2])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(command[0]), silent)
+            await self.response(message, "Second argument of command '{}' should be an integer".format(
+                command[0]), silent)
         user_id = int(command[1][2:-1])
         for user in self.config.users.keys():
             if self.config.users[user].id == user_id:
@@ -440,7 +445,8 @@ class Commands:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
-        await self.response(message, "Reaction '{}' on '{}' successfully added".format(command[1], ' '.join(command[2:])), silent)
+        await self.response(message, "Reaction '{}' on '{}' successfully added".format(
+            command[1], ' '.join(command[2:])), silent)
 
     async def _updreaction(self, message, command, silent=False):
         """Update reaction
@@ -451,12 +457,14 @@ class Commands:
         try:
             index = int(command[1])
         except Exception:
-            await self.response(message, "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
+            await self.response(message, "Second parameter for '{}' should an index (integer)".format(
+                command[0]), silent)
         if not (index >= 0 and index < len(self.config.reactions)):
             await self.response(message, "Incorrect index of reaction!", silent)
             return
         self.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
-        await self.response(message, "Reaction '{}' on '{}' successfully updated".format(command[1], ' '.join(command[2:])), silent)
+        await self.response(message, "Reaction '{}' on '{}' successfully updated".format(
+            command[1], ' '.join(command[2:])), silent)
 
     async def _delreaction(self, message, command, silent=False):
         """Delete reaction
@@ -477,8 +485,9 @@ class Commands:
                 return
             reaction = self.config.reactions[index]
             self.config.reactions.pop(index)
-            await self.response(message, "Reaction '{}' -> '{}' successfully removed".format(reaction.regex, reaction.emoji), silent)
-        except:
+            await self.response(message, "Reaction '{}' -> '{}' successfully removed".format(
+                reaction.regex, reaction.emoji), silent)
+        except Exception:
             i = 0
             while i < len(self.config.reactions):
                 if self.config.reactions[i].emoji == command[1]:
@@ -535,8 +544,8 @@ class Commands:
         timestamps = [60]
         timestamps = [x for x in timestamps if x < duration]
         timestamps.append(duration)
-        timestamps = ([timestamps[0]] +
-            [timestamps[i] - timestamps[i - 1] for i in range(1, len(timestamps))])
+        timestamps = (
+            [timestamps[0]] + [timestamps[i] - timestamps[i - 1] for i in range(1, len(timestamps))])
         timestamps.reverse()
         remaining = duration
         for timestamp in timestamps:
@@ -583,7 +592,8 @@ class Commands:
         try:
             duration = int(command[1])
         except ValueError:
-            await self.response(message, "Second parameter for '{}' should be duration in seconds".format(command[0]), silent)
+            await self.response(message, "Second parameter for '{}' should be duration in seconds".format(
+                command[0]), silent)
             return
         message.content = self.config.commands_prefix + ' '.join(command[2:])
         runtime_config.background_events.append(BackgroundEvent(
@@ -614,7 +624,8 @@ class Commands:
         try:
             index = int(command[1])
         except ValueError:
-            await self.response(message, "Second parameter for '{}' should be an index of background event".format(command[0]), silent)
+            await self.response(message, "Second parameter for '{}' should be an index of background event".format(
+                command[0]), silent)
             return
         if index >= 0 and index < len(runtime_config.background_events):
             runtime_config.background_events[index].cancel()
@@ -672,7 +683,8 @@ class Commands:
         if len(command) > 1:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        days, remainder = divmod(int((datetime.datetime.now() - runtime_config.deployment_time).total_seconds()), 24 * 3600)
+        days, remainder = divmod(
+            int((datetime.datetime.now() - runtime_config.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         result = "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
@@ -705,7 +717,8 @@ class Commands:
         try:
             channel_id = int(command[1])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(command[0]), silent)
+            await self.response(message, "Second argument of command '{}' should be an integer".format(
+                command[0]), silent)
         current_channel_id = message.channel.id
         message.channel.id = channel_id
         command = command[2:]
@@ -746,7 +759,8 @@ class Commands:
             await self.response(message, "Alias '{}' already exists".format(command[2]), silent)
             return
         self.aliases[command[2]] = command[1]
-        await self.response(message, "Alias '{}' for '{}' was successfully created".format(command[2], command[1]), silent)
+        await self.response(message, "Alias '{}' for '{}' was successfully created".format(
+            command[2], command[1]), silent)
 
     async def _delalias(self, message, command, silent=False):
         """Delete command alias
