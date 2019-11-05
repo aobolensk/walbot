@@ -42,6 +42,7 @@ class WalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
+        runtime_config.bot_user = self.user
 
     async def on_message(self, message):
         try:
@@ -56,7 +57,10 @@ class WalBot(discord.Client):
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
             if not message.content.startswith(self.config.commands_prefix):
-                runtime_config.markov.add_string(message.content)
+                if runtime_config.bot_user.mentioned_in(message):
+                    await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
+                else:
+                    runtime_config.markov.add_string(message.content)
                 for reaction in self.config.reactions:
                     if re.search(reaction.regex, message.content):
                         log.info("Added reaction " + reaction.emoji)
