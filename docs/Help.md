@@ -27,6 +27,9 @@
 **delcmd**: Delete command  
     Example: !delcmd hello
 
+**delimg**: Delete image for !img command  
+    Example: !delimg name
+
 **delmarkov**: Delete all words in Markov model by regex  
     Example: !delmarkov hello
 

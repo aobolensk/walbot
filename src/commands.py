@@ -3,6 +3,7 @@ import datetime
 import discord
 import os
 import random
+import re
 import requests
 
 from .config import Command
@@ -201,6 +202,11 @@ class Commands:
                 "addimg", perform=self._addimg, permission=1
             )
             self.data["addimg"].is_global = True
+        if "delimg" not in self.data.keys():
+            self.data["delimg"] = Command(
+                "delimg", perform=self._delimg, permission=1
+            )
+            self.data["delimg"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -901,6 +907,9 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         name = command[1]
+        if not re.match('^[A-Za-z0-9_]+$', name):
+            await self.response(message, "Incorrect name '{}'".format(name), silent)
+            return
         url = command[2]
         ext = url.split('.')[-1]
         if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
@@ -920,3 +929,25 @@ class Commands:
                 log.error("Image downloading failed!", exc_info=True)
                 return
         await self.response(message, "Image '{}' successfully added!".format(name), silent)
+
+    async def _delimg(self, message, command, silent=False):
+        """Delete image for !img command
+    Example: !delimg name"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        name = command[1]
+        if not re.match('^[A-Za-z0-9_]+$', name):
+            await self.response(message, "Incorrect name '{}'".format(name), silent)
+            return
+        for root, _, files in os.walk("images"):
+            if root.endswith("images"):
+                for file in files:
+                    if name == os.path.splitext(os.path.basename(file))[0]:
+                        os.remove(os.path.join("images", file))
+                        await self.response(message, "Successfully removed image '{}'".format(name), silent)
+                        return
+        await self.response(message, "Image '{}' not found!".format(name), silent)
