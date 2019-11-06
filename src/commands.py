@@ -825,13 +825,13 @@ class Commands:
                 await self.response(message, "Adding messages to model is already enabled for this channel", silent)
             else:
                 self.config.guilds[message.guild.id].markov_whitelist.add(message.channel.id)
-                await self.response(message, "Adding messages to model is successfully enabled for this channel",
-                    silent)
+                await self.response(
+                    message, "Adding messages to model is successfully enabled for this channel", silent)
         elif command[1] == "disable":
             if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
                 self.config.guilds[message.guild.id].markov_whitelist.discard(message.channel.id)
-                await self.response(message, "Adding messages to model is successfully disabled for this channel",
-                    silent)
+                await self.response(
+                    message, "Adding messages to model is successfully disabled for this channel", silent)
             else:
                 await self.response(message, "Adding messages to model is already disabled for this channel", silent)
         else:
