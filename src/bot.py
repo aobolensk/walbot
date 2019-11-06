@@ -1,7 +1,9 @@
 import asyncio
 import discord
 import os
+import psutil
 import signal
+import time
 import re
 import yaml
 
@@ -126,4 +128,10 @@ def stop():
         return
     pid = int(cache)
     os.kill(pid, signal.SIGINT)
+    while True:
+        is_running = psutil.pid_exists(pid)
+        if not is_running:
+            break
+        print("Bot is still running. Please, wait...")
+        time.sleep(0.5)
     print("Bot is stopped!")

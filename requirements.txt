@@ -1,4 +1,5 @@
 discord.py
 requests
 discord
+psutil
 PyYAML
