@@ -175,6 +175,11 @@ class Commands:
                 "markov", perform=self._markov, permission=0
             )
             self.data["markov"].is_global = True
+        if "markovlog" not in self.data.keys():
+            self.data["markovlog"] = Command(
+                "markovlog", perform=self._markovlog, permission=0
+            )
+            self.data["markovlog"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=0
@@ -430,10 +435,10 @@ class Commands:
             self.config.guilds[message.guild.id].is_whitelisted = False
             await self.response(message, "This guild is not whitelisted for bot", silent)
         elif command[1] == "add":
-            self.config.guilds[message.guild.id].whilelist.add(message.channel.id)
+            self.config.guilds[message.guild.id].whitelist.add(message.channel.id)
             await self.response(message, "This channel is added to bot's whitelist", silent)
         elif command[1] == "remove":
-            self.config.guilds[message.guild.id].whilelist.discard(message.channel.id)
+            self.config.guilds[message.guild.id].whitelist.discard(message.channel.id)
             await self.response(message, "This channel is removed from bot's whitelist", silent)
         else:
             await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
@@ -799,6 +804,36 @@ class Commands:
         result += runtime_config.markov.generate()
         await self.response(message, result, silent)
         return result
+
+    async def _markovlog(self, message, command, silent=False):
+        """Enable/disable adding messages from this channel to Markov model
+    Examples:
+        !markovlog
+        !markovlog enable
+        !markovlog disable"""
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) == 1:
+            if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
+                await self.response(message, "Adding messages to model is enabled for this channel", silent)
+            else:
+                await self.response(message, "Adding messages to model is disabled for this channel", silent)
+            return
+        if command[1] == "enable":
+            if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
+                await self.response(message, "Adding messages to model is already enabled for this channel", silent)
+            else:
+                self.config.guilds[message.guild.id].markov_whitelist.add(message.channel.id)
+                await self.response(message, "Adding messages to model is successfully enabled for this channel", silent)
+        elif command[1] == "disable":
+            if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
+                self.config.guilds[message.guild.id].markov_whitelist.discard(message.channel.id)
+                await self.response(message, "Adding messages to model is successfully disabled for this channel", silent)
+            else:
+                await self.response(message, "Adding messages to model is already disabled for this channel", silent)
+        else:
+            await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)

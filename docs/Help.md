@@ -67,6 +67,12 @@
 **markov**: Generate message using Markov chain  
     Example: !markov
 
+**markovlog**: Enable/disable adding messages from this channel to Markov model  
+    Examples:  
+        !markovlog  
+        !markovlog enable  
+        !markovlog disable
+
 **permcmd**: Set commands permission  
     Example: !permcmd ping 0
 
