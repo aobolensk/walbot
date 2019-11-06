@@ -608,9 +608,6 @@ class Commands:
         if len(command) < 3:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
-        if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
-            return
         try:
             duration = int(command[1])
         except ValueError:
@@ -632,7 +629,10 @@ class Commands:
             result += "{}: '{}' every {} seconds\n".format(
                 str(index), event.message.content, str(event.period)
             )
-        await self.response(message, result, silent)
+        if len(result) > 0:
+            await self.response(message, result, silent)
+        else:
+            await self.response(message, "No background events found!", silent)
 
     async def _delbgevent(self, message, command, silent=False):
         """Delete background event
@@ -741,15 +741,13 @@ class Commands:
         except ValueError:
             await self.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
-        current_channel_id = message.channel.id
-        message.channel.id = channel_id
+        message.channel = runtime_config.get_channel(channel_id)
         command = command[2:]
         if command[0] not in self.data.keys():
             await self.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
             actor = self.data[command[0]]
             await actor.run(message, command, None, silent)
-        message.channel.id = current_channel_id
 
     async def _channelid(self, message, command, silent=False):
         """Get channel ID
