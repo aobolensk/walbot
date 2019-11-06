@@ -8,6 +8,7 @@ def help():
     Possible actions:\n\
     start - start the bot\n\
     stop - stop the bot\n\
+    restart - restart the bot\n\
     help - get this help list\n\
     ")
 
@@ -20,6 +21,9 @@ def main():
             start()
         elif sys.argv[1] == "stop":
             stop()
+        elif sys.argv[1] == "restart":
+            stop()
+            start()
         elif sys.argv[1] == "help":
             help()
         else:
