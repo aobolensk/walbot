@@ -1,4 +1,5 @@
 import random
+import re
 import yaml
 
 
@@ -17,6 +18,11 @@ class MarkovNode:
         else:
             self.next[word] = 1
         self.total_next += 1
+
+    def del_next(self, word):
+        if word in self.next.keys():
+            self.total_next -= self.next[word]
+            del self.next[word]
 
     def get_next(self, word):
         if word is not None:
@@ -48,6 +54,16 @@ class Markov:
                     self, self.NodeType.word, word=word
                 )
         current_node.add_next(None)
+
+    def del_words(self, regex):
+        total_removed = 0
+        for word in [word for word in self.model if re.search(regex, word)]:
+            del self.model[word]
+            total_removed += 1
+        for _, node in self.model.items():
+            for word in [word for word in node.next if word is not None and re.search(regex, word)]:
+                node.del_next(word)
+        return total_removed
 
     def generate(self):
         current_node = self.model[""]
