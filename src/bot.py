@@ -24,6 +24,7 @@ class WalBot(discord.Client):
         self.loop.create_task(self.config_autosave())
         runtime_config.background_loop = self.loop
         runtime_config.change_status = self.change_status
+        runtime_config.get_channel = self.get_channel
         if not os.path.exists("markov.yaml"):
             runtime_config.markov = Markov()
         else:
