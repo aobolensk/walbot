@@ -177,12 +177,12 @@ class Commands:
             self.data["markov"].is_global = True
         if "markovlog" not in self.data.keys():
             self.data["markovlog"] = Command(
-                "markovlog", perform=self._markovlog, permission=0
+                "markovlog", perform=self._markovlog, permission=1
             )
             self.data["markovlog"].is_global = True
         if "delmarkov" not in self.data.keys():
             self.data["delmarkov"] = Command(
-                "delmarkov", perform=self._delmarkov, permission=0
+                "delmarkov", perform=self._delmarkov, permission=1
             )
             self.data["delmarkov"].is_global = True
         if "img" not in self.data.keys():
