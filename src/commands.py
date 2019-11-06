@@ -180,6 +180,11 @@ class Commands:
                 "markovlog", perform=self._markovlog, permission=0
             )
             self.data["markovlog"].is_global = True
+        if "delmarkov" not in self.data.keys():
+            self.data["delmarkov"] = Command(
+                "delmarkov", perform=self._delmarkov, permission=0
+            )
+            self.data["delmarkov"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=0
@@ -836,6 +841,16 @@ class Commands:
                 await self.response(message, "Adding messages to model is already disabled for this channel", silent)
         else:
             await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
+
+    async def _delmarkov(self, message, command, silent=False):
+        """Delete all words in Markov model by regex
+    Example: !delmarkov hello"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        regex = ' '.join(command[1:])
+        total_removed = runtime_config.markov.del_words(regex)
+        await self.response(message, "Deleted {} words from model".format(str(total_removed)), silent)
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
