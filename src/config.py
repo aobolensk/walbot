@@ -132,7 +132,8 @@ class GuildSettings:
     def __init__(self, id):
         self.id = id
         self.is_whitelisted = False
-        self.whilelist = set()
+        self.whitelist = set()
+        self.markov_whitelist = set()
 
 
 class User:
