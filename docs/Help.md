@@ -8,6 +8,9 @@
 **addcmd**: Add command  
     Example: !addcmd hello Hello!
 
+**addimg**: Add image for !img command  
+    Example: !addimg name url
+
 **addreaction**: Add reaction  
     Example: !addreaction emoji regex
 
