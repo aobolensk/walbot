@@ -3,6 +3,7 @@ import datetime
 import discord
 import os
 import random
+import requests
 
 from .config import Command
 from .config import runtime_config
@@ -195,6 +196,11 @@ class Commands:
                 "listimg", perform=self._listimg, permission=0
             )
             self.data["listimg"].is_global = True
+        if "addimg" not in self.data.keys():
+            self.data["addimg"] = Command(
+                "addimg", perform=self._addimg, permission=1
+            )
+            self.data["addimg"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -884,3 +890,33 @@ class Commands:
             await self.response(message, "List of avaliable images: [" + result[:-2] + "]", silent)
         else:
             await self.response(message, "No available images found!", silent)
+
+    async def _addimg(self, message, command, silent=False):
+        """Add image for !img command
+    Example: !addimg name url"""
+        if len(command) < 3:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) > 3:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        name = command[1]
+        url = command[2]
+        ext = url.split('.')[-1]
+        if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
+            await self.response(message, "Please, provide direct link to image", silent)
+            return
+        for root, _, files in os.walk("images"):
+            if root.endswith("images"):
+                for file in files:
+                    if name == os.path.splitext(os.path.basename(file))[0]:
+                        await self.response(message, "Image '{}' already exists".format(name), silent)
+                        return
+        with open(os.path.join("images", name + '.' + ext), 'wb') as f:
+            try:
+                f.write(requests.get(url).content)
+            except Exception:
+                await self.response(message, "Image downloading failed!", silent)
+                log.error("Image downloading failed!", exc_info=True)
+                return
+        await self.response(message, "Image '{}' successfully added!".format(name), silent)
