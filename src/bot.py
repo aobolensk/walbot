@@ -125,7 +125,7 @@ def start():
         event.cancel()
     runtime_config.background_loop = None
     log.info("Bot is disconnected!")
-    config.save("config.yaml")
+    config.save("config.yaml", wait=True)
     os.remove(".bot_cache")
 
 
