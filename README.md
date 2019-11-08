@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gooddoog/walbot.svg?branch=master)](https://travis-ci.org/gooddoog/walbot)
+
 # walbot
 Discord bot in Python
 
