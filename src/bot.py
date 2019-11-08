@@ -29,7 +29,7 @@ class WalBot(discord.Client):
             runtime_config.markov = Markov()
         else:
             with open("markov.yaml", 'rb') as f:
-                runtime_config.markov = yaml.load(f.read(), Loader=yaml.Loader)
+                runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
 
     async def change_status(self, string, type):
         await self.change_presence(activity=discord.Activity(name=string, type=type))
@@ -92,12 +92,24 @@ def start():
     global log
     log = setup_logging()
     config = None
+    try:
+        runtime_config.yaml_loader = yaml.CLoader
+        log.info("Using fast YAML Loader")
+    except Exception:
+        runtime_config.yaml_loader = yaml.Loader
+        log.info("Using slow YAML Loader")
+    try:
+        runtime_config.yaml_dumper = yaml.CDumper
+        log.info("Using fast YAML Dumper")
+    except Exception:
+        runtime_config.yaml_dumper = yaml.Dumper
+        log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
     if os.path.isfile("config.yaml"):
         with open("config.yaml", 'r') as f:
             try:
-                config = yaml.load(f.read(), Loader=yaml.Loader)
+                config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
                 log.error("yaml.load failed", exc_info=True)
         config.__init__()

@@ -82,6 +82,6 @@ class Markov:
                     return "<Markov database is empty>"
         return result.strip()
 
-    def serialize(self, filename):
+    def serialize(self, filename, dumper=yaml.Dumper):
         with open(filename, 'wb') as f:
-            f.write(yaml.dump(self, encoding='utf-8'))
+            f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8'))
