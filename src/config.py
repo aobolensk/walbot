@@ -159,7 +159,7 @@ class Config:
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 
-    def save(self, filename):
+    def save(self, filename, wait=False):
         config_mutex = threading.Lock()
         config_mutex.acquire()
         log.info("Saving of config is started")
@@ -174,10 +174,15 @@ class Config:
         markov_mutex.acquire()
         log.info("Saving of Markov module data is started")
         try:
-            runtime_config.markov.serialize("markov.yaml", dumper=runtime_config.yaml_dumper)
-            log.info("Saving of Markov module data is finished")
+            thread = threading.Thread(
+                target=runtime_config.markov.serialize,
+                args=("markov.yaml", log, runtime_config.yaml_dumper))
+            thread.start()
+            if wait:
+                thread.join()
+                log.info("Saving of Markov is waited")
         except Exception:
-            log.error("Saving of Markov module data is finished", exc_info=True)
+            log.error("Saving of Markov module data is failed", exc_info=True)
         markov_mutex.release()
 
     def get_version(self):
