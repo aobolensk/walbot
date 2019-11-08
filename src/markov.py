@@ -1,6 +1,5 @@
 import random
 import re
-import time
 import yaml
 
 
@@ -87,7 +86,6 @@ class Markov:
         return result.strip()
 
     def serialize(self, filename, log, dumper=yaml.Dumper):
-        time.sleep(4)
         with open(filename, 'wb') as f:
             f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8'))
         log.info("Saving of Markov module data is finished")
