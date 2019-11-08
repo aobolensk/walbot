@@ -165,7 +165,7 @@ class Config:
         log.info("Saving of config is started")
         with open(filename, 'wb') as f:
             try:
-                f.write(yaml.dump(self, encoding='utf-8'))
+                f.write(yaml.dump(self, Dumper=runtime_config.yaml_dumper, encoding='utf-8'))
                 log.info("Saving of config is finished")
             except Exception:
                 log.error("yaml.dump failed", exc_info=True)
@@ -174,7 +174,7 @@ class Config:
         markov_mutex.acquire()
         log.info("Saving of Markov module data is started")
         try:
-            runtime_config.markov.serialize("markov.yaml")
+            runtime_config.markov.serialize("markov.yaml", dumper=runtime_config.yaml_dumper)
             log.info("Saving of Markov module data is finished")
         except Exception:
             log.error("Saving of Markov module data is finished", exc_info=True)
