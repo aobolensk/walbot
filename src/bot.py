@@ -8,11 +8,10 @@ import re
 import yaml
 
 from .config import runtime_config
-from .config import log
-from .config import setup_logging
 from .config import GuildSettings
 from .config import User
 from .config import Config
+from .log import log
 from .markov import Markov
 
 
@@ -89,8 +88,6 @@ class WalBot(discord.Client):
 
 def start():
     # Before starting the bot
-    global log
-    log = setup_logging()
     config = None
     try:
         runtime_config.yaml_loader = yaml.CLoader

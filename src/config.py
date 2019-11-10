@@ -1,10 +1,10 @@
 import asyncio
 import datetime
-import logging
-import logging.config
 import os
 import threading
 import yaml
+
+from .log import log
 
 
 class RuntimeConfig:
@@ -14,29 +14,7 @@ class RuntimeConfig:
         self.deployment_time = datetime.datetime.now()
 
 
-log = None
 runtime_config = RuntimeConfig()
-
-
-def setup_logging():
-    global log
-    logging.config.dictConfig({
-        'version': 1,
-        'disable_existing_loggers': True,
-    })
-    log = logging.getLogger("WalBot")
-    log.setLevel(logging.INFO)
-    fh = logging.FileHandler("log.txt")
-    fh.setLevel(logging.INFO)
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
-    log.addHandler(fh)
-    log.addHandler(ch)
-    log.info("Logging system is set up")
-    return log
 
 
 class Command:
@@ -176,7 +154,7 @@ class Config:
         try:
             thread = threading.Thread(
                 target=runtime_config.markov.serialize,
-                args=("markov.yaml", log, runtime_config.yaml_dumper))
+                args=("markov.yaml", runtime_config.yaml_dumper))
             thread.start()
             if wait:
                 thread.join()

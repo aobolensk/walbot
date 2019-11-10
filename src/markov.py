@@ -2,6 +2,8 @@ import random
 import re
 import yaml
 
+from .log import log
+
 
 class MarkovNode:
     def __init__(self, markov, node_type, word=None):
@@ -85,7 +87,7 @@ class Markov:
                         return "<Markov database is empty>"
         return result.strip()
 
-    def serialize(self, filename, log, dumper=yaml.Dumper):
+    def serialize(self, filename, dumper=yaml.Dumper):
         with open(filename, 'wb') as f:
             f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8'))
         log.info("Saving of Markov module data is finished")
