@@ -137,11 +137,11 @@ class Config:
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 
-    def save(self, filename, wait=False):
+    def save(self, config_file, markov_file, wait=False):
         config_mutex = threading.Lock()
         config_mutex.acquire()
         log.info("Saving of config is started")
-        with open(filename, 'wb') as f:
+        with open(config_file, 'wb') as f:
             try:
                 f.write(yaml.dump(self, Dumper=runtime_config.yaml_dumper, encoding='utf-8'))
                 log.info("Saving of config is finished")
@@ -154,7 +154,7 @@ class Config:
         try:
             thread = threading.Thread(
                 target=runtime_config.markov.serialize,
-                args=("markov.yaml", runtime_config.yaml_dumper))
+                args=(markov_file, runtime_config.yaml_dumper))
             thread.start()
             if wait:
                 thread.join()
