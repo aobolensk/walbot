@@ -36,7 +36,7 @@ class WalBot(discord.Client):
     async def config_autosave(self):
         await self.wait_until_ready()
         while not self.is_closed():
-            self.config.save("config.yaml")
+            self.config.save("config.yaml", "markov.yaml")
             await asyncio.sleep(10 * 60)
 
     async def on_ready(self):
@@ -122,7 +122,7 @@ def start():
         event.cancel()
     runtime_config.background_loop = None
     log.info("Bot is disconnected!")
-    config.save("config.yaml", wait=True)
+    config.save("config.yaml", "markov.yaml", wait=True)
     os.remove(".bot_cache")
 
 
