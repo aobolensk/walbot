@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import os
+import shutil
 import threading
 import yaml
 
@@ -136,6 +137,17 @@ class Config:
             self.users = dict()
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
+
+    def backup(self, *files):
+        for file in files:
+            path = os.path.dirname(file)
+            name, ext = os.path.splitext(os.path.basename(file))
+            name += "_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            backup_file = os.path.join(path, "backup", name + ext)
+            if not os.path.exists("backup"):
+                os.makedirs("backup")
+            shutil.copyfile(file, backup_file)
+            log.info("Created backup for {}: {}".format(file, backup_file))
 
     def save(self, config_file, markov_file, wait=False):
         config_mutex = threading.Lock()

@@ -5,3 +5,4 @@ markov.yaml
 __pycache__
 log.txt
 images/
+backup/
