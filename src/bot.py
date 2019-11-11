@@ -41,7 +41,7 @@ class WalBot(discord.Client):
                 self.config.backup("config.yaml", "markov.yaml")
             self.config.save("config.yaml", "markov.yaml")
             index += 1
-            await asyncio.sleep(10)
+            await asyncio.sleep(10 * 60)
 
     async def on_ready(self):
         log.info("Logged in as: {} {}".format(self.user.name, self.user.id))
