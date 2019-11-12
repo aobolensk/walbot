@@ -351,7 +351,7 @@ class Commands:
                 self.data[command_name].channels.append(message.channel.id)
                 await self.response(message, "Command '{}' is enabled in this channel".format(command_name), silent)
             elif command[2] == "guild":
-                for channel in message.guild.text_channels:
+                for channel in message.channel.guild.text_channels:
                     if channel.id not in self.data[command_name].channels:
                         self.data[command_name].channels.append(channel.id)
                 await self.response(message, "Command '{}' is enabled in this guild".format(command_name), silent)
@@ -451,16 +451,16 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if command[1] == "enable":
-            self.config.guilds[message.guild.id].is_whitelisted = True
+            self.config.guilds[message.channel.guild.id].is_whitelisted = True
             await self.response(message, "This guild is whitelisted for bot", silent)
         elif command[1] == "disable":
-            self.config.guilds[message.guild.id].is_whitelisted = False
+            self.config.guilds[message.channel.guild.id].is_whitelisted = False
             await self.response(message, "This guild is not whitelisted for bot", silent)
         elif command[1] == "add":
-            self.config.guilds[message.guild.id].whitelist.add(message.channel.id)
+            self.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
             await self.response(message, "This channel is added to bot's whitelist", silent)
         elif command[1] == "remove":
-            self.config.guilds[message.guild.id].whitelist.discard(message.channel.id)
+            self.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
             await self.response(message, "This channel is removed from bot's whitelist", silent)
         else:
             await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
@@ -835,21 +835,21 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) == 1:
-            if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
+            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
                 await self.response(message, "Adding messages to model is enabled for this channel", silent)
             else:
                 await self.response(message, "Adding messages to model is disabled for this channel", silent)
             return
         if command[1] == "enable":
-            if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
+            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
                 await self.response(message, "Adding messages to model is already enabled for this channel", silent)
             else:
-                self.config.guilds[message.guild.id].markov_whitelist.add(message.channel.id)
+                self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
                 await self.response(
                     message, "Adding messages to model is successfully enabled for this channel", silent)
         elif command[1] == "disable":
-            if message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
-                self.config.guilds[message.guild.id].markov_whitelist.discard(message.channel.id)
+            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+                self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
                 await self.response(
                     message, "Adding messages to model is successfully disabled for this channel", silent)
             else:
@@ -966,21 +966,21 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) == 1:
-            if message.channel.id in self.config.guilds[message.guild.id].reactions_whitelist:
+            if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
                 await self.response(message, "Adding reactions is enabled for this channel", silent)
             else:
                 await self.response(message, "Adding reactions is disabled for this channel", silent)
             return
         if command[1] == "add":
-            if message.channel.id in self.config.guilds[message.guild.id].reactions_whitelist:
+            if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
                 await self.response(message, "Adding reactions is already enabled for this channel", silent)
             else:
-                self.config.guilds[message.guild.id].reactions_whitelist.add(message.channel.id)
+                self.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
                 await self.response(
                     message, "Adding reactions is successfully enabled for this channel", silent)
         elif command[1] == "delete":
-            if message.channel.id in self.config.guilds[message.guild.id].reactions_whitelist:
-                self.config.guilds[message.guild.id].reactions_whitelist.discard(message.channel.id)
+            if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+                self.config.guilds[message.channel.guild.id].reactions_whitelist.discard(message.channel.id)
                 await self.response(
                     message, "Adding reactions is successfully disabled for this channel", silent)
             else:

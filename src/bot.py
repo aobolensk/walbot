@@ -55,19 +55,19 @@ class WalBot(discord.Client):
             log.info(str(message.author) + " -> " + message.content)
             if message.author.id == self.user.id:
                 return
-            if message.guild.id is None:
+            if message.channel.guild.id is None:
                 return
-            if self.config.guilds[message.guild.id].is_whitelisted:
-                if message.channel.id not in self.config.guilds[message.guild.id].whitelist:
+            if self.config.guilds[message.channel.guild.id].is_whitelisted:
+                if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
                     return
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
             if not message.content.startswith(self.config.commands_prefix):
                 if runtime_config.bot_user.mentioned_in(message):
                     await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
-                elif message.channel.id in self.config.guilds[message.guild.id].markov_whitelist:
+                elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
                     runtime_config.markov.add_string(message.content)
-                if message.channel.id not in self.config.guilds[message.guild.id].reactions_whitelist:
+                if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
                     return
                 for reaction in self.config.reactions:
                     if re.search(reaction.regex, message.content):
