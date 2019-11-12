@@ -207,6 +207,11 @@ class Commands:
                 "delimg", perform=self._delimg, permission=1
             )
             self.data["delimg"].is_global = True
+        if "reactionwl" not in self.data.keys():
+            self.data["reactionwl"] = Command(
+                "reactionwl", perform=self._reactionwl, permission=1
+            )
+            self.data["reactionwl"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -950,3 +955,35 @@ class Commands:
                         await self.response(message, "Successfully removed image '{}'".format(name), silent)
                         return
         await self.response(message, "Image '{}' not found!".format(name), silent)
+
+    async def _reactionwl(self, message, command, silent=False):
+        """Add/delete channel from reaction whitelist
+    Examples:
+        !reactionwl
+        !reactionwl add
+        !reactionwl delete"""
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) == 1:
+            if message.channel.id in self.config.guilds[message.guild.id].reactions_whitelist:
+                await self.response(message, "Adding reactions is enabled for this channel", silent)
+            else:
+                await self.response(message, "Adding reactions is disabled for this channel", silent)
+            return
+        if command[1] == "add":
+            if message.channel.id in self.config.guilds[message.guild.id].reactions_whitelist:
+                await self.response(message, "Adding reactions is already enabled for this channel", silent)
+            else:
+                self.config.guilds[message.guild.id].reactions_whitelist.add(message.channel.id)
+                await self.response(
+                    message, "Adding reactions is successfully enabled for this channel", silent)
+        elif command[1] == "delete":
+            if message.channel.id in self.config.guilds[message.guild.id].reactions_whitelist:
+                self.config.guilds[message.guild.id].reactions_whitelist.discard(message.channel.id)
+                await self.response(
+                    message, "Adding reactions is successfully disabled for this channel", silent)
+            else:
+                await self.response(message, "Adding reactions is already disabled for this channel", silent)
+        else:
+            await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
