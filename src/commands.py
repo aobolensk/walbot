@@ -925,7 +925,8 @@ class Commands:
                     if name == os.path.splitext(os.path.basename(file))[0]:
                         await self.response(message, "Image '{}' already exists".format(name), silent)
                         return
-        os.makedirs("images")
+        if not os.path.exists("images"):
+            os.makedirs("images")
         with open(os.path.join("images", name + '.' + ext), 'wb') as f:
             try:
                 f.write(requests.get(url).content)
