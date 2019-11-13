@@ -348,7 +348,8 @@ class Commands:
         command_name = command[1]
         if command_name in self.data.keys():
             if command[2] == "channel":
-                self.data[command_name].channels.append(message.channel.id)
+                if message.channel.id not in self.data[command_name].channels:
+                    self.data[command_name].channels.append(message.channel.id)
                 await self.response(message, "Command '{}' is enabled in this channel".format(command_name), silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
