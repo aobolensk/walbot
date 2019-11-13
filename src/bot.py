@@ -63,7 +63,8 @@ class WalBot(discord.Client):
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
             if not message.content.startswith(self.config.commands_prefix):
-                if runtime_config.bot_user.mentioned_in(message):
+                if (runtime_config.bot_user.mentioned_in(message) and
+                        self.config.commands.data["markov"].is_available(message.channel.id)):
                     await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
                 elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
                     runtime_config.markov.add_string(message.content)
