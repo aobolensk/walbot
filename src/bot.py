@@ -82,6 +82,9 @@ class WalBot(discord.Client):
             command = message.content.split(' ')
             command = list(filter(None, command))
             command[0] = command[0][1:]
+            if len(command[0]) == 0:
+                log.debug("Ignoring empty command")
+                return
             if command[0] not in self.config.commands.data.keys():
                 if command[0] in self.config.commands.aliases.keys():
                     command[0] = self.config.commands.aliases[command[0]]
