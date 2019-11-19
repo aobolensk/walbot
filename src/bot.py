@@ -8,6 +8,7 @@ import re
 import yaml
 
 from .config import runtime_config
+from .config import bot_wrapper
 from .config import GuildSettings
 from .config import User
 from .config import Config
@@ -21,9 +22,9 @@ class WalBot(discord.Client):
         super(WalBot, self).__init__()
         self.config = config
         self.loop.create_task(self.config_autosave())
-        runtime_config.background_loop = self.loop
-        runtime_config.change_status = self.change_status
-        runtime_config.get_channel = self.get_channel
+        bot_wrapper.background_loop = self.loop
+        bot_wrapper.change_status = self.change_status
+        bot_wrapper.get_channel = self.get_channel
         if not os.path.exists("markov.yaml"):
             runtime_config.markov = Markov()
         else:
@@ -48,7 +49,7 @@ class WalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
-        runtime_config.bot_user = self.user
+        bot_wrapper.bot_user = self.user
 
     async def on_message(self, message):
         try:
@@ -63,7 +64,7 @@ class WalBot(discord.Client):
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
             if not message.content.startswith(self.config.commands_prefix):
-                if (runtime_config.bot_user.mentioned_in(message) and
+                if (bot_wrapper.bot_user.mentioned_in(message) and
                         self.config.commands.data["markov"].is_available(message.channel.id)):
                     await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
                 elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
@@ -127,7 +128,7 @@ def start():
     # After stopping the bot
     for event in runtime_config.background_events:
         event.cancel()
-    runtime_config.background_loop = None
+    bot_wrapper.background_loop = None
     log.info("Bot is disconnected!")
     config.save("config.yaml", "markov.yaml", wait=True)
     os.remove(".bot_cache")

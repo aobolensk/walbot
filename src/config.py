@@ -15,7 +15,12 @@ class RuntimeConfig:
         self.deployment_time = datetime.datetime.now()
 
 
+class BotWrapper():
+    pass
+
+
 runtime_config = RuntimeConfig()
+bot_wrapper = BotWrapper()
 
 
 class Command:
@@ -84,7 +89,7 @@ class BackgroundEvent:
         self.channel = channel
         self.message = message
         self.period = period
-        self.task = runtime_config.background_loop.create_task(self.run())
+        self.task = bot_wrapper.background_loop.create_task(self.run())
 
     async def run(self):
         command = self.message.content.split(' ')
