@@ -113,6 +113,9 @@
 **time**: Show current time and bot deployment time  
     Example: !time
 
+**tts**: Send text-to-speech (TTS) message  
+    Example: !tts Hello!
+
 **updcmd**: Update command (works only for commands that already exist)  
     Example: !updcmd hello Hello!
 
