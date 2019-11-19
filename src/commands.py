@@ -897,7 +897,7 @@ class Commands:
                 for file in files:
                     result += os.path.splitext(os.path.basename(file))[0] + ', '
         if len(result) > 0:
-            await self.response(message, "List of avaliable images: [" + result[:-2] + "]", silent)
+            await self.response(message, "List of available images: [" + result[:-2] + "]", silent)
         else:
             await self.response(message, "No available images found!", silent)
 
