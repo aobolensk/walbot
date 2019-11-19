@@ -8,6 +8,7 @@ import requests
 
 from .config import Command
 from .config import runtime_config
+from .config import bot_wrapper
 from .config import BackgroundEvent
 from .config import Reaction
 from .config import log
@@ -724,15 +725,15 @@ class Commands:
     Example: !status playing Dota 2
     Possible activities: [playing, streaming, watching, listening]"""
         if len(command) == 1:
-            await runtime_config.change_status("", discord.ActivityType.playing)
+            await bot_wrapper.change_status("", discord.ActivityType.playing)
         elif command[1] == "playing":
-            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.playing)
+            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.playing)
         elif command[1] == "streaming":
-            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
+            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
         elif command[1] == "watching":
-            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.watching)
+            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.watching)
         elif command[1] == "listening":
-            await runtime_config.change_status(' '.join(command[2:]), discord.ActivityType.listening)
+            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.listening)
         else:
             await self.response(message, "Unknown type of activity", silent)
 
@@ -747,7 +748,7 @@ class Commands:
         except ValueError:
             await self.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
-        message.channel = runtime_config.get_channel(channel_id)
+        message.channel = bot_wrapper.get_channel(channel_id)
         command = command[2:]
         if command[0] not in self.data.keys():
             await self.response(message, "Unknown command '{}'".format(command[0]), silent)
@@ -820,7 +821,7 @@ class Commands:
         """Generate message using Markov chain
     Example: !markov"""
         result = ""
-        if runtime_config.bot_user.mentioned_in(message):
+        if bot_wrapper.bot_user.mentioned_in(message):
             result += message.author.mention + ' '
         result += runtime_config.markov.generate()
         await self.response(message, result, silent)
