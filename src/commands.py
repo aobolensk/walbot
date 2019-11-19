@@ -233,9 +233,11 @@ class Commands:
             result.sort()
             f.write('\n'.join(result))
 
-    async def response(self, message, content, silent, embed=None):
+    async def response(self, message, content, silent, **kwargs):
         if not silent:
-            await message.channel.send(content, embed=embed)
+            await message.channel.send(
+                content,
+                embed=kwargs.get("embed", None))
         else:
             log.info("[SILENT] -> " + content)
 
