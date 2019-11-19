@@ -41,7 +41,7 @@ class Command:
                     command = message.content.split()
                     result = ""
                     if len(command) > 0 and command[0] in runtime_config.commands.data.keys():
-                        print("sub", command[0])
+                        log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
                         actor = runtime_config.commands.data[command[0]]
                         result = await actor.run(message, command, user, silent=True)
                         if result is None:
@@ -51,6 +51,7 @@ class Command:
         return (response, True)
 
     async def run(self, message, command, user, silent=False):
+        log.debug("Processing command: {}".format(message.content))
         if not self.is_available(message.channel.id):
             await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
             return
