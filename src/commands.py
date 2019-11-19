@@ -213,6 +213,11 @@ class Commands:
                 "reactionwl", perform=self._reactionwl, permission=1
             )
             self.data["reactionwl"].is_global = True
+        if "tts" not in self.data.keys():
+            self.data["tts"] = Command(
+                "tts", perform=self._tts, permission=1
+            )
+            self.data["tts"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -233,9 +238,12 @@ class Commands:
             result.sort()
             f.write('\n'.join(result))
 
-    async def response(self, message, content, silent, embed=None):
+    async def response(self, message, content, silent, **kwargs):
         if not silent:
-            await message.channel.send(content, embed=embed)
+            await message.channel.send(
+                content,
+                embed=kwargs.get("embed", None),
+                tts=kwargs.get("tts", False))
         else:
             log.info("[SILENT] -> " + content)
 
@@ -990,3 +998,13 @@ class Commands:
                 await self.response(message, "Adding reactions is already disabled for this channel", silent)
         else:
             await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
+
+    async def _tts(self, message, command, silent=False):
+        """Send text-to-speech (TTS) message
+    Example: !tts Hello!"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        text = ' '.join(command[1:])
+        await self.response(message, text, silent, tts=True)
+        log.debug("Sent TTS message: {}".format(text))
