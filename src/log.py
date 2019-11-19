@@ -9,16 +9,17 @@ class Log:
             'disable_existing_loggers': True,
         })
         self.log = logging.getLogger("WalBot")
-        self.log.setLevel(logging.INFO)
+        self.log.setLevel(logging.DEBUG)
         fh = logging.FileHandler("log.txt")
-        fh.setLevel(logging.INFO)
+        fh.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
+        ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
         fh.setFormatter(formatter)
         ch.setFormatter(formatter)
         self.log.addHandler(fh)
         self.log.addHandler(ch)
+        self.debug = self.log.debug
         self.info = self.log.info
         self.error = self.log.error
         self.info("Logging system is set up")
