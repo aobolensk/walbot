@@ -221,7 +221,7 @@ class Commands:
             self.data["tts"].is_global = True
         if "urlencode" not in self.data.keys():
             self.data["urlencode"] = Command(
-                "urlencode", perform=self._urlencode, permission=1
+                "urlencode", perform=self._urlencode, permission=0
             )
             self.data["urlencode"].is_global = True
         if "echo" not in self.data.keys():
