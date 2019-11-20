@@ -75,6 +75,7 @@ class Command:
                 response, done = await self.process_subcommands(response, message, user)
                 if done:
                     break
+            response = response.replace("\\%", "%")
             if (len(response.strip()) > 0):
                 if not silent:
                     await message.channel.send(response)
