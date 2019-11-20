@@ -5,6 +5,7 @@ import os
 import random
 import re
 import requests
+import urllib.request
 
 from .config import Command
 from .config import runtime_config
@@ -218,6 +219,11 @@ class Commands:
                 "tts", perform=self._tts, permission=1
             )
             self.data["tts"].is_global = True
+        if "urlencode" not in self.data.keys():
+            self.data["urlencode"] = Command(
+                "urlencode", perform=self._urlencode, permission=1
+            )
+            self.data["urlencode"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0
@@ -1008,3 +1014,14 @@ class Commands:
         text = ' '.join(command[1:])
         await self.response(message, text, silent, tts=True)
         log.debug("Sent TTS message: {}".format(text))
+
+    async def _urlencode(self, message, command, silent=False):
+        """Urlencode string
+    Example: !urlencode hello, world!"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        result = ' '.join(command[1:])
+        result = urllib.request.quote(result.encode("cp1251"))
+        await self.response(message, result, silent)
+        return result.replace("%", "\\%")

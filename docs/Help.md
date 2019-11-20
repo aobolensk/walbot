@@ -125,6 +125,9 @@
 **uptime**: Show bot uptime  
     Example: !uptime
 
+**urlencode**: Urlencode string  
+    Example: !urlencode hello, world!
+
 **version**: Get version of the bot  
     Example: !version
 
