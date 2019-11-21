@@ -15,7 +15,8 @@
     Example: !addreaction emoji regex
 
 **channelid**: Get channel ID  
-    Example: !channelid
+    Example: !channelid  
+    *This command can be used as subcommand*
 
 **delalias**: Delete command alias  
     Usage: !delalias <alias>  
@@ -74,7 +75,8 @@
     Example: !listreaction
 
 **markov**: Generate message using Markov chain  
-    Example: !markov
+    Example: !markov  
+    *This command can be used as subcommand*
 
 **markovlog**: Enable/disable adding messages from this channel to Markov model  
     Examples:  
@@ -95,7 +97,8 @@
     Example: !poll 60 option 1;option 2;option 3
 
 **random**: Get random number in range [left, right]  
-    Example: !random 5 10
+    Example: !random 5 10  
+    *This command can be used as subcommand*
 
 **reactionwl**: Add/delete channel from reaction whitelist  
     Examples:  
@@ -111,7 +114,8 @@
     Possible activities: [playing, streaming, watching, listening]
 
 **time**: Show current time and bot deployment time  
-    Example: !time
+    Example: !time  
+    *This command can be used as subcommand*
 
 **tts**: Send text-to-speech (TTS) message  
     Example: !tts Hello!
@@ -123,13 +127,16 @@
     Example: !updreaction index emoji regex
 
 **uptime**: Show bot uptime  
-    Example: !uptime
+    Example: !uptime  
+    *This command can be used as subcommand*
 
 **urlencode**: Urlencode string  
-    Example: !urlencode hello, world!
+    Example: !urlencode hello, world!  
+    *This command can be used as subcommand*
 
 **version**: Get version of the bot  
-    Example: !version
+    Example: !version  
+    *This command can be used as subcommand*
 
 **whitelist**: Bot's whitelist  
     Examples:  

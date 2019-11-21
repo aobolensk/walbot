@@ -24,10 +24,11 @@ bot_wrapper = BotWrapper()
 
 
 class Command:
-    def __init__(self, name, perform=None, message=None, permission=0):
+    def __init__(self, name, perform=None, message=None, permission=0, subcommand=False):
         self.name = name
         self.perform = perform
         self.permission = permission
+        self.subcommand = subcommand
         self.message = message
         self.is_global = False
         self.channels = []
