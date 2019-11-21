@@ -16,11 +16,11 @@ $ python main.py start
 
 Debian/Ubuntu:
 ```console
-sudo apt install libyaml-dev
+$ sudo apt install libyaml-dev
 ```
 Alternative:
 ```console
-git clone https://github.com/yaml/pyyaml
-cd pyyaml
-sudo python setup.py --with-libyaml install
+$ git clone https://github.com/yaml/pyyaml
+$ cd pyyaml
+$ sudo python setup.py --with-libyaml install
 ```
