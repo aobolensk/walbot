@@ -38,9 +38,9 @@ class WalBot(discord.Client):
         await self.wait_until_ready()
         index = 1
         while not self.is_closed():
-            self.config.save("config.yaml", "markov.yaml")
             if index % 10 == 0:
                 self.config.backup("config.yaml", "markov.yaml")
+            self.config.save("config.yaml", "markov.yaml")
             index += 1
             await asyncio.sleep(10 * 60)
 
