@@ -164,7 +164,11 @@ class Config:
         log.info("Saving of config is started")
         with open(config_file, 'wb') as f:
             try:
-                f.write(yaml.dump(self, Dumper=runtime_config.yaml_dumper, encoding='utf-8'))
+                f.write(yaml.dump(
+                    self,
+                    Dumper=runtime_config.yaml_dumper,
+                    encoding='utf-8',
+                    allow_unicode=True))
                 log.info("Saving of config is finished")
             except Exception:
                 log.error("yaml.dump failed", exc_info=True)

@@ -89,5 +89,5 @@ class Markov:
 
     def serialize(self, filename, dumper=yaml.Dumper):
         with open(filename, 'wb') as f:
-            f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8'))
+            f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))
         log.info("Saving of Markov module data is finished")
