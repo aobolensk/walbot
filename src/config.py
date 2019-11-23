@@ -160,7 +160,7 @@ class Config:
             except IOError as e:
                 log.error("Unable to copy {} -> {}: {}".format(file, backup_file, e))
             else:
-               log.info("Created backup for {}: {}".format(file, backup_file))
+                log.info("Created backup for {}: {}".format(file, backup_file))
 
     def save(self, config_file, markov_file, wait=False):
         config_mutex = threading.Lock()
