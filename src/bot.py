@@ -63,6 +63,8 @@ class WalBot(discord.Client):
                     return
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
+            if self.config.users[message.author.id].permission_level < 0:
+                return
             if not message.content.startswith(self.config.commands_prefix):
                 if (bot_wrapper.bot_user.mentioned_in(message) and
                         self.config.commands.data["markov"].is_available(message.channel.id)):
