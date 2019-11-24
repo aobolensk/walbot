@@ -16,6 +16,10 @@ from .log import log
 from .markov import Markov
 
 
+config_path = "config.yaml"
+markov_path = "markov.yaml"
+
+
 class WalBot(discord.Client):
     def __init__(self, config):
         global runtime_config
@@ -25,10 +29,10 @@ class WalBot(discord.Client):
         bot_wrapper.background_loop = self.loop
         bot_wrapper.change_status = self.change_status
         bot_wrapper.get_channel = self.get_channel
-        if not os.path.exists("markov.yaml"):
+        if not os.path.exists(markov_path):
             runtime_config.markov = Markov()
         else:
-            with open("markov.yaml", 'rb') as f:
+            with open(markov_path, 'rb') as f:
                 runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
 
     async def change_status(self, string, type):
@@ -39,8 +43,8 @@ class WalBot(discord.Client):
         index = 1
         while not self.is_closed():
             if index % 10 == 0:
-                self.config.backup("config.yaml", "markov.yaml")
-            self.config.save("config.yaml", "markov.yaml")
+                self.config.backup(config_path, markov_path)
+            self.config.save(config_path, markov_path)
             index += 1
             await asyncio.sleep(10 * 60)
 
@@ -116,8 +120,8 @@ def start():
         log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
-    if os.path.isfile("config.yaml"):
-        with open("config.yaml", 'r') as f:
+    if os.path.isfile(config_path):
+        with open(config_path, 'r') as f:
             try:
                 config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
@@ -135,7 +139,7 @@ def start():
         event.cancel()
     bot_wrapper.background_loop = None
     log.info("Bot is disconnected!")
-    config.save("config.yaml", "markov.yaml", wait=True)
+    config.save(config_path, markov_path, wait=True)
     os.remove(".bot_cache")
 
 
