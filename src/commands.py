@@ -1110,7 +1110,7 @@ class Commands:
         if len(command) < 2:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
-        text = ' '.join(command[1:])
+        text = ' '.join(command[1:]).lower()
         result = ""
         for i in range(len(text)):
             if text[i] in emoji.emoji_to_text.keys():
