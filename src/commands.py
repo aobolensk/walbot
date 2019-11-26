@@ -1101,7 +1101,9 @@ class Commands:
             else:
                 is_emoji = False
                 result += text[i]
-        await self.response(message, result, silent)
+        result = result.strip()
+        if len(result) > 0:
+            await self.response(message, result, silent)
         return result
 
     async def _deemojify(self, message, command, silent=False):
@@ -1117,5 +1119,7 @@ class Commands:
                 result += emoji.emoji_to_text[text[i]]
             else:
                 result += text[i]
-        await self.response(message, result, silent)
+        result = result.strip()
+        if len(result) > 0:
+            await self.response(message, result, silent)
         return result
