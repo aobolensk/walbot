@@ -42,3 +42,5 @@ text_to_emoji = {
     '!': '❗',
     '?': '❓',
 }
+
+emoji_to_text = {v: k for k, v in text_to_emoji.items()}

@@ -18,6 +18,10 @@
     Example: !channelid  
     *This command can be used as subcommand*
 
+**deemojify**: Deemojify text  
+    Example: !deemojify 🇭 🇪 🇱 🇱 🇴  
+    *This command can be used as subcommand*
+
 **delalias**: Delete command alias  
     Usage: !delalias <alias>  
     Example: !delalias pong

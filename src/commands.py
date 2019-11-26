@@ -271,6 +271,12 @@ class Commands:
                 subcommand=True
             )
             self.data["emojify"].is_global = True
+        if "deemojify" not in self.data.keys():
+            self.data["deemojify"] = Command(
+                "deemojify", perform=self._deemojify, permission=0,
+                subcommand=True
+            )
+            self.data["deemojify"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
@@ -1094,6 +1100,22 @@ class Commands:
                 result += emoji.text_to_emoji[text[i]] + ' '
             else:
                 is_emoji = False
+                result += text[i]
+        await self.response(message, result, silent)
+        return result
+
+    async def _deemojify(self, message, command, silent=False):
+        """Deemojify text
+    Example: !deemojify 🇭 🇪 🇱 🇱 🇴"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        text = ' '.join(command[1:])
+        result = ""
+        for i in range(len(text)):
+            if text[i] in emoji.emoji_to_text.keys():
+                result += emoji.emoji_to_text[text[i]]
+            else:
                 result += text[i]
         await self.response(message, result, silent)
         return result
