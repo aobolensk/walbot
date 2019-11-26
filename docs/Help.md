@@ -45,6 +45,10 @@
         !disablecmd ping guild  
         !disablecmd ping global
 
+**emojify**: Emojify text  
+    Example: !emojify Hello!  
+    *This command can be used as subcommand*
+
 **enablecmd**: Enable command in specified scope  
     Examples:  
         !enablecmd ping channel  
