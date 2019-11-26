@@ -7,6 +7,7 @@ import re
 import requests
 import urllib.request
 
+from . import emoji
 from .config import Command
 from .config import runtime_config
 from .config import bot_wrapper
@@ -264,6 +265,18 @@ class Commands:
                 subcommand=True
             )
             self.data["urlencode"].is_global = True
+        if "emojify" not in self.data.keys():
+            self.data["emojify"] = Command(
+                "emojify", perform=self._emojify, permission=0,
+                subcommand=True
+            )
+            self.data["emojify"].is_global = True
+        if "deemojify" not in self.data.keys():
+            self.data["deemojify"] = Command(
+                "deemojify", perform=self._deemojify, permission=0,
+                subcommand=True
+            )
+            self.data["deemojify"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
@@ -615,18 +628,17 @@ class Commands:
             return
         options = ' '.join(command[2:])
         options = options.split(';')
-        alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
         MAX_POLL_OPTIONS = 20
         if len(options) > MAX_POLL_OPTIONS:
             await message.channel.send("Too many options for poll")
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
-            poll_message += alphabet[i] + " -> " + options[i] + '\n'
+            poll_message += emoji.alphabet[i] + " -> " + options[i] + '\n'
         poll_message = await message.channel.send(poll_message)
         for i in range(len(options)):
             try:
-                await poll_message.add_reaction(alphabet[i])
+                await poll_message.add_reaction(emoji.alphabet[i])
             except Exception:
                 pass
         timestamps = [60]
@@ -645,7 +657,7 @@ class Commands:
                 poll_message = poll_message.id
                 poll_message = await message.channel.fetch_message(poll_message)
                 results = []
-                possible_answers = alphabet[:len(options)]
+                possible_answers = emoji.alphabet[:len(options)]
                 for index, reaction in enumerate(poll_message.reactions):
                     if str(reaction) in possible_answers:
                         results.append((reaction, options[index], reaction.count - 1))
@@ -656,7 +668,7 @@ class Commands:
                 await message.channel.send(result_message)
                 for i in range(len(options)):
                     try:
-                        await poll_message.remove_reaction(alphabet[i], poll_message.author)
+                        await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
                     except Exception:
                         pass
                 return
@@ -1070,3 +1082,40 @@ class Commands:
         result = urllib.request.quote(result.encode("cp1251"))
         await self.response(message, result, silent)
         return result.replace("%", "\\%")
+
+    async def _emojify(self, message, command, silent=False):
+        """Emojify text
+    Example: !emojify Hello!"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        text = ' '.join(command[1:])
+        result = ""
+        is_emoji = False
+        for i in range(len(text)):
+            if not is_emoji:
+                result += ' '
+            if text[i] in emoji.text_to_emoji.keys():
+                is_emoji = True
+                result += emoji.text_to_emoji[text[i]] + ' '
+            else:
+                is_emoji = False
+                result += text[i]
+        await self.response(message, result, silent)
+        return result
+
+    async def _deemojify(self, message, command, silent=False):
+        """Deemojify text
+    Example: !deemojify 🇭 🇪 🇱 🇱 🇴"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        text = ' '.join(command[1:])
+        result = ""
+        for i in range(len(text)):
+            if text[i] in emoji.emoji_to_text.keys():
+                result += emoji.emoji_to_text[text[i]]
+            else:
+                result += text[i]
+        await self.response(message, result, silent)
+        return result

@@ -18,6 +18,10 @@
     Example: !channelid  
     *This command can be used as subcommand*
 
+**deemojify**: Deemojify text  
+    Example: !deemojify 🇭 🇪 🇱 🇱 🇴  
+    *This command can be used as subcommand*
+
 **delalias**: Delete command alias  
     Usage: !delalias <alias>  
     Example: !delalias pong
@@ -44,6 +48,10 @@
         !disablecmd ping channel  
         !disablecmd ping guild  
         !disablecmd ping global
+
+**emojify**: Emojify text  
+    Example: !emojify Hello!  
+    *This command can be used as subcommand*
 
 **enablecmd**: Enable command in specified scope  
     Examples:  
