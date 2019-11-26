@@ -7,6 +7,7 @@ import re
 import requests
 import urllib.request
 
+from . import emoji
 from .config import Command
 from .config import runtime_config
 from .config import bot_wrapper
@@ -615,18 +616,17 @@ class Commands:
             return
         options = ' '.join(command[2:])
         options = options.split(';')
-        alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
         MAX_POLL_OPTIONS = 20
         if len(options) > MAX_POLL_OPTIONS:
             await message.channel.send("Too many options for poll")
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
-            poll_message += alphabet[i] + " -> " + options[i] + '\n'
+            poll_message += emoji.alphabet[i] + " -> " + options[i] + '\n'
         poll_message = await message.channel.send(poll_message)
         for i in range(len(options)):
             try:
-                await poll_message.add_reaction(alphabet[i])
+                await poll_message.add_reaction(emoji.alphabet[i])
             except Exception:
                 pass
         timestamps = [60]
@@ -645,7 +645,7 @@ class Commands:
                 poll_message = poll_message.id
                 poll_message = await message.channel.fetch_message(poll_message)
                 results = []
-                possible_answers = alphabet[:len(options)]
+                possible_answers = emoji.alphabet[:len(options)]
                 for index, reaction in enumerate(poll_message.reactions):
                     if str(reaction) in possible_answers:
                         results.append((reaction, options[index], reaction.count - 1))
@@ -656,7 +656,7 @@ class Commands:
                 await message.channel.send(result_message)
                 for i in range(len(options)):
                     try:
-                        await poll_message.remove_reaction(alphabet[i], poll_message.author)
+                        await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
                     except Exception:
                         pass
                 return
