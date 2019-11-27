@@ -49,7 +49,7 @@ class WalBot(discord.Client):
             await asyncio.sleep(10 * 60)
 
     async def on_ready(self):
-        log.info("Logged in as: {} {}".format(self.user.name, self.user.id))
+        log.info("Logged in as: {} {} (WalBot)".format(self.user.name, self.user.id))
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
@@ -104,6 +104,15 @@ class WalBot(discord.Client):
 
 
 def start():
+    if os.path.exists(".bot_cache"):
+        cache = None
+        with open(".bot_cache", 'r') as f:
+            cache = f.read()
+        if cache is not None:
+            pid = int(cache)
+            if psutil.pid_exists(pid):
+                print("Bot is already running!")
+                return
     # Before starting the bot
     config = None
     try:
@@ -154,11 +163,14 @@ def stop():
         print("Could not stop the bot (cache file does not contain pid)")
         return
     pid = int(cache)
-    os.kill(pid, signal.SIGINT)
-    while True:
-        is_running = psutil.pid_exists(pid)
-        if not is_running:
-            break
-        print("Bot is still running. Please, wait...")
-        time.sleep(0.5)
-    print("Bot is stopped!")
+    if psutil.pid_exists(pid):
+        os.kill(pid, signal.SIGINT)
+        while True:
+            is_running = psutil.pid_exists(pid)
+            if not is_running:
+                break
+            print("Bot is still running. Please, wait...")
+            time.sleep(0.5)
+        print("Bot is stopped!")
+    else:
+        print("Could not stop the bot (bot is not running)")
