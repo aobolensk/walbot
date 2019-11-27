@@ -1,6 +1,7 @@
 import sys
 
 from src.bot import start, stop
+from src.minibot import start as minibot_start
 
 
 def help():
@@ -24,6 +25,9 @@ def main():
         elif sys.argv[1] == "restart":
             stop()
             start()
+        elif sys.argv[1] == "suspend":
+            stop()
+            minibot_start()
         elif sys.argv[1] == "help":
             help()
         else:
