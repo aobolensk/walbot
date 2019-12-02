@@ -283,6 +283,12 @@ class Commands:
                 subcommand=True
             )
             self.data["demojify"].is_global = True
+        if "shutdown" not in self.data.keys():
+            self.data["shutdown"] = Command(
+                "shutdown", perform=self._shutdown, permission=2,
+                subcommand=False
+            )
+            self.data["shutdown"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
@@ -1143,3 +1149,11 @@ class Commands:
         if len(result) > 0:
             await self.response(message, result, silent)
         return result
+
+    async def _shutdown(self, message, command, silent=False):
+        """Shutdown the bot
+    Example: !shutdown"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        await bot_wrapper.close()

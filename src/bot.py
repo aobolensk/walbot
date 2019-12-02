@@ -29,6 +29,7 @@ class WalBot(discord.Client):
         bot_wrapper.background_loop = self.loop
         bot_wrapper.change_status = self.change_status
         bot_wrapper.get_channel = self.get_channel
+        bot_wrapper.close = self.close
         if not os.path.exists(markov_path):
             runtime_config.markov = Markov()
         else:
