@@ -73,6 +73,12 @@ class Commands:
                 subcommand=False
             )
             self.data["permcmd"].is_global = True
+        if "timescmd" not in self.data.keys():
+            self.data["timescmd"] = Command(
+                "timescmd", perform=self._timescmd, permission=0,
+                subcommand=False
+            )
+            self.data["timescmd"].is_global = True
         if "permuser" not in self.data.keys():
             self.data["permuser"] = Command(
                 "permuser", perform=self._permuser, permission=1,
@@ -489,6 +495,20 @@ class Commands:
                 command[2], command_name), silent)
             return
         await self.response(message, "Command '{}' does not exist".format(command_name), silent)
+
+    async def _timescmd(self, message, command, silent=False):
+        """Print how many times command was invoked
+    Example: !timescmd echo"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if command[1] not in self.data.keys():
+            await self.response(message, "Unknown command '{}'".format(command[1]), silent)
+            return
+        com = self.data[command[1]]
+        await self.response(message, "Command '{}' was invoked {} times".format(
+            command[1],
+            str(com.times_called if hasattr(com, "times_called") else 0)), silent)
 
     async def _permuser(self, message, command, silent=False):
         """Set user permission

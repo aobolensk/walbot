@@ -125,6 +125,9 @@
     Example: !time  
     *This command can be used as subcommand*
 
+**timescmd**: Print how many times command was invoked  
+    Example: !timescmd echo
+
 **tts**: Send text-to-speech (TTS) message  
     Example: !tts Hello!
 
