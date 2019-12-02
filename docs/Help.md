@@ -114,6 +114,9 @@
         !reactionwl add  
         !reactionwl delete
 
+**shutdown**: Shutdown the bot  
+    Example: !shutdown
+
 **silent**: Make the following command silent (without any output to the chat)  
     Example: !silent ping
 
