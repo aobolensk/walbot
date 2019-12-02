@@ -1156,4 +1156,5 @@ class Commands:
         if len(command) > 1:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
+        log.info(str(message.author) + " invoked shutting down the bot")
         await bot_wrapper.close()
