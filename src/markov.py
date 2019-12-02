@@ -70,22 +70,27 @@ class Markov:
     def generate(self):
         current_node = self.model[""]
         result = ""
-        attempt = 0
-        while len(result) == 0 and attempt < 5:
-            attempt += 1
-            while current_node != self.end_node:
-                index = random.randint(0, max(0, current_node.total_next - 1))
-                s = 0
-                for k, v in current_node.next.items():
-                    s += v
-                    if s > index:
-                        result += (k if k is not None else "") + ' '
-                        current_node = current_node.get_next(k)
-                        break
+        while current_node != self.end_node:
+            index = random.randint(0, max(0, current_node.total_next - 1))
+            s = 0
+            for k, v in current_node.next.items():
+                s += v
+                if s > index:
+                    result += (k if k is not None else "") + ' '
+                    next_node = current_node.get_next(k)
+                    if current_node == self.model[""] and next_node == self.end_node:
+                        continue
+                    current_node = next_node
+                    break
+            else:
+                if current_node == self.model[""] and len(current_node.next.items()) == 1:
+                    return "<Markov database is empty>"
                 else:
-                    if len(current_node.next.items()) > 0:
-                        return "<Markov database is empty>"
-        return result.strip()
+                    break
+        result = result.strip()
+        if len(result) == 0:
+            return "<Empty message was generated>"
+        return result
 
     def serialize(self, filename, dumper=yaml.Dumper):
         with open(filename, 'wb') as f:
