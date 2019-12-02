@@ -64,6 +64,10 @@ class Command:
         if user is not None and self.permission > user.permission_level:
             await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
             return
+        if not hasattr(self, "times_called"):
+            self.times_called = 1
+        else:
+            self.times_called += 1
         if self.perform is not None:
             return await self.perform(message, command, silent)
         elif self.message is not None:
