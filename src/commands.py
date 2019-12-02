@@ -271,12 +271,12 @@ class Commands:
                 subcommand=True
             )
             self.data["emojify"].is_global = True
-        if "deemojify" not in self.data.keys():
-            self.data["deemojify"] = Command(
-                "deemojify", perform=self._deemojify, permission=0,
+        if "demojify" not in self.data.keys():
+            self.data["demojify"] = Command(
+                "demojify", perform=self._demojify, permission=0,
                 subcommand=True
             )
-            self.data["deemojify"].is_global = True
+            self.data["demojify"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
@@ -1106,9 +1106,9 @@ class Commands:
             await self.response(message, result, silent)
         return result
 
-    async def _deemojify(self, message, command, silent=False):
-        """Deemojify text
-    Example: !deemojify 🇭 🇪 🇱 🇱 🇴"""
+    async def _demojify(self, message, command, silent=False):
+        """Demojify text
+    Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if len(command) < 2:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
