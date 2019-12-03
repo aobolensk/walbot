@@ -298,7 +298,7 @@ class Commands:
         self.export_help()
 
     def export_help(self):
-        with open(os.path.join(os.getcwd(), "docs", "Help.md"), "w") as f:
+        with open(os.path.join(os.getcwd(), "docs", "Help.md"), "w", encoding="utf-8") as f:
             result = []
             for command in self.data:
                 command = self.data[command]

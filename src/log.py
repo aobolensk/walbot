@@ -10,7 +10,7 @@ class Log:
         })
         self.log = logging.getLogger("WalBot")
         self.log.setLevel(logging.DEBUG)
-        fh = logging.FileHandler("log.txt")
+        fh = logging.FileHandler("log.txt", encoding="utf-8")
         fh.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
