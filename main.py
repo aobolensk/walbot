@@ -1,8 +1,5 @@
 import sys
 
-from src.bot import start, stop
-from src.minibot import start as minibot_start
-
 
 def help():
     print("Usage: " + sys.executable + ' ' + __file__ + " <action>\n\
@@ -19,15 +16,15 @@ def main():
         help()
     elif len(sys.argv) == 2:
         if sys.argv[1] == "start":
-            start()
+            __import__("src.bot", fromlist=['object']).start()
         elif sys.argv[1] == "stop":
-            stop()
+            __import__("src.bot", fromlist=['object']).stop()
         elif sys.argv[1] == "restart":
-            stop()
-            start()
+            __import__("src.bot", fromlist=['object']).stop()
+            __import__("src.bot", fromlist=['object']).start()
         elif sys.argv[1] == "suspend":
-            stop()
-            minibot_start()
+            __import__("src.bot", fromlist=['object']).stop()
+            __import__("src.minibot", fromlist=['object']).start()
         elif sys.argv[1] == "help":
             help()
         else:
