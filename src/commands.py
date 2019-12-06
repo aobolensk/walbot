@@ -183,7 +183,7 @@ class Commands:
             self.data["uptime"].is_global = True
         if "status" not in self.data.keys():
             self.data["status"] = Command(
-                "status", perform=self._status, permission=0,
+                "status", perform=self._status, permission=1,
                 subcommand=False
             )
             self.data["status"].is_global = True
