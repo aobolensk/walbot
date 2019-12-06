@@ -289,6 +289,12 @@ class Commands:
                 subcommand=False
             )
             self.data["shutdown"].is_global = True
+        if "avatar" not in self.data.keys():
+            self.data["avatar"] = Command(
+                "avatar", perform=self._avatar, permission=1,
+                subcommand=False
+            )
+            self.data["avatar"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
@@ -1158,3 +1164,25 @@ class Commands:
             return
         log.info(str(message.author) + " invoked shutting down the bot")
         await bot_wrapper.close()
+
+    async def _avatar(self, message, command, silent=False):
+        """Change bot avatar
+    Example: !avatar <image>
+    Hint: Use !listimg for list of available images"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        for root, _, files in os.walk("images"):
+            if root.endswith("images"):
+                for file in files:
+                    if os.path.splitext(os.path.basename(file))[0] == command[1]:
+                        with open(os.path.join("images", file), "rb") as f:
+                            await bot_wrapper.bot_user.edit(avatar=f.read())
+                        log.info("{} changed bot avatar to {}".format(
+                            str(message.author),
+                            command[1]))
+                        return
+        await self.response(message, "Image {} is not found!".format(command[1]), silent)

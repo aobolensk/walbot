@@ -14,6 +14,10 @@
 **addreaction**: Add reaction  
     Example: !addreaction emoji regex
 
+**avatar**: Change bot avatar  
+    Example: !avatar <image>  
+    Hint: Use !listimg for list of available images
+
 **channelid**: Get channel ID  
     Example: !channelid  
     *This command can be used as subcommand*
