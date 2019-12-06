@@ -839,8 +839,11 @@ class Commands:
 
     async def _status(self, message, command, silent=False):
         """Change bot status
-    Example: !status playing Dota 2
-    Possible activities: [playing, streaming, watching, listening]"""
+    Examples:
+        !status idle
+        !status playing Dota 2
+    Possible activities: [playing, streaming, watching, listening]
+    Possible bot statuses: [online, idle, dnd, invisible]"""
         if len(command) == 1:
             await bot_wrapper.change_status("", discord.ActivityType.playing)
         elif command[1] == "playing":
@@ -851,6 +854,14 @@ class Commands:
             await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.watching)
         elif command[1] == "listening":
             await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.listening)
+        elif command[1] == "online":
+            await bot_wrapper.change_presence(status=discord.Status.online)
+        elif command[1] == "idle":
+            await bot_wrapper.change_presence(status=discord.Status.idle)
+        elif command[1] == "dnd":
+            await bot_wrapper.change_presence(status=discord.Status.dnd)
+        elif command[1] == "invisible":
+            await bot_wrapper.change_presence(status=discord.Status.invisible)
         else:
             await self.response(message, "Unknown type of activity", silent)
 

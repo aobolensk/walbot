@@ -129,7 +129,8 @@
 
 **status**: Change bot status  
     Example: !status playing Dota 2  
-    Possible activities: [playing, streaming, watching, listening]
+    Possible activities: [playing, streaming, watching, listening]  
+    Possible bot statuses: [online, idle, dnd, invisible]
 
 **time**: Show current time and bot deployment time  
     Example: !time  

@@ -28,6 +28,7 @@ class WalBot(discord.Client):
         self.loop.create_task(self.config_autosave())
         bot_wrapper.background_loop = self.loop
         bot_wrapper.change_status = self.change_status
+        bot_wrapper.change_presence = self.change_presence
         bot_wrapper.get_channel = self.get_channel
         bot_wrapper.close = self.close
         if not os.path.exists(markov_path):
