@@ -133,6 +133,12 @@ class Commands:
                 subcommand=True
             )
             self.data["version"].is_global = True
+        if "about" not in self.data.keys():
+            self.data["about"] = Command(
+                "about", perform=self._about, permission=0,
+                subcommand=False
+            )
+            self.data["about"].is_global = True
         if "addbgevent" not in self.data.keys():
             self.data["addbgevent"] = Command(
                 "addbgevent", perform=self._addbgevent, permission=1,
@@ -711,6 +717,12 @@ class Commands:
         result = self.config.get_version()
         await self.response(message, result, silent)
         return result
+
+    async def _about(self, message, command, silent=False):
+        """Get information about the bot
+    Example: !about"""
+        result = "Source code: <https://github.com/gooddoog/walbot>"
+        await self.response(message, result, silent)
 
     async def _addbgevent(self, message, command, silent=False):
         """Add background event

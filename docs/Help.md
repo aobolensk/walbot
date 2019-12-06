@@ -1,3 +1,6 @@
+**about**: Get information about the bot  
+    Example: !about
+
 **addalias**: Add alias for commands  
     Usage: !addalias <command> <alias>  
     Example: !addalias ping pong
