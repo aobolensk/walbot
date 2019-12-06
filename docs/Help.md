@@ -128,7 +128,9 @@
     Example: !silent ping
 
 **status**: Change bot status  
-    Example: !status playing Dota 2  
+    Examples:  
+        !status idle  
+        !status playing Dota 2  
     Possible activities: [playing, streaming, watching, listening]  
     Possible bot statuses: [online, idle, dnd, invisible]
 
