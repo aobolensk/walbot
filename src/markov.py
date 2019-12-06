@@ -96,3 +96,9 @@ class Markov:
         with open(filename, 'wb') as f:
             f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))
         log.info("Saving of Markov module data is finished")
+
+    def check(self):
+        for node in self.model.values():
+            if sum([x for x in node.next.values()]) != node.total_next:
+                return False
+        return True

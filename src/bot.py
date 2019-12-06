@@ -36,6 +36,10 @@ class WalBot(discord.Client):
         else:
             with open(markov_path, 'rb') as f:
                 runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+        if runtime_config.markov.check():
+            log.info("Markov model has passed all checks")
+        else:
+            log.error("Markov model has not passed all checks")
 
     async def change_status(self, string, type):
         await self.change_presence(activity=discord.Activity(name=string, type=type))
