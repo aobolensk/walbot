@@ -378,6 +378,8 @@ class Commands:
                 result += command.message
             result += '\n'
             result += "    Required permission level: {}\n".format(command.permission)
+            if command.subcommand:
+                result += "    This command can be used as subcommand\n"
             await self.response(message, result, silent)
         else:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
