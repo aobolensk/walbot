@@ -995,13 +995,14 @@ class Commands:
         if len(command) > 1:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        result = ""
+        result = []
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
                 for file in files:
-                    result += os.path.splitext(os.path.basename(file))[0] + ', '
+                    result.append(os.path.splitext(os.path.basename(file))[0])
+        result.sort()
         if len(result) > 0:
-            await self.response(message, "List of available images: [" + result[:-2] + "]", silent)
+            await self.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
         else:
             await self.response(message, "No available images found!", silent)
 
