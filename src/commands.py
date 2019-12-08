@@ -327,6 +327,11 @@ class Commands:
 
     async def response(self, message, content, silent, **kwargs):
         if not silent:
+            print(len(content))
+            if len(content) > 2000:
+                log.error("Message length is more than 2000")
+                await message.channel.send("<The message is too long>")
+                return
             await message.channel.send(
                 content,
                 embed=kwargs.get("embed", None),
