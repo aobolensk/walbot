@@ -80,9 +80,13 @@ class Command:
                 response, done = await self.process_subcommands(response, message, user)
                 if done:
                     break
-            response = response.replace("\\%", "%")
-            if (len(response.strip()) > 0):
+            response = response.replace("\\%", "%").strip()
+            if len(response) > 0:
                 if not silent:
+                    if len(response) > 2000:
+                        log.error("Message length is more than 2000")
+                        await message.channel.send("<The message is too long>")
+                        return ""
                     await message.channel.send(response)
                 return response
         else:
