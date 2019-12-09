@@ -658,8 +658,14 @@ class Commands:
     Example: !wme Hello!"""
         if message.author.dm_channel is None:
             await message.author.create_dm()
-        if len(' '.join(command[1:])) > 0:
-            await message.author.dm_channel.send(' '.join(command[1:]))
+        result = ' '.join(command[1:])
+        if len(result) == 0:
+            return
+        result = "You asked me to send you this: " + result
+        if len(result) > 2000:
+            await message.author.dm_channel.send("<The message is too long>")
+        else:
+            await message.author.dm_channel.send(result)
 
     async def _poll(self, message, command, silent=False):
         """Create poll
