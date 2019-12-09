@@ -3,7 +3,7 @@ import os
 import psutil
 import yaml
 
-import const
+from . import const
 from .config import runtime_config
 from .config import bot_wrapper
 from .config import GuildSettings
