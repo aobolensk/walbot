@@ -5,6 +5,7 @@ import threading
 import yaml
 import zipfile
 
+from . import const
 from .log import log
 
 
@@ -83,7 +84,7 @@ class Command:
             response = response.replace("\\%", "%").strip()
             if len(response) > 0:
                 if not silent:
-                    if len(response) > 2000:
+                    if len(response) > const.DISCORD_MAX_MESSAGE_LENGTH:
                         log.error("Message length is more than 2000")
                         await message.channel.send("<The message is too long>")
                         return ""

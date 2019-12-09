@@ -7,6 +7,7 @@ import time
 import re
 import yaml
 
+from . import const
 from .config import runtime_config
 from .config import bot_wrapper
 from .config import GuildSettings
@@ -14,10 +15,6 @@ from .config import User
 from .config import Config
 from .log import log
 from .markov import Markov
-
-
-config_path = "config.yaml"
-markov_path = "markov.yaml"
 
 
 class WalBot(discord.Client):
@@ -31,10 +28,10 @@ class WalBot(discord.Client):
         bot_wrapper.change_presence = self.change_presence
         bot_wrapper.get_channel = self.get_channel
         bot_wrapper.close = self.close
-        if not os.path.exists(markov_path):
+        if not os.path.exists(const.markov_path):
             runtime_config.markov = Markov()
         else:
-            with open(markov_path, 'rb') as f:
+            with open(const.markov_path, 'rb') as f:
                 runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
         if runtime_config.markov.check():
             log.info("Markov model has passed all checks")
@@ -49,8 +46,8 @@ class WalBot(discord.Client):
         index = 1
         while not self.is_closed():
             if index % 10 == 0:
-                self.config.backup(config_path, markov_path)
-            self.config.save(config_path, markov_path)
+                self.config.backup(const.config_path, const.markov_path)
+            self.config.save(const.config_path, const.markov_path)
             index += 1
             await asyncio.sleep(10 * 60)
 
@@ -135,8 +132,8 @@ def start():
         log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
-    if os.path.isfile(config_path):
-        with open(config_path, 'r') as f:
+    if os.path.isfile(const.config_path):
+        with open(const.config_path, 'r') as f:
             try:
                 config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
@@ -154,7 +151,7 @@ def start():
         event.cancel()
     bot_wrapper.background_loop = None
     log.info("Bot is disconnected!")
-    config.save(config_path, markov_path, wait=True)
+    config.save(const.config_path, const.markov_path, wait=True)
     os.remove(".bot_cache")
 
 
