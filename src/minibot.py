@@ -3,14 +3,13 @@ import os
 import psutil
 import yaml
 
+import const
 from .config import runtime_config
 from .config import bot_wrapper
 from .config import GuildSettings
 from .config import User
 from .config import Config
 from .log import log
-
-config_path = "config.yaml"
 
 
 class MiniWalBot(discord.Client):
@@ -72,8 +71,8 @@ def start():
         log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
-    if os.path.isfile(config_path):
-        with open(config_path, 'r') as f:
+    if os.path.isfile(const.config_path):
+        with open(const.config_path, 'r') as f:
             try:
                 config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
