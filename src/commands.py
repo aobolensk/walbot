@@ -7,6 +7,7 @@ import re
 import requests
 import urllib.request
 
+from . import const
 from . import emoji
 from .config import Command
 from .config import runtime_config
@@ -328,7 +329,7 @@ class Commands:
     async def response(self, message, content, silent, **kwargs):
         if not silent:
             print(len(content))
-            if len(content) > 2000:
+            if len(content) > const.DISCORD_MAX_MESSAGE_LENGTH:
                 log.error("Message length is more than 2000")
                 await message.channel.send("<The message is too long>")
                 return
@@ -662,7 +663,7 @@ class Commands:
         if len(result) == 0:
             return
         result = "You asked me to send you this: " + result
-        if len(result) > 2000:
+        if len(result) > const.DISCORD_MAX_MESSAGE_LENGTH:
             await message.author.dm_channel.send("<The message is too long>")
         else:
             await message.author.dm_channel.send(result)
