@@ -1,9 +1,9 @@
 import asyncio
 import datetime
 import os
-import shutil
 import threading
 import yaml
+import zipfile
 
 from .log import log
 
@@ -155,18 +155,21 @@ class Config:
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 
-    def backup(self, *files):
+    def backup(self, *files, compress=True):
+        compress_type = zipfile.ZIP_DEFLATED if compress else zipfile.ZIP_STORED
         for file in files:
             path = os.path.dirname(file)
             name, ext = os.path.splitext(os.path.basename(file))
             name += "_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            backup_file = os.path.join(path, "backup", name + ext)
+            backup_file = name + ext
+            backup_archive = os.path.join(path, "backup", name + ext + ".zip")
             if not os.path.exists("backup"):
                 os.makedirs("backup")
             try:
-                shutil.copy(file, backup_file)
-            except IOError as e:
-                log.error("Unable to copy {} -> {}: {}".format(file, backup_file, e))
+                with zipfile.ZipFile(backup_archive, mode='w') as zf:
+                    zf.write(file, arcname=backup_file, compress_type=compress_type)
+            except Exception as e:
+                log.error("Unable to create backup {} -> {}: {}".format(file, backup_file, e))
             else:
                 log.info("Created backup for {}: {}".format(file, backup_file))
 
