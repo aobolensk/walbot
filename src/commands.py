@@ -328,7 +328,6 @@ class Commands:
 
     async def response(self, message, content, silent, **kwargs):
         if not silent:
-            print(len(content))
             if len(content) > const.DISCORD_MAX_MESSAGE_LENGTH:
                 log.error("Message length is more than 2000")
                 await message.channel.send("<The message is too long>")
