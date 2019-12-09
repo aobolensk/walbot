@@ -155,7 +155,8 @@ class Config:
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 
-    def backup(self, *files):
+    def backup(self, *files, compress=True):
+        compress_type = zipfile.ZIP_DEFLATED if compress else zipfile.ZIP_STORED
         for file in files:
             path = os.path.dirname(file)
             name, ext = os.path.splitext(os.path.basename(file))
@@ -166,7 +167,7 @@ class Config:
                 os.makedirs("backup")
             try:
                 with zipfile.ZipFile(backup_archive, mode='w') as zf:
-                    zf.write(file, arcname=backup_file, compress_type=zipfile.ZIP_DEFLATED)
+                    zf.write(file, arcname=backup_file, compress_type=compress_type)
             except Exception as e:
                 log.error("Unable to create backup {} -> {}: {}".format(file, backup_file, e))
             else:
