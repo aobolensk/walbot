@@ -164,6 +164,12 @@ class Commands:
                 subcommand=True
             )
             self.data["random"].is_global = True
+        if "randselect" not in self.data.keys():
+            self.data["randselect"] = Command(
+                "randselect", perform=self._randselect, permission=0,
+                subcommand=True
+            )
+            self.data["randselect"].is_global = True
         if "silent" not in self.data.keys():
             self.data["silent"] = Command(
                 "silent", perform=self._silent, permission=0,
@@ -808,6 +814,17 @@ class Commands:
             await self.response(message, "Left border should be less or equal than right", silent)
             return
         result = str(random.randint(left, right))
+        await self.response(message, result, silent)
+        return result
+
+    async def _randselect(self, message, command, silent=False):
+        """Get random option among provided strings
+    Example: !random a b c"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        index = random.randint(1, len(command) - 1)
+        result = command[index]
         await self.response(message, result, silent)
         return result
 

@@ -115,6 +115,10 @@
     Example: !random 5 10  
     *This command can be used as subcommand*
 
+**randselect**: Get random option among provided strings  
+    Example: !random a b c  
+    *This command can be used as subcommand*
+
 **reactionwl**: Add/delete channel from reaction whitelist  
     Examples:  
         !reactionwl  
