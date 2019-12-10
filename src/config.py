@@ -70,6 +70,11 @@ class Command:
         else:
             self.times_called += 1
         if self.perform is not None:
+            while True:
+                message.content, done = await self.process_subcommands(message.content, message, user)
+                if done:
+                    break
+            command = message.content[1:].split()
             return await self.perform(message, command, silent)
         elif self.message is not None:
             response = self.message
