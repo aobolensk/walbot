@@ -819,7 +819,7 @@ class Commands:
 
     async def _randselect(self, message, command, silent=False):
         """Get random option among provided strings
-    Example: !random a b c"""
+    Example: !randselect a b c"""
         if len(command) < 2:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return

@@ -116,7 +116,7 @@
     *This command can be used as subcommand*
 
 **randselect**: Get random option among provided strings  
-    Example: !random a b c  
+    Example: !randselect a b c  
     *This command can be used as subcommand*
 
 **reactionwl**: Add/delete channel from reaction whitelist  
