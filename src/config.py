@@ -74,9 +74,9 @@ class Command:
             self.times_called = 1
         else:
             self.times_called += 1
+        message.content = await self.process_subcommands(message.content, message, user)
+        command = message.content[1:].split()
         if self.perform is not None:
-            message.content = await self.process_subcommands(message.content, message, user)
-            command = message.content[1:].split()
             return await self.perform(message, command, silent)
         elif self.message is not None:
             response = self.message
@@ -84,8 +84,6 @@ class Command:
             response = response.replace("@args@", ' '.join(command[1:]))
             for i in range(len(command)):
                 response = response.replace("@arg" + str(i) + "@", command[i])
-            response = await self.process_subcommands(response, message, user)
-            response = response.replace("\\%", "%").strip()
             if len(response) > 0:
                 if not silent:
                     if len(response) > const.DISCORD_MAX_MESSAGE_LENGTH:
