@@ -37,25 +37,30 @@ class Command:
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)
 
-    async def process_subcommands(self, response, message, user):
-        percent_pos = -1
-        for i in range(len(response)):
-            if response[i] == '%' and (i == 0 or response[i-1] != '\\'):
-                if percent_pos == -1:
-                    percent_pos = i
-                else:
-                    message.content = response[percent_pos + 1:i]
-                    command = message.content.split()
-                    result = ""
-                    if len(command) > 0 and command[0] in runtime_config.commands.data.keys():
-                        log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
-                        actor = runtime_config.commands.data[command[0]]
-                        result = await actor.run(message, command, user, silent=True)
-                        if result is None:
+    async def process_subcommands(self, content, message, user):
+        while True:
+            updated = False
+            for i in range(len(content)):
+                if content[i] == ')':
+                    for j in range(i-1, 0, -1):
+                        if content[j] == '(' and content[j-1] == '$':
+                            updated = True
+                            message.content = content[j+1:i]
+                            command = message.content.split()
                             result = ""
-                    response = response[:percent_pos] + result + response[i + 1:]
-                    return (response, False)
-        return (response, True)
+                            if len(command) > 0 and command[0] in runtime_config.commands.data.keys():
+                                log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
+                                actor = runtime_config.commands.data[command[0]]
+                                result = await actor.run(message, command, user, silent=True)
+                                if result is None:
+                                    result = ""
+                            content = content[:j-1] + result + content[i+1:]
+                            break
+                if updated:
+                    break
+            if not updated:
+                break
+        return content
 
     async def run(self, message, command, user, silent=False):
         log.debug("Processing command: {}".format(message.content))
@@ -69,12 +74,9 @@ class Command:
             self.times_called = 1
         else:
             self.times_called += 1
+        message.content = await self.process_subcommands(message.content, message, user)
+        command = message.content[1:].split()
         if self.perform is not None:
-            while True:
-                message.content, done = await self.process_subcommands(message.content, message, user)
-                if done:
-                    break
-            command = message.content[1:].split()
             return await self.perform(message, command, silent)
         elif self.message is not None:
             response = self.message
@@ -82,11 +84,6 @@ class Command:
             response = response.replace("@args@", ' '.join(command[1:]))
             for i in range(len(command)):
                 response = response.replace("@arg" + str(i) + "@", command[i])
-            while True:
-                response, done = await self.process_subcommands(response, message, user)
-                if done:
-                    break
-            response = response.replace("\\%", "%").strip()
             if len(response) > 0:
                 if not silent:
                     if len(response) > const.DISCORD_MAX_MESSAGE_LENGTH:
