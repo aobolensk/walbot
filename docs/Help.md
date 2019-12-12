@@ -2,7 +2,7 @@
     Example: !about
 
 **addalias**: Add alias for commands  
-    Usage: !addalias <command> <alias>  
+    Usage: !addalias &lt;command&gt; &lt;alias&gt;  
     Example: !addalias ping pong
 
 **addbgevent**: Add background event  
@@ -18,7 +18,7 @@
     Example: !addreaction emoji regex
 
 **avatar**: Change bot avatar  
-    Example: !avatar <image>  
+    Example: !avatar &lt;image&gt;  
     Hint: Use !listimg for list of available images
 
 **channelid**: Get channel ID  
@@ -26,7 +26,7 @@
     *This command can be used as subcommand*
 
 **delalias**: Delete command alias  
-    Usage: !delalias <alias>  
+    Usage: !delalias &lt;alias&gt;  
     Example: !delalias pong
 
 **delbgevent**: Delete background event  
@@ -67,7 +67,7 @@
         !enablecmd ping global
 
 **forchannel**: Executes command for channel  
-    Example: !forchannel <channel_id> ping
+    Example: !forchannel &lt;channel_id&gt; ping
 
 **help**: Print list of commands and get examples  
     Examples:  

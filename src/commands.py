@@ -327,6 +327,7 @@ class Commands:
                     if command.subcommand:
                         s += "  \n    *This command can be used as subcommand*"
                     s += '\n'
+                    s = s.replace('<', '&lt;').replace('>', '&gt;')
                     result.append(s)
             result = list(set(result))
             result.sort()
