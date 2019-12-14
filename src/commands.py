@@ -733,8 +733,15 @@ class Commands:
 
     async def _version(self, message, command, silent=False):
         """Get version of the bot
-    Example: !version"""
+    Examples:
+        !version
+        !version short"""
+        if len(command) > 2:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
         result = self.config.get_version()
+        if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
+            result = result[:7]
         await self.response(message, result, silent)
         return result
 

@@ -163,7 +163,9 @@
     *This command can be used as subcommand*
 
 **version**: Get version of the bot  
-    Example: !version  
+    Examples:  
+        !version  
+        !version short  
     *This command can be used as subcommand*
 
 **whitelist**: Bot's whitelist  
