@@ -4,5 +4,6 @@ markov.yaml
 .bot_cache
 __pycache__
 log.txt
+nohup.out
 images/
 backup/
