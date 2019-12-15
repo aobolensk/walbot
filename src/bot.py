@@ -13,26 +13,32 @@ from .config import bot_wrapper
 from .config import GuildSettings
 from .config import User
 from .config import Config
+from .config import SecretConfig
 from .log import log
 from .markov import Markov
 
 
 class WalBot(discord.Client):
-    def __init__(self, config):
+    def __init__(self, config, secret_config):
         global runtime_config
         super(WalBot, self).__init__()
         self.config = config
+        self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
         bot_wrapper.background_loop = self.loop
         bot_wrapper.change_status = self.change_status
         bot_wrapper.change_presence = self.change_presence
         bot_wrapper.get_channel = self.get_channel
         bot_wrapper.close = self.close
+        bot_wrapper.secret_config = self.secret_config
         if not os.path.exists(const.markov_path):
             runtime_config.markov = Markov()
         else:
             with open(const.markov_path, 'rb') as f:
-                runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                try:
+                    runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                except Exception:
+                    log.error("yaml.load failed on file: {}".format(const.markov_path), exc_info=True)
         if runtime_config.markov.check():
             log.info("Markov model has passed all checks")
         else:
@@ -47,7 +53,7 @@ class WalBot(discord.Client):
         while not self.is_closed():
             if index % 10 == 0:
                 self.config.backup(const.config_path, const.markov_path)
-            self.config.save(const.config_path, const.markov_path)
+            self.config.save(const.config_path, const.markov_path, const.secret_config_path)
             index += 1
             await asyncio.sleep(10 * 60)
 
@@ -118,6 +124,7 @@ def start():
                 return
     # Before starting the bot
     config = None
+    secret_config = None
     try:
         runtime_config.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")
@@ -137,21 +144,30 @@ def start():
             try:
                 config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
-                log.error("yaml.load failed", exc_info=True)
+                log.error("yaml.load failed on file: {}".format(const.config_path), exc_info=True)
         config.__init__()
     if config is None:
         config = Config()
-    walBot = WalBot(config)
-    if config.token is None:
-        config.token = input("Enter your token: ")
+    if os.path.isfile(const.secret_config_path):
+        with open(const.secret_config_path, 'r') as f:
+            try:
+                secret_config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+            except Exception:
+                log.error("yaml.load failed on file: {}".format(const.secret_config_path), exc_info=True)
+        secret_config.__init__()
+    if secret_config is None:
+        secret_config = SecretConfig()
+    walBot = WalBot(config, secret_config)
+    if secret_config.token is None:
+        secret_config.token = input("Enter your token: ")
     # Starting the bot
-    walBot.run(config.token)
+    walBot.run(secret_config.token)
     # After stopping the bot
     for event in runtime_config.background_events:
         event.cancel()
     bot_wrapper.background_loop = None
     log.info("Bot is disconnected!")
-    config.save(const.config_path, const.markov_path, wait=True)
+    config.save(const.config_path, const.markov_path, const.secret_config_path, wait=True)
     os.remove(".bot_cache")
 
 

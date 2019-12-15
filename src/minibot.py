@@ -9,13 +9,15 @@ from .config import bot_wrapper
 from .config import GuildSettings
 from .config import User
 from .config import Config
+from .config import SecretConfig
 from .log import log
 
 
 class MiniWalBot(discord.Client):
-    def __init__(self, config):
+    def __init__(self, config, secret_config):
         super(MiniWalBot, self).__init__()
         self.config = config
+        self.secret_config = secret_config
 
     async def on_ready(self):
         log.info("Logged in as: {} {} ({})".format(self.user.name, self.user.id, self.__class__.__name__))
@@ -56,6 +58,7 @@ def start():
                 print("Bot is already running!")
                 return
     # Before starting mini bot
+    secret_config = None
     config = None
     try:
         runtime_config.yaml_loader = yaml.CLoader
@@ -76,15 +79,24 @@ def start():
             try:
                 config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
-                log.error("yaml.load failed", exc_info=True)
+                log.error("yaml.load failed on file: {}".format(const.config_path), exc_info=True)
         config.__init__()
     if config is None:
         config = Config()
-    miniWalBot = MiniWalBot(config)
-    if config.token is None:
-        config.token = input("Enter your token: ")
+    if os.path.isfile(const.secret_config_path):
+        with open(const.secret_config_path, 'r') as f:
+            try:
+                secret_config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+            except Exception:
+                log.error("yaml.load failed on file: {}".format(const.secret_config_path), exc_info=True)
+        secret_config.__init__()
+    if secret_config is None:
+        secret_config = SecretConfig()
+    miniWalBot = MiniWalBot(config, secret_config)
+    if secret_config.token is None:
+        secret_config.token = input("Enter your token: ")
     # Starting mini bot
-    miniWalBot.run(config.token)
+    miniWalBot.run(secret_config.token)
     # After stopping mini bot
     log.info("Bot is disconnected!")
     os.remove(".bot_cache")
