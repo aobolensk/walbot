@@ -149,8 +149,6 @@ class Config:
         self.commands.update_builtins()
         if not hasattr(self, "reactions"):
             self.reactions = []
-        if not hasattr(self, "token"):
-            self.token = None
         if not hasattr(self, "guilds"):
             self.guilds = dict()
         if not hasattr(self, "users"):
@@ -176,7 +174,7 @@ class Config:
             else:
                 log.info("Created backup for {}: {}".format(file, backup_file))
 
-    def save(self, config_file, markov_file, wait=False):
+    def save(self, config_file, markov_file, secret_config_file, wait=False):
         config_mutex = threading.Lock()
         config_mutex.acquire()
         log.info("Saving of config is started")
@@ -191,6 +189,20 @@ class Config:
             except Exception:
                 log.error("yaml.dump failed", exc_info=True)
         config_mutex.release()
+        secret_config_mutex = threading.Lock()
+        secret_config_mutex.acquire()
+        log.info("Saving of secret config is started")
+        with open(secret_config_file, 'wb') as f:
+            try:
+                f.write(yaml.dump(
+                    bot_wrapper.secret_config,
+                    Dumper=runtime_config.yaml_dumper,
+                    encoding='utf-8',
+                    allow_unicode=True))
+                log.info("Saving of secret config is finished")
+            except Exception:
+                log.error("yaml.dump failed", exc_info=True)
+        secret_config_mutex.release()
         markov_mutex = threading.Lock()
         markov_mutex.acquire()
         log.info("Saving of Markov module data is started")
@@ -221,3 +233,9 @@ class Config:
         with open(os.path.join(os.getcwd(), ".git/" + branch)) as f:
             commit_hash = f.readline()
         return commit_hash[:-1]
+
+
+class SecretConfig:
+    def __init__(self):
+        if not hasattr(self, "token"):
+            self.token = None
