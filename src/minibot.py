@@ -79,7 +79,7 @@ def start():
             try:
                 config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
-                log.error("yaml.load failed", exc_info=True)
+                log.error("yaml.load failed on file: {}".format(const.config_path), exc_info=True)
         config.__init__()
     if config is None:
         config = Config()
@@ -88,7 +88,7 @@ def start():
             try:
                 secret_config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
             except Exception:
-                log.error("yaml.load failed", exc_info=True)
+                log.error("yaml.load failed on file: {}".format(const.secret_config_path), exc_info=True)
         secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
