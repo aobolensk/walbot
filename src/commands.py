@@ -323,9 +323,9 @@ class Commands:
                 command = self.data[command]
                 if command.perform is not None:
                     s = "**" + command.name + "**: "
-                    s += "  \n".join(command.perform.__doc__.split('\n'))
+                    s += " \\\n".join(command.perform.__doc__.split('\n'))
                     if command.subcommand:
-                        s += "  \n    *This command can be used as subcommand*"
+                        s += " \\\n    *This command can be used as subcommand*"
                     s += '\n'
                     s = s.replace('<', '&lt;').replace('>', '&gt;')
                     result.append(s)
