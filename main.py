@@ -7,6 +7,7 @@ class Launcher:
             getattr(self, command)()
         else:
             print("Invalid argument {}".format(command))
+            self.help()
 
     def start(self):
         """Start the bot"""
