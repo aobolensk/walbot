@@ -19,8 +19,9 @@ class Launcher:
 
     def restart(self):
         """Restart the bot"""
-        __import__("src.bot", fromlist=['object']).stop()
-        __import__("src.bot", fromlist=['object']).start()
+        bot = __import__("src.bot", fromlist=['object'])
+        bot.stop()
+        bot.start()
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
