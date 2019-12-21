@@ -9,28 +9,28 @@ class Launcher:
             print("Invalid argument {}".format(command))
 
     def start(self):
+        """Start the bot"""
         __import__("src.bot", fromlist=['object']).start()
 
     def stop(self):
+        """Stop the bot"""
         __import__("src.bot", fromlist=['object']).stop()
 
     def restart(self):
+        """Restart the bot"""
         __import__("src.bot", fromlist=['object']).stop()
         __import__("src.bot", fromlist=['object']).start()
 
     def suspend(self):
+        """Stop the main bot and start mini-bot"""
         __import__("src.bot", fromlist=['object']).stop()
         __import__("src.minibot", fromlist=['object']).start()
 
     def help(self):
-        print("\
-    Usage: " + sys.executable + ' ' + __file__ + " <action>\n\
-    Possible actions:\n\
-    start - start the bot\n\
-    stop - stop the bot\n\
-    restart - restart the bot\n\
-    help - get this help list\n\
-    ")
+        print("Usage: " + sys.executable + ' ' + __file__ + " <action>")
+        print("Possible actions:")
+        for f in [x for x in dir(self) if not x.startswith('_')]:
+            print("{} -> {}".format(f, getattr(self, f).__doc__))
 
 
 def main():
