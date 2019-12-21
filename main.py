@@ -1,36 +1,45 @@
 import sys
 
 
-def help():
-    print("Usage: " + sys.executable + ' ' + __file__ + " <action>\n\
-    Possible actions:\n\
-    start - start the bot\n\
-    stop - stop the bot\n\
-    restart - restart the bot\n\
-    help - get this help list\n\
-    ")
+class Launcher:
+    def __init__(self, command):
+        if command in [x for x in dir(self) if not x.startswith('_')]:
+            getattr(self, command)()
+        else:
+            print("Invalid argument {}".format(command))
+            self.help()
+
+    def start(self):
+        """Start the bot"""
+        __import__("src.bot", fromlist=['object']).start()
+
+    def stop(self):
+        """Stop the bot"""
+        __import__("src.bot", fromlist=['object']).stop()
+
+    def restart(self):
+        """Restart the bot"""
+        bot = __import__("src.bot", fromlist=['object'])
+        bot.stop()
+        bot.start()
+
+    def suspend(self):
+        """Stop the main bot and start mini-bot"""
+        __import__("src.bot", fromlist=['object']).stop()
+        __import__("src.minibot", fromlist=['object']).start()
+
+    def help(self):
+        print("Usage: " + sys.executable + ' ' + __file__ + " <action>")
+        print("Possible actions:")
+        for f in [x for x in dir(self) if not x.startswith('_')]:
+            print("{} -> {}".format(f, getattr(self, f).__doc__))
 
 
 def main():
-    if len(sys.argv) == 1:
-        help()
-    elif len(sys.argv) == 2:
-        if sys.argv[1] == "start":
-            __import__("src.bot", fromlist=['object']).start()
-        elif sys.argv[1] == "stop":
-            __import__("src.bot", fromlist=['object']).stop()
-        elif sys.argv[1] == "restart":
-            __import__("src.bot", fromlist=['object']).stop()
-            __import__("src.bot", fromlist=['object']).start()
-        elif sys.argv[1] == "suspend":
-            __import__("src.bot", fromlist=['object']).stop()
-            __import__("src.minibot", fromlist=['object']).start()
-        elif sys.argv[1] == "help":
-            help()
-        else:
-            print("Unknown argument {}".format(sys.argv[1]))
-    elif len(sys.argv) > 2:
-        help()
+    if len(sys.argv) == 2:
+        Launcher(sys.argv[1])
+    else:
+        Launcher("help")
 
 
 if __name__ == "__main__":
