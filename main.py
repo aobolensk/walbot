@@ -29,6 +29,7 @@ class Launcher:
         __import__("src.minibot", fromlist=['object']).start()
 
     def help(self):
+        """Print help message"""
         print("Usage: " + sys.executable + ' ' + __file__ + " <action>")
         print("Possible actions:")
         for f in [x for x in dir(self) if not x.startswith('_')]:
