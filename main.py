@@ -30,10 +30,10 @@ class Launcher:
 
     def help(self):
         """Print help message"""
-        print("Usage: " + sys.executable + ' ' + __file__ + " <action>")
-        print("Possible actions:")
+        print("Usage: " + sys.executable + ' ' + __file__ + " <action>", file=sys.stderr)
+        print("Possible actions:", file=sys.stderr)
         for f in [x for x in dir(self) if not x.startswith('_')]:
-            print("{} -> {}".format(f, getattr(self, f).__doc__))
+            print("{} -> {}".format(f, getattr(self, f).__doc__), file=sys.stderr)
 
 
 def main():
