@@ -56,6 +56,9 @@
         !disablecmd ping guild \
         !disablecmd ping global
 
+**dropmarkov**: Drop Markov database \
+    Example: !dropmarkov
+
 **emojify**: Emojify text \
     Example: !emojify Hello! \
     *This command can be used as subcommand*

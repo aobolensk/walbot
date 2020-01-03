@@ -242,6 +242,12 @@ class Commands:
                 subcommand=False
             )
             self.data["delmarkov"].is_global = True
+        if "dropmarkov" not in self.data.keys():
+            self.data["dropmarkov"] = Command(
+                "dropmarkov", perform=self._dropmarkov, permission=2,
+                subcommand=False
+            )
+            self.data["dropmarkov"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=0,
@@ -1032,6 +1038,15 @@ class Commands:
         regex = ' '.join(command[1:])
         total_removed = runtime_config.markov.del_words(regex)
         await self.response(message, "Deleted {} words from model".format(str(total_removed)), silent)
+
+    async def _dropmarkov(self, message, command, silent=False):
+        """Drop Markov database
+    Example: !dropmarkov"""
+        if len(command) > 1:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        runtime_config.markov.__init__()
+        await self.response(message, "Markov database has been dropped!", silent)
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
