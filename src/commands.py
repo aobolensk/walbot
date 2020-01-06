@@ -1190,7 +1190,7 @@ class Commands:
         result = ' '.join(command[1:])
         result = urllib.request.quote(result.encode("cp1251"))
         await self.response(message, result, silent)
-        return result.replace("%", "\\%")
+        return result
 
     async def _emojify(self, message, command, silent=False):
         """Emojify text
