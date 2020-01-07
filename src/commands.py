@@ -1036,8 +1036,8 @@ class Commands:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         regex = ' '.join(command[1:])
-        total_removed = runtime_config.markov.del_words(regex)
-        await self.response(message, "Deleted {} words from model".format(str(total_removed)), silent)
+        removed = runtime_config.markov.del_words(regex)
+        await self.response(message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)), silent)
 
     async def _dropmarkov(self, message, command, silent=False):
         """Drop Markov database

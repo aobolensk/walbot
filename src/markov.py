@@ -58,14 +58,14 @@ class Markov:
         current_node.add_next(None)
 
     def del_words(self, regex):
-        total_removed = 0
+        removed = []
         for word in [word for word in self.model if re.search(regex, word)]:
+            removed.append(self.model[word].word)
             del self.model[word]
-            total_removed += 1
         for _, node in self.model.items():
             for word in [word for word in node.next if word is not None and re.search(regex, word)]:
                 node.del_next(word)
-        return total_removed
+        return removed
 
     def generate(self):
         current_node = self.model[""]
