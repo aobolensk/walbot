@@ -242,6 +242,12 @@ class Commands:
                 subcommand=False
             )
             self.data["delmarkov"].is_global = True
+        if "findmarkov" not in self.data.keys():
+            self.data["findmarkov"] = Command(
+                "findmarkov", perform=self._findmarkov, permission=1,
+                subcommand=False
+            )
+            self.data["findmarkov"].is_global = True
         if "dropmarkov" not in self.data.keys():
             self.data["dropmarkov"] = Command(
                 "dropmarkov", perform=self._dropmarkov, permission=2,
@@ -1038,6 +1044,16 @@ class Commands:
         regex = ' '.join(command[1:])
         removed = runtime_config.markov.del_words(regex)
         await self.response(message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)), silent)
+
+    async def _findmarkov(self, message, command, silent=False):
+        """Match words in Markov model using regex
+    Example: !findmarkov hello"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        regex = ' '.join(command[1:])
+        found = runtime_config.markov.find_words(regex)
+        await self.response(message, "Found {} words in model: {}".format(str(len(found)), str(found)), silent)
 
     async def _dropmarkov(self, message, command, silent=False):
         """Drop Markov database

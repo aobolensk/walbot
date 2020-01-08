@@ -67,6 +67,9 @@ class Markov:
                 node.del_next(word)
         return removed
 
+    def find_words(self, regex):
+        return [self.model[word].word for word in self.model if re.search(regex, word)]
+
     def generate(self):
         current_node = self.model[""]
         result = ""
