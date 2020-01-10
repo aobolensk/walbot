@@ -1073,7 +1073,7 @@ class Commands:
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
                 for file in files:
-                    if not silent and os.path.splitext(os.path.basename(file))[0] == command[1]:
+                    if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
                         await message.channel.send(file=discord.File(os.path.join("images", file)))
                         return
         await self.response(message, "Image {} is not found!".format(command[1]), silent)
