@@ -25,6 +25,10 @@
     Example: !channelid \
     *This command can be used as subcommand*
 
+**count**: Count amount of words \
+    Example: !count some text \
+    *This command can be used as subcommand*
+
 **delalias**: Delete command alias \
     Usage: !delalias &lt;alias&gt; \
     Example: !delalias pong
@@ -82,6 +86,10 @@
 
 **img**: Send image (use !listimg for list of available images) \
     Example: !img
+
+**len**: Calculate length of the message \
+    Example: !len some text \
+    *This command can be used as subcommand*
 
 **listalias**: Show list of aliases \
     Example: !listalias
