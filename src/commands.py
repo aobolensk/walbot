@@ -26,6 +26,12 @@ class Commands:
         if not hasattr(self, "aliases"):
             self.aliases = dict()
         runtime_config.commands = self
+        if "len" not in self.data.keys():
+            self.data["len"] = Command(
+                "len", perform=self._len, permission=0,
+                subcommand=True
+            )
+            self.data["len"].is_global = True
         if "count" not in self.data.keys():
             self.data["count"] = Command(
                 "count", perform=self._count, permission=0,
@@ -361,9 +367,16 @@ class Commands:
         else:
             log.info("[SILENT] -> " + content)
 
+    async def _len(self, message, command, silent=False):
+        """Calculate length of the message
+    Example: !len some text"""
+        result = str(len(' '.join(command[1:])))
+        await self.response(message, result, silent)
+        return result
+
     async def _count(self, message, command, silent=False):
         """Count amount of words
-    Example: !count"""
+    Example: !count some text"""
         result = str(len(command) - 1)
         await self.response(message, result, silent)
         return result
