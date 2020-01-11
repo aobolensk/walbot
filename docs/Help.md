@@ -25,6 +25,10 @@
     Example: !channelid \
     *This command can be used as subcommand*
 
+**count**: Count amount of words \
+    Example: !count \
+    *This command can be used as subcommand*
+
 **delalias**: Delete command alias \
     Usage: !delalias &lt;alias&gt; \
     Example: !delalias pong

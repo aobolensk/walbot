@@ -26,6 +26,12 @@ class Commands:
         if not hasattr(self, "aliases"):
             self.aliases = dict()
         runtime_config.commands = self
+        if "count" not in self.data.keys():
+            self.data["count"] = Command(
+                "count", perform=self._count, permission=0,
+                subcommand=True
+            )
+            self.data["count"].is_global = True
         if "ping" not in self.data.keys():
             self.data["ping"] = Command(
                 "ping", perform=self._ping, permission=0,
@@ -354,6 +360,13 @@ class Commands:
                 await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
         else:
             log.info("[SILENT] -> " + content)
+
+    async def _count(self, message, command, silent=False):
+        """Count amount of words
+    Example: !count"""
+        result = str(len(command) - 1)
+        await self.response(message, result, silent)
+        return result
 
     async def _ping(self, message, command, silent=False):
         """Check whether the bot is active
