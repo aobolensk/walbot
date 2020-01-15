@@ -1131,7 +1131,7 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         name = command[1]
-        if not re.match('^[A-Za-zА-Яа-яЁё0-9_]+$', name):
+        if not re.match('^[A-Za-zА-Яа-яЁё0-9_-]+$', name):
             await self.response(message, "Incorrect name '{}'".format(name), silent)
             return
         url = command[2]
@@ -1166,7 +1166,7 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         name = command[1]
-        if not re.match('^[A-Za-zА-Яа-яЁё0-9_]+$', name):
+        if not re.match('^[A-Za-zА-Яа-яЁё0-9_-]+$', name):
             await self.response(message, "Incorrect name '{}'".format(name), silent)
             return
         for root, _, files in os.walk("images"):
