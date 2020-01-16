@@ -145,6 +145,10 @@
 **silent**: Make the following command silent (without any output to the chat) \
     Example: !silent ping
 
+**spoiler**: Mark text as spoiler \
+    Example: !spoiler hello \
+    *This command can be used as subcommand*
+
 **status**: Change bot status \
     Examples: \
         !status idle \

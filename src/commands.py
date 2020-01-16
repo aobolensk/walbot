@@ -44,6 +44,12 @@ class Commands:
                 subcommand=False
             )
             self.data["ping"].is_global = True
+        if "spoiler" not in self.data.keys():
+            self.data["spoiler"] = Command(
+                "spoiler", perform=self._spoiler, permission=0,
+                subcommand=True
+            )
+            self.data["spoiler"].is_global = True
         if "help" not in self.data.keys():
             self.data["help"] = Command(
                 "help", perform=self._help, permission=0,
@@ -385,6 +391,13 @@ class Commands:
         """Check whether the bot is active
     Example: !ping"""
         await self.response(message, "Pong! " + message.author.mention, silent)
+
+    async def _spoiler(self, message, command, silent=False):
+        """Mark text as spoiler
+    Example: !spoiler hello"""
+        result = "||" + ' '.join(command[1:]) + "||"
+        await self.response(message, result, silent)
+        return result
 
     async def _help(self, message, command, silent=False):
         """Print list of commands and get examples
