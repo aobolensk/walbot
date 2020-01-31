@@ -66,7 +66,7 @@ class WalBot(discord.Client):
 
     async def on_message(self, message):
         try:
-            log.info(str(message.author) + " -> " + message.content)
+            log.info("<" + str(message.id) + "> " + str(message.author) + " -> " + message.content)
             if message.author.id == self.user.id:
                 return
             if message.channel.guild.id is None:
@@ -110,6 +110,15 @@ class WalBot(discord.Client):
             await actor.run(message, command, self.config.users[message.author.id])
         except Exception:
             log.error("on_message failed", exc_info=True)
+
+    async def on_raw_message_edit(self, payload):
+        log.info("<" + str(payload.message_id) + "> (edit) " +
+                 payload.data["author"]["username"] + "#" + payload.data["author"]["discriminator"] +
+                 " -> " + payload.data["content"])
+
+    async def on_raw_message_delete(self, payload):
+        print(payload)
+        log.info("<" + str(payload.message_id) + "> (delete)")
 
 
 def start():
