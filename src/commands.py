@@ -409,7 +409,7 @@ class Commands:
         """Print information about user
     Examples:
         !profile
-        !profile @user"""
+        !profile `@user`"""
         if len(command) == 1:
             info = message.author
         elif len(command) == 2:

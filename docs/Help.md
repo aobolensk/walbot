@@ -128,7 +128,7 @@
 **profile**: Print information about user \
     Examples: \
         !profile \
-        !profile @user
+        !profile `@user`
 
 **random**: Get random number in range [left, right] \
     Example: !random 5 10 \
