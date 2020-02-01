@@ -409,7 +409,8 @@ class Commands:
         """Print information about user
     Example: !profile"""
         info = message.author
-        result = "User: " + str(info) + '\n'
+        result = message.author.mention + '\n'
+        result += "User: " + str(info) + '\n'
         result += "Avatar: <" + str(info.avatar_url) + '>\n'
         status = [platform for (platform, status) in zip(
             ["desktop", "mobile", "browser"],
