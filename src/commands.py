@@ -411,6 +411,11 @@ class Commands:
         info = message.author
         result = "User: " + str(info) + '\n'
         result += "Avatar: <" + str(info.avatar_url) + '>\n'
+        status = [platform for (platform, status) in zip(
+            ["desktop", "mobile", "browser"],
+            [str(info.desktop_status), str(info.mobile_status), str(info.web_status)])
+            if status != "offline"]
+        result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
         result += "Created at: " + str(info.created_at) + '\n'
         await self.response(message, result, silent)
 
