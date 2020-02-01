@@ -56,6 +56,12 @@ class Commands:
                 subcommand=False
             )
             self.data["help"].is_global = True
+        if "profile" not in self.data.keys():
+            self.data["profile"] = Command(
+                "profile", perform=self._profile, permission=0,
+                subcommand=False
+            )
+            self.data["profile"].is_global = True
         if "addcmd" not in self.data.keys():
             self.data["addcmd"] = Command(
                 "addcmd", perform=self._addcmd, permission=1,
@@ -398,6 +404,15 @@ class Commands:
         result = "||" + ' '.join(command[1:]) + "||"
         await self.response(message, result, silent)
         return result
+
+    async def _profile(self, message, command, silent=False):
+        """Print information about user
+    Example: !profile"""
+        info = message.author
+        result = "User: " + str(info) + '\n'
+        result += "Avatar: <" + str(info.avatar_url) + '>\n'
+        result += "Created at: " + str(info.created_at) + '\n'
+        await self.response(message, result, silent)
 
     async def _help(self, message, command, silent=False):
         """Print list of commands and get examples

@@ -125,6 +125,9 @@
 **poll**: Create poll \
     Example: !poll 60 option 1;option 2;option 3
 
+**profile**: Print information about user \
+    Example: !profile
+
 **random**: Get random number in range [left, right] \
     Example: !random 5 10 \
     *This command can be used as subcommand*
