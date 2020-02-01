@@ -407,8 +407,16 @@ class Commands:
 
     async def _profile(self, message, command, silent=False):
         """Print information about user
-    Example: !profile"""
-        info = message.author
+    Examples:
+        !profile
+        !profile @user"""
+        if len(command) == 1:
+            info = message.author
+        elif len(command) == 2:
+            info = message.guild.get_member(message.mentions[0].id)
+        else:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
         result = message.author.mention + '\n'
         result += "User: " + str(info) + '\n'
         result += "Avatar: <" + str(info.avatar_url) + '>\n'
