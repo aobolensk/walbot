@@ -56,6 +56,12 @@ class Commands:
                 subcommand=False
             )
             self.data["help"].is_global = True
+        if "profile" not in self.data.keys():
+            self.data["profile"] = Command(
+                "profile", perform=self._profile, permission=0,
+                subcommand=False
+            )
+            self.data["profile"].is_global = True
         if "addcmd" not in self.data.keys():
             self.data["addcmd"] = Command(
                 "addcmd", perform=self._addcmd, permission=1,
@@ -398,6 +404,29 @@ class Commands:
         result = "||" + ' '.join(command[1:]) + "||"
         await self.response(message, result, silent)
         return result
+
+    async def _profile(self, message, command, silent=False):
+        """Print information about user
+    Examples:
+        !profile
+        !profile `@user`"""
+        if len(command) == 1:
+            info = message.author
+        elif len(command) == 2:
+            info = message.guild.get_member(message.mentions[0].id)
+        else:
+            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return
+        result = message.author.mention + '\n'
+        result += "User: " + str(info) + '\n'
+        result += "Avatar: <" + str(info.avatar_url) + '>\n'
+        status = [platform for (platform, status) in zip(
+            ["desktop", "mobile", "browser"],
+            [str(info.desktop_status), str(info.mobile_status), str(info.web_status)])
+            if status != "offline"]
+        result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
+        result += "Created at: " + str(info.created_at) + '\n'
+        await self.response(message, result, silent)
 
     async def _help(self, message, command, silent=False):
         """Print list of commands and get examples
