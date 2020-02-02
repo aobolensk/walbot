@@ -447,7 +447,7 @@ class Commands:
             embed = discord.Embed(title="Help", color=0x717171)
             embed.add_field(
                 name="Built-in commands",
-                value=("<https://github.com/gooddoog/walbot/blob/" +
+                value=("<https://github.com/aobolensk/walbot/blob/" +
                        version + "/docs/Help.md>"),
                 inline=False
             )
@@ -825,7 +825,7 @@ class Commands:
     async def _about(self, message, command, silent=False):
         """Get information about the bot
     Example: !about"""
-        result = "Source code: <https://github.com/gooddoog/walbot>"
+        result = "Source code: <https://github.com/aobolensk/walbot>"
         await self.response(message, result, silent)
 
     async def _addbgevent(self, message, command, silent=False):
