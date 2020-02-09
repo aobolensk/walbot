@@ -254,6 +254,12 @@ class Commands:
                 subcommand=True
             )
             self.data["markov"].is_global = True
+        if "markovgc" not in self.data.keys():
+            self.data["markovgc"] = Command(
+                "markovgc", perform=self._markovgc, permission=0,
+                subcommand=False
+            )
+            self.data["markovgc"].is_global = True
         if "markovlog" not in self.data.keys():
             self.data["markovlog"] = Command(
                 "markovlog", perform=self._markovlog, permission=1,
@@ -1065,6 +1071,14 @@ class Commands:
         if bot_wrapper.bot_user.mentioned_in(message):
             result += message.author.mention + ' '
         result += runtime_config.markov.generate()
+        await self.response(message, result, silent)
+        return result
+
+    async def _markovgc(self, message, command, silent=False):
+        """Garbage collect Markov model nodes
+    Example: !markovgc"""
+        result = runtime_config.markov.gc()
+        result = f"Garbage collected {len(result)} items: {', '.join(result)}"
         await self.response(message, result, silent)
         return result
 

@@ -95,6 +95,23 @@ class Markov:
             return "<Empty message was generated>"
         return result
 
+    def gc(self, node=None):
+        if not node:
+            node = self.model[""]
+        was = {node}
+        for key in node.next.keys():
+            next_node = node.get_next(key)
+            if next_node not in was:
+                was |= self.gc(next_node)
+        if node == self.model[""]:
+            result = []
+            for node in set(list(self.model.values())).difference(was):
+                if hasattr(node, "word"):
+                    result.append(node.word)
+                    del self.model[node.word]
+            return result
+        return was
+
     def serialize(self, filename, dumper=yaml.Dumper):
         with open(filename, 'wb') as f:
             f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))

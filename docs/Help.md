@@ -107,6 +107,9 @@
     Example: !markov \
     *This command can be used as subcommand*
 
+**markovgc**: Garbage collect Markov model nodes \
+    Example: !markovgc
+
 **markovlog**: Enable/disable adding messages from this channel to Markov model \
     Examples: \
         !markovlog \
