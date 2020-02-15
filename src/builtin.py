@@ -18,6 +18,7 @@ from .config import log
 
 class BuiltinCommands:
     def __init__(self):
+        self.config = bc.commands.config
         self.response = bc.commands.response
         self.data = bc.commands.data
 
