@@ -117,7 +117,6 @@ class WalBot(discord.Client):
         actor = self.config.commands.data[command[0]]
         await actor.run(message, command, self.config.users[message.author.id])
 
-
     async def on_raw_message_edit(self, payload):
         log.info("<" + str(payload.message_id) + "> (edit) " +
                  payload.data["author"]["username"] + "#" + payload.data["author"]["discriminator"] +
