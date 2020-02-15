@@ -19,7 +19,6 @@ from .markov import Markov
 
 class WalBot(discord.Client):
     def __init__(self, config, secret_config):
-        global bc
         super(WalBot, self).__init__()
         self.config = config
         self.secret_config = secret_config
