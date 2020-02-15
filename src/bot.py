@@ -79,38 +79,44 @@ class WalBot(discord.Client):
                 self.config.users[message.author.id] = User(message.author.id)
             if self.config.users[message.author.id].permission_level < 0:
                 return
-            if not message.content.startswith(self.config.commands_prefix):
-                if (bot_wrapper.bot_user.mentioned_in(message) and
-                        self.config.commands.data["markov"].is_available(message.channel.id)):
-                    await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
-                elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                    runtime_config.markov.add_string(message.content)
-                if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                    return
-                for reaction in self.config.reactions:
-                    if re.search(reaction.regex, message.content):
-                        log.info("Added reaction " + reaction.emoji)
-                        try:
-                            await message.add_reaction(reaction.emoji)
-                        except discord.HTTPException:
-                            pass
-                return
-            command = message.content.split(' ')
-            command = list(filter(None, command))
-            command[0] = command[0][1:]
-            if len(command[0]) == 0:
-                log.debug("Ignoring empty command")
-                return
-            if command[0] not in self.config.commands.data.keys():
-                if command[0] in self.config.commands.aliases.keys():
-                    command[0] = self.config.commands.aliases[command[0]]
-                else:
-                    await message.channel.send("Unknown command '{}'".format(command[0]))
-                    return
-            actor = self.config.commands.data[command[0]]
-            await actor.run(message, command, self.config.users[message.author.id])
+            if message.content.startswith(self.config.commands_prefix):
+                await self.process_command(message)
+            else:
+                await self.process_regular_message(message)
         except Exception:
             log.error("on_message failed", exc_info=True)
+
+    async def process_regular_message(self, message):
+        if (bot_wrapper.bot_user.mentioned_in(message) and
+                self.config.commands.data["markov"].is_available(message.channel.id)):
+            await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
+        elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+            runtime_config.markov.add_string(message.content)
+        if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+            return
+        for reaction in self.config.reactions:
+            if re.search(reaction.regex, message.content):
+                log.info("Added reaction " + reaction.emoji)
+                try:
+                    await message.add_reaction(reaction.emoji)
+                except discord.HTTPException:
+                    pass
+
+    async def process_command(self, message):
+        command = message.content.split(' ')
+        command = list(filter(None, command))
+        command[0] = command[0][1:]
+        if len(command[0]) == 0:
+            log.debug("Ignoring empty command")
+            return
+        if command[0] not in self.config.commands.data.keys():
+            if command[0] in self.config.commands.aliases.keys():
+                command[0] = self.config.commands.aliases[command[0]]
+            else:
+                await message.channel.send("Unknown command '{}'".format(command[0]))
+                return
+        actor = self.config.commands.data[command[0]]
+        await actor.run(message, command, self.config.users[message.author.id])
 
     async def on_raw_message_edit(self, payload):
         log.info("<" + str(payload.message_id) + "> (edit) " +
@@ -118,7 +124,6 @@ class WalBot(discord.Client):
                  " -> " + payload.data["content"])
 
     async def on_raw_message_delete(self, payload):
-        print(payload)
         log.info("<" + str(payload.message_id) + "> (delete)")
 
 
