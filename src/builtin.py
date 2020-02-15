@@ -26,332 +26,277 @@ class BuiltinCommands:
         if "len" not in self.data.keys():
             self.data["len"] = Command(
                 "len", perform=self._len, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["len"].is_global = True
         if "count" not in self.data.keys():
             self.data["count"] = Command(
                 "count", perform=self._count, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["count"].is_global = True
         if "ping" not in self.data.keys():
             self.data["ping"] = Command(
                 "ping", perform=self._ping, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["ping"].is_global = True
         if "spoiler" not in self.data.keys():
             self.data["spoiler"] = Command(
                 "spoiler", perform=self._spoiler, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["spoiler"].is_global = True
         if "help" not in self.data.keys():
             self.data["help"] = Command(
                 "help", perform=self._help, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["help"].is_global = True
         if "profile" not in self.data.keys():
             self.data["profile"] = Command(
                 "profile", perform=self._profile, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["profile"].is_global = True
         if "addcmd" not in self.data.keys():
             self.data["addcmd"] = Command(
                 "addcmd", perform=self._addcmd, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["addcmd"].is_global = True
         if "updcmd" not in self.data.keys():
             self.data["updcmd"] = Command(
                 "updcmd", perform=self._updcmd, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["updcmd"].is_global = True
         if "delcmd" not in self.data.keys():
             self.data["delcmd"] = Command(
                 "delcmd", perform=self._delcmd, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["delcmd"].is_global = True
         if "enablecmd" not in self.data.keys():
             self.data["enablecmd"] = Command(
                 "enablecmd", perform=self._enablecmd, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["enablecmd"].is_global = True
         if "disablecmd" not in self.data.keys():
             self.data["disablecmd"] = Command(
                 "disablecmd", perform=self._disablecmd, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["disablecmd"].is_global = True
         if "permcmd" not in self.data.keys():
             self.data["permcmd"] = Command(
                 "permcmd", perform=self._permcmd, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["permcmd"].is_global = True
         if "timescmd" not in self.data.keys():
             self.data["timescmd"] = Command(
                 "timescmd", perform=self._timescmd, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["timescmd"].is_global = True
         if "permuser" not in self.data.keys():
             self.data["permuser"] = Command(
                 "permuser", perform=self._permuser, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["permuser"].is_global = True
         if "whitelist" not in self.data.keys():
             self.data["whitelist"] = Command(
                 "whitelist", perform=self._whitelist, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["whitelist"].is_global = True
         if "addreaction" not in self.data.keys():
             self.data["addreaction"] = Command(
                 "addreaction", perform=self._addreaction, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["addreaction"].is_global = True
         if "updreaction" not in self.data.keys():
             self.data["updreaction"] = Command(
                 "updreaction", perform=self._updreaction, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["updreaction"].is_global = True
         if "delreaction" not in self.data.keys():
             self.data["delreaction"] = Command(
                 "delreaction", perform=self._delreaction, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["delreaction"].is_global = True
         if "listreaction" not in self.data.keys():
             self.data["listreaction"] = Command(
                 "listreaction", perform=self._listreaction, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["listreaction"].is_global = True
         if "wme" not in self.data.keys():
             self.data["wme"] = Command(
                 "wme", perform=self._wme, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["wme"].is_global = True
         if "poll" not in self.data.keys():
             self.data["poll"] = Command(
                 "poll", perform=self._poll, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["poll"].is_global = True
         if "version" not in self.data.keys():
             self.data["version"] = Command(
                 "version", perform=self._version, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["version"].is_global = True
         if "about" not in self.data.keys():
             self.data["about"] = Command(
                 "about", perform=self._about, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["about"].is_global = True
         if "addbgevent" not in self.data.keys():
             self.data["addbgevent"] = Command(
                 "addbgevent", perform=self._addbgevent, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["addbgevent"].is_global = True
         if "listbgevent" not in self.data.keys():
             self.data["listbgevent"] = Command(
                 "listbgevent", perform=self._listbgevent, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["listbgevent"].is_global = True
         if "delbgevent" not in self.data.keys():
             self.data["delbgevent"] = Command(
                 "delbgevent", perform=self._delbgevent, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["delbgevent"].is_global = True
         if "random" not in self.data.keys():
             self.data["random"] = Command(
                 "random", perform=self._random, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["random"].is_global = True
         if "randselect" not in self.data.keys():
             self.data["randselect"] = Command(
                 "randselect", perform=self._randselect, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["randselect"].is_global = True
         if "silent" not in self.data.keys():
             self.data["silent"] = Command(
                 "silent", perform=self._silent, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["silent"].is_global = True
         if "time" not in self.data.keys():
             self.data["time"] = Command(
                 "time", perform=self._time, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["time"].is_global = True
         if "uptime" not in self.data.keys():
             self.data["uptime"] = Command(
                 "uptime", perform=self._uptime, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["uptime"].is_global = True
         if "status" not in self.data.keys():
             self.data["status"] = Command(
                 "status", perform=self._status, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["status"].is_global = True
         if "forchannel" not in self.data.keys():
             self.data["forchannel"] = Command(
                 "forchannel", perform=self._forchannel, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["forchannel"].is_global = True
         if "channelid" not in self.data.keys():
             self.data["channelid"] = Command(
                 "channelid", perform=self._channelid, permission=1,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["channelid"].is_global = True
         if "addalias" not in self.data.keys():
             self.data["addalias"] = Command(
                 "addalias", perform=self._addalias, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["addalias"].is_global = True
         if "delalias" not in self.data.keys():
             self.data["delalias"] = Command(
                 "delalias", perform=self._delalias, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["delalias"].is_global = True
         if "listalias" not in self.data.keys():
             self.data["listalias"] = Command(
                 "listalias", perform=self._listalias, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["listalias"].is_global = True
         if "markov" not in self.data.keys():
             self.data["markov"] = Command(
                 "markov", perform=self._markov, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["markov"].is_global = True
         if "markovgc" not in self.data.keys():
             self.data["markovgc"] = Command(
                 "markovgc", perform=self._markovgc, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["markovgc"].is_global = True
         if "markovlog" not in self.data.keys():
             self.data["markovlog"] = Command(
                 "markovlog", perform=self._markovlog, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["markovlog"].is_global = True
         if "delmarkov" not in self.data.keys():
             self.data["delmarkov"] = Command(
                 "delmarkov", perform=self._delmarkov, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["delmarkov"].is_global = True
         if "findmarkov" not in self.data.keys():
             self.data["findmarkov"] = Command(
                 "findmarkov", perform=self._findmarkov, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["findmarkov"].is_global = True
         if "dropmarkov" not in self.data.keys():
             self.data["dropmarkov"] = Command(
                 "dropmarkov", perform=self._dropmarkov, permission=2,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["dropmarkov"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["img"].is_global = True
         if "listimg" not in self.data.keys():
             self.data["listimg"] = Command(
                 "listimg", perform=self._listimg, permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["listimg"].is_global = True
         if "addimg" not in self.data.keys():
             self.data["addimg"] = Command(
                 "addimg", perform=self._addimg, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["addimg"].is_global = True
         if "delimg" not in self.data.keys():
             self.data["delimg"] = Command(
                 "delimg", perform=self._delimg, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["delimg"].is_global = True
         if "reactionwl" not in self.data.keys():
             self.data["reactionwl"] = Command(
                 "reactionwl", perform=self._reactionwl, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["reactionwl"].is_global = True
         if "tts" not in self.data.keys():
             self.data["tts"] = Command(
                 "tts", perform=self._tts, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["tts"].is_global = True
         if "urlencode" not in self.data.keys():
             self.data["urlencode"] = Command(
                 "urlencode", perform=self._urlencode, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["urlencode"].is_global = True
         if "emojify" not in self.data.keys():
             self.data["emojify"] = Command(
                 "emojify", perform=self._emojify, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["emojify"].is_global = True
         if "demojify" not in self.data.keys():
             self.data["demojify"] = Command(
                 "demojify", perform=self._demojify, permission=0,
-                subcommand=True
-            )
+                subcommand=True)
             self.data["demojify"].is_global = True
         if "shutdown" not in self.data.keys():
             self.data["shutdown"] = Command(
                 "shutdown", perform=self._shutdown, permission=2,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["shutdown"].is_global = True
         if "avatar" not in self.data.keys():
             self.data["avatar"] = Command(
                 "avatar", perform=self._avatar, permission=1,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["avatar"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
-                subcommand=False
-            )
+                subcommand=False)
             self.data["echo"].is_global = True
 
     async def _len(self, message, command, silent=False):
