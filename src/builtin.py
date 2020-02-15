@@ -998,10 +998,10 @@ class BuiltinCommands:
         if command[2] in self.data.keys():
             await self.response(message, "Command '{}' already exists".format(command[2]), silent)
             return
-        if command[2] in self.aliases.keys():
+        if command[2] in bc.commands.aliases.keys():
             await self.response(message, "Alias '{}' already exists".format(command[2]), silent)
             return
-        self.aliases[command[2]] = command[1]
+        bc.commands.aliases[command[2]] = command[1]
         await self.response(message, "Alias '{}' for '{}' was successfully created".format(
             command[2], command[1]), silent)
 
@@ -1015,10 +1015,10 @@ class BuiltinCommands:
         if len(command) > 2:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        if command[1] not in self.aliases.keys():
+        if command[1] not in bc.commands.aliases.keys():
             await self.response(message, "Alias '{}' does not exist".format(command[1]), silent)
             return
-        self.aliases.pop(command[1])
+        bc.commands.aliases.pop(command[1])
         await self.response(message, "Alias '{}' was successfully deleted".format(command[1]), silent)
 
     async def _listalias(self, message, command, silent=False):
@@ -1028,7 +1028,7 @@ class BuiltinCommands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = ""
-        for alias, command in self.aliases.items():
+        for alias, command in bc.commands.aliases.items():
             result += alias + " -> " + command + '\n'
         if len(result) > 0:
             await self.response(message, result, silent)

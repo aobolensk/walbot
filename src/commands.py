@@ -2,7 +2,6 @@ import os
 
 from . import const
 from .config import Command
-from .config import bc
 from .config import log
 
 from .builtin import BuiltinCommands
@@ -14,7 +13,6 @@ class Commands:
         self.data = dict()
         if not hasattr(self, "aliases"):
             self.aliases = dict()
-        bc.commands = self
         BuiltinCommands().bind()
         self.export_help()
 
