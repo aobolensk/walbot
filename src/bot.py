@@ -25,6 +25,7 @@ class WalBot(discord.Client):
         self.config = config
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
+        bot_wrapper.config = self.config
         bot_wrapper.background_loop = self.loop
         bot_wrapper.change_status = self.change_status
         bot_wrapper.change_presence = self.change_presence

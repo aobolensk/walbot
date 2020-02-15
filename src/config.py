@@ -47,6 +47,12 @@ class Command:
                             updated = True
                             message.content = content[j+1:i]
                             command = message.content.split()
+                            if command[0] not in bot_wrapper.config.commands.data.keys():
+                                if command[0] in bot_wrapper.config.commands.aliases.keys():
+                                    command[0] = bot_wrapper.config.commands.aliases[command[0]]
+                                else:
+                                    await message.channel.send("Unknown command '{}'".format(command[0]))
+                                    return
                             result = ""
                             if len(command) > 0 and command[0] in runtime_config.commands.data.keys():
                                 log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
