@@ -118,9 +118,12 @@ class WalBot(discord.Client):
         await actor.run(message, command, self.config.users[message.author.id])
 
     async def on_raw_message_edit(self, payload):
-        log.info("<" + str(payload.message_id) + "> (edit) " +
-                 payload.data["author"]["username"] + "#" + payload.data["author"]["discriminator"] +
-                 " -> " + payload.data["content"])
+        try:
+            log.info("<" + str(payload.message_id) + "> (edit) " +
+                     payload.data["author"]["username"] + "#" + payload.data["author"]["discriminator"] +
+                     " -> " + payload.data["content"])
+        except KeyError:
+            pass
 
     async def on_raw_message_delete(self, payload):
         log.info("<" + str(payload.message_id) + "> (delete)")
