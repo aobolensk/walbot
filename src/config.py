@@ -151,7 +151,6 @@ class Config:
         commands = __import__("commands", globals(), locals(), level=1)
         if not hasattr(self, "commands"):
             self.commands = commands.Commands(self)
-        self.commands.update_builtins()
         if not hasattr(self, "reactions"):
             self.reactions = []
         if not hasattr(self, "guilds"):
