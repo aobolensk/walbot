@@ -8,8 +8,7 @@ import re
 import yaml
 
 from . import const
-from .config import runtime_config
-from .config import bot_wrapper
+from .config import bc
 from .config import GuildSettings
 from .config import User
 from .config import Config
@@ -20,27 +19,27 @@ from .markov import Markov
 
 class WalBot(discord.Client):
     def __init__(self, config, secret_config):
-        global runtime_config
+        global bc
         super(WalBot, self).__init__()
         self.config = config
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
-        bot_wrapper.config = self.config
-        bot_wrapper.background_loop = self.loop
-        bot_wrapper.change_status = self.change_status
-        bot_wrapper.change_presence = self.change_presence
-        bot_wrapper.get_channel = self.get_channel
-        bot_wrapper.close = self.close
-        bot_wrapper.secret_config = self.secret_config
+        bc.config = self.config
+        bc.background_loop = self.loop
+        bc.change_status = self.change_status
+        bc.change_presence = self.change_presence
+        bc.get_channel = self.get_channel
+        bc.close = self.close
+        bc.secret_config = self.secret_config
         if not os.path.exists(const.markov_path):
-            runtime_config.markov = Markov()
+            bc.markov = Markov()
         else:
             with open(const.markov_path, 'rb') as f:
                 try:
-                    runtime_config.markov = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                    bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
                 except Exception:
                     log.error("yaml.load failed on file: {}".format(const.markov_path), exc_info=True)
-        if runtime_config.markov.check():
+        if bc.markov.check():
             log.info("Markov model has passed all checks")
         else:
             log.error("Markov model has not passed all checks")
@@ -63,7 +62,7 @@ class WalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
-        bot_wrapper.bot_user = self.user
+        bc.bot_user = self.user
 
     async def on_message(self, message):
         try:
@@ -87,11 +86,11 @@ class WalBot(discord.Client):
             log.error("on_message failed", exc_info=True)
 
     async def process_regular_message(self, message):
-        if (bot_wrapper.bot_user.mentioned_in(message) and
+        if (bc.bot_user.mentioned_in(message) and
                 self.config.commands.data["markov"].is_available(message.channel.id)):
-            await message.channel.send(message.author.mention + ' ' + runtime_config.markov.generate())
+            await message.channel.send(message.author.mention + ' ' + bc.markov.generate())
         elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-            runtime_config.markov.add_string(message.content)
+            bc.markov.add_string(message.content)
         if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             return
         for reaction in self.config.reactions:
@@ -118,6 +117,7 @@ class WalBot(discord.Client):
         actor = self.config.commands.data[command[0]]
         await actor.run(message, command, self.config.users[message.author.id])
 
+
     async def on_raw_message_edit(self, payload):
         log.info("<" + str(payload.message_id) + "> (edit) " +
                  payload.data["author"]["username"] + "#" + payload.data["author"]["discriminator"] +
@@ -141,23 +141,23 @@ def start():
     config = None
     secret_config = None
     try:
-        runtime_config.yaml_loader = yaml.CLoader
+        bc.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")
     except Exception:
-        runtime_config.yaml_loader = yaml.Loader
+        bc.yaml_loader = yaml.Loader
         log.info("Using slow YAML Loader")
     try:
-        runtime_config.yaml_dumper = yaml.CDumper
+        bc.yaml_dumper = yaml.CDumper
         log.info("Using fast YAML Dumper")
     except Exception:
-        runtime_config.yaml_dumper = yaml.Dumper
+        bc.yaml_dumper = yaml.Dumper
         log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
     if os.path.isfile(const.config_path):
         with open(const.config_path, 'r') as f:
             try:
-                config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
                 log.error("yaml.load failed on file: {}".format(const.config_path), exc_info=True)
         config.__init__()
@@ -166,7 +166,7 @@ def start():
     if os.path.isfile(const.secret_config_path):
         with open(const.secret_config_path, 'r') as f:
             try:
-                secret_config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                secret_config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
                 log.error("yaml.load failed on file: {}".format(const.secret_config_path), exc_info=True)
         secret_config.__init__()
@@ -178,9 +178,9 @@ def start():
     # Starting the bot
     walBot.run(secret_config.token)
     # After stopping the bot
-    for event in runtime_config.background_events:
+    for event in bc.background_events:
         event.cancel()
-    bot_wrapper.background_loop = None
+    bc.background_loop = None
     log.info("Bot is disconnected!")
     config.save(const.config_path, const.markov_path, const.secret_config_path, wait=True)
     os.remove(".bot_cache")

@@ -9,19 +9,14 @@ from . import const
 from .log import log
 
 
-class RuntimeConfig:
+class BotController:
     def __init__(self):
         self.background_events = []
         self.background_loop = None
         self.deployment_time = datetime.datetime.now()
 
 
-class BotWrapper():
-    pass
-
-
-runtime_config = RuntimeConfig()
-bot_wrapper = BotWrapper()
+bc = BotController()
 
 
 class Command:
@@ -47,16 +42,16 @@ class Command:
                             updated = True
                             message.content = content[j+1:i]
                             command = message.content.split()
-                            if command[0] not in bot_wrapper.config.commands.data.keys():
-                                if command[0] in bot_wrapper.config.commands.aliases.keys():
-                                    command[0] = bot_wrapper.config.commands.aliases[command[0]]
+                            if command[0] not in bc.config.commands.data.keys():
+                                if command[0] in bc.config.commands.aliases.keys():
+                                    command[0] = bc.config.commands.aliases[command[0]]
                                 else:
                                     await message.channel.send("Unknown command '{}'".format(command[0]))
                                     return
                             result = ""
-                            if len(command) > 0 and command[0] in runtime_config.commands.data.keys():
+                            if len(command) > 0 and command[0] in bc.commands.data.keys():
                                 log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
-                                actor = runtime_config.commands.data[command[0]]
+                                actor = bc.commands.data[command[0]]
                                 result = await actor.run(message, command, user, silent=True)
                                 if result is None:
                                     result = ""
@@ -112,7 +107,7 @@ class BackgroundEvent:
         self.channel = channel
         self.message = message
         self.period = period
-        self.task = bot_wrapper.background_loop.create_task(self.run())
+        self.task = bc.background_loop.create_task(self.run())
 
     async def run(self):
         command = self.message.content.split(' ')
@@ -192,7 +187,7 @@ class Config:
             try:
                 f.write(yaml.dump(
                     self,
-                    Dumper=runtime_config.yaml_dumper,
+                    Dumper=bc.yaml_dumper,
                     encoding='utf-8',
                     allow_unicode=True))
                 log.info("Saving of config is finished")
@@ -205,8 +200,8 @@ class Config:
         with open(secret_config_file, 'wb') as f:
             try:
                 f.write(yaml.dump(
-                    bot_wrapper.secret_config,
-                    Dumper=runtime_config.yaml_dumper,
+                    bc.secret_config,
+                    Dumper=bc.yaml_dumper,
                     encoding='utf-8',
                     allow_unicode=True))
                 log.info("Saving of secret config is finished")
@@ -218,8 +213,8 @@ class Config:
         log.info("Saving of Markov module data is started")
         try:
             thread = threading.Thread(
-                target=runtime_config.markov.serialize,
-                args=(markov_file, runtime_config.yaml_dumper))
+                target=bc.markov.serialize,
+                args=(markov_file, bc.yaml_dumper))
             thread.start()
             if wait:
                 thread.join()

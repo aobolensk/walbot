@@ -10,8 +10,7 @@ import urllib.request
 from . import const
 from . import emoji
 from .config import Command
-from .config import runtime_config
-from .config import bot_wrapper
+from .config import bc
 from .config import BackgroundEvent
 from .config import Reaction
 from .config import log
@@ -25,7 +24,7 @@ class Commands:
     def update_builtins(self):
         if not hasattr(self, "aliases"):
             self.aliases = dict()
-        runtime_config.commands = self
+        bc.commands = self
         if "len" not in self.data.keys():
             self.data["len"] = Command(
                 "len", perform=self._len, permission=0,
@@ -847,7 +846,7 @@ class Commands:
                 command[0]), silent)
             return
         message.content = self.config.commands_prefix + ' '.join(command[2:])
-        runtime_config.background_events.append(BackgroundEvent(
+        bc.background_events.append(BackgroundEvent(
             self.config, message.channel, message, duration))
         await self.response(message, "Successfully added background event '{}' with period {}".format(
             message.content, str(duration)
@@ -857,7 +856,7 @@ class Commands:
         """Print a list of background events
     Example: !listbgevent"""
         result = ""
-        for index, event in enumerate(runtime_config.background_events):
+        for index, event in enumerate(bc.background_events):
             result += "{}: '{}' every {} seconds\n".format(
                 str(index), event.message.content, str(event.period)
             )
@@ -881,9 +880,9 @@ class Commands:
             await self.response(message, "Second parameter for '{}' should be an index of background event".format(
                 command[0]), silent)
             return
-        if index >= 0 and index < len(runtime_config.background_events):
-            runtime_config.background_events[index].cancel()
-            del runtime_config.background_events[index]
+        if index >= 0 and index < len(bc.background_events):
+            bc.background_events[index].cancel()
+            del bc.background_events[index]
         await self.response(message, "Successfully deleted background task!", silent)
 
     async def _random(self, message, command, silent=False):
@@ -949,7 +948,7 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         days, remainder = divmod(
-            int((datetime.datetime.now() - runtime_config.deployment_time).total_seconds()), 24 * 3600)
+            int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         result = "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
@@ -964,23 +963,23 @@ class Commands:
     Possible activities: [playing, streaming, watching, listening]
     Possible bot statuses: [online, idle, dnd, invisible]"""
         if len(command) == 1:
-            await bot_wrapper.change_status("", discord.ActivityType.playing)
+            await bc.change_status("", discord.ActivityType.playing)
         elif command[1] == "playing":
-            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.playing)
+            await bc.change_status(' '.join(command[2:]), discord.ActivityType.playing)
         elif command[1] == "streaming":
-            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
+            await bc.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
         elif command[1] == "watching":
-            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.watching)
+            await bc.change_status(' '.join(command[2:]), discord.ActivityType.watching)
         elif command[1] == "listening":
-            await bot_wrapper.change_status(' '.join(command[2:]), discord.ActivityType.listening)
+            await bc.change_status(' '.join(command[2:]), discord.ActivityType.listening)
         elif command[1] == "online":
-            await bot_wrapper.change_presence(status=discord.Status.online)
+            await bc.change_presence(status=discord.Status.online)
         elif command[1] == "idle":
-            await bot_wrapper.change_presence(status=discord.Status.idle)
+            await bc.change_presence(status=discord.Status.idle)
         elif command[1] == "dnd":
-            await bot_wrapper.change_presence(status=discord.Status.dnd)
+            await bc.change_presence(status=discord.Status.dnd)
         elif command[1] == "invisible":
-            await bot_wrapper.change_presence(status=discord.Status.invisible)
+            await bc.change_presence(status=discord.Status.invisible)
         else:
             await self.response(message, "Unknown type of activity", silent)
 
@@ -995,7 +994,7 @@ class Commands:
         except ValueError:
             await self.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
-        message.channel = bot_wrapper.get_channel(channel_id)
+        message.channel = bc.get_channel(channel_id)
         command = command[2:]
         if command[0] not in self.data.keys():
             await self.response(message, "Unknown command '{}'".format(command[0]), silent)
@@ -1068,16 +1067,16 @@ class Commands:
         """Generate message using Markov chain
     Example: !markov"""
         result = ""
-        if bot_wrapper.bot_user.mentioned_in(message):
+        if bc.bot_user.mentioned_in(message):
             result += message.author.mention + ' '
-        result += runtime_config.markov.generate()
+        result += bc.markov.generate()
         await self.response(message, result, silent)
         return result
 
     async def _markovgc(self, message, command, silent=False):
         """Garbage collect Markov model nodes
     Example: !markovgc"""
-        result = runtime_config.markov.gc()
+        result = bc.markov.gc()
         result = f"Garbage collected {len(result)} items: {', '.join(result)}"
         await self.response(message, result, silent)
         return result
@@ -1121,7 +1120,7 @@ class Commands:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         regex = ' '.join(command[1:])
-        removed = runtime_config.markov.del_words(regex)
+        removed = bc.markov.del_words(regex)
         await self.response(message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)), silent)
 
     async def _findmarkov(self, message, command, silent=False):
@@ -1131,7 +1130,7 @@ class Commands:
             await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         regex = ' '.join(command[1:])
-        found = runtime_config.markov.find_words(regex)
+        found = bc.markov.find_words(regex)
         await self.response(message, "Found {} words in model: {}".format(str(len(found)), str(found)), silent)
 
     async def _dropmarkov(self, message, command, silent=False):
@@ -1140,7 +1139,7 @@ class Commands:
         if len(command) > 1:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
-        runtime_config.markov.__init__()
+        bc.markov.__init__()
         await self.response(message, "Markov database has been dropped!", silent)
 
     async def _img(self, message, command, silent=False):
@@ -1335,7 +1334,7 @@ class Commands:
             await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         log.info(str(message.author) + " invoked shutting down the bot")
-        await bot_wrapper.close()
+        await bc.close()
 
     async def _avatar(self, message, command, silent=False):
         """Change bot avatar
@@ -1352,7 +1351,7 @@ class Commands:
                 for file in files:
                     if os.path.splitext(os.path.basename(file))[0] == command[1]:
                         with open(os.path.join("images", file), "rb") as f:
-                            await bot_wrapper.bot_user.edit(avatar=f.read())
+                            await bc.bot_user.edit(avatar=f.read())
                         log.info("{} changed bot avatar to {}".format(
                             str(message.author),
                             command[1]))

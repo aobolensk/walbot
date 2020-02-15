@@ -4,8 +4,7 @@ import psutil
 import yaml
 
 from . import const
-from .config import runtime_config
-from .config import bot_wrapper
+from .config import bc
 from .config import GuildSettings
 from .config import User
 from .config import Config
@@ -24,7 +23,7 @@ class MiniWalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
-        bot_wrapper.bot_user = self.user
+        bc.bot_user = self.user
 
     async def on_message(self, message):
         try:
@@ -61,23 +60,23 @@ def start():
     secret_config = None
     config = None
     try:
-        runtime_config.yaml_loader = yaml.CLoader
+        bc.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")
     except Exception:
-        runtime_config.yaml_loader = yaml.Loader
+        bc.yaml_loader = yaml.Loader
         log.info("Using slow YAML Loader")
     try:
-        runtime_config.yaml_dumper = yaml.CDumper
+        bc.yaml_dumper = yaml.CDumper
         log.info("Using fast YAML Dumper")
     except Exception:
-        runtime_config.yaml_dumper = yaml.Dumper
+        bc.yaml_dumper = yaml.Dumper
         log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
     if os.path.isfile(const.config_path):
         with open(const.config_path, 'r') as f:
             try:
-                config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
                 log.error("yaml.load failed on file: {}".format(const.config_path), exc_info=True)
         config.__init__()
@@ -86,7 +85,7 @@ def start():
     if os.path.isfile(const.secret_config_path):
         with open(const.secret_config_path, 'r') as f:
             try:
-                secret_config = yaml.load(f.read(), Loader=runtime_config.yaml_loader)
+                secret_config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
                 log.error("yaml.load failed on file: {}".format(const.secret_config_path), exc_info=True)
         secret_config.__init__()
