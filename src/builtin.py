@@ -1046,7 +1046,7 @@ class BuiltinCommands:
         """Garbage collect Markov model nodes
     Example: !markovgc"""
         result = bc.markov.gc()
-        result = f"Garbage collected {len(result)} items: {', '.join(result)}"
+        result = "Garbage collected {} items: {}".format(len(result), ', '.join(result))
         await self.response(message, result, silent)
         return result
 
