@@ -23,7 +23,6 @@ class MiniWalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
-        bc.bot_user = self.user
 
     async def on_message(self, message):
         try:
@@ -39,7 +38,8 @@ class MiniWalBot(discord.Client):
                 self.config.users[message.author.id] = User(message.author.id)
             if self.config.users[message.author.id].permission_level < 0:
                 return
-            if not message.content.startswith(self.config.commands_prefix):
+            if (not message.content.startswith(self.config.commands_prefix) and
+               not self.user.mentioned_in(message)):
                 return
             await message.channel.send("<Maintenance break>")
         except Exception:
