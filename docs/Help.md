@@ -164,6 +164,12 @@
     Possible activities: [playing, streaming, watching, listening] \
     Possible bot statuses: [online, idle, dnd, invisible]
 
+**take**: Take first n characters of the string \
+    Examples: \
+        !take 2 hello \
+        !take -2 hello \
+    *This command can be used as subcommand*
+
 **time**: Show current time and bot deployment time \
     Example: !time \
     *This command can be used as subcommand*

@@ -28,6 +28,11 @@ class BuiltinCommands:
                 "len", perform=self._len, permission=0,
                 subcommand=True)
             self.data["len"].is_global = True
+        if "take" not in self.data.keys():
+            self.data["take"] = Command(
+                "take", perform=self._take, permission=0,
+                subcommand=True)
+            self.data["take"].is_global = True
         if "count" not in self.data.keys():
             self.data["count"] = Command(
                 "count", perform=self._count, permission=0,
@@ -303,6 +308,25 @@ class BuiltinCommands:
         """Calculate length of the message
     Example: !len some text"""
         result = str(len(' '.join(command[1:])))
+        await self.response(message, result, silent)
+        return result
+
+    async def _take(self, message, command, silent=False):
+        """Take first n characters of the string
+    Examples:
+        !take 2 hello
+        !take -2 hello"""
+        if len(command) < 2:
+            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return
+        result = ' '.join(command[2:])
+        try:
+            num = int(command[1])
+        except ValueError:
+            await self.response(message, "Second argument of command '{}' should be an integer".format(
+                command[0]), silent)
+            return
+        result = result[:num]
         await self.response(message, result, silent)
         return result
 
