@@ -14,12 +14,12 @@ from .config import bc
 from .config import BackgroundEvent
 from .config import Reaction
 from .config import log
+from .utils import Util
 
 
 class BuiltinCommands:
     def __init__(self):
         self.config = bc.commands.config
-        self.response = bc.commands.response
         self.data = bc.commands.data
 
     def bind(self):
@@ -308,7 +308,7 @@ class BuiltinCommands:
         """Calculate length of the message
     Example: !len some text"""
         result = str(len(' '.join(command[1:])))
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _take(self, message, command, silent=False):
@@ -317,36 +317,36 @@ class BuiltinCommands:
         !take 2 hello
         !take -2 hello"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         result = ' '.join(command[2:])
         try:
             num = int(command[1])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(
+            await Util.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
             return
         result = result[:num]
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _count(self, message, command, silent=False):
         """Count amount of words
     Example: !count some text"""
         result = str(len(command) - 1)
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _ping(self, message, command, silent=False):
         """Check whether the bot is active
     Example: !ping"""
-        await self.response(message, "Pong! " + message.author.mention, silent)
+        await Util.response(message, "Pong! " + message.author.mention, silent)
 
     async def _spoiler(self, message, command, silent=False):
         """Mark text as spoiler
     Example: !spoiler hello"""
         result = "||" + ' '.join(command[1:]) + "||"
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _profile(self, message, command, silent=False):
@@ -359,7 +359,7 @@ class BuiltinCommands:
         elif len(command) == 2:
             info = message.guild.get_member(message.mentions[0].id)
         else:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = message.author.mention + '\n'
         result += "User: " + str(info) + '\n'
@@ -370,7 +370,7 @@ class BuiltinCommands:
             if status != "offline"]
         result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
         result += "Created at: " + str(info.created_at) + '\n'
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
 
     async def _help(self, message, command, silent=False):
         """Print list of commands and get examples
@@ -397,12 +397,12 @@ class BuiltinCommands:
             )
             for command in commands:
                 embed.add_field(name=command[0], value=command[1], inline=False)
-            await self.response(message, None, silent, embed=embed)
+            await Util.response(message, None, silent, embed=embed)
         elif len(command) == 2:
             if command[1] in self.data:
                 command = self.data[command[1]]
             else:
-                await self.response(message, "Unknown command '{}'".format(command[1]), silent)
+                await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
                 return
             result = command.name + ": "
             if command.perform is not None:
@@ -413,57 +413,57 @@ class BuiltinCommands:
             result += "    Required permission level: {}\n".format(command.permission)
             if command.subcommand:
                 result += "    This command can be used as subcommand\n"
-            await self.response(message, result, silent)
+            await Util.response(message, result, silent)
         else:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
 
     async def _addcmd(self, message, command, silent=False):
         """Add command
     Example: !addcmd hello Hello!"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         command_name = command[1]
         if command_name in self.data.keys():
-            await self.response(message, "Command {} already exists".format(command_name), silent)
+            await Util.response(message, "Command {} already exists".format(command_name), silent)
             return
         self.data[command_name] = Command(command_name, message=' '.join(command[2:]))
         self.data[command_name].channels.append(message.channel.id)
-        await self.response(message, "Command '{}' -> '{}' successfully added".format(
+        await Util.response(message, "Command '{}' -> '{}' successfully added".format(
             command_name, self.data[command_name].message), silent)
 
     async def _updcmd(self, message, command, silent=False):
         """Update command (works only for commands that already exist)
     Example: !updcmd hello Hello!"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         command_name = command[1]
         if command_name in self.data.keys():
             if self.data[command_name].message is None:
-                await self.response(message, "Command '{}' is not editable".format(command_name), silent)
+                await Util.response(message, "Command '{}' is not editable".format(command_name), silent)
                 return
             self.data[command_name].message = ' '.join(command[2:])
-            await self.response(message, "Command '{}' -> '{}' successfully updated".format(
+            await Util.response(message, "Command '{}' -> '{}' successfully updated".format(
                 command_name, self.data[command_name].message), silent)
             return
-        await self.response(message, "Command '{}' does not exist".format(command_name), silent)
+        await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
     async def _delcmd(self, message, command, silent=False):
         """Delete command
     Example: !delcmd hello"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         command_name = command[1]
         if command_name in self.data.keys():
             self.data.pop(command_name, None)
-            await self.response(message, "Command '{}' successfully deleted".format(command_name), silent)
+            await Util.response(message, "Command '{}' successfully deleted".format(command_name), silent)
             return
-        await self.response(message, "Command '{}' does not exist".format(command_name), silent)
+        await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
     async def _enablecmd(self, message, command, silent=False):
         """Enable command in specified scope
@@ -472,29 +472,29 @@ class BuiltinCommands:
         !enablecmd ping guild
         !enablecmd ping global"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         command_name = command[1]
         if command_name in self.data.keys():
             if command[2] == "channel":
                 if message.channel.id not in self.data[command_name].channels:
                     self.data[command_name].channels.append(message.channel.id)
-                await self.response(message, "Command '{}' is enabled in this channel".format(command_name), silent)
+                await Util.response(message, "Command '{}' is enabled in this channel".format(command_name), silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
                     if channel.id not in self.data[command_name].channels:
                         self.data[command_name].channels.append(channel.id)
-                await self.response(message, "Command '{}' is enabled in this guild".format(command_name), silent)
+                await Util.response(message, "Command '{}' is enabled in this guild".format(command_name), silent)
             elif command[2] == "global":
                 self.data[command_name].is_global = True
-                await self.response(message, "Command '{}' is enabled in global scope".format(command_name), silent)
+                await Util.response(message, "Command '{}' is enabled in global scope".format(command_name), silent)
             else:
-                await self.response(message, "Unknown scope '{}'".format(command[2]), silent)
+                await Util.response(message, "Unknown scope '{}'".format(command[2]), silent)
             return
-        await self.response(message, "Command '{}' does not exist".format(command_name), silent)
+        await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
     async def _disablecmd(self, message, command, silent=False):
         """Disable command in specified scope
@@ -503,63 +503,63 @@ class BuiltinCommands:
         !disablecmd ping guild
         !disablecmd ping global"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         command_name = command[1]
         if command_name in self.data.keys():
             if command[2] == "channel":
                 if message.channel.id in self.data[command_name].channels:
                     self.data[command_name].channels.remove(message.channel.id)
-                await self.response(message, "Command '{}' is disabled in this channel".format(command_name), silent)
+                await Util.response(message, "Command '{}' is disabled in this channel".format(command_name), silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
                     if channel.id in self.data[command_name].channels:
                         self.data[command_name].channels.remove(channel.id)
-                await self.response(message, "Command '{}' is disabled in this guild".format(command_name), silent)
+                await Util.response(message, "Command '{}' is disabled in this guild".format(command_name), silent)
             elif command[2] == "global":
                 self.data[command_name].is_global = False
-                await self.response(message, "Command '{}' is disabled in global scope".format(command_name), silent)
+                await Util.response(message, "Command '{}' is disabled in global scope".format(command_name), silent)
             else:
-                await self.response(message, "Unknown scope '{}'".format(command[2]), silent)
+                await Util.response(message, "Unknown scope '{}'".format(command[2]), silent)
             return
-        await self.response(message, "Command '{}' does not exist".format(command_name), silent)
+        await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
     async def _permcmd(self, message, command, silent=False):
         """Set commands permission
     Example: !permcmd ping 0"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         command_name = command[1]
         try:
             perm = int(command[2])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(
+            await Util.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
         if command_name in self.data.keys():
             self.data[command_name].permission = perm
-            await self.response(message, "Set permission level {} for command '{}'".format(
+            await Util.response(message, "Set permission level {} for command '{}'".format(
                 command[2], command_name), silent)
             return
-        await self.response(message, "Command '{}' does not exist".format(command_name), silent)
+        await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
     async def _timescmd(self, message, command, silent=False):
         """Print how many times command was invoked
     Example: !timescmd echo"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if command[1] not in self.data.keys():
-            await self.response(message, "Unknown command '{}'".format(command[1]), silent)
+            await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
         com = self.data[command[1]]
-        await self.response(message, "Command '{}' was invoked {} times".format(
+        await Util.response(message, "Command '{}' was invoked {} times".format(
             command[1],
             str(com.times_called if hasattr(com, "times_called") else 0)), silent)
 
@@ -567,23 +567,23 @@ class BuiltinCommands:
         """Set user permission
     Example: !permcmd @nickname 0"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         try:
             perm = int(command[2])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(
+            await Util.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
         user_id = int(command[1][2:-1])
         for user in self.config.users.keys():
             if self.config.users[user].id == user_id:
                 self.config.users[user].permission_level = perm
-                await self.response(message, "User permissions are set to {}".format(command[2]), silent)
+                await Util.response(message, "User permissions are set to {}".format(command[2]), silent)
                 return
-        await self.response(message, "User '{}' is not found".format(command[1]), silent)
+        await Util.response(message, "User '{}' is not found".format(command[1]), silent)
 
     async def _whitelist(self, message, command, silent=False):
         """Bot's whitelist
@@ -592,52 +592,52 @@ class BuiltinCommands:
         !whitelist add
         !whitelist remove"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if command[1] == "enable":
             self.config.guilds[message.channel.guild.id].is_whitelisted = True
-            await self.response(message, "This guild is whitelisted for bot", silent)
+            await Util.response(message, "This guild is whitelisted for bot", silent)
         elif command[1] == "disable":
             self.config.guilds[message.channel.guild.id].is_whitelisted = False
-            await self.response(message, "This guild is not whitelisted for bot", silent)
+            await Util.response(message, "This guild is not whitelisted for bot", silent)
         elif command[1] == "add":
             self.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
-            await self.response(message, "This channel is added to bot's whitelist", silent)
+            await Util.response(message, "This channel is added to bot's whitelist", silent)
         elif command[1] == "remove":
             self.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
-            await self.response(message, "This channel is removed from bot's whitelist", silent)
+            await Util.response(message, "This channel is removed from bot's whitelist", silent)
         else:
-            await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
+            await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _addreaction(self, message, command, silent=False):
         """Add reaction
     Example: !addreaction emoji regex"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
-        await self.response(message, "Reaction '{}' on '{}' successfully added".format(
+        await Util.response(message, "Reaction '{}' on '{}' successfully added".format(
             command[1], ' '.join(command[2:])), silent)
 
     async def _updreaction(self, message, command, silent=False):
         """Update reaction
     Example: !updreaction index emoji regex"""
         if len(command) < 4:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         try:
             index = int(command[1])
         except Exception:
-            await self.response(message, "Second parameter for '{}' should an index (integer)".format(
+            await Util.response(message, "Second parameter for '{}' should an index (integer)".format(
                 command[0]), silent)
         if not (index >= 0 and index < len(self.config.reactions)):
-            await self.response(message, "Incorrect index of reaction!", silent)
+            await Util.response(message, "Incorrect index of reaction!", silent)
             return
         self.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
-        await self.response(message, "Reaction '{}' on '{}' successfully updated".format(
+        await Util.response(message, "Reaction '{}' on '{}' successfully updated".format(
             command[1], ' '.join(command[2:])), silent)
 
     async def _delreaction(self, message, command, silent=False):
@@ -646,20 +646,20 @@ class BuiltinCommands:
         !delreaction emoji
         !delreaction index"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         index = -1
         try:
             index = int(command[1])
             if not (index >= 0 and index < len(self.config.reactions)):
-                await self.response(message, "Incorrect index of reaction!", silent)
+                await Util.response(message, "Incorrect index of reaction!", silent)
                 return
             reaction = self.config.reactions[index]
             self.config.reactions.pop(index)
-            await self.response(message, "Reaction '{}' -> '{}' successfully removed".format(
+            await Util.response(message, "Reaction '{}' -> '{}' successfully removed".format(
                 reaction.regex, reaction.emoji), silent)
         except Exception:
             i = 0
@@ -668,7 +668,7 @@ class BuiltinCommands:
                     self.config.reactions.pop(i)
                 else:
                     i += 1
-            await self.response(message, "Reaction '{}' successfully removed".format(command[1]), silent)
+            await Util.response(message, "Reaction '{}' successfully removed".format(command[1]), silent)
 
     async def _listreaction(self, message, command, silent=False):
         """Show list of reactions
@@ -677,9 +677,9 @@ class BuiltinCommands:
         for reaction in self.config.reactions:
             result += reaction.emoji + ": " + reaction.regex + '\n'
         if len(result) > 0:
-            await self.response(message, result, silent)
+            await Util.response(message, result, silent)
         else:
-            await self.response(message, "No reactions found!", silent)
+            await Util.response(message, "No reactions found!", silent)
 
     async def _wme(self, message, command, silent=False):
         """Send direct message to author with something
@@ -758,36 +758,36 @@ class BuiltinCommands:
         !version
         !version short"""
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = self.config.get_version()
         if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
             result = result[:7]
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _about(self, message, command, silent=False):
         """Get information about the bot
     Example: !about"""
         result = "Source code: <https://github.com/aobolensk/walbot>"
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
 
     async def _addbgevent(self, message, command, silent=False):
         """Add background event
     Example: !addbgevent 60 ping"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         try:
             duration = int(command[1])
         except ValueError:
-            await self.response(message, "Second parameter for '{}' should be duration in seconds".format(
+            await Util.response(message, "Second parameter for '{}' should be duration in seconds".format(
                 command[0]), silent)
             return
         message.content = self.config.commands_prefix + ' '.join(command[2:])
         bc.background_events.append(BackgroundEvent(
             self.config, message.channel, message, duration))
-        await self.response(message, "Successfully added background event '{}' with period {}".format(
+        await Util.response(message, "Successfully added background event '{}' with period {}".format(
             message.content, str(duration)
         ), silent)
 
@@ -800,72 +800,72 @@ class BuiltinCommands:
                 str(index), event.message.content, str(event.period)
             )
         if len(result) > 0:
-            await self.response(message, result, silent)
+            await Util.response(message, result, silent)
         else:
-            await self.response(message, "No background events found!", silent)
+            await Util.response(message, "No background events found!", silent)
 
     async def _delbgevent(self, message, command, silent=False):
         """Delete background event
     Example: !delbgevent 0"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         try:
             index = int(command[1])
         except ValueError:
-            await self.response(message, "Second parameter for '{}' should be an index of background event".format(
+            await Util.response(message, "Second parameter for '{}' should be an index of background event".format(
                 command[0]), silent)
             return
         if index >= 0 and index < len(bc.background_events):
             bc.background_events[index].cancel()
             del bc.background_events[index]
-        await self.response(message, "Successfully deleted background task!", silent)
+        await Util.response(message, "Successfully deleted background task!", silent)
 
     async def _random(self, message, command, silent=False):
         """Get random number in range [left, right]
     Example: !random 5 10"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         try:
             left = int(command[1])
             right = int(command[2])
         except ValueError:
-            await self.response(message, "Range should be an integer!", silent)
+            await Util.response(message, "Range should be an integer!", silent)
             return
         if left > right:
-            await self.response(message, "Left border should be less or equal than right", silent)
+            await Util.response(message, "Left border should be less or equal than right", silent)
             return
         result = str(random.randint(left, right))
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _randselect(self, message, command, silent=False):
         """Get random option among provided strings
     Example: !randselect a b c"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         index = random.randint(1, len(command) - 1)
         result = command[index]
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _silent(self, message, command, silent=False):
         """Make the following command silent (without any output to the chat)
     Example: !silent ping"""
         if len(command) == 1:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         command = command[1:]
         if command[0] not in self.data.keys():
-            await self.response(message, "Unknown command '{}'".format(command[0]), silent)
+            await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
             actor = self.data[command[0]]
             await actor.run(message, command, None, silent=True)
@@ -874,24 +874,24 @@ class BuiltinCommands:
         """Show current time and bot deployment time
     Example: !time"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = str(datetime.datetime.now()).split('.')[0]
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _uptime(self, message, command, silent=False):
         """Show bot uptime
     Example: !uptime"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         days, remainder = divmod(
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         result = "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _status(self, message, command, silent=False):
@@ -920,23 +920,23 @@ class BuiltinCommands:
         elif command[1] == "invisible":
             await bc.change_presence(status=discord.Status.invisible)
         else:
-            await self.response(message, "Unknown type of activity", silent)
+            await Util.response(message, "Unknown type of activity", silent)
 
     async def _forchannel(self, message, command, silent=False):
         """Executes command for channel
     Example: !forchannel <channel_id> ping"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         try:
             channel_id = int(command[1])
         except ValueError:
-            await self.response(message, "Second argument of command '{}' should be an integer".format(
+            await Util.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
         message.channel = bc.get_channel(channel_id)
         command = command[2:]
         if command[0] not in self.data.keys():
-            await self.response(message, "Unknown command '{}'".format(command[0]), silent)
+            await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
             actor = self.data[command[0]]
             await actor.run(message, command, None, silent)
@@ -945,10 +945,10 @@ class BuiltinCommands:
         """Get channel ID
     Example: !channelid"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = str(message.channel.id)
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _addalias(self, message, command, silent=False):
@@ -956,22 +956,22 @@ class BuiltinCommands:
     Usage: !addalias <command> <alias>
     Example: !addalias ping pong"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if command[1] not in self.data.keys():
-            await self.response(message, "Unknown command '{}'".format(command[1]), silent)
+            await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
         if command[2] in self.data.keys():
-            await self.response(message, "Command '{}' already exists".format(command[2]), silent)
+            await Util.response(message, "Command '{}' already exists".format(command[2]), silent)
             return
         if command[2] in bc.commands.aliases.keys():
-            await self.response(message, "Alias '{}' already exists".format(command[2]), silent)
+            await Util.response(message, "Alias '{}' already exists".format(command[2]), silent)
             return
         bc.commands.aliases[command[2]] = command[1]
-        await self.response(message, "Alias '{}' for '{}' was successfully created".format(
+        await Util.response(message, "Alias '{}' for '{}' was successfully created".format(
             command[2], command[1]), silent)
 
     async def _delalias(self, message, command, silent=False):
@@ -979,28 +979,28 @@ class BuiltinCommands:
     Usage: !delalias <alias>
     Example: !delalias pong"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if command[1] not in bc.commands.aliases.keys():
-            await self.response(message, "Alias '{}' does not exist".format(command[1]), silent)
+            await Util.response(message, "Alias '{}' does not exist".format(command[1]), silent)
             return
         bc.commands.aliases.pop(command[1])
-        await self.response(message, "Alias '{}' was successfully deleted".format(command[1]), silent)
+        await Util.response(message, "Alias '{}' was successfully deleted".format(command[1]), silent)
 
     async def _listalias(self, message, command, silent=False):
         """Show list of aliases
     Example: !listalias"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = ""
         for alias, command in bc.commands.aliases.items():
             result += alias + " -> " + command + '\n'
         if len(result) > 0:
-            await self.response(message, result, silent)
+            await Util.response(message, result, silent)
 
     async def _markov(self, message, command, silent=False):
         """Generate message using Markov chain
@@ -1009,7 +1009,7 @@ class BuiltinCommands:
         if bc.bot_user.mentioned_in(message):
             result += message.author.mention + ' '
         result += bc.markov.generate()
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _markovgc(self, message, command, silent=False):
@@ -1017,7 +1017,7 @@ class BuiltinCommands:
     Example: !markovgc"""
         result = bc.markov.gc()
         result = "Garbage collected {} items: {}".format(len(result), ', '.join(result))
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _markovlog(self, message, command, silent=False):
@@ -1027,68 +1027,68 @@ class BuiltinCommands:
         !markovlog enable
         !markovlog disable"""
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) == 1:
             if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                await self.response(message, "Adding messages to model is enabled for this channel", silent)
+                await Util.response(message, "Adding messages to model is enabled for this channel", silent)
             else:
-                await self.response(message, "Adding messages to model is disabled for this channel", silent)
+                await Util.response(message, "Adding messages to model is disabled for this channel", silent)
             return
         if command[1] == "enable":
             if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                await self.response(message, "Adding messages to model is already enabled for this channel", silent)
+                await Util.response(message, "Adding messages to model is already enabled for this channel", silent)
             else:
                 self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
-                await self.response(
+                await Util.response(
                     message, "Adding messages to model is successfully enabled for this channel", silent)
         elif command[1] == "disable":
             if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
                 self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
-                await self.response(
+                await Util.response(
                     message, "Adding messages to model is successfully disabled for this channel", silent)
             else:
-                await self.response(message, "Adding messages to model is already disabled for this channel", silent)
+                await Util.response(message, "Adding messages to model is already disabled for this channel", silent)
         else:
-            await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
+            await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _delmarkov(self, message, command, silent=False):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         regex = ' '.join(command[1:])
         removed = bc.markov.del_words(regex)
-        await self.response(message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)), silent)
+        await Util.response(message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)), silent)
 
     async def _findmarkov(self, message, command, silent=False):
         """Match words in Markov model using regex
     Example: !findmarkov hello"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         regex = ' '.join(command[1:])
         found = bc.markov.find_words(regex)
-        await self.response(message, "Found {} words in model: {}".format(str(len(found)), str(found)), silent)
+        await Util.response(message, "Found {} words in model: {}".format(str(len(found)), str(found)), silent)
 
     async def _dropmarkov(self, message, command, silent=False):
         """Drop Markov database
     Example: !dropmarkov"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         bc.markov.__init__()
-        await self.response(message, "Markov database has been dropped!", silent)
+        await Util.response(message, "Markov database has been dropped!", silent)
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
@@ -1096,13 +1096,13 @@ class BuiltinCommands:
                     if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
                         await message.channel.send(file=discord.File(os.path.join("images", file)))
                         return
-        await self.response(message, "Image {} is not found!".format(command[1]), silent)
+        await Util.response(message, "Image {} is not found!".format(command[1]), silent)
 
     async def _listimg(self, message, command, silent=False):
         """List of available images for !img command
     Example: !listimg"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         result = []
         for root, _, files in os.walk("images"):
@@ -1111,33 +1111,33 @@ class BuiltinCommands:
                     result.append(os.path.splitext(os.path.basename(file))[0])
         result.sort()
         if len(result) > 0:
-            await self.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
+            await Util.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
         else:
-            await self.response(message, "No available images found!", silent)
+            await Util.response(message, "No available images found!", silent)
 
     async def _addimg(self, message, command, silent=False):
         """Add image for !img command
     Example: !addimg name url"""
         if len(command) < 3:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 3:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         name = command[1]
         if not re.match(const.FILENAME_REGEX, name):
-            await self.response(message, "Incorrect name '{}'".format(name), silent)
+            await Util.response(message, "Incorrect name '{}'".format(name), silent)
             return
         url = command[2]
         ext = url.split('.')[-1]
         if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
-            await self.response(message, "Please, provide direct link to image", silent)
+            await Util.response(message, "Please, provide direct link to image", silent)
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
                 for file in files:
                     if name == os.path.splitext(os.path.basename(file))[0]:
-                        await self.response(message, "Image '{}' already exists".format(name), silent)
+                        await Util.response(message, "Image '{}' already exists".format(name), silent)
                         return
         if not os.path.exists("images"):
             os.makedirs("images")
@@ -1145,32 +1145,32 @@ class BuiltinCommands:
             try:
                 f.write(requests.get(url).content)
             except Exception:
-                await self.response(message, "Image downloading failed!", silent)
+                await Util.response(message, "Image downloading failed!", silent)
                 log.error("Image downloading failed!", exc_info=True)
                 return
-        await self.response(message, "Image '{}' successfully added!".format(name), silent)
+        await Util.response(message, "Image '{}' successfully added!".format(name), silent)
 
     async def _delimg(self, message, command, silent=False):
         """Delete image for !img command
     Example: !delimg name"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         name = command[1]
         if not re.match(const.FILENAME_REGEX, name):
-            await self.response(message, "Incorrect name '{}'".format(name), silent)
+            await Util.response(message, "Incorrect name '{}'".format(name), silent)
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
                 for file in files:
                     if name == os.path.splitext(os.path.basename(file))[0]:
                         os.remove(os.path.join("images", file))
-                        await self.response(message, "Successfully removed image '{}'".format(name), silent)
+                        await Util.response(message, "Successfully removed image '{}'".format(name), silent)
                         return
-        await self.response(message, "Image '{}' not found!".format(name), silent)
+        await Util.response(message, "Image '{}' not found!".format(name), silent)
 
     async def _reactionwl(self, message, command, silent=False):
         """Add/delete channel from reaction whitelist
@@ -1179,57 +1179,57 @@ class BuiltinCommands:
         !reactionwl add
         !reactionwl delete"""
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) == 1:
             if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                await self.response(message, "Adding reactions is enabled for this channel", silent)
+                await Util.response(message, "Adding reactions is enabled for this channel", silent)
             else:
-                await self.response(message, "Adding reactions is disabled for this channel", silent)
+                await Util.response(message, "Adding reactions is disabled for this channel", silent)
             return
         if command[1] == "add":
             if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                await self.response(message, "Adding reactions is already enabled for this channel", silent)
+                await Util.response(message, "Adding reactions is already enabled for this channel", silent)
             else:
                 self.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
-                await self.response(
+                await Util.response(
                     message, "Adding reactions is successfully enabled for this channel", silent)
         elif command[1] == "delete":
             if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
                 self.config.guilds[message.channel.guild.id].reactions_whitelist.discard(message.channel.id)
-                await self.response(
+                await Util.response(
                     message, "Adding reactions is successfully disabled for this channel", silent)
             else:
-                await self.response(message, "Adding reactions is already disabled for this channel", silent)
+                await Util.response(message, "Adding reactions is already disabled for this channel", silent)
         else:
-            await self.response(message, "Unknown argument '{}'".format(command[1]), silent)
+            await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _tts(self, message, command, silent=False):
         """Send text-to-speech (TTS) message
     Example: !tts Hello!"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         text = ' '.join(command[1:])
-        await self.response(message, text, silent, tts=True)
+        await Util.response(message, text, silent, tts=True)
         log.debug("Sent TTS message: {}".format(text))
 
     async def _urlencode(self, message, command, silent=False):
         """Urlencode string
     Example: !urlencode hello, world!"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         result = ' '.join(command[1:])
         result = urllib.request.quote(result.encode("cp1251"))
-        await self.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _emojify(self, message, command, silent=False):
         """Emojify text
     Example: !emojify Hello!"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         text = ' '.join(command[1:]).lower()
         result = ""
@@ -1245,14 +1245,14 @@ class BuiltinCommands:
                 result += text[i]
         result = result.strip()
         if len(result) > 0:
-            await self.response(message, result, silent)
+            await Util.response(message, result, silent)
         return result
 
     async def _demojify(self, message, command, silent=False):
         """Demojify text
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         text = ' '.join(command[1:]).lower()
         result = ""
@@ -1263,14 +1263,14 @@ class BuiltinCommands:
                 result += text[i]
         result = result.strip()
         if len(result) > 0:
-            await self.response(message, result, silent)
+            await Util.response(message, result, silent)
         return result
 
     async def _shutdown(self, message, command, silent=False):
         """Shutdown the bot
     Example: !shutdown"""
         if len(command) > 1:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         log.info(str(message.author) + " invoked shutting down the bot")
         await bc.close()
@@ -1280,10 +1280,10 @@ class BuiltinCommands:
     Example: !avatar <image>
     Hint: Use !listimg for list of available images"""
         if len(command) < 2:
-            await self.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
             return
         if len(command) > 2:
-            await self.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
@@ -1295,4 +1295,4 @@ class BuiltinCommands:
                             str(message.author),
                             command[1]))
                         return
-        await self.response(message, "Image {} is not found!".format(command[1]), silent)
+        await Util.response(message, "Image {} is not found!".format(command[1]), silent)

@@ -1,8 +1,5 @@
 import os
 
-from . import const
-from .config import Command
-from .config import log
 from .config import bc
 
 from .builtin import BuiltinCommands
@@ -37,13 +34,3 @@ class Commands:
             result = list(set(result))
             result.sort()
             f.write('\n'.join(result))
-
-    async def response(self, message, content, silent, **kwargs):
-        if not silent:
-            if content:
-                for chunk in Command.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
-                    await message.channel.send(chunk, tts=kwargs.get("tts", False))
-            if kwargs.get("embed", None):
-                await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
-        else:
-            log.info("[SILENT] -> " + content)
