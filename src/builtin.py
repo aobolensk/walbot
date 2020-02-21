@@ -316,8 +316,7 @@ class BuiltinCommands:
     Examples:
         !take 2 hello
         !take -2 hello"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:])
         try:
@@ -354,13 +353,12 @@ class BuiltinCommands:
     Examples:
         !profile
         !profile `@user`"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+            return
         if len(command) == 1:
             info = message.author
         elif len(command) == 2:
             info = message.guild.get_member(message.mentions[0].id)
-        else:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
-            return
         result = message.author.mention + '\n'
         result += "User: " + str(info) + '\n'
         result += "Avatar: <" + str(info.avatar_url) + '>\n'
@@ -377,6 +375,8 @@ class BuiltinCommands:
     Examples:
         !help
         !help help"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+            return
         if len(command) == 1:
             commands = []
             for command in self.data:
@@ -414,14 +414,11 @@ class BuiltinCommands:
             if command.subcommand:
                 result += "    This command can be used as subcommand\n"
             await Util.response(message, result, silent)
-        else:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
 
     async def _addcmd(self, message, command, silent=False):
         """Add command
     Example: !addcmd hello Hello!"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -435,8 +432,7 @@ class BuiltinCommands:
     async def _updcmd(self, message, command, silent=False):
         """Update command (works only for commands that already exist)
     Example: !updcmd hello Hello!"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -452,11 +448,7 @@ class BuiltinCommands:
     async def _delcmd(self, message, command, silent=False):
         """Delete command
     Example: !delcmd hello"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -471,11 +463,7 @@ class BuiltinCommands:
         !enablecmd ping channel
         !enablecmd ping guild
         !enablecmd ping global"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -502,11 +490,7 @@ class BuiltinCommands:
         !disablecmd ping channel
         !disablecmd ping guild
         !disablecmd ping global"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
         if command_name in self.data.keys():
@@ -530,11 +514,7 @@ class BuiltinCommands:
     async def _permcmd(self, message, command, silent=False):
         """Set commands permission
     Example: !permcmd ping 0"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
         try:
@@ -552,8 +532,7 @@ class BuiltinCommands:
     async def _timescmd(self, message, command, silent=False):
         """Print how many times command was invoked
     Example: !timescmd echo"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] not in self.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
@@ -566,11 +545,7 @@ class BuiltinCommands:
     async def _permuser(self, message, command, silent=False):
         """Set user permission
     Example: !permcmd @nickname 0"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         try:
             perm = int(command[2])
@@ -591,11 +566,7 @@ class BuiltinCommands:
         !whitelist enable/disable
         !whitelist add
         !whitelist remove"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] == "enable":
             self.config.guilds[message.channel.guild.id].is_whitelisted = True
@@ -615,8 +586,7 @@ class BuiltinCommands:
     async def _addreaction(self, message, command, silent=False):
         """Add reaction
     Example: !addreaction emoji regex"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3):
             return
         self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
         await Util.response(message, "Reaction '{}' on '{}' successfully added".format(
@@ -625,8 +595,7 @@ class BuiltinCommands:
     async def _updreaction(self, message, command, silent=False):
         """Update reaction
     Example: !updreaction index emoji regex"""
-        if len(command) < 4:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=4):
             return
         try:
             index = int(command[1])
@@ -645,11 +614,7 @@ class BuiltinCommands:
     Examples:
         !delreaction emoji
         !delreaction index"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         index = -1
         try:
@@ -673,6 +638,8 @@ class BuiltinCommands:
     async def _listreaction(self, message, command, silent=False):
         """Show list of reactions
     Example: !listreaction"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
         result = ""
         for reaction in self.config.reactions:
             result += reaction.emoji + ": " + reaction.regex + '\n'
@@ -684,6 +651,8 @@ class BuiltinCommands:
     async def _wme(self, message, command, silent=False):
         """Send direct message to author with something
     Example: !wme Hello!"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
         if message.author.dm_channel is None:
             await message.author.create_dm()
         result = ' '.join(command[1:])
@@ -698,6 +667,8 @@ class BuiltinCommands:
     async def _poll(self, message, command, silent=False):
         """Create poll
     Example: !poll 60 option 1;option 2;option 3"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
         if silent:
             return
         try:
@@ -757,8 +728,7 @@ class BuiltinCommands:
     Examples:
         !version
         !version short"""
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         result = self.config.get_version()
         if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
@@ -775,8 +745,7 @@ class BuiltinCommands:
     async def _addbgevent(self, message, command, silent=False):
         """Add background event
     Example: !addbgevent 60 ping"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3):
             return
         try:
             duration = int(command[1])
@@ -794,6 +763,8 @@ class BuiltinCommands:
     async def _listbgevent(self, message, command, silent=False):
         """Print a list of background events
     Example: !listbgevent"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
         result = ""
         for index, event in enumerate(bc.background_events):
             result += "{}: '{}' every {} seconds\n".format(
@@ -807,11 +778,7 @@ class BuiltinCommands:
     async def _delbgevent(self, message, command, silent=False):
         """Delete background event
     Example: !delbgevent 0"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         try:
             index = int(command[1])
@@ -827,11 +794,7 @@ class BuiltinCommands:
     async def _random(self, message, command, silent=False):
         """Get random number in range [left, right]
     Example: !random 5 10"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         try:
             left = int(command[1])
@@ -849,8 +812,7 @@ class BuiltinCommands:
     async def _randselect(self, message, command, silent=False):
         """Get random option among provided strings
     Example: !randselect a b c"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         index = random.randint(1, len(command) - 1)
         result = command[index]
@@ -860,8 +822,7 @@ class BuiltinCommands:
     async def _silent(self, message, command, silent=False):
         """Make the following command silent (without any output to the chat)
     Example: !silent ping"""
-        if len(command) == 1:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         command = command[1:]
         if command[0] not in self.data.keys():
@@ -873,8 +834,7 @@ class BuiltinCommands:
     async def _time(self, message, command, silent=False):
         """Show current time and bot deployment time
     Example: !time"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = str(datetime.datetime.now()).split('.')[0]
         await Util.response(message, result, silent)
@@ -883,8 +843,7 @@ class BuiltinCommands:
     async def _uptime(self, message, command, silent=False):
         """Show bot uptime
     Example: !uptime"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         days, remainder = divmod(
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
@@ -925,8 +884,7 @@ class BuiltinCommands:
     async def _forchannel(self, message, command, silent=False):
         """Executes command for channel
     Example: !forchannel <channel_id> ping"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3):
             return
         try:
             channel_id = int(command[1])
@@ -944,8 +902,7 @@ class BuiltinCommands:
     async def _channelid(self, message, command, silent=False):
         """Get channel ID
     Example: !channelid"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = str(message.channel.id)
         await Util.response(message, result, silent)
@@ -955,11 +912,7 @@ class BuiltinCommands:
         """Add alias for commands
     Usage: !addalias <command> <alias>
     Example: !addalias ping pong"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         if command[1] not in self.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
@@ -978,11 +931,7 @@ class BuiltinCommands:
         """Delete command alias
     Usage: !delalias <alias>
     Example: !delalias pong"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] not in bc.commands.aliases.keys():
             await Util.response(message, "Alias '{}' does not exist".format(command[1]), silent)
@@ -993,8 +942,7 @@ class BuiltinCommands:
     async def _listalias(self, message, command, silent=False):
         """Show list of aliases
     Example: !listalias"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
         for alias, command in bc.commands.aliases.items():
@@ -1005,6 +953,8 @@ class BuiltinCommands:
     async def _markov(self, message, command, silent=False):
         """Generate message using Markov chain
     Example: !markov"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
         result = ""
         if bc.bot_user.mentioned_in(message):
             result += message.author.mention + ' '
@@ -1015,6 +965,8 @@ class BuiltinCommands:
     async def _markovgc(self, message, command, silent=False):
         """Garbage collect Markov model nodes
     Example: !markovgc"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
         result = bc.markov.gc()
         result = "Garbage collected {} items: {}".format(len(result), ', '.join(result))
         await Util.response(message, result, silent)
@@ -1026,8 +978,7 @@ class BuiltinCommands:
         !markovlog
         !markovlog enable
         !markovlog disable"""
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         if len(command) == 1:
             if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
@@ -1055,8 +1006,7 @@ class BuiltinCommands:
     async def _delmarkov(self, message, command, silent=False):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         regex = ' '.join(command[1:])
         removed = bc.markov.del_words(regex)
@@ -1065,8 +1015,7 @@ class BuiltinCommands:
     async def _findmarkov(self, message, command, silent=False):
         """Match words in Markov model using regex
     Example: !findmarkov hello"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         regex = ' '.join(command[1:])
         found = bc.markov.find_words(regex)
@@ -1075,8 +1024,7 @@ class BuiltinCommands:
     async def _dropmarkov(self, message, command, silent=False):
         """Drop Markov database
     Example: !dropmarkov"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         bc.markov.__init__()
         await Util.response(message, "Markov database has been dropped!", silent)
@@ -1084,11 +1032,7 @@ class BuiltinCommands:
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
@@ -1101,8 +1045,7 @@ class BuiltinCommands:
     async def _listimg(self, message, command, silent=False):
         """List of available images for !img command
     Example: !listimg"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = []
         for root, _, files in os.walk("images"):
@@ -1118,11 +1061,7 @@ class BuiltinCommands:
     async def _addimg(self, message, command, silent=False):
         """Add image for !img command
     Example: !addimg name url"""
-        if len(command) < 3:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 3:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         name = command[1]
         if not re.match(const.FILENAME_REGEX, name):
@@ -1153,11 +1092,7 @@ class BuiltinCommands:
     async def _delimg(self, message, command, silent=False):
         """Delete image for !img command
     Example: !delimg name"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         name = command[1]
         if not re.match(const.FILENAME_REGEX, name):
@@ -1178,8 +1113,7 @@ class BuiltinCommands:
         !reactionwl
         !reactionwl add
         !reactionwl delete"""
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         if len(command) == 1:
             if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
@@ -1207,8 +1141,7 @@ class BuiltinCommands:
     async def _tts(self, message, command, silent=False):
         """Send text-to-speech (TTS) message
     Example: !tts Hello!"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         text = ' '.join(command[1:])
         await Util.response(message, text, silent, tts=True)
@@ -1217,8 +1150,7 @@ class BuiltinCommands:
     async def _urlencode(self, message, command, silent=False):
         """Urlencode string
     Example: !urlencode hello, world!"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[1:])
         result = urllib.request.quote(result.encode("cp1251"))
@@ -1228,8 +1160,7 @@ class BuiltinCommands:
     async def _emojify(self, message, command, silent=False):
         """Emojify text
     Example: !emojify Hello!"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         text = ' '.join(command[1:]).lower()
         result = ""
@@ -1251,8 +1182,7 @@ class BuiltinCommands:
     async def _demojify(self, message, command, silent=False):
         """Demojify text
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         text = ' '.join(command[1:]).lower()
         result = ""
@@ -1269,8 +1199,7 @@ class BuiltinCommands:
     async def _shutdown(self, message, command, silent=False):
         """Shutdown the bot
     Example: !shutdown"""
-        if len(command) > 1:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         log.info(str(message.author) + " invoked shutting down the bot")
         await bc.close()
@@ -1279,11 +1208,7 @@ class BuiltinCommands:
         """Change bot avatar
     Example: !avatar <image>
     Hint: Use !listimg for list of available images"""
-        if len(command) < 2:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
-            return
-        if len(command) > 2:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):

@@ -14,3 +14,13 @@ class Util:
                 await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
         else:
             log.info("[SILENT] -> " + content)
+
+    @staticmethod
+    async def check_args_count(message, command, silent, min=None, max=None):
+        if min and len(command) < min:
+            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            return False
+        if max and len(command) > max:
+            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            return False
+        return True
