@@ -401,6 +401,8 @@ class BuiltinCommands:
         elif len(command) == 2:
             if command[1] in self.data:
                 command = self.data[command[1]]
+            elif command[1] in bc.commands.aliases.keys():
+                command = self.data[bc.commands.aliases[command[1]]]
             else:
                 await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
                 return
