@@ -1021,7 +1021,8 @@ class BuiltinCommands:
             return
         regex = ' '.join(command[1:])
         found = bc.markov.find_words(regex)
-        await Util.response(message, "Found {} words in model: {}".format(str(len(found)), str(found)), silent, suppress_embeds=True)
+        await Util.response(message, "Found {} words in model: {}".format(str(len(found)),
+                            str(found)), silent, suppress_embeds=True)
 
     async def _dropmarkov(self, message, command, silent=False):
         """Drop Markov database
