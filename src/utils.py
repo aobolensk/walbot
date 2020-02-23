@@ -9,9 +9,15 @@ class Util:
         if not silent:
             if content:
                 for chunk in Command.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
-                    await message.channel.send(chunk, tts=kwargs.get("tts", False))
+                    msg = await message.channel.send(chunk, tts=kwargs.get("tts", False))
+                    if kwargs.get("suppress_embeds", False):
+                        print('edit')
+                        await msg.edit(suppress=True)
             if kwargs.get("embed", None):
-                await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
+                msg = await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
+                if kwargs.get("suppress_embeds", False):
+                    print('edit')
+                    await msg.edit(suppress=True)
         else:
             log.info("[SILENT] -> " + content)
 
