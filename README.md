@@ -6,10 +6,19 @@ Discord bot in Python
 Requirements:
 - Python 3.5+
 
-Run:
+Quick start:
 ```shell
 $ python -m pip install -r requirements.txt
 $ python main.py start
+```
+
+Command line options overview:
+```shell
+$ python main.py start          # Start the bot
+$ python main.py stop           # Stop the bot
+$ python main.py restart        # Restart the bot
+$ python main.py suspend        # Start dummy bot (useful for maintenance)
+$ python main.py help           # Get help
 ```
 
 ### How to setup fast YAML loader and dumper?
