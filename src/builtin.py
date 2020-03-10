@@ -298,6 +298,11 @@ class BuiltinCommands:
                 "avatar", perform=self._avatar, permission=1,
                 subcommand=False)
             self.data["avatar"].is_global = True
+        if "message" not in self.data.keys():
+            self.data["message"] = Command(
+                "message", perform=self._message, permission=0,
+                subcommand=True)
+            self.data["message"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=0,
@@ -1224,3 +1229,20 @@ class BuiltinCommands:
                             command[1]))
                         return
         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
+
+    async def _message(self, message, command, silent=False):
+        """Get message by its order number (from the end of channel history)
+    Example: !message"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        try:
+            number = int(command[1])
+        except ValueError:
+            await message.channel.send("Message number should be an integer")
+            return
+        if number <= 0:
+            Util.response(message, "Invalid message number", silent)
+        result = await message.channel.history(limit=number+1).flatten()
+        result = result[-1].content
+        await Util.response(message, result, silent)
+        return result

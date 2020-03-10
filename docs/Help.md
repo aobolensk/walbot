@@ -116,6 +116,10 @@
         !markovlog enable \
         !markovlog disable
 
+**message**: Get message by its order number (from the end of channel history) \
+    Example: !message \
+    *This command can be used as subcommand*
+
 **permcmd**: Set commands permission \
     Example: !permcmd ping 0
 
