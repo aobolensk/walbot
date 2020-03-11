@@ -954,8 +954,7 @@ class BuiltinCommands:
         result = ""
         for alias, command in bc.commands.aliases.items():
             result += alias + " -> " + command + '\n'
-        if len(result) > 0:
-            await Util.response(message, result, silent)
+        await Util.response(message, result, silent)
 
     async def _markov(self, message, command, silent=False):
         """Generate message using Markov chain
@@ -1183,8 +1182,7 @@ class BuiltinCommands:
                 is_emoji = False
                 result += text[i]
         result = result.strip()
-        if len(result) > 0:
-            await Util.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _demojify(self, message, command, silent=False):
@@ -1200,8 +1198,7 @@ class BuiltinCommands:
             else:
                 result += text[i]
         result = result.strip()
-        if len(result) > 0:
-            await Util.response(message, result, silent)
+        await Util.response(message, result, silent)
         return result
 
     async def _shutdown(self, message, command, silent=False):
