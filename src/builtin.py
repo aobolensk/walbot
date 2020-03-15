@@ -698,7 +698,7 @@ class BuiltinCommands:
             try:
                 await poll_message.add_reaction(emoji.alphabet[i])
             except Exception:
-                pass
+                log.debug("Error on add_reaction: {}".format(emoji.alphabet[i]))
         timestamps = [60]
         timestamps = [x for x in timestamps if x < duration]
         timestamps.append(duration)
@@ -728,7 +728,7 @@ class BuiltinCommands:
                     try:
                         await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
                     except Exception:
-                        pass
+                        log.debug("Error on remove_reaction: {}".format(emoji.alphabet[i]))
                 return
 
     async def _version(self, message, command, silent=False):
