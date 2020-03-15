@@ -681,7 +681,9 @@ class BuiltinCommands:
         try:
             duration = int(command[1])
         except ValueError:
-            await Util.response(message, "Second parameter for '{}' should be duration in seconds".format(command[0]), silent)
+            await Util.response(message,
+                                "Second parameter for '{}' should be duration in seconds"
+                                .format(command[0]), silent)
             return
         options = ' '.join(command[2:])
         options = options.split(';')
