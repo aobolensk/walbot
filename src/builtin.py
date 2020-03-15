@@ -1239,6 +1239,11 @@ class BuiltinCommands:
         if number <= 0:
             await Util.response(message, "Invalid message number", silent)
             return
+        if number > const.MAX_MESSAGE_HISTORY_DEPTH:
+            await Util.response(message,
+                                "Message search depth is too big (it can't be more than {})"
+                                .format(const.MAX_MESSAGE_HISTORY_DEPTH), silent)
+            return
         result = await message.channel.history(limit=number+1).flatten()
         result = result[-1].content
         await Util.response(message, result, silent)
