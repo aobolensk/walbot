@@ -174,7 +174,7 @@
         !take -2 hello \
     *This command can be used as subcommand*
 
-**time**: Show current time and bot deployment time \
+**time**: Show current time \
     Example: !time \
     *This command can be used as subcommand*
 

@@ -838,7 +838,7 @@ class BuiltinCommands:
             await actor.run(message, command, None, silent=True)
 
     async def _time(self, message, command, silent=False):
-        """Show current time and bot deployment time
+        """Show current time
     Example: !time"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
