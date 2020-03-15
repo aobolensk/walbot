@@ -681,12 +681,14 @@ class BuiltinCommands:
         try:
             duration = int(command[1])
         except ValueError:
-            await message.channel.send("Second parameter for '{}' should be duration in seconds".format(command[0]))
+            await Util.response(message,
+                                "Second parameter for '{}' should be duration in seconds"
+                                .format(command[0]), silent)
             return
         options = ' '.join(command[2:])
         options = options.split(';')
         if len(options) > const.MAX_POLL_OPTIONS:
-            await message.channel.send("Too many options for poll")
+            await Util.response(message, "Too many options for poll", silent)
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
@@ -708,7 +710,7 @@ class BuiltinCommands:
             await asyncio.sleep(timestamp)
             remaining -= timestamp
             if remaining > 0:
-                await message.channel.send("Poll is still going! {} seconds left".format(remaining))
+                await Util.response(message, "Poll is still going! {} seconds left".format(remaining), silent)
             else:
                 poll_message = poll_message.id
                 poll_message = await message.channel.fetch_message(poll_message)
@@ -721,7 +723,7 @@ class BuiltinCommands:
                 result_message = "Time is up! Results:\n"
                 for result in results:
                     result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
-                await message.channel.send(result_message)
+                await Util.response(message, result_message, silent)
                 for i in range(len(options)):
                     try:
                         await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
@@ -1234,10 +1236,16 @@ class BuiltinCommands:
         try:
             number = int(command[1])
         except ValueError:
-            await message.channel.send("Message number should be an integer")
+            await Util.response(message, "Message number should be an integer", silent)
             return
         if number <= 0:
-            Util.response(message, "Invalid message number", silent)
+            await Util.response(message, "Invalid message number", silent)
+            return
+        if number > const.MAX_MESSAGE_HISTORY_DEPTH:
+            await Util.response(message,
+                                "Message search depth is too big (it can't be more than {})"
+                                .format(const.MAX_MESSAGE_HISTORY_DEPTH), silent)
+            return
         result = await message.channel.history(limit=number+1).flatten()
         result = result[-1].content
         await Util.response(message, result, silent)
