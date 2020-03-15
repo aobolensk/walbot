@@ -143,7 +143,7 @@ class GuildSettings:
 class User:
     def __init__(self, id):
         self.id = id
-        self.permission_level = 0
+        self.permission_level = const.Permission.USER.value
 
 
 class Config:
