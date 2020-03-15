@@ -69,6 +69,8 @@ class WalBot(discord.Client):
             log.info("<" + str(message.id) + "> " + str(message.author) + " -> " + message.content)
             if message.author.id == self.user.id:
                 return
+            if isinstance(message.channel, discord.DMChannel):
+                return
             if message.channel.guild.id is None:
                 return
             if self.config.guilds[message.channel.guild.id].is_whitelisted:
