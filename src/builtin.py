@@ -685,8 +685,7 @@ class BuiltinCommands:
             return
         options = ' '.join(command[2:])
         options = options.split(';')
-        MAX_POLL_OPTIONS = 20
-        if len(options) > MAX_POLL_OPTIONS:
+        if len(options) > const.MAX_POLL_OPTIONS:
             await message.channel.send("Too many options for poll")
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
