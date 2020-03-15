@@ -1237,7 +1237,8 @@ class BuiltinCommands:
             await message.channel.send("Message number should be an integer")
             return
         if number <= 0:
-            Util.response(message, "Invalid message number", silent)
+            await Util.response(message, "Invalid message number", silent)
+            return
         result = await message.channel.history(limit=number+1).flatten()
         result = result[-1].content
         await Util.response(message, result, silent)
