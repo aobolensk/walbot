@@ -168,10 +168,20 @@
     Possible activities: [playing, streaming, watching, listening] \
     Possible bot statuses: [online, idle, dnd, invisible]
 
-**take**: Take first n characters of the string \
+**take**: Take n characters of the string \
     Examples: \
         !take 2 hello \
+        Result: he \
         !take -2 hello \
+        Result: lo \
+    *This command can be used as subcommand*
+
+**takewords**: Take first n words of the string \
+    Examples: \
+        !takewords 2 a b c \
+        Result: a b \
+        !takewords -2 a b c \
+        Result: b c \
     *This command can be used as subcommand*
 
 **time**: Show current time \

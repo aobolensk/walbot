@@ -33,6 +33,11 @@ class BuiltinCommands:
                 "take", perform=self._take, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["take"].is_global = True
+        if "takewords" not in self.data.keys():
+            self.data["takewords"] = Command(
+                "takewords", perform=self._takewords, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["takewords"].is_global = True
         if "count" not in self.data.keys():
             self.data["count"] = Command(
                 "count", perform=self._count, permission=const.Permission.USER.value,
@@ -336,6 +341,29 @@ class BuiltinCommands:
             result = result[len(result)+num:]
         else:
             result = result[:num]
+        await Util.response(message, result, silent)
+        return result
+
+    async def _takewords(self, message, command, silent=False):
+        """Take first n words of the string
+    Examples:
+        !takewords 2 a b c
+        Result: a b
+        !takewords -2 a b c
+        Result: b c"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        result = command[2:]
+        try:
+            num = int(command[1])
+        except ValueError:
+            await Util.response(message, "Second argument of command '{}' should be an integer".format(
+                command[0]), silent)
+            return
+        if num < 0:
+            result = ' '.join(result[len(result)+num:])
+        else:
+            result = ' '.join(result[:num])
         await Util.response(message, result, silent)
         return result
 
