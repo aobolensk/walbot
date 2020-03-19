@@ -317,10 +317,12 @@ class BuiltinCommands:
         return result
 
     async def _take(self, message, command, silent=False):
-        """Take first n characters of the string
+        """Take n characters of the string
     Examples:
         !take 2 hello
-        !take -2 hello"""
+        Result: he
+        !take -2 hello
+        Result: lo"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:])
@@ -330,7 +332,10 @@ class BuiltinCommands:
             await Util.response(message, "Second argument of command '{}' should be an integer".format(
                 command[0]), silent)
             return
-        result = result[:num]
+        if num < 0:
+            result = result[len(result)+num:]
+        else:
+            result = result[:num]
         await Util.response(message, result, silent)
         return result
 
