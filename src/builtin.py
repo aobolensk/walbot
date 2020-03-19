@@ -345,7 +345,7 @@ class BuiltinCommands:
         return result
 
     async def _takewords(self, message, command, silent=False):
-        """Take first n words of the string
+        """Take n words of the string
     Examples:
         !takewords 2 a b c
         Result: a b

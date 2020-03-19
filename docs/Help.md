@@ -176,7 +176,7 @@
         Result: lo \
     *This command can be used as subcommand*
 
-**takewords**: Take first n words of the string \
+**takewords**: Take n words of the string \
     Examples: \
         !takewords 2 a b c \
         Result: a b \
