@@ -934,6 +934,7 @@ class BuiltinCommands:
                 command[0]), silent)
         message.channel = bc.get_channel(channel_id)
         command = command[2:]
+        message.content = ' '.join(command)
         if command[0] not in self.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
