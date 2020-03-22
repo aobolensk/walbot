@@ -1225,7 +1225,7 @@ class BuiltinCommands:
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        text = ' '.join(command[1:]).lower()
+        text = ''.join(command[1:]).lower()
         result = ""
         for i in range(len(text)):
             if text[i] in emoji.emoji_to_text.keys():
