@@ -191,6 +191,14 @@
 **timescmd**: Print how many times command was invoked \
     Example: !timescmd echo
 
+**tolower**: Convert text to lower case \
+    Example: !tolower SoMe TeXt \
+    *This command can be used as subcommand*
+
+**toupper**: Convert text to upper case \
+    Example: !toupper SoMe TeXt \
+    *This command can be used as subcommand*
+
 **tts**: Send text-to-speech (TTS) message \
     Example: !tts Hello!
 

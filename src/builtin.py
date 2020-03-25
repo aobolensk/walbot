@@ -43,6 +43,16 @@ class BuiltinCommands:
                 "count", perform=self._count, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["count"].is_global = True
+        if "tolower" not in self.data.keys():
+            self.data["tolower"] = Command(
+                "tolower", perform=self._tolower, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["tolower"].is_global = True
+        if "toupper" not in self.data.keys():
+            self.data["toupper"] = Command(
+                "toupper", perform=self._toupper, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["toupper"].is_global = True
         if "ping" not in self.data.keys():
             self.data["ping"] = Command(
                 "ping", perform=self._ping, permission=const.Permission.USER.value,
@@ -371,6 +381,20 @@ class BuiltinCommands:
         """Count amount of words
     Example: !count some text"""
         result = str(len(command) - 1)
+        await Util.response(message, result, silent)
+        return result
+
+    async def _tolower(self, message, command, silent=False):
+        """Convert text to lower case
+    Example: !tolower SoMe TeXt"""
+        result = ' '.join(command[1:]).lower()
+        await Util.response(message, result, silent)
+        return result
+
+    async def _toupper(self, message, command, silent=False):
+        """Convert text to upper case
+    Example: !toupper SoMe TeXt"""
+        result = ' '.join(command[1:]).upper()
         await Util.response(message, result, silent)
         return result
 
