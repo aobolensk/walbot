@@ -1097,7 +1097,7 @@ class BuiltinCommands:
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
-    Example: !img"""
+    Example: !img <image_name>"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         for root, _, files in os.walk("images"):

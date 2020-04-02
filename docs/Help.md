@@ -85,7 +85,7 @@
         !help help
 
 **img**: Send image (use !listimg for list of available images) \
-    Example: !img
+    Example: !img &lt;image_name&gt;
 
 **len**: Calculate length of the message \
     Example: !len some text \
