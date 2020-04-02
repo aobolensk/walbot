@@ -263,6 +263,11 @@ class BuiltinCommands:
                 "img", perform=self._img, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["img"].is_global = True
+        if "wmeimg" not in self.data.keys():
+            self.data["wmeimg"] = Command(
+                "wmeimg", perform=self._wmeimg, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["wmeimg"].is_global = True
         if "listimg" not in self.data.keys():
             self.data["listimg"] = Command(
                 "listimg", perform=self._listimg, permission=const.Permission.USER.value,
@@ -1108,6 +1113,21 @@ class BuiltinCommands:
                                             files=[discord.File(os.path.join("images", file))])
                         return
         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
+
+    async def _wmeimg(self, message, command, silent=False):
+        """Send image in direct message to author
+    Example: !wmeimg <image_name>"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        for root, _, files in os.walk("images"):
+            if root.endswith("images"):
+                for file in files:
+                    if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
+                        if message.author.dm_channel is None:
+                            await message.author.create_dm()
+                        await message.author.dm_channel.send(None,
+                                                             files=[discord.File(os.path.join("images", file))])
+                        return
 
     async def _listimg(self, message, command, silent=False):
         """List of available images for !img command
