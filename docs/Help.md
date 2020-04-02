@@ -85,7 +85,7 @@
         !help help
 
 **img**: Send image (use !listimg for list of available images) \
-    Example: !img
+    Example: !img &lt;image_name&gt;
 
 **len**: Calculate length of the message \
     Example: !len some text \
@@ -230,3 +230,6 @@
 
 **wme**: Send direct message to author with something \
     Example: !wme Hello!
+
+**wmeimg**: Send image in direct message to author \
+    Example: !wmeimg &lt;image_name&gt;
