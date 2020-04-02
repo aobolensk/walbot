@@ -1104,7 +1104,7 @@ class BuiltinCommands:
             if root.endswith("images"):
                 for file in files:
                     if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
-                        await message.channel.send(file=discord.File(os.path.join("images", file)))
+                        await message.channel.send(files=[discord.File(os.path.join("images", file))])
                         return
         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
 
