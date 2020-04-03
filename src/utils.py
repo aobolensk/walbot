@@ -29,9 +29,9 @@ class Util:
     @staticmethod
     async def send_direct_message(message, content, silent, **kwargs):
         if not silent:
+            if message.author.dm_channel is None:
+                await message.author.create_dm()
             if content:
-                if message.author.dm_channel is None:
-                    await message.author.create_dm()
                 for chunk in Command.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                     msg = await message.author.dm_channel.send(
                         chunk,

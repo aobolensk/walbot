@@ -1098,29 +1098,34 @@ class BuiltinCommands:
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
-        for root, _, files in os.walk("images"):
-            if root.endswith("images"):
-                for file in files:
-                    if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
-                        await Util.response(message, None, silent,
-                                            files=[discord.File(os.path.join("images", file))])
-                        return
-        await Util.response(message, "Image {} is not found!".format(command[1]), silent)
+        for i in range(1, len(command)):
+            for root, _, files in os.walk("images"):
+                if root.endswith("images"):
+                    for file in files:
+                        if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
+                            await Util.response(message, None, silent,
+                                                files=[discord.File(os.path.join("images", file))])
+                            break
+                    else:
+                        await Util.response(message, "Image {} is not found!".format(command[1]), silent)
+                    break
 
     async def _wmeimg(self, message, command, silent=False):
         """Send image in direct message to author
     Example: !wmeimg <image_name>"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
-        for root, _, files in os.walk("images"):
-            if root.endswith("images"):
-                for file in files:
-                    if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
-                        await Util.send_direct_message(message, None, silent,
-                                                       files=[discord.File(os.path.join("images", file))])
-                        return
+        for i in range(1, len(command)):
+            for root, _, files in os.walk("images"):
+                if root.endswith("images"):
+                    for file in files:
+                        if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
+                            await Util.send_direct_message(message, None, silent,
+                                                           files=[discord.File(os.path.join("images", file))])
+                            break
+                    break
 
     async def _listimg(self, message, command, silent=False):
         """List of available images for !img command
