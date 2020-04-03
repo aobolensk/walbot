@@ -1111,7 +1111,8 @@ class BuiltinCommands:
                     else:
                         if command[i] in [str(x) for x in message.guild.emojis]:
                             await Util.response(message,
-                                                str([x.url for x in message.guild.emojis][0]), silent)
+                                                str([x.url for x in message.guild.emojis
+                                                     if str(x) == command[i]][0]), silent)
                             break
                         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
                     break
@@ -1132,7 +1133,8 @@ class BuiltinCommands:
                     else:
                         if command[i] in [str(x) for x in message.guild.emojis]:
                             await Util.send_direct_message(message,
-                                                           str([x.url for x in message.guild.emojis][0]), silent)
+                                                           str([x.url for x in message.guild.emojis
+                                                                if str(x) == command[i]][0]), silent)
                             break
                     break
 
