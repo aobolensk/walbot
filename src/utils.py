@@ -15,7 +15,7 @@ class Util:
                         files=kwargs.get("files", None))
                     if kwargs.get("suppress_embeds", False):
                         await msg.edit(suppress=True)
-            else:
+            elif kwargs.get("files", None):
                 msg = await message.channel.send(
                         None,
                         files=kwargs.get("files", None))
@@ -23,6 +23,26 @@ class Util:
                 msg = await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
                 if kwargs.get("suppress_embeds", False):
                     await msg.edit(suppress=True)
+        else:
+            log.info("[SILENT] -> " + content)
+
+    @staticmethod
+    async def send_direct_message(message, content, silent, **kwargs):
+        if not silent:
+            if content:
+                if message.author.dm_channel is None:
+                    await message.author.create_dm()
+                for chunk in Command.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                    msg = await message.author.dm_channel.send(
+                        chunk,
+                        tts=kwargs.get("tts", False),
+                        files=kwargs.get("files", None))
+                    if kwargs.get("suppress_embeds", False):
+                        await msg.edit(suppress=True)
+            elif kwargs.get("files", None):
+                msg = await message.author.dm_channel.send(
+                        None,
+                        files=kwargs.get("files", None))
         else:
             log.info("[SILENT] -> " + content)
 

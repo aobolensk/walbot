@@ -722,16 +722,11 @@ class BuiltinCommands:
     Example: !wme Hello!"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        if message.author.dm_channel is None:
-            await message.author.create_dm()
         result = ' '.join(command[1:])
         if len(result) == 0:
             return
         result = "You asked me to send you this: " + result
-        if len(result) > const.DISCORD_MAX_MESSAGE_LENGTH:
-            await message.author.dm_channel.send("<The message is too long>")
-        else:
-            await message.author.dm_channel.send(result)
+        await Util.send_direct_message(message, result, silent)
 
     async def _poll(self, message, command, silent=False):
         """Create poll
@@ -1123,10 +1118,8 @@ class BuiltinCommands:
             if root.endswith("images"):
                 for file in files:
                     if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
-                        if message.author.dm_channel is None:
-                            await message.author.create_dm()
-                        await message.author.dm_channel.send(None,
-                                                             files=[discord.File(os.path.join("images", file))])
+                        await Util.send_direct_message(message, None, silent,
+                                                       files=[discord.File(os.path.join("images", file))])
                         return
 
     async def _listimg(self, message, command, silent=False):
