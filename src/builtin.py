@@ -1109,6 +1109,10 @@ class BuiltinCommands:
                                                 files=[discord.File(os.path.join("images", file))])
                             break
                     else:
+                        if command[i] in [str(x) for x in message.guild.emojis]:
+                            await Util.response(message,
+                                                str([x.url for x in message.guild.emojis][0]), silent)
+                            break
                         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
                     break
 
@@ -1124,6 +1128,11 @@ class BuiltinCommands:
                         if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
                             await Util.send_direct_message(message, None, silent,
                                                            files=[discord.File(os.path.join("images", file))])
+                            break
+                    else:
+                        if command[i] in [str(x) for x in message.guild.emojis]:
+                            await Util.send_direct_message(message,
+                                                           str([x.url for x in message.guild.emojis][0]), silent)
                             break
                     break
 
