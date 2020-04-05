@@ -59,3 +59,11 @@ class Util:
     def split_by_chunks(message, count):
         for i in range(0, len(message), count):
             yield message[i:i+count]
+
+    @staticmethod
+    async def parse_int(message, string, error_message, silent):
+        try:
+            return int(string)
+        except ValueError:
+            await Util.response(message, error_message, silent)
+            return
