@@ -346,11 +346,9 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:])
-        try:
-            num = int(command[1])
-        except ValueError:
-            await Util.response(message, "Second argument of command '{}' should be an integer".format(
-                command[0]), silent)
+        num = await Util.parse_int(message, command[1],
+                                   "Second argument of command '{}' should be an integer".format(command[0]), silent)
+        if num is None:
             return
         if num < 0:
             result = result[len(result)+num:]
@@ -369,11 +367,9 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = command[2:]
-        try:
-            num = int(command[1])
-        except ValueError:
-            await Util.response(message, "Second argument of command '{}' should be an integer".format(
-                command[0]), silent)
+        num = await Util.parse_int(message, command[1],
+                                   "Second argument of command '{}' should be an integer".format(command[0]), silent)
+        if num is None:
             return
         if num < 0:
             result = ' '.join(result[len(result)+num:])
@@ -586,11 +582,10 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
-        try:
-            perm = int(command[2])
-        except ValueError:
-            await Util.response(message, "Second argument of command '{}' should be an integer".format(
-                command[0]), silent)
+        perm = await Util.parse_int(message, command[2],
+                                    "Third argument of command '{}' should be an integer".format(command[0]), silent)
+        if perm is None:
+            return
         if command_name in self.data.keys():
             self.data[command_name].permission = perm
             await Util.response(message, "Set permission level {} for command '{}'".format(
@@ -616,11 +611,10 @@ class BuiltinCommands:
     Example: !permcmd @nickname 0"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        try:
-            perm = int(command[2])
-        except ValueError:
-            await Util.response(message, "Second argument of command '{}' should be an integer".format(
-                command[0]), silent)
+        perm = await Util.parse_int(message, command[2],
+                                    "Third argument of command '{}' should be an integer".format(command[0]), silent)
+        if perm is None:
+            return
         user_id = int(command[1][2:-1])
         for user in self.config.users.keys():
             if self.config.users[user].id == user_id:
@@ -666,11 +660,10 @@ class BuiltinCommands:
     Example: !updreaction index emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=4):
             return
-        try:
-            index = int(command[1])
-        except Exception:
-            await Util.response(message, "Second parameter for '{}' should an index (integer)".format(
-                command[0]), silent)
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
+        if index is None:
+            return
         if not (index >= 0 and index < len(self.config.reactions)):
             await Util.response(message, "Incorrect index of reaction!", silent)
             return
@@ -735,12 +728,10 @@ class BuiltinCommands:
             return
         if silent:
             return
-        try:
-            duration = int(command[1])
-        except ValueError:
-            await Util.response(message,
-                                "Second parameter for '{}' should be duration in seconds"
-                                .format(command[0]), silent)
+        duration = await Util.parse_int(message, command[1],
+                                        "Second parameter for '{}' should be duration in seconds".format(command[0]),
+                                        silent)
+        if duration is None:
             return
         options = ' '.join(command[2:])
         options = options.split(';')
@@ -812,11 +803,10 @@ class BuiltinCommands:
     Example: !addbgevent 60 ping"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        try:
-            duration = int(command[1])
-        except ValueError:
-            await Util.response(message, "Second parameter for '{}' should be duration in seconds".format(
-                command[0]), silent)
+        duration = await Util.parse_int(message, command[1],
+                                        "Second parameter for '{}' should be duration in seconds".format(command[0]),
+                                        silent)
+        if duration is None:
             return
         message.content = self.config.commands_prefix + ' '.join(command[2:])
         bc.background_events.append(BackgroundEvent(
@@ -845,11 +835,11 @@ class BuiltinCommands:
     Example: !delbgevent 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        try:
-            index = int(command[1])
-        except ValueError:
-            await Util.response(message, "Second parameter for '{}' should be an index of background event".format(
-                command[0]), silent)
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of background event"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
             return
         if index >= 0 and index < len(bc.background_events):
             bc.background_events[index].cancel()
@@ -861,11 +851,13 @@ class BuiltinCommands:
     Example: !random 5 10"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        try:
-            left = int(command[1])
-            right = int(command[2])
-        except ValueError:
-            await Util.response(message, "Range should be an integer!", silent)
+        left = await Util.parse_int(message, command[1],
+                                    "Left border should be an integer", silent)
+        if left is None:
+            return
+        right = await Util.parse_int(message, command[2],
+                                     "Right border should be an integer", silent)
+        if right is None:
             return
         if left > right:
             await Util.response(message, "Left border should be less or equal than right", silent)
@@ -951,11 +943,11 @@ class BuiltinCommands:
     Example: !forchannel <channel_id> ping"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        try:
-            channel_id = int(command[1])
-        except ValueError:
-            await Util.response(message, "Second argument of command '{}' should be an integer".format(
-                command[0]), silent)
+        channel_id = await Util.parse_int(message, command[1],
+                                          "Second argument of command '{}' should be an integer".format(command[0]),
+                                          silent)
+        if channel_id is None:
+            return
         message.channel = bc.get_channel(channel_id)
         command = command[2:]
         message.content = ' '.join(command)
@@ -1321,10 +1313,9 @@ class BuiltinCommands:
     Example: !message"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        try:
-            number = int(command[1])
-        except ValueError:
-            await Util.response(message, "Message number should be an integer", silent)
+        number = await Util.parse_int(message, command[1],
+                                      "Message number should be an integer", silent)
+        if number is None:
             return
         if number <= 0:
             await Util.response(message, "Invalid message number", silent)
