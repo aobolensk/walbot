@@ -7,6 +7,7 @@ import zipfile
 
 from . import const
 from .log import log
+from .utils import Util
 
 
 class BotController:
@@ -63,11 +64,6 @@ class Command:
                 break
         return content
 
-    @staticmethod
-    def split_by_chunks(message, count):
-        for i in range(0, len(message), count):
-            yield message[i:i+count]
-
     async def run(self, message, command, user, silent=False):
         log.debug("Processing command: {}".format(message.content))
         if not self.is_available(message.channel.id):
@@ -94,7 +90,7 @@ class Command:
             response = await self.process_subcommands(response, message, user)
             if len(response) > 0:
                 if not silent:
-                    for chunk in Command.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
+                    for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
                         await message.channel.send(chunk)
                 return response
         else:

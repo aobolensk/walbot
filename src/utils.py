@@ -1,5 +1,4 @@
 from . import const
-from .config import Command
 from .log import log
 
 
@@ -8,7 +7,7 @@ class Util:
     async def response(message, content, silent, **kwargs):
         if not silent:
             if content:
-                for chunk in Command.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                     msg = await message.channel.send(
                         chunk,
                         tts=kwargs.get("tts", False),
@@ -32,7 +31,7 @@ class Util:
             if message.author.dm_channel is None:
                 await message.author.create_dm()
             if content:
-                for chunk in Command.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                     msg = await message.author.dm_channel.send(
                         chunk,
                         tts=kwargs.get("tts", False),
@@ -55,3 +54,8 @@ class Util:
             await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
             return False
         return True
+
+    @staticmethod
+    def split_by_chunks(message, count):
+        for i in range(0, len(message), count):
+            yield message[i:i+count]
