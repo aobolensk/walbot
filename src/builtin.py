@@ -1067,7 +1067,8 @@ class BuiltinCommands:
             return
         regex = ' '.join(command[1:])
         removed = bc.markov.del_words(regex)
-        await Util.response(message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)), silent)
+        await Util.response(message, "Deleted {} words from model: {}".format(str(len(removed)),
+                            str(removed)), silent, suppress_embeds=True)
 
     async def _findmarkov(self, message, command, silent=False):
         """Match words in Markov model using regex
