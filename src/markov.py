@@ -55,7 +55,8 @@ class Markov:
                 current_node = self.model[word] = MarkovNode(
                     self, self.NodeType.word, word=word
                 )
-        current_node.add_next(None)
+        if current_node != self.model[""]:
+            current_node.add_next(None)
 
     def del_words(self, regex):
         removed = []
