@@ -42,7 +42,7 @@ class WalBot(discord.Client):
         if bc.markov.check():
             log.info("Markov model has passed all checks")
         else:
-            log.error("Markov model has not passed all checks")
+            log.info("Markov model has not passed checks, but all errors were fixed")
 
     async def change_status(self, string, type):
         await self.change_presence(activity=discord.Activity(name=string, type=type))
