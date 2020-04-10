@@ -703,8 +703,8 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for reaction in self.config.reactions:
-            result += reaction.emoji + ": " + reaction.regex + '\n'
+        for index, reaction in enumerate(self.config.reactions):
+            result += "{} - {}: {}\n".format(index, reaction.emoji, reaction.regex)
         if len(result) > 0:
             await Util.response(message, result, silent)
         else:
