@@ -795,7 +795,10 @@ class BuiltinCommands:
     async def _about(self, message, command, silent=False):
         """Get information about the bot
     Example: !about"""
-        result = "Source code: <https://github.com/aobolensk/walbot>"
+        result = str(bc.bot_user) + ' (WalBot instance)\n'
+        result += "Source code: <https://github.com/aobolensk/walbot>\n"
+        result += "Version: " + self.config.get_version() + '\n'
+        result += "Uptime: " + self.config.get_uptime() + '\n'
         await Util.response(message, result, silent)
 
     async def _addbgevent(self, message, command, silent=False):
