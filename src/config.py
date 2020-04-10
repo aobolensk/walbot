@@ -34,7 +34,7 @@ class Command:
         return self.is_global or (channel_id in self.channels)
 
     def can_be_subcommand(self):
-        return self.subcommand
+        return self.subcommand or self.message
 
     async def process_subcommands(self, content, message, user):
         while True:
