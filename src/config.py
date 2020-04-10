@@ -33,6 +33,9 @@ class Command:
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)
 
+    def can_be_subcommand(self):
+        return self.subcommand
+
     async def process_subcommands(self, content, message, user):
         while True:
             updated = False
@@ -48,14 +51,17 @@ class Command:
                                     command[0] = bc.config.commands.aliases[command[0]]
                                 else:
                                     await message.channel.send("Unknown command '{}'".format(command[0]))
-                                    return
                             result = ""
                             if len(command) > 0 and command[0] in bc.commands.data.keys():
                                 log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
                                 actor = bc.commands.data[command[0]]
-                                result = await actor.run(message, command, user, silent=True)
-                                if result is None:
-                                    result = ""
+                                if actor.can_be_subcommand():
+                                    result = await actor.run(message, command, user, silent=True)
+                                    if result is None:
+                                        result = ""
+                                else:
+                                    await message.channel.send("Command '{}' can not be used as subcommand"
+                                                               .format(command[0]))
                             content = content[:j-1] + result + content[i+1:]
                             break
                 if updated:
