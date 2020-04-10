@@ -235,6 +235,13 @@ class Config:
             commit_hash = f.readline()
         return commit_hash[:-1]
 
+    def get_uptime(self):
+        days, remainder = divmod(
+            int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
+
 
 class SecretConfig:
     def __init__(self):

@@ -902,11 +902,7 @@ class BuiltinCommands:
     Example: !uptime"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        days, remainder = divmod(
-            int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        result = "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
+        result = self.config.get_uptime()
         await Util.response(message, result, silent)
         return result
 
