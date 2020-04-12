@@ -863,7 +863,9 @@ class BuiltinCommands:
         if index >= 0 and index < len(bc.background_events):
             bc.background_events[index].cancel()
             del bc.background_events[index]
-        await Util.response(message, "Successfully deleted background task!", silent)
+            await Util.response(message, "Successfully deleted background task!", silent)
+        else:
+            await Util.response(message, "Invalid index of background task!", silent)
 
     async def _random(self, message, command, silent=False):
         """Get random number in range [left, right]
