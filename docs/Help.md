@@ -151,6 +151,9 @@
         !reactionwl add \
         !reactionwl delete
 
+**reminder**: Print message at particular time \
+    Example: !reminder 2020-01-01 00:00 Happy new year!
+
 **shutdown**: Shutdown the bot \
     Example: !shutdown
 

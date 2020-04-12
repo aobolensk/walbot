@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import discord
 import os
 import psutil
@@ -23,6 +24,7 @@ class WalBot(discord.Client):
         self.config = config
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
+        self.loop.create_task(self.process_reminders())
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -56,6 +58,24 @@ class WalBot(discord.Client):
             self.config.save(const.config_path, const.markov_path, const.secret_config_path)
             index += 1
             await asyncio.sleep(10 * 60)
+
+    async def process_reminders(self):
+        await self.wait_until_ready()
+        while not self.is_closed():
+            now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_TIME_FORMAT)
+            print("Len: ", len(self.config.reminders))
+            i = 0
+            while i < len(self.config.reminders):
+                rem = self.config.reminders[i]
+                if rem == now:
+                    channel = self.get_channel(rem.channel_id)
+                    await channel.send("You asked to remind at {}: {}".format(now, rem.message))
+                    self.config.reminders.pop(i)
+                elif rem < now:
+                    self.config.reminders.pop(i)
+                else:
+                    i += 1
+            await asyncio.sleep(10)
 
     async def on_ready(self):
         log.info("Logged in as: {} {} ({})".format(self.user.name, self.user.id, self.__class__.__name__))

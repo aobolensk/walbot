@@ -160,6 +160,8 @@ class Config:
             self.guilds = dict()
         if not hasattr(self, "users"):
             self.users = dict()
+        if not hasattr(self, "reminders"):
+            self.reminders = []
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 

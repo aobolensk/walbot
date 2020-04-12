@@ -14,6 +14,7 @@ from .config import bc
 from .config import BackgroundEvent
 from .config import Reaction
 from .config import log
+from .reminder import Reminder
 from .utils import Util
 
 
@@ -323,6 +324,11 @@ class BuiltinCommands:
                 "message", perform=self._message, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["message"].is_global = True
+        if "reminder" not in self.data.keys():
+            self.data["reminder"] = Command(
+                "reminder", perform=self._reminder, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["reminder"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1329,3 +1335,21 @@ class BuiltinCommands:
         result = result[-1].content
         await Util.response(message, result, silent)
         return result
+
+    async def _reminder(self, message, command, silent=False):
+        """Print message at particular time
+    Example: !reminder 2020-01-01 00:00 Happy new year!"""
+        if not await Util.check_args_count(message, command, silent, min=4):
+            return
+        time = command[1] + ' ' + command[2]
+        try:
+            time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
+        except ValueError:
+            await Util.response(message, "{} does not match format {}\n"
+                                "More information about format: <https://strftime.org/>".format(
+                                    time, const.REMINDER_TIME_FORMAT),
+                                silent)
+            return
+        text = ' '.join(command[3:])
+        self.config.reminders.append(Reminder(str(time), text, message.channel.id))
+        await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
