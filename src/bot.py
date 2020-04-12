@@ -63,13 +63,12 @@ class WalBot(discord.Client):
         await self.wait_until_ready()
         while not self.is_closed():
             now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_TIME_FORMAT)
-            print("Len: ", len(self.config.reminders))
             i = 0
             while i < len(self.config.reminders):
                 rem = self.config.reminders[i]
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
-                    await channel.send("You asked to remind at {}: {}".format(now, rem.message))
+                    await channel.send("You asked to remind at {} -> {}".format(now, rem.message))
                     self.config.reminders.pop(i)
                 elif rem < now:
                     self.config.reminders.pop(i)
