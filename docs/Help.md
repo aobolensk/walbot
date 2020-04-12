@@ -50,6 +50,9 @@
         !delreaction emoji \
         !delreaction index
 
+**delreminder**: Delete reminder by index \
+    Example: !delreminder 0
+
 **demojify**: Demojify text \
     Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
     *This command can be used as subcommand*
@@ -103,6 +106,9 @@
 **listreaction**: Show list of reactions \
     Example: !listreaction
 
+**listreminder**: Print list of reminders \
+    Example: !listreminder
+
 **markov**: Generate message using Markov chain \
     Example: !markov \
     *This command can be used as subcommand*
@@ -150,6 +156,9 @@
         !reactionwl \
         !reactionwl add \
         !reactionwl delete
+
+**reminder**: Print message at particular time \
+    Example: !reminder 2020-01-01 00:00 Happy new year!
 
 **shutdown**: Shutdown the bot \
     Example: !shutdown
