@@ -103,6 +103,9 @@
 **listreaction**: Show list of reactions \
     Example: !listreaction
 
+**listreminder**: Print list of reminders \
+    Example: !listreminder
+
 **markov**: Generate message using Markov chain \
     Example: !markov \
     *This command can be used as subcommand*

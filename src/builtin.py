@@ -329,6 +329,11 @@ class BuiltinCommands:
                 "reminder", perform=self._reminder, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["reminder"].is_global = True
+        if "listreminder" not in self.data.keys():
+            self.data["listreminder"] = Command(
+                "listreminder", perform=self._listreminder, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["listreminder"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1353,3 +1358,17 @@ class BuiltinCommands:
         text = ' '.join(command[3:])
         self.config.reminders.append(Reminder(str(time), text, message.channel.id))
         await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
+
+    async def _listreminder(self, message, command, silent=False):
+        """Print list of reminders
+    Example: !listreminder"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        result = ""
+        for index, reminder in enumerate(self.config.reminders):
+            result += "{} - {} (channel: {}) -> {}\n".format(
+                index, reminder.time, reminder.channel_id, reminder.message)
+        if len(result) > 0:
+            await Util.response(message, result, silent)
+        else:
+            await Util.response(message, "No reminders found!", silent)
