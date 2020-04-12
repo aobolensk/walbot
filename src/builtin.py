@@ -334,6 +334,11 @@ class BuiltinCommands:
                 "listreminder", perform=self._listreminder, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["listreminder"].is_global = True
+        if "delreminder" not in self.data.keys():
+            self.data["delreminder"] = Command(
+                "delreminder", perform=self._delreminder, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["delreminder"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1372,3 +1377,20 @@ class BuiltinCommands:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No reminders found!", silent)
+
+    async def _delreminder(self, message, command, silent=False):
+        """Delete reminder by index
+    Example: !delreminder 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of reminder"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(self.config.reminders):
+            self.config.reminders.pop(index)
+            await Util.response(message, "Successfully deleted reminder!", silent)
+        else:
+            await Util.response(message, "Invalid index of reminder!", silent)

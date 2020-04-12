@@ -50,6 +50,9 @@
         !delreaction emoji \
         !delreaction index
 
+**delreminder**: Delete reminder by index \
+    Example: !delreminder 0
+
 **demojify**: Demojify text \
     Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
     *This command can be used as subcommand*
