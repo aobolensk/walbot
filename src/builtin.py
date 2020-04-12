@@ -1119,10 +1119,10 @@ class BuiltinCommands:
                                                 files=[discord.File(os.path.join("images", file))])
                             break
                     else:
-                        if command[i] in [str(x) for x in message.guild.emojis]:
+                        r = re.match(r'<:(\w*):(\d*)>', command[i])
+                        if r is not None:
                             await Util.response(message,
-                                                str([x.url for x in message.guild.emojis
-                                                     if str(x) == command[i]][0]), silent)
+                                                "https://cdn.discordapp.com/emojis/{}.png".format(r.group(2)), silent)
                             break
                         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
                     break
@@ -1141,10 +1141,10 @@ class BuiltinCommands:
                                                            files=[discord.File(os.path.join("images", file))])
                             break
                     else:
-                        if command[i] in [str(x) for x in message.guild.emojis]:
-                            await Util.send_direct_message(message,
-                                                           str([x.url for x in message.guild.emojis
-                                                                if str(x) == command[i]][0]), silent)
+                        r = re.match(r'<:(\w*):(\d*)>', command[i])
+                        if r is not None:
+                            await Util.response(message,
+                                                "https://cdn.discordapp.com/emojis/{}.png".format(r.group(2)), silent)
                             break
                     break
 
