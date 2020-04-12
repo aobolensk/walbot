@@ -74,7 +74,7 @@ class WalBot(discord.Client):
                     self.config.reminders.pop(i)
                 else:
                     i += 1
-            await asyncio.sleep(10)
+            await asyncio.sleep(30)
 
     async def on_ready(self):
         log.info("Logged in as: {} {} ({})".format(self.user.name, self.user.id, self.__class__.__name__))
