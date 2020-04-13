@@ -339,6 +339,11 @@ class BuiltinCommands:
                 "delreminder", perform=self._delreminder, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["delreminder"].is_global = True
+        if "server" not in self.data.keys():
+            self.data["server"] = Command(
+                "server", perform=self._server, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["server"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -447,6 +452,7 @@ class BuiltinCommands:
             if status != "offline"]
         result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
         result += "Created at: " + str(info.created_at) + '\n'
+        result += "Roles: " + ', '.join(filter(lambda x: x != "@everyone", map(str, info.roles)))
         await Util.response(message, result, silent)
 
     async def _help(self, message, command, silent=False):
@@ -1396,3 +1402,24 @@ class BuiltinCommands:
             await Util.response(message, "Successfully deleted reminder!", silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)
+
+    async def _server(self, message, command, silent=False):
+        """Print information about current server
+    Example: !server 0"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        g = message.guild
+        result = "**Server**: '{}', members: {}, region: {}, created: {}\n".format(
+            g.name, g.member_count, g.region, g.created_at.replace(microsecond=0))
+        result += "**Icon**: {}\n".format("<{}>".format(g.icon) if g.icon is not None else "no icon")
+        if g.member_count <= 16:
+            result += "**Members**:\n"
+            members = []
+            async for member in g.fetch_members(limit=16):
+                members.append("*{} ({}):*\n{}".format(
+                    str(member),
+                    (("owner, " if member.id == g.owner_id else "") +
+                     str(message.guild.get_member(member.id).status)),
+                    ', '.join(filter(lambda x: x != "@everyone", map(str, member.roles)))))
+            result += '\n'.join(sorted(members, key=lambda s: s.lower()))
+        await Util.response(message, result, silent)
