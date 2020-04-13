@@ -11,6 +11,7 @@ MAX_MESSAGE_HISTORY_DEPTH = 1000
 
 FILENAME_REGEX = '^[A-Za-zА-Яа-яЁё0-9_-]+$'
 REMINDER_TIME_FORMAT = "%Y-%m-%d %H:%M"
+EMOJI_REGEX = r'<:(\w*):(\d*)>'
 
 
 @unique

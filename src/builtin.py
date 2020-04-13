@@ -1119,7 +1119,7 @@ class BuiltinCommands:
                                                 files=[discord.File(os.path.join("images", file))])
                             break
                     else:
-                        r = re.match(r'<:(\w*):(\d*)>', command[i])
+                        r = re.match(const.EMOJI_REGEX, command[i])
                         if r is not None:
                             await Util.response(message,
                                                 "https://cdn.discordapp.com/emojis/{}.png".format(r.group(2)), silent)
@@ -1141,7 +1141,7 @@ class BuiltinCommands:
                                                            files=[discord.File(os.path.join("images", file))])
                             break
                     else:
-                        r = re.match(r'<:(\w*):(\d*)>', command[i])
+                        r = re.match(const.EMOJI_REGEX, command[i])
                         if r is not None:
                             await Util.response(message,
                                                 "https://cdn.discordapp.com/emojis/{}.png".format(r.group(2)), silent)
