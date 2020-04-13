@@ -1375,10 +1375,11 @@ class BuiltinCommands:
     async def _listreminder(self, message, command, silent=False):
         """Print list of reminders
     Example: !listreminder"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         result = ""
-        for index, reminder in enumerate(self.config.reminders):
+        reminders = sorted(zip(range(0, len(self.config.reminders)), self.config.reminders), key=lambda x: x[1])
+        for index, reminder in reminders:
             result += "{} - {} (channel: {}) -> {}\n".format(
                 index, reminder.time, reminder.channel_id, reminder.message)
         if len(result) > 0:
