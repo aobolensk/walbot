@@ -1411,7 +1411,7 @@ class BuiltinCommands:
         g = message.guild
         result = "**Server**: '{}', members: {}, region: {}, created: {}\n".format(
             g.name, g.member_count, g.region, g.created_at.replace(microsecond=0))
-        result += "**Icon**: {}\n".format("<{}>".format(g.icon) if g.icon is not None else "no icon")
+        result += "**Icon**: {}\n".format("<{}>".format(g.icon_url))
         if g.member_count <= 16:
             result += "**Members**:\n"
             members = []
