@@ -27,7 +27,9 @@
 
 **config**: Setup some configurations \
     Examples: \
-        !config reactions &lt;enable/disable&gt;
+        !config reactions &lt;enable/disable&gt; \
+        !config markovlog &lt;enable/disable&gt; \
+        !config responses &lt;enable/disable&gt;
 
 **count**: Count amount of words \
     Example: !count some text \

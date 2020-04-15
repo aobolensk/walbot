@@ -666,7 +666,9 @@ class BuiltinCommands:
     async def _config(self, message, command, silent=False):
         """Setup some configurations
     Examples:
-        !config reactions <enable/disable>"""
+        !config reactions <enable/disable>
+        !config markovlog <enable/disable>
+        !config responses <enable/disable>"""
         if not await Util.check_args_count(message, command, silent, min=1, max=3):
             return
         if len(command) == 1:
@@ -677,12 +679,16 @@ class BuiltinCommands:
             result += "Markov logging: {}\n".format(
                 "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
                 else "disabled")
+            result += "Markov responses: {}\n".format(
+                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
+                else "disabled")
             await Util.response(message, result, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
                 if command[2] == "enable":
                     if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                        await Util.response(message, "Adding reactions is already enabled for this channel", silent)
+                        await Util.response(
+                            message, "Adding reactions is already enabled for this channel", silent)
                     else:
                         self.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
                         await Util.response(
@@ -693,7 +699,8 @@ class BuiltinCommands:
                         await Util.response(
                             message, "Adding reactions is successfully disabled for this channel", silent)
                     else:
-                        await Util.response(message, "Adding reactions is already disabled for this channel", silent)
+                        await Util.response(
+                            message, "Adding reactions is already disabled for this channel", silent)
                 else:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovlog":
@@ -714,6 +721,24 @@ class BuiltinCommands:
                     else:
                         await Util.response(
                             message, "Adding messages to Markov model is already disabled for this channel", silent)
+            elif command[1] == "responses":
+                if command[2] == "enable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+                        await Util.response(
+                            message, "Bot responses on mentioning are already enabled for this channel", silent)
+                    else:
+                        self.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Bot responses on mentioning are successfully enabled for this channel", silent)
+                elif command[2] == "disable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+                        self.config.guilds[message.channel.guild.id].responses_whitelist.discard(message.channel.id)
+                        await Util.response(
+                            message, "Bot responses on mentioning are successfully disabled for this channel",
+                            silent)
+                    else:
+                        await Util.response(
+                            message, "Bot responses on mentioning are already disabled for this channel", silent)
                 else:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             else:
