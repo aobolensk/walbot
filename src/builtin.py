@@ -119,6 +119,11 @@ class BuiltinCommands:
                 "whitelist", perform=self._whitelist, permission=const.Permission.MOD.value,
                 subcommand=False)
             self.data["whitelist"].is_global = True
+        if "config" not in self.data.keys():
+            self.data["config"] = Command(
+                "config", perform=self._config, permission=const.Permission.MOD.value,
+                subcommand=False)
+            self.data["config"].is_global = True
         if "addreaction" not in self.data.keys():
             self.data["addreaction"] = Command(
                 "addreaction", perform=self._addreaction, permission=const.Permission.MOD.value,
@@ -239,11 +244,6 @@ class BuiltinCommands:
                 "markovgc", perform=self._markovgc, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["markovgc"].is_global = True
-        if "markovlog" not in self.data.keys():
-            self.data["markovlog"] = Command(
-                "markovlog", perform=self._markovlog, permission=const.Permission.MOD.value,
-                subcommand=False)
-            self.data["markovlog"].is_global = True
         if "delmarkov" not in self.data.keys():
             self.data["delmarkov"] = Command(
                 "delmarkov", perform=self._delmarkov, permission=const.Permission.MOD.value,
@@ -284,11 +284,6 @@ class BuiltinCommands:
                 "delimg", perform=self._delimg, permission=const.Permission.MOD.value,
                 subcommand=False)
             self.data["delimg"].is_global = True
-        if "reactionwl" not in self.data.keys():
-            self.data["reactionwl"] = Command(
-                "reactionwl", perform=self._reactionwl, permission=const.Permission.MOD.value,
-                subcommand=False)
-            self.data["reactionwl"].is_global = True
         if "tts" not in self.data.keys():
             self.data["tts"] = Command(
                 "tts", perform=self._tts, permission=const.Permission.MOD.value,
@@ -667,6 +662,89 @@ class BuiltinCommands:
             await Util.response(message, "This channel is removed from bot's whitelist", silent)
         else:
             await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
+
+    async def _config(self, message, command, silent=False):
+        """Setup some configurations
+    Examples:
+        !config reactions <enable/disable>
+        !config markovlog <enable/disable>
+        !config responses <enable/disable>"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=3):
+            return
+        if len(command) == 1:
+            result = "Config:\n"
+            result += "Reactions: {}\n".format(
+                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist
+                else "disabled")
+            result += "Markov logging: {}\n".format(
+                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
+                else "disabled")
+            result += "Markov responses: {}\n".format(
+                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
+                else "disabled")
+            await Util.response(message, result, silent)
+        elif len(command) == 3:
+            if command[1] == "reactions":
+                if command[2] == "enable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+                        await Util.response(
+                            message, "Adding reactions is already enabled for this channel", silent)
+                    else:
+                        self.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Adding reactions is successfully enabled for this channel", silent)
+                elif command[2] == "disable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+                        self.config.guilds[message.channel.guild.id].reactions_whitelist.discard(message.channel.id)
+                        await Util.response(
+                            message, "Adding reactions is successfully disabled for this channel", silent)
+                    else:
+                        await Util.response(
+                            message, "Adding reactions is already disabled for this channel", silent)
+                else:
+                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+            elif command[1] == "markovlog":
+                if command[2] == "enable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+                        await Util.response(
+                            message, "Adding messages to Markov model is already enabled for this channel", silent)
+                    else:
+                        self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Adding messages to Markov model is successfully enabled for this channel", silent)
+                elif command[2] == "disable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+                        self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
+                        await Util.response(
+                            message, "Adding messages to Markov model is successfully disabled for this channel",
+                            silent)
+                    else:
+                        await Util.response(
+                            message, "Adding messages to Markov model is already disabled for this channel", silent)
+            elif command[1] == "responses":
+                if command[2] == "enable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+                        await Util.response(
+                            message, "Bot responses on mentioning are already enabled for this channel", silent)
+                    else:
+                        self.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Bot responses on mentioning are successfully enabled for this channel", silent)
+                elif command[2] == "disable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+                        self.config.guilds[message.channel.guild.id].responses_whitelist.discard(message.channel.id)
+                        await Util.response(
+                            message, "Bot responses on mentioning are successfully disabled for this channel",
+                            silent)
+                    else:
+                        await Util.response(
+                            message, "Bot responses on mentioning are already disabled for this channel", silent)
+                else:
+                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+            else:
+                await Util.response(message, "Incorrect argument for command '{}'".format(command[0]), silent)
+        else:
+            await Util.response(message, "Incorrect usage of command '{}'".format(command[0]), silent)
 
     async def _addreaction(self, message, command, silent=False):
         """Add reaction
@@ -1052,37 +1130,6 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _markovlog(self, message, command, silent=False):
-        """Enable/disable adding messages from this channel to Markov model
-    Examples:
-        !markovlog
-        !markovlog enable
-        !markovlog disable"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if len(command) == 1:
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                await Util.response(message, "Adding messages to model is enabled for this channel", silent)
-            else:
-                await Util.response(message, "Adding messages to model is disabled for this channel", silent)
-            return
-        if command[1] == "enable":
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                await Util.response(message, "Adding messages to model is already enabled for this channel", silent)
-            else:
-                self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
-                await Util.response(
-                    message, "Adding messages to model is successfully enabled for this channel", silent)
-        elif command[1] == "disable":
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
-                await Util.response(
-                    message, "Adding messages to model is successfully disabled for this channel", silent)
-            else:
-                await Util.response(message, "Adding messages to model is already disabled for this channel", silent)
-        else:
-            await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
-
     async def _delmarkov(self, message, command, silent=False):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
@@ -1218,37 +1265,6 @@ class BuiltinCommands:
                         await Util.response(message, "Successfully removed image '{}'".format(name), silent)
                         return
         await Util.response(message, "Image '{}' not found!".format(name), silent)
-
-    async def _reactionwl(self, message, command, silent=False):
-        """Add/delete channel from reaction whitelist
-    Examples:
-        !reactionwl
-        !reactionwl add
-        !reactionwl delete"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if len(command) == 1:
-            if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                await Util.response(message, "Adding reactions is enabled for this channel", silent)
-            else:
-                await Util.response(message, "Adding reactions is disabled for this channel", silent)
-            return
-        if command[1] == "add":
-            if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                await Util.response(message, "Adding reactions is already enabled for this channel", silent)
-            else:
-                self.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
-                await Util.response(
-                    message, "Adding reactions is successfully enabled for this channel", silent)
-        elif command[1] == "delete":
-            if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                self.config.guilds[message.channel.guild.id].reactions_whitelist.discard(message.channel.id)
-                await Util.response(
-                    message, "Adding reactions is successfully disabled for this channel", silent)
-            else:
-                await Util.response(message, "Adding reactions is already disabled for this channel", silent)
-        else:
-            await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _tts(self, message, command, silent=False):
         """Send text-to-speech (TTS) message

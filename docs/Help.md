@@ -25,6 +25,12 @@
     Example: !channelid \
     *This command can be used as subcommand*
 
+**config**: Setup some configurations \
+    Examples: \
+        !config reactions &lt;enable/disable&gt; \
+        !config markovlog &lt;enable/disable&gt; \
+        !config responses &lt;enable/disable&gt;
+
 **count**: Count amount of words \
     Example: !count some text \
     *This command can be used as subcommand*
@@ -116,12 +122,6 @@
 **markovgc**: Garbage collect Markov model nodes \
     Example: !markovgc
 
-**markovlog**: Enable/disable adding messages from this channel to Markov model \
-    Examples: \
-        !markovlog \
-        !markovlog enable \
-        !markovlog disable
-
 **message**: Get message by its order number (from the end of channel history) \
     Example: !message \
     *This command can be used as subcommand*
@@ -150,12 +150,6 @@
 **randselect**: Get random option among provided strings \
     Example: !randselect a b c \
     *This command can be used as subcommand*
-
-**reactionwl**: Add/delete channel from reaction whitelist \
-    Examples: \
-        !reactionwl \
-        !reactionwl add \
-        !reactionwl delete
 
 **reminder**: Print message at particular time \
     Example: !reminder 2020-01-01 00:00 Happy new year!

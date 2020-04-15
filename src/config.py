@@ -139,6 +139,7 @@ class GuildSettings:
         self.is_whitelisted = False
         self.whitelist = set()
         self.markov_whitelist = set()
+        self.responses_whitelist = set()
         self.reactions_whitelist = set()
 
 
