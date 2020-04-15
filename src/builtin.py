@@ -244,11 +244,6 @@ class BuiltinCommands:
                 "markovgc", perform=self._markovgc, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["markovgc"].is_global = True
-        if "markovlog" not in self.data.keys():
-            self.data["markovlog"] = Command(
-                "markovlog", perform=self._markovlog, permission=const.Permission.MOD.value,
-                subcommand=False)
-            self.data["markovlog"].is_global = True
         if "delmarkov" not in self.data.keys():
             self.data["delmarkov"] = Command(
                 "delmarkov", perform=self._delmarkov, permission=const.Permission.MOD.value,
@@ -679,6 +674,9 @@ class BuiltinCommands:
             result += "Reactions: {}\n".format(
                 "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist
                 else "disabled")
+            result += "Markov logging: {}\n".format(
+                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
+                else "disabled")
             await Util.response(message, result, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
@@ -696,6 +694,26 @@ class BuiltinCommands:
                             message, "Adding reactions is successfully disabled for this channel", silent)
                     else:
                         await Util.response(message, "Adding reactions is already disabled for this channel", silent)
+                else:
+                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+            elif command[1] == "markovlog":
+                if command[2] == "enable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+                        await Util.response(
+                            message, "Adding messages to Markov model is already enabled for this channel", silent)
+                    else:
+                        self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Adding messages to Markov model is successfully enabled for this channel", silent)
+                elif command[2] == "disable":
+                    if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+                        self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
+                        await Util.response(
+                            message, "Adding messages to Markov model is successfully disabled for this channel",
+                            silent)
+                    else:
+                        await Util.response(
+                            message, "Adding messages to Markov model is already disabled for this channel", silent)
                 else:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             else:
@@ -1086,37 +1104,6 @@ class BuiltinCommands:
         result = "Garbage collected {} items: {}".format(len(result), ', '.join(result))
         await Util.response(message, result, silent)
         return result
-
-    async def _markovlog(self, message, command, silent=False):
-        """Enable/disable adding messages from this channel to Markov model
-    Examples:
-        !markovlog
-        !markovlog enable
-        !markovlog disable"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if len(command) == 1:
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                await Util.response(message, "Adding messages to model is enabled for this channel", silent)
-            else:
-                await Util.response(message, "Adding messages to model is disabled for this channel", silent)
-            return
-        if command[1] == "enable":
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                await Util.response(message, "Adding messages to model is already enabled for this channel", silent)
-            else:
-                self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
-                await Util.response(
-                    message, "Adding messages to model is successfully enabled for this channel", silent)
-        elif command[1] == "disable":
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
-                await Util.response(
-                    message, "Adding messages to model is successfully disabled for this channel", silent)
-            else:
-                await Util.response(message, "Adding messages to model is already disabled for this channel", silent)
-        else:
-            await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _delmarkov(self, message, command, silent=False):
         """Delete all words in Markov model by regex
