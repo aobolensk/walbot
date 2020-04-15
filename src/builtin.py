@@ -680,7 +680,7 @@ class BuiltinCommands:
                 "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
                 else "disabled")
             result += "Markov responses: {}\n".format(
-                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
+                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist
                 else "disabled")
             await Util.response(message, result, silent)
         elif len(command) == 3:
