@@ -31,7 +31,11 @@
         !config markovlog &lt;enable/disable&gt; \
         !config responses &lt;enable/disable&gt;
 
-**count**: Count amount of words \
+**count**: Count amount of characters \
+    Example: !count some text \
+    *This command can be used as subcommand*
+
+**countwords**: Count amount of words \
     Example: !count some text \
     *This command can be used as subcommand*
 

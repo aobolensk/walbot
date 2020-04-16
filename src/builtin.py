@@ -44,6 +44,11 @@ class BuiltinCommands:
                 "count", perform=self._count, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["count"].is_global = True
+        if "countwords" not in self.data.keys():
+            self.data["countwords"] = Command(
+                "countwords", perform=self._countwords, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["countwords"].is_global = True
         if "tolower" not in self.data.keys():
             self.data["tolower"] = Command(
                 "tolower", perform=self._tolower, permission=const.Permission.USER.value,
@@ -395,6 +400,13 @@ class BuiltinCommands:
         return result
 
     async def _count(self, message, command, silent=False):
+        """Count amount of characters
+    Example: !count some text"""
+        result = str(len(' '.join(command[1:])))
+        await Util.response(message, result, silent)
+        return result
+
+    async def _countwords(self, message, command, silent=False):
         """Count amount of words
     Example: !count some text"""
         result = str(len(command) - 1)
