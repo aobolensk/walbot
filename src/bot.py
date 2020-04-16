@@ -109,7 +109,15 @@ class WalBot(discord.Client):
     async def process_regular_message(self, message):
         if bc.bot_user.mentioned_in(message):
             if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
-                await message.channel.send(message.author.mention + ' ' + bc.markov.generate())
+                result = bc.markov.generate()
+                if not self.config.guilds[message.channel.guild.id].markov_pings:
+                    while True:
+                        RE = r'<@!(\d*)>'
+                        r = re.search(RE, result)
+                        if r is None:
+                            break
+                        result = re.sub(RE, str(await message.guild.fetch_member(r.group(1))), result, count=1)
+                await message.channel.send(message.author.mention + ' ' + result)
         elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
             bc.markov.add_string(message.content)
         if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:

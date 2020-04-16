@@ -664,11 +664,12 @@ class BuiltinCommands:
             await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
     async def _config(self, message, command, silent=False):
-        """Setup some configurations
+        """Setup some channel specific configurations
     Examples:
         !config reactions <enable/disable>
         !config markovlog <enable/disable>
-        !config responses <enable/disable>"""
+        !config responses <enable/disable>
+        !config markovpings <enable/disable>"""
         if not await Util.check_args_count(message, command, silent, min=1, max=3):
             return
         if len(command) == 1:
@@ -681,6 +682,9 @@ class BuiltinCommands:
                 else "disabled")
             result += "Markov responses: {}\n".format(
                 "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist
+                else "disabled")
+            result += "Markov pings: {}\n".format(
+                "enabled" if self.config.guilds[message.channel.guild.id].markov_pings
                 else "disabled")
             await Util.response(message, result, silent)
         elif len(command) == 3:
@@ -739,6 +743,25 @@ class BuiltinCommands:
                     else:
                         await Util.response(
                             message, "Bot responses on mentioning are already disabled for this channel", silent)
+                else:
+                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+            elif command[1] == "markovpings":
+                if command[2] == "enable":
+                    if self.config.guilds[message.channel.guild.id].markov_pings:
+                        await Util.response(
+                            message, "Markov pings are already enabled for this channel", silent)
+                    else:
+                        self.config.guilds[message.channel.guild.id].markov_pings = True
+                        await Util.response(
+                            message, "Markov pings are successfully enabled for this channel", silent)
+                if command[2] == "disable":
+                    if self.config.guilds[message.channel.guild.id].markov_pings:
+                        self.config.guilds[message.channel.guild.id].markov_pings = False
+                        await Util.response(
+                            message, "Markov pings are successfully disabled for this channel", silent)
+                    else:
+                        await Util.response(
+                            message, "Markov pings are already disabled for this channel", silent)
                 else:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             else:
@@ -1117,6 +1140,13 @@ class BuiltinCommands:
         if bc.bot_user.mentioned_in(message):
             result += message.author.mention + ' '
         result += bc.markov.generate()
+        if not self.config.guilds[message.channel.guild.id].markov_pings:
+            while True:
+                RE = r'<@!(\d*)>'
+                r = re.search(RE, result)
+                if r is None:
+                    break
+                result = re.sub(RE, str(await message.guild.fetch_member(r.group(1))), result, count=1)
         await Util.response(message, result, silent)
         return result
 
