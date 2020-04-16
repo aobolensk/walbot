@@ -25,15 +25,12 @@
     Example: !channelid \
     *This command can be used as subcommand*
 
-**config**: Setup some configurations \
+**config**: Setup some channel specific configurations \
     Examples: \
         !config reactions &lt;enable/disable&gt; \
         !config markovlog &lt;enable/disable&gt; \
-        !config responses &lt;enable/disable&gt;
-
-**count**: Count amount of characters \
-    Example: !count some text \
-    *This command can be used as subcommand*
+        !config responses &lt;enable/disable&gt; \
+        !config markovpings &lt;enable/disable&gt;
 
 **countwords**: Count amount of words \
     Example: !count some text \
