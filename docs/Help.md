@@ -187,6 +187,20 @@
         Result: lo \
     *This command can be used as subcommand*
 
+**takelines**: Take n lines of the string \
+    Examples: \
+        !takelines 2 a \
+        b \
+        c \
+        Result: a \
+        b \
+        !takelines -2 a \
+        b \
+        c \
+        Result: b \
+        c \
+    *This command can be used as subcommand*
+
 **takewords**: Take n words of the string \
     Examples: \
         !takewords 2 a b c \

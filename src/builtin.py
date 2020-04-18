@@ -44,6 +44,11 @@ class BuiltinCommands:
                 "countwords", perform=self._countwords, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["countwords"].is_global = True
+        if "takelines" not in self.data.keys():
+            self.data["takelines"] = Command(
+                "takelines", perform=self._takelines, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["takelines"].is_global = True
         if "countlines" not in self.data.keys():
             self.data["countlines"] = Command(
                 "countlines", perform=self._countlines, permission=const.Permission.USER.value,
@@ -403,6 +408,33 @@ class BuiltinCommands:
         """Count amount of words
     Example: !count some text"""
         result = str(len(' '.join(command).split()) - 1)
+        await Util.response(message, result, silent)
+        return result
+
+    async def _takelines(self, message, command, silent=False):
+        """Take n lines of the string
+    Examples:
+        !takelines 2 a
+        b
+        c
+        Result: a
+        b
+        !takelines -2 a
+        b
+        c
+        Result: b
+        c"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        result = ' '.join(command[2:]).split('\n')
+        num = await Util.parse_int(message, command[1],
+                                   "Second argument of command '{}' should be an integer".format(command[0]), silent)
+        if num is None:
+            return
+        if num < 0:
+            result = '\n'.join(result[len(result)+num:])
+        else:
+            result = '\n'.join(result[:num])
         await Util.response(message, result, silent)
         return result
 
