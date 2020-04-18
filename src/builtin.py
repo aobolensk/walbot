@@ -1183,10 +1183,7 @@ class BuiltinCommands:
     Example: !markov"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = ""
-        if bc.bot_user.mentioned_in(message):
-            result += message.author.mention + ' '
-        result += bc.markov.generate()
+        result = bc.markov.generate()
         if not self.config.guilds[message.channel.guild.id].markov_pings:
             while True:
                 RE = r'<@!(\d*)>'
