@@ -32,6 +32,10 @@
         !config responses &lt;enable/disable&gt; \
         !config markovpings &lt;enable/disable&gt;
 
+**countlines**: Count amount of lines \
+    Example: !count some text \
+    *This command can be used as subcommand*
+
 **countwords**: Count amount of words \
     Example: !count some text \
     *This command can be used as subcommand*
@@ -102,19 +106,23 @@
     *This command can be used as subcommand*
 
 **listalias**: Show list of aliases \
-    Example: !listalias
+    Example: !listalias \
+    *This command can be used as subcommand*
 
 **listbgevent**: Print a list of background events \
-    Example: !listbgevent
+    Example: !listbgevent \
+    *This command can be used as subcommand*
 
 **listimg**: List of available images for !img command \
     Example: !listimg
 
 **listreaction**: Show list of reactions \
-    Example: !listreaction
+    Example: !listreaction \
+    *This command can be used as subcommand*
 
 **listreminder**: Print list of reminders \
-    Example: !listreminder
+    Example: !listreminder \
+    *This command can be used as subcommand*
 
 **markov**: Generate message using Markov chain \
     Example: !markov \
@@ -181,6 +189,20 @@
         Result: he \
         !take -2 hello \
         Result: lo \
+    *This command can be used as subcommand*
+
+**takelines**: Take n lines of the string \
+    Examples: \
+        !takelines 2 a \
+        b \
+        c \
+        Result: a \
+        b \
+        !takelines -2 a \
+        b \
+        c \
+        Result: b \
+        c \
     *This command can be used as subcommand*
 
 **takewords**: Take n words of the string \

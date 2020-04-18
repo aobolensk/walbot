@@ -44,6 +44,16 @@ class BuiltinCommands:
                 "countwords", perform=self._countwords, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["countwords"].is_global = True
+        if "takelines" not in self.data.keys():
+            self.data["takelines"] = Command(
+                "takelines", perform=self._takelines, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["takelines"].is_global = True
+        if "countlines" not in self.data.keys():
+            self.data["countlines"] = Command(
+                "countlines", perform=self._countlines, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["countlines"].is_global = True
         if "tolower" not in self.data.keys():
             self.data["tolower"] = Command(
                 "tolower", perform=self._tolower, permission=const.Permission.USER.value,
@@ -142,7 +152,7 @@ class BuiltinCommands:
         if "listreaction" not in self.data.keys():
             self.data["listreaction"] = Command(
                 "listreaction", perform=self._listreaction, permission=const.Permission.USER.value,
-                subcommand=False)
+                subcommand=True)
             self.data["listreaction"].is_global = True
         if "wme" not in self.data.keys():
             self.data["wme"] = Command(
@@ -172,7 +182,7 @@ class BuiltinCommands:
         if "listbgevent" not in self.data.keys():
             self.data["listbgevent"] = Command(
                 "listbgevent", perform=self._listbgevent, permission=const.Permission.USER.value,
-                subcommand=False)
+                subcommand=True)
             self.data["listbgevent"].is_global = True
         if "delbgevent" not in self.data.keys():
             self.data["delbgevent"] = Command(
@@ -232,7 +242,7 @@ class BuiltinCommands:
         if "listalias" not in self.data.keys():
             self.data["listalias"] = Command(
                 "listalias", perform=self._listalias, permission=const.Permission.USER.value,
-                subcommand=False)
+                subcommand=True)
             self.data["listalias"].is_global = True
         if "markov" not in self.data.keys():
             self.data["markov"] = Command(
@@ -327,7 +337,7 @@ class BuiltinCommands:
         if "listreminder" not in self.data.keys():
             self.data["listreminder"] = Command(
                 "listreminder", perform=self._listreminder, permission=const.Permission.USER.value,
-                subcommand=False)
+                subcommand=True)
             self.data["listreminder"].is_global = True
         if "delreminder" not in self.data.keys():
             self.data["delreminder"] = Command(
@@ -398,6 +408,40 @@ class BuiltinCommands:
         """Count amount of words
     Example: !count some text"""
         result = str(len(' '.join(command).split()) - 1)
+        await Util.response(message, result, silent)
+        return result
+
+    async def _takelines(self, message, command, silent=False):
+        """Take n lines of the string
+    Examples:
+        !takelines 2 a
+        b
+        c
+        Result: a
+        b
+        !takelines -2 a
+        b
+        c
+        Result: b
+        c"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        result = ' '.join(command[2:]).split('\n')
+        num = await Util.parse_int(message, command[1],
+                                   "Second argument of command '{}' should be an integer".format(command[0]), silent)
+        if num is None:
+            return
+        if num < 0:
+            result = '\n'.join(result[len(result)+num:])
+        else:
+            result = '\n'.join(result[:num])
+        await Util.response(message, result, silent)
+        return result
+
+    async def _countlines(self, message, command, silent=False):
+        """Count amount of lines
+    Example: !count some text"""
+        result = str(len(' '.join(command).split('\n')))
         await Util.response(message, result, silent)
         return result
 
@@ -832,6 +876,7 @@ class BuiltinCommands:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No reactions found!", silent)
+        return result
 
     async def _wme(self, message, command, silent=False):
         """Send direct message to author with something
@@ -955,6 +1000,7 @@ class BuiltinCommands:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No background events found!", silent)
+        return result
 
     async def _delbgevent(self, message, command, silent=False):
         """Delete background event
@@ -1130,6 +1176,7 @@ class BuiltinCommands:
         for alias, command in bc.commands.aliases.items():
             result += alias + " -> " + command + '\n'
         await Util.response(message, result, silent)
+        return result
 
     async def _markov(self, message, command, silent=False):
         """Generate message using Markov chain
@@ -1432,6 +1479,7 @@ class BuiltinCommands:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No reminders found!", silent)
+        return result
 
     async def _delreminder(self, message, command, silent=False):
         """Delete reminder by index
