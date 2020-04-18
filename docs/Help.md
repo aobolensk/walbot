@@ -106,19 +106,23 @@
     *This command can be used as subcommand*
 
 **listalias**: Show list of aliases \
-    Example: !listalias
+    Example: !listalias \
+    *This command can be used as subcommand*
 
 **listbgevent**: Print a list of background events \
-    Example: !listbgevent
+    Example: !listbgevent \
+    *This command can be used as subcommand*
 
 **listimg**: List of available images for !img command \
     Example: !listimg
 
 **listreaction**: Show list of reactions \
-    Example: !listreaction
+    Example: !listreaction \
+    *This command can be used as subcommand*
 
 **listreminder**: Print list of reminders \
-    Example: !listreminder
+    Example: !listreminder \
+    *This command can be used as subcommand*
 
 **markov**: Generate message using Markov chain \
     Example: !markov \
