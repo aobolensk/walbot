@@ -382,7 +382,7 @@ class BuiltinCommands:
         Result: b c"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        result = command[2:]
+        result = ' '.join(command[2:]).split()
         num = await Util.parse_int(message, command[1],
                                    "Second argument of command '{}' should be an integer".format(command[0]), silent)
         if num is None:
@@ -397,7 +397,7 @@ class BuiltinCommands:
     async def _countwords(self, message, command, silent=False):
         """Count amount of words
     Example: !count some text"""
-        result = str(len(command) - 1)
+        result = str(len(' '.join(command).split()) - 1)
         await Util.response(message, result, silent)
         return result
 
