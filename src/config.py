@@ -84,7 +84,7 @@ class Command:
             self.times_called += 1
         if message.content.split(' ')[0][1:] not in ["addcmd", "updcmd"]:
             message.content = await self.process_subcommands(message.content, message, user)
-        command = message.content[1:].split()
+        command = message.content[1:].split(' ')
         if self.perform is not None:
             return await self.perform(message, command, silent)
         elif self.message is not None:
