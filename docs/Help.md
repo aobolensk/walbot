@@ -32,6 +32,10 @@
         !config responses &lt;enable/disable&gt; \
         !config markovpings &lt;enable/disable&gt;
 
+**countlines**: Count amount of lines \
+    Example: !count some text \
+    *This command can be used as subcommand*
+
 **countwords**: Count amount of words \
     Example: !count some text \
     *This command can be used as subcommand*
