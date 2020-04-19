@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import os
 import threading
+import re
 import yaml
 import zipfile
 
@@ -251,6 +252,17 @@ class Config:
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         return "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
+
+    async def disable_pings_in_response(self, message, response):
+        if not self.guilds[message.channel.guild.id].markov_pings:
+            while True:
+                r = re.search(const.USER_ID_REGEX, response)
+                if r is None:
+                    break
+                response = re.sub(const.USER_ID_REGEX,
+                                  str(await message.guild.fetch_member(r.group(1))),
+                                  response, count=1)
+        return response
 
 
 class SecretConfig:

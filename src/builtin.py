@@ -1183,14 +1183,7 @@ class BuiltinCommands:
     Example: !markov"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = bc.markov.generate()
-        if not self.config.guilds[message.channel.guild.id].markov_pings:
-            while True:
-                RE = r'<@!(\d*)>'
-                r = re.search(RE, result)
-                if r is None:
-                    break
-                result = re.sub(RE, str(await message.guild.fetch_member(r.group(1))), result, count=1)
+        result = await self.config.disable_pings_in_response(message, bc.markov.generate())
         await Util.response(message, result, silent)
         return result
 
