@@ -798,7 +798,7 @@ class BuiltinCommands:
                         self.config.guilds[message.channel.guild.id].markov_pings = True
                         await Util.response(
                             message, "Markov pings are successfully enabled for this channel", silent)
-                if command[2] == "disable":
+                elif command[2] == "disable":
                     if self.config.guilds[message.channel.guild.id].markov_pings:
                         self.config.guilds[message.channel.guild.id].markov_pings = False
                         await Util.response(
