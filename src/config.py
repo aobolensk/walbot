@@ -262,6 +262,8 @@ class Config:
                 response = re.sub(const.USER_ID_REGEX,
                                   str(await message.guild.fetch_member(r.group(1))),
                                   response, count=1)
+            response = re.sub("@everyone", "`@everyone`", response)
+            response = re.sub("@here", "`@here`", response)
         return response
 
 
