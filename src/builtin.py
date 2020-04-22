@@ -24,16 +24,16 @@ class BuiltinCommands:
         self.data = bc.commands.data
 
     def bind(self):
-        if "len" not in self.data.keys():
-            self.data["len"] = Command(
-                "len", perform=self._len, permission=const.Permission.USER.value,
+        if "takechars" not in self.data.keys():
+            self.data["takechars"] = Command(
+                "takechars", perform=self._takechars, permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["len"].is_global = True
-        if "take" not in self.data.keys():
-            self.data["take"] = Command(
-                "take", perform=self._take, permission=const.Permission.USER.value,
+            self.data["takechars"].is_global = True
+        if "countchars" not in self.data.keys():
+            self.data["countchars"] = Command(
+                "countchars", perform=self._countchars, permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["take"].is_global = True
+            self.data["countchars"].is_global = True
         if "takewords" not in self.data.keys():
             self.data["takewords"] = Command(
                 "takewords", perform=self._takewords, permission=const.Permission.USER.value,
@@ -355,19 +355,12 @@ class BuiltinCommands:
                 subcommand=False)
             self.data["echo"].is_global = True
 
-    async def _len(self, message, command, silent=False):
-        """Calculate length of the message
-    Example: !len some text"""
-        result = str(len(' '.join(command[1:])))
-        await Util.response(message, result, silent)
-        return result
-
-    async def _take(self, message, command, silent=False):
+    async def _takechars(self, message, command, silent=False):
         """Take n characters of the string
     Examples:
-        !take 2 hello
+        !takechars 2 hello
         Result: he
-        !take -2 hello
+        !takechars -2 hello
         Result: lo"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
@@ -380,6 +373,13 @@ class BuiltinCommands:
             result = result[len(result)+num:]
         else:
             result = result[:num]
+        await Util.response(message, result, silent)
+        return result
+
+    async def _countchars(self, message, command, silent=False):
+        """Calculate length of the message
+    Example: !countchars some text"""
+        result = str(len(' '.join(command[1:])))
         await Util.response(message, result, silent)
         return result
 
