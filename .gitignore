@@ -1,10 +1,21 @@
+# Editors cache
 .vscode
+
+# Python cache
+__pycache__
+
+# Bot config
 config.yaml
 markov.yaml
 secret.yaml
+
+# Bot data
+backup/
+images/
+
+# Bot cache
 .bot_cache
-__pycache__
+
+# Bot logs
 log.txt
 nohup.out
-images/
-backup/
