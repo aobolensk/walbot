@@ -32,6 +32,10 @@
         !config responses &lt;enable/disable&gt; \
         !config markovpings &lt;enable/disable&gt;
 
+**countchars**: Calculate length of the message \
+    Example: !countchars some text \
+    *This command can be used as subcommand*
+
 **countlines**: Count amount of lines \
     Example: !count some text \
     *This command can be used as subcommand*
@@ -100,10 +104,6 @@
 
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;
-
-**len**: Calculate length of the message \
-    Example: !len some text \
-    *This command can be used as subcommand*
 
 **listalias**: Show list of aliases \
     Example: !listalias \
@@ -183,11 +183,11 @@
     Possible activities: [playing, streaming, watching, listening] \
     Possible bot statuses: [online, idle, dnd, invisible]
 
-**take**: Take n characters of the string \
+**takechars**: Take n characters of the string \
     Examples: \
-        !take 2 hello \
+        !takechars 2 hello \
         Result: he \
-        !take -2 hello \
+        !takechars -2 hello \
         Result: lo \
     *This command can be used as subcommand*
 
