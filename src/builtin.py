@@ -354,6 +354,11 @@ class BuiltinCommands:
                 "echo", message="@args@", permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["echo"].is_global = True
+        if "code" not in self.data.keys():
+            self.data["code"] = Command(
+                "code", message="`@args@`", permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["code"].is_global = True
 
     async def _takechars(self, message, command, silent=False):
         """Take n characters of the string
