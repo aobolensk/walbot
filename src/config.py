@@ -86,6 +86,7 @@ class Command:
         if message.content.split(' ')[0][1:] not in ["addcmd", "updcmd"]:
             message.content = await self.process_subcommands(message.content, message, user)
         command = message.content[1:].split(' ')
+        command = list(filter(None, command))
         if self.perform is not None:
             return await self.perform(message, command, silent)
         elif self.message is not None:
