@@ -257,10 +257,10 @@ class Config:
     async def disable_pings_in_response(self, message, response):
         if not self.guilds[message.channel.guild.id].markov_pings:
             while True:
-                r = re.search(const.USER_ID_REGEX, response)
+                r = const.USER_ID_REGEX.search(response)
                 if r is None:
                     break
-                response = re.sub(const.USER_ID_REGEX,
+                response = const.USER_ID_REGEX.sub(
                                   str(await message.guild.fetch_member(r.group(1))),
                                   response, count=1)
             response = re.sub("@everyone", "`@everyone`", response)

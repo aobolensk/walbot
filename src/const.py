@@ -1,3 +1,5 @@
+import re
+
 from enum import Enum, unique
 
 
@@ -9,10 +11,10 @@ MAX_POLL_OPTIONS = 20
 DISCORD_MAX_MESSAGE_LENGTH = 2000
 MAX_MESSAGE_HISTORY_DEPTH = 1000
 
-FILENAME_REGEX = '^[A-Za-zА-Яа-яЁё0-9_-]+$'
+FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
 REMINDER_TIME_FORMAT = "%Y-%m-%d %H:%M"
-EMOJI_REGEX = r'<:(\w*):(\d*)>'
-USER_ID_REGEX = r'<@!(\d*)>'
+EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
+USER_ID_REGEX = re.compile(r'<@!(\d*)>')
 
 
 @unique
