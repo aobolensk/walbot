@@ -3,6 +3,10 @@ import sys
 
 class Launcher:
     def __init__(self, command):
+        if not (sys.version_info.major >= 3 and sys.version_info.minor >= 5):
+            print("Python {}.{}.{} is not supported. You need Python 3.5+".format(
+                sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+            exit(1)
         if command in [x for x in dir(self) if not x.startswith('_')]:
             getattr(self, command)()
         else:
