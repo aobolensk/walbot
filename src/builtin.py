@@ -269,6 +269,21 @@ class BuiltinCommands:
                 "dropmarkov", perform=self._dropmarkov, permission=const.Permission.ADMIN.value,
                 subcommand=False)
             self.data["dropmarkov"].is_global = True
+        if "addmarkovfilter" not in self.data.keys():
+            self.data["addmarkovfilter"] = Command(
+                "addmarkovfilter", perform=self._addmarkovfilter, permission=const.Permission.MOD.value,
+                subcommand=False)
+            self.data["addmarkovfilter"].is_global = True
+        if "listmarkovfilter" not in self.data.keys():
+            self.data["listmarkovfilter"] = Command(
+                "listmarkovfilter", perform=self._listmarkovfilter, permission=const.Permission.USER.value,
+                subcommand=True)
+            self.data["listmarkovfilter"].is_global = True
+        if "delmarkovfilter" not in self.data.keys():
+            self.data["delmarkovfilter"] = Command(
+                "delmarkovfilter", perform=self._delmarkovfilter, permission=const.Permission.MOD.value,
+                subcommand=True)
+            self.data["delmarkovfilter"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=const.Permission.USER.value,
@@ -1229,6 +1244,45 @@ class BuiltinCommands:
             return
         bc.markov.__init__()
         await Util.response(message, "Markov database has been dropped!", silent)
+
+    async def _addmarkovfilter(self, message, command, silent=False):
+        """Add regular expression filter for Markov model
+    Example: !addmarkovfilter"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        bc.markov.filters.append(re.compile(command[1]))
+        await Util.response(message, "Filter '{}' was successfully added for Markov model".format(command[1]), silent)
+
+    async def _listmarkovfilter(self, message, command, silent=False):
+        """Print a list of regular expression filters for Markov model
+    Example: !listmarkovfilter"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        result = ""
+        for index, regex in enumerate(bc.markov.filters):
+            result += "{} -> {}\n".format(index, regex.pattern)
+        if len(result) > 0:
+            await Util.response(message, result, silent)
+        else:
+            await Util.response(message, "No filters for Markov model found!", silent)
+        return result
+
+    async def _delmarkovfilter(self, message, command, silent=False):
+        """Delete regular expression filter for Markov model by index
+    Example: !delmarkovfilter 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of filter"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(bc.markov.filters):
+            bc.markov.filters.pop(index)
+            await Util.response(message, "Successfully deleted filter!", silent)
+        else:
+            await Util.response(message, "Invalid index of filter!", silent)
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)

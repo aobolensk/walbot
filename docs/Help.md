@@ -14,6 +14,9 @@
 **addimg**: Add image for !img command \
     Example: !addimg name url
 
+**addmarkovfilter**: Add regular expression filter for Markov model \
+    Example: !addmarkovfilter
+
 **addreaction**: Add reaction \
     Example: !addreaction emoji regex
 
@@ -59,6 +62,10 @@
 
 **delmarkov**: Delete all words in Markov model by regex \
     Example: !delmarkov hello
+
+**delmarkovfilter**: Delete regular expression filter for Markov model by index \
+    Example: !delmarkovfilter 0 \
+    *This command can be used as subcommand*
 
 **delreaction**: Delete reaction \
     Examples: \
@@ -115,6 +122,10 @@
 
 **listimg**: List of available images for !img command \
     Example: !listimg
+
+**listmarkovfilter**: Print a list of regular expression filters for Markov model \
+    Example: !listmarkovfilter \
+    *This command can be used as subcommand*
 
 **listreaction**: Show list of reactions \
     Example: !listreaction \
