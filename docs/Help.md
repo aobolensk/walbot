@@ -70,6 +70,9 @@
     Example: !delmarkovfilter 0 \
     *This command can be used as subcommand*
 
+**delquote**: Delete quote from quotes database by index \
+    Example: !delquote 0
+
 **delreaction**: Delete reaction \
     Examples: \
         !delreaction emoji \

@@ -380,6 +380,11 @@ class BuiltinCommands:
                 "listquote", perform=self._listquote, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["listquote"].is_global = True
+        if "delquote" not in self.data.keys():
+            self.data["delquote"] = Command(
+                "delquote", perform=self._delquote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["delquote"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1632,3 +1637,20 @@ class BuiltinCommands:
         else:
             await Util.response(message, "<Quotes database is empty>", silent)
         return result
+
+    async def _delquote(self, message, command, silent=False):
+        """Delete quote from quotes database by index
+    Example: !delquote 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of quote"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(self.config.quotes):
+            self.config.quotes.pop(index)
+            await Util.response(message, "Successfully deleted quote!", silent)
+        else:
+            await Util.response(message, "Invalid index of quote!", silent)
