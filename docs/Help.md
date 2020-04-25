@@ -17,6 +17,9 @@
 **addmarkovfilter**: Add regular expression filter for Markov model \
     Example: !addmarkovfilter
 
+**addquote**: Add quote to quotes database \
+    Example: !addquote Hello, world!
+
 **addreaction**: Add reaction \
     Example: !addreaction emoji regex
 
@@ -162,6 +165,11 @@
     Examples: \
         !profile \
         !profile `@user`
+
+**quote**: Print some quote from quotes database \
+    Examples: \
+        !quote \
+        !quote 1
 
 **random**: Get random number in range [left, right] \
     Example: !random 5 10 \

@@ -14,6 +14,7 @@ from .config import bc
 from .config import BackgroundEvent
 from .config import Reaction
 from .config import log
+from .quote import Quote
 from .reminder import Reminder
 from .utils import Util
 
@@ -364,6 +365,16 @@ class BuiltinCommands:
                 "server", perform=self._server, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["server"].is_global = True
+        if "quote" not in self.data.keys():
+            self.data["quote"] = Command(
+                "quote", perform=self._quote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["quote"].is_global = True
+        if "addquote" not in self.data.keys():
+            self.data["addquote"] = Command(
+                "addquote", perform=self._addquote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["addquote"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1567,3 +1578,38 @@ class BuiltinCommands:
                     ', '.join(filter(lambda x: x != "@everyone", map(str, member.roles)))))
             result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
+
+    async def _quote(self, message, command, silent=False):
+        """Print some quote from quotes database
+    Examples:
+        !quote
+        !quote 1"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+            return
+        if len(self.config.quotes) == 0:
+            await Util.response(message, "<Quotes database is empty>", silent)
+            return
+        if len(command) == 2:
+            index = await Util.parse_int(message, command[1],
+                                         "Second parameter for '{}' should be an index of quote"
+                                         .format(command[0]),
+                                         silent)
+            if index is None:
+                return
+        else:
+            index = random.randint(0, len(self.config.quotes) - 1)
+        if index >= 0 and index < len(self.config.quotes):
+            await Util.response(message, "Quote {}: {}".format(index, self.config.quotes[index].full_quote()), silent)
+        else:
+            await Util.response(message, "Invalid index of quote!", silent)
+
+    async def _addquote(self, message, command, silent=False):
+        """Add quote to quotes database
+    Example: !addquote Hello, world!"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        quote = ' '.join(command[1:])
+        self.config.quotes.append(Quote(quote, str(message.author)))
+        await Util.response(message,
+                            "Quote '{}' was successfully added to quotes database with index {}".format(
+                                quote, len(self.config.quotes) - 1), silent)
