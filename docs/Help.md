@@ -191,6 +191,9 @@
 **server**: Print information about current server \
     Example: !server 0
 
+**setquoteauthor**: Set author of quote by its index \
+    Example: !setquoteauthor 0 WalBot
+
 **shutdown**: Shutdown the bot \
     Example: !shutdown
 

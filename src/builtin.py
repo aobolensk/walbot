@@ -385,6 +385,11 @@ class BuiltinCommands:
                 "delquote", perform=self._delquote, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["delquote"].is_global = True
+        if "setquoteauthor" not in self.data.keys():
+            self.data["setquoteauthor"] = Command(
+                "setquoteauthor", perform=self._setquoteauthor, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["setquoteauthor"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1652,5 +1657,25 @@ class BuiltinCommands:
         if index >= 0 and index < len(self.config.quotes):
             self.config.quotes.pop(index)
             await Util.response(message, "Successfully deleted quote!", silent)
+        else:
+            await Util.response(message, "Invalid index of quote!", silent)
+
+    async def _setquoteauthor(self, message, command, silent=False):
+        """Set author of quote by its index
+    Example: !setquoteauthor 0 WalBot"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of quote"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(self.config.quotes):
+            author = ' '.join(command[2:])
+            self.config.quotes[index].author = author
+            await Util.response(message,
+                                "Successfully set author '{}' for quote '{}'".format(
+                                    author, self.config.quotes[index].quote()), silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
