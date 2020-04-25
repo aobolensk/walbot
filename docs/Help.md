@@ -63,6 +63,10 @@
 **delmarkov**: Delete all words in Markov model by regex \
     Example: !delmarkov hello
 
+**delmarkovfilter**: Delete regular expression filter for Markov model by index \
+    Example: !delmarkovfilter 0 \
+    *This command can be used as subcommand*
+
 **delreaction**: Delete reaction \
     Examples: \
         !delreaction emoji \

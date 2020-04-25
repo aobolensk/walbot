@@ -279,6 +279,11 @@ class BuiltinCommands:
                 "listmarkovfilter", perform=self._listmarkovfilter, permission=const.Permission.USER.value,
                 subcommand=True)
             self.data["listmarkovfilter"].is_global = True
+        if "delmarkovfilter" not in self.data.keys():
+            self.data["delmarkovfilter"] = Command(
+                "delmarkovfilter", perform=self._delmarkovfilter, permission=const.Permission.MOD.value,
+                subcommand=True)
+            self.data["delmarkovfilter"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=const.Permission.USER.value,
@@ -1261,6 +1266,24 @@ class BuiltinCommands:
         else:
             await Util.response(message, "No filters for Markov model found!", silent)
         return result
+
+    async def _delmarkovfilter(self, message, command, silent=False):
+        """Delete regular expression filter for Markov model by index
+    Example: !delmarkovfilter 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of filter"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(bc.markov.filters):
+            bc.markov.filters.pop(index)
+            await Util.response(message, "Successfully deleted filter!", silent)
+        else:
+            await Util.response(message, "Invalid index of filter!", silent)
+
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
