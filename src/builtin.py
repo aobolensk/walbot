@@ -375,6 +375,11 @@ class BuiltinCommands:
                 "addquote", perform=self._addquote, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["addquote"].is_global = True
+        if "listquote" not in self.data.keys():
+            self.data["listquote"] = Command(
+                "listquote", perform=self._listquote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["listquote"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1613,3 +1618,17 @@ class BuiltinCommands:
         await Util.response(message,
                             "Quote '{}' was successfully added to quotes database with index {}".format(
                                 quote, len(self.config.quotes) - 1), silent)
+
+    async def _listquote(self, message, command, silent=False):
+        """Print list of all quotes
+    Example: !listquote"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        result = ""
+        for index, quote in enumerate(self.config.quotes):
+            result += "{} -> {}\n".format(index, quote.quote())
+        if len(result) > 0:
+            await Util.response(message, result, silent)
+        else:
+            await Util.response(message, "<Quotes database is empty>", silent)
+        return result

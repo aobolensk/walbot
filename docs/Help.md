@@ -130,6 +130,9 @@
     Example: !listmarkovfilter \
     *This command can be used as subcommand*
 
+**listquote**: Print list of all quotes \
+    Example: !listquote
+
 **listreaction**: Show list of reactions \
     Example: !listreaction \
     *This command can be used as subcommand*
