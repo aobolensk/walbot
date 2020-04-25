@@ -269,6 +269,11 @@ class BuiltinCommands:
                 "dropmarkov", perform=self._dropmarkov, permission=const.Permission.ADMIN.value,
                 subcommand=False)
             self.data["dropmarkov"].is_global = True
+        if "addmarkovfilter" not in self.data.keys():
+            self.data["addmarkovfilter"] = Command(
+                "addmarkovfilter", perform=self._addmarkovfilter, permission=const.Permission.MOD.value,
+                subcommand=False)
+            self.data["addmarkovfilter"].is_global = True
         if "img" not in self.data.keys():
             self.data["img"] = Command(
                 "img", perform=self._img, permission=const.Permission.USER.value,
@@ -1229,6 +1234,14 @@ class BuiltinCommands:
             return
         bc.markov.__init__()
         await Util.response(message, "Markov database has been dropped!", silent)
+
+    async def _addmarkovfilter(self, message, command, silent=False):
+        """Add regular expression filter for Markov model
+    Example: !addmarkovfilter"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        bc.markov.filters.append(re.compile(command[1]))
+        await Util.response(message, "Filter '{}' was successfully added for Markov model".format(command[1]), silent)
 
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)

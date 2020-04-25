@@ -42,10 +42,11 @@ class Markov:
     def __init__(self):
         self.model = {"": MarkovNode(self, self.NodeType.begin)}
         self.end_node = MarkovNode(self, self.NodeType.end)
+        self.filters = []
 
     def add_string(self, text):
-        words = text.split(' ')
-        words = filter(None, words)
+        words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
+        print(words)
         current_node = self.model[""]
         for word in words:
             current_node.add_next(word)

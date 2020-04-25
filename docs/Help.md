@@ -14,6 +14,9 @@
 **addimg**: Add image for !img command \
     Example: !addimg name url
 
+**addmarkovfilter**: Add regular expression filter for Markov model \
+    Example: !addmarkovfilter
+
 **addreaction**: Add reaction \
     Example: !addreaction emoji regex
 
