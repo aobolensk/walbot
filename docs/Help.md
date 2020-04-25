@@ -17,6 +17,9 @@
 **addmarkovfilter**: Add regular expression filter for Markov model \
     Example: !addmarkovfilter
 
+**addquote**: Add quote to quotes database \
+    Example: !addquote Hello, world!
+
 **addreaction**: Add reaction \
     Example: !addreaction emoji regex
 
@@ -66,6 +69,9 @@
 **delmarkovfilter**: Delete regular expression filter for Markov model by index \
     Example: !delmarkovfilter 0 \
     *This command can be used as subcommand*
+
+**delquote**: Delete quote from quotes database by index \
+    Example: !delquote 0
 
 **delreaction**: Delete reaction \
     Examples: \
@@ -127,6 +133,9 @@
     Example: !listmarkovfilter \
     *This command can be used as subcommand*
 
+**listquote**: Print list of all quotes \
+    Example: !listquote
+
 **listreaction**: Show list of reactions \
     Example: !listreaction \
     *This command can be used as subcommand*
@@ -163,6 +172,11 @@
         !profile \
         !profile `@user`
 
+**quote**: Print some quote from quotes database \
+    Examples: \
+        !quote \
+        !quote 1
+
 **random**: Get random number in range [left, right] \
     Example: !random 5 10 \
     *This command can be used as subcommand*
@@ -176,6 +190,9 @@
 
 **server**: Print information about current server \
     Example: !server 0
+
+**setquoteauthor**: Set author of quote by its index \
+    Example: !setquoteauthor 0 WalBot
 
 **shutdown**: Shutdown the bot \
     Example: !shutdown

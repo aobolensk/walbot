@@ -14,6 +14,7 @@ from .config import bc
 from .config import BackgroundEvent
 from .config import Reaction
 from .config import log
+from .quote import Quote
 from .reminder import Reminder
 from .utils import Util
 
@@ -364,6 +365,31 @@ class BuiltinCommands:
                 "server", perform=self._server, permission=const.Permission.USER.value,
                 subcommand=False)
             self.data["server"].is_global = True
+        if "quote" not in self.data.keys():
+            self.data["quote"] = Command(
+                "quote", perform=self._quote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["quote"].is_global = True
+        if "addquote" not in self.data.keys():
+            self.data["addquote"] = Command(
+                "addquote", perform=self._addquote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["addquote"].is_global = True
+        if "listquote" not in self.data.keys():
+            self.data["listquote"] = Command(
+                "listquote", perform=self._listquote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["listquote"].is_global = True
+        if "delquote" not in self.data.keys():
+            self.data["delquote"] = Command(
+                "delquote", perform=self._delquote, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["delquote"].is_global = True
+        if "setquoteauthor" not in self.data.keys():
+            self.data["setquoteauthor"] = Command(
+                "setquoteauthor", perform=self._setquoteauthor, permission=const.Permission.USER.value,
+                subcommand=False)
+            self.data["setquoteauthor"].is_global = True
         if "echo" not in self.data.keys():
             self.data["echo"] = Command(
                 "echo", message="@args@", permission=const.Permission.USER.value,
@@ -1567,3 +1593,89 @@ class BuiltinCommands:
                     ', '.join(filter(lambda x: x != "@everyone", map(str, member.roles)))))
             result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
+
+    async def _quote(self, message, command, silent=False):
+        """Print some quote from quotes database
+    Examples:
+        !quote
+        !quote 1"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+            return
+        if len(self.config.quotes) == 0:
+            await Util.response(message, "<Quotes database is empty>", silent)
+            return
+        if len(command) == 2:
+            index = await Util.parse_int(message, command[1],
+                                         "Second parameter for '{}' should be an index of quote"
+                                         .format(command[0]),
+                                         silent)
+            if index is None:
+                return
+        else:
+            index = random.randint(0, len(self.config.quotes) - 1)
+        if index >= 0 and index < len(self.config.quotes):
+            await Util.response(message, "Quote {}: {}".format(index, self.config.quotes[index].full_quote()), silent)
+        else:
+            await Util.response(message, "Invalid index of quote!", silent)
+
+    async def _addquote(self, message, command, silent=False):
+        """Add quote to quotes database
+    Example: !addquote Hello, world!"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        quote = ' '.join(command[1:])
+        self.config.quotes.append(Quote(quote, str(message.author)))
+        await Util.response(message,
+                            "Quote '{}' was successfully added to quotes database with index {}".format(
+                                quote, len(self.config.quotes) - 1), silent)
+
+    async def _listquote(self, message, command, silent=False):
+        """Print list of all quotes
+    Example: !listquote"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        result = ""
+        for index, quote in enumerate(self.config.quotes):
+            result += "{} -> {}\n".format(index, quote.quote())
+        if len(result) > 0:
+            await Util.response(message, result, silent)
+        else:
+            await Util.response(message, "<Quotes database is empty>", silent)
+        return result
+
+    async def _delquote(self, message, command, silent=False):
+        """Delete quote from quotes database by index
+    Example: !delquote 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of quote"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(self.config.quotes):
+            self.config.quotes.pop(index)
+            await Util.response(message, "Successfully deleted quote!", silent)
+        else:
+            await Util.response(message, "Invalid index of quote!", silent)
+
+    async def _setquoteauthor(self, message, command, silent=False):
+        """Set author of quote by its index
+    Example: !setquoteauthor 0 WalBot"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of quote"
+                                     .format(command[0]),
+                                     silent)
+        if index is None:
+            return
+        if index >= 0 and index < len(self.config.quotes):
+            author = ' '.join(command[2:])
+            self.config.quotes[index].author = author
+            await Util.response(message,
+                                "Successfully set author '{}' for quote '{}'".format(
+                                    author, self.config.quotes[index].quote()), silent)
+        else:
+            await Util.response(message, "Invalid index of quote!", silent)
