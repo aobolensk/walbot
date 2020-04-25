@@ -119,6 +119,10 @@
 **listimg**: List of available images for !img command \
     Example: !listimg
 
+**listmarkovfilter**: Print a list of regular expression filters for Markov model \
+    Example: !listmarkovfilter \
+    *This command can be used as subcommand*
+
 **listreaction**: Show list of reactions \
     Example: !listreaction \
     *This command can be used as subcommand*
