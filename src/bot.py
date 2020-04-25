@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import discord
+import itertools
 import os
 import psutil
 import signal
@@ -107,7 +108,9 @@ class WalBot(discord.Client):
             log.error("on_message failed", exc_info=True)
 
     async def process_regular_message(self, message):
-        if bc.bot_user.mentioned_in(message):
+        if (self.user.mentioned_in(message) or
+            self.user.id in [member.id for member in
+                             list(itertools.chain(*[role.members for role in message.role_mentions]))]):
             if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
                 result = await self.config.disable_pings_in_response(message, bc.markov.generate())
                 await message.channel.send(message.author.mention + ' ' + result)
