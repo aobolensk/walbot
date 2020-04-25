@@ -1284,7 +1284,6 @@ class BuiltinCommands:
         else:
             await Util.response(message, "Invalid index of filter!", silent)
 
-
     async def _img(self, message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""

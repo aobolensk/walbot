@@ -46,7 +46,6 @@ class Markov:
 
     def add_string(self, text):
         words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
-        print(words)
         current_node = self.model[""]
         for word in words:
             current_node.add_next(word)
