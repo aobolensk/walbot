@@ -33,7 +33,7 @@ class Commands:
                                                       command.perform).__doc__.split('\n'))
                         except AttributeError:
                             del self.data[name]
-                            log.warning("Command {} is not found and deleted from config and documentation".format(
+                            log.warning("Command '{}' is not found and deleted from config and documentation".format(
                                         name))
                             repeat = True
                             break
