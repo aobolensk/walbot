@@ -22,6 +22,7 @@ class Log:
         self.debug = self.log.debug
         self.info = self.log.info
         self.error = self.log.error
+        self.warning = self.log.warning
         self.info("Logging system is set up")
 
 
