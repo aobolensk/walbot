@@ -11,14 +11,12 @@ class Log:
         self.log = logging.getLogger("WalBot")
         self.log.setLevel(logging.DEBUG)
         fh = logging.FileHandler("log.txt", encoding="utf-8")
-        fh.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
-        self.log.addHandler(fh)
-        self.log.addHandler(ch)
+        for h in (fh, ch):
+            h.setLevel(logging.DEBUG)
+            h.setFormatter(formatter)
+            self.log.addHandler(h)
         self.debug = self.log.debug
         self.info = self.log.info
         self.error = self.log.error
