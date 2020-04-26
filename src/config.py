@@ -3,6 +3,7 @@ import datetime
 import os
 import threading
 import re
+import sys
 import yaml
 import zipfile
 
@@ -22,7 +23,9 @@ bc = BotController()
 
 
 class Command:
-    def __init__(self, name, perform=None, message=None, permission=0, subcommand=False):
+    def __init__(self, module_name, class_name, name, perform=None, message=None, permission=0, subcommand=False):
+        self.module_name = module_name
+        self.class_name = class_name
         self.name = name
         self.perform = perform
         self.permission = permission
@@ -88,7 +91,7 @@ class Command:
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
-            return await self.perform(message, command, silent)
+            return await getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)(message, command, silent)
         elif self.message is not None:
             response = self.message
             response = response.replace("@author@", message.author.mention)

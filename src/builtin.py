@@ -20,388 +20,385 @@ from .utils import Util
 
 
 class BuiltinCommands:
-    def __init__(self):
-        self.config = bc.commands.config
-        self.data = bc.commands.data
-
     def bind(self):
-        if "takechars" not in self.data.keys():
-            self.data["takechars"] = Command(
-                "takechars", perform=self._takechars, permission=const.Permission.USER.value,
+        if "takechars" not in bc.commands.data.keys():
+            bc.commands.data["takechars"] = Command(
+                __name__, self.__class__.__name__, "takechars", "_takechars", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["takechars"].is_global = True
-        if "countchars" not in self.data.keys():
-            self.data["countchars"] = Command(
-                "countchars", perform=self._countchars, permission=const.Permission.USER.value,
+            bc.commands.data["takechars"].is_global = True
+        if "countchars" not in bc.commands.data.keys():
+            bc.commands.data["countchars"] = Command(
+                __name__, self.__class__.__name__, "countchars", "_countchars", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["countchars"].is_global = True
-        if "takewords" not in self.data.keys():
-            self.data["takewords"] = Command(
-                "takewords", perform=self._takewords, permission=const.Permission.USER.value,
+            bc.commands.data["countchars"].is_global = True
+        if "takewords" not in bc.commands.data.keys():
+            bc.commands.data["takewords"] = Command(
+                __name__, self.__class__.__name__, "takewords", "_takewords", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["takewords"].is_global = True
-        if "countwords" not in self.data.keys():
-            self.data["countwords"] = Command(
-                "countwords", perform=self._countwords, permission=const.Permission.USER.value,
+            bc.commands.data["takewords"].is_global = True
+        if "countwords" not in bc.commands.data.keys():
+            bc.commands.data["countwords"] = Command(
+                __name__, self.__class__.__name__, "countwords", "_countwords", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["countwords"].is_global = True
-        if "takelines" not in self.data.keys():
-            self.data["takelines"] = Command(
-                "takelines", perform=self._takelines, permission=const.Permission.USER.value,
+            bc.commands.data["countwords"].is_global = True
+        if "takelines" not in bc.commands.data.keys():
+            bc.commands.data["takelines"] = Command(
+                __name__, self.__class__.__name__, "takelines", "_takelines", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["takelines"].is_global = True
-        if "countlines" not in self.data.keys():
-            self.data["countlines"] = Command(
-                "countlines", perform=self._countlines, permission=const.Permission.USER.value,
+            bc.commands.data["takelines"].is_global = True
+        if "countlines" not in bc.commands.data.keys():
+            bc.commands.data["countlines"] = Command(
+                __name__, self.__class__.__name__, "countlines", "_countlines", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["countlines"].is_global = True
-        if "tolower" not in self.data.keys():
-            self.data["tolower"] = Command(
-                "tolower", perform=self._tolower, permission=const.Permission.USER.value,
+            bc.commands.data["countlines"].is_global = True
+        if "tolower" not in bc.commands.data.keys():
+            bc.commands.data["tolower"] = Command(
+                __name__, self.__class__.__name__, "tolower", "_tolower", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["tolower"].is_global = True
-        if "toupper" not in self.data.keys():
-            self.data["toupper"] = Command(
-                "toupper", perform=self._toupper, permission=const.Permission.USER.value,
+            bc.commands.data["tolower"].is_global = True
+        if "toupper" not in bc.commands.data.keys():
+            bc.commands.data["toupper"] = Command(
+                __name__, self.__class__.__name__, "toupper", "_toupper", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["toupper"].is_global = True
-        if "ping" not in self.data.keys():
-            self.data["ping"] = Command(
-                "ping", perform=self._ping, permission=const.Permission.USER.value,
+            bc.commands.data["toupper"].is_global = True
+        if "ping" not in bc.commands.data.keys():
+            bc.commands.data["ping"] = Command(
+                __name__, self.__class__.__name__, "ping", "_ping", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["ping"].is_global = True
-        if "spoiler" not in self.data.keys():
-            self.data["spoiler"] = Command(
-                "spoiler", perform=self._spoiler, permission=const.Permission.USER.value,
+            bc.commands.data["ping"].is_global = True
+        if "spoiler" not in bc.commands.data.keys():
+            bc.commands.data["spoiler"] = Command(
+                __name__, self.__class__.__name__, "spoiler", "_spoiler", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["spoiler"].is_global = True
-        if "help" not in self.data.keys():
-            self.data["help"] = Command(
-                "help", perform=self._help, permission=const.Permission.USER.value,
+            bc.commands.data["spoiler"].is_global = True
+        if "help" not in bc.commands.data.keys():
+            bc.commands.data["help"] = Command(
+                __name__, self.__class__.__name__, "help", "_help", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["help"].is_global = True
-        if "profile" not in self.data.keys():
-            self.data["profile"] = Command(
-                "profile", perform=self._profile, permission=const.Permission.USER.value,
+            bc.commands.data["help"].is_global = True
+        if "profile" not in bc.commands.data.keys():
+            bc.commands.data["profile"] = Command(
+                __name__, self.__class__.__name__, "profile", "_profile", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["profile"].is_global = True
-        if "addcmd" not in self.data.keys():
-            self.data["addcmd"] = Command(
-                "addcmd", perform=self._addcmd, permission=const.Permission.MOD.value,
+            bc.commands.data["profile"].is_global = True
+        if "addcmd" not in bc.commands.data.keys():
+            bc.commands.data["addcmd"] = Command(
+                __name__, self.__class__.__name__, "addcmd", "_addcmd", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["addcmd"].is_global = True
-        if "updcmd" not in self.data.keys():
-            self.data["updcmd"] = Command(
-                "updcmd", perform=self._updcmd, permission=const.Permission.MOD.value,
+            bc.commands.data["addcmd"].is_global = True
+        if "updcmd" not in bc.commands.data.keys():
+            bc.commands.data["updcmd"] = Command(
+                __name__, self.__class__.__name__, "updcmd", "_updcmd", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["updcmd"].is_global = True
-        if "delcmd" not in self.data.keys():
-            self.data["delcmd"] = Command(
-                "delcmd", perform=self._delcmd, permission=const.Permission.MOD.value,
+            bc.commands.data["updcmd"].is_global = True
+        if "delcmd" not in bc.commands.data.keys():
+            bc.commands.data["delcmd"] = Command(
+                __name__, self.__class__.__name__, "delcmd", "_delcmd", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["delcmd"].is_global = True
-        if "enablecmd" not in self.data.keys():
-            self.data["enablecmd"] = Command(
-                "enablecmd", perform=self._enablecmd, permission=const.Permission.MOD.value,
+            bc.commands.data["delcmd"].is_global = True
+        if "enablecmd" not in bc.commands.data.keys():
+            bc.commands.data["enablecmd"] = Command(
+                __name__, self.__class__.__name__, "enablecmd", "_enablecmd", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["enablecmd"].is_global = True
-        if "disablecmd" not in self.data.keys():
-            self.data["disablecmd"] = Command(
-                "disablecmd", perform=self._disablecmd, permission=const.Permission.MOD.value,
+            bc.commands.data["enablecmd"].is_global = True
+        if "disablecmd" not in bc.commands.data.keys():
+            bc.commands.data["disablecmd"] = Command(
+                __name__, self.__class__.__name__, "disablecmd", "_disablecmd", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["disablecmd"].is_global = True
-        if "permcmd" not in self.data.keys():
-            self.data["permcmd"] = Command(
-                "permcmd", perform=self._permcmd, permission=const.Permission.MOD.value,
+            bc.commands.data["disablecmd"].is_global = True
+        if "permcmd" not in bc.commands.data.keys():
+            bc.commands.data["permcmd"] = Command(
+                __name__, self.__class__.__name__, "permcmd", "_permcmd", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["permcmd"].is_global = True
-        if "timescmd" not in self.data.keys():
-            self.data["timescmd"] = Command(
-                "timescmd", perform=self._timescmd, permission=const.Permission.USER.value,
+            bc.commands.data["permcmd"].is_global = True
+        if "timescmd" not in bc.commands.data.keys():
+            bc.commands.data["timescmd"] = Command(
+                __name__, self.__class__.__name__, "timescmd", "_timescmd", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["timescmd"].is_global = True
-        if "permuser" not in self.data.keys():
-            self.data["permuser"] = Command(
-                "permuser", perform=self._permuser, permission=const.Permission.MOD.value,
+            bc.commands.data["timescmd"].is_global = True
+        if "permuser" not in bc.commands.data.keys():
+            bc.commands.data["permuser"] = Command(
+                __name__, self.__class__.__name__, "permuser", "_permuser", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["permuser"].is_global = True
-        if "whitelist" not in self.data.keys():
-            self.data["whitelist"] = Command(
-                "whitelist", perform=self._whitelist, permission=const.Permission.MOD.value,
+            bc.commands.data["permuser"].is_global = True
+        if "whitelist" not in bc.commands.data.keys():
+            bc.commands.data["whitelist"] = Command(
+                __name__, self.__class__.__name__, "whitelist", "_whitelist", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["whitelist"].is_global = True
-        if "config" not in self.data.keys():
-            self.data["config"] = Command(
-                "config", perform=self._config, permission=const.Permission.MOD.value,
+            bc.commands.data["whitelist"].is_global = True
+        if "config" not in bc.commands.data.keys():
+            bc.commands.data["config"] = Command(
+                __name__, self.__class__.__name__, "config", "_config", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["config"].is_global = True
-        if "addreaction" not in self.data.keys():
-            self.data["addreaction"] = Command(
-                "addreaction", perform=self._addreaction, permission=const.Permission.MOD.value,
+            bc.commands.data["config"].is_global = True
+        if "addreaction" not in bc.commands.data.keys():
+            bc.commands.data["addreaction"] = Command(
+                __name__, self.__class__.__name__, "addreaction", "_addreaction", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["addreaction"].is_global = True
-        if "updreaction" not in self.data.keys():
-            self.data["updreaction"] = Command(
-                "updreaction", perform=self._updreaction, permission=const.Permission.MOD.value,
+            bc.commands.data["addreaction"].is_global = True
+        if "updreaction" not in bc.commands.data.keys():
+            bc.commands.data["updreaction"] = Command(
+                __name__, self.__class__.__name__, "updreaction", "_updreaction", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["updreaction"].is_global = True
-        if "delreaction" not in self.data.keys():
-            self.data["delreaction"] = Command(
-                "delreaction", perform=self._delreaction, permission=const.Permission.MOD.value,
+            bc.commands.data["updreaction"].is_global = True
+        if "delreaction" not in bc.commands.data.keys():
+            bc.commands.data["delreaction"] = Command(
+                __name__, self.__class__.__name__, "delreaction", "_delreaction", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["delreaction"].is_global = True
-        if "listreaction" not in self.data.keys():
-            self.data["listreaction"] = Command(
-                "listreaction", perform=self._listreaction, permission=const.Permission.USER.value,
+            bc.commands.data["delreaction"].is_global = True
+        if "listreaction" not in bc.commands.data.keys():
+            bc.commands.data["listreaction"] = Command(
+                __name__, self.__class__.__name__, "listreaction", "_listreaction", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["listreaction"].is_global = True
-        if "wme" not in self.data.keys():
-            self.data["wme"] = Command(
-                "wme", perform=self._wme, permission=const.Permission.MOD.value,
+            bc.commands.data["listreaction"].is_global = True
+        if "wme" not in bc.commands.data.keys():
+            bc.commands.data["wme"] = Command(
+                __name__, self.__class__.__name__, "wme", "_wme", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["wme"].is_global = True
-        if "poll" not in self.data.keys():
-            self.data["poll"] = Command(
-                "poll", perform=self._poll, permission=const.Permission.USER.value,
+            bc.commands.data["wme"].is_global = True
+        if "poll" not in bc.commands.data.keys():
+            bc.commands.data["poll"] = Command(
+                __name__, self.__class__.__name__, "poll", "_poll", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["poll"].is_global = True
-        if "version" not in self.data.keys():
-            self.data["version"] = Command(
-                "version", perform=self._version, permission=const.Permission.USER.value,
+            bc.commands.data["poll"].is_global = True
+        if "version" not in bc.commands.data.keys():
+            bc.commands.data["version"] = Command(
+                __name__, self.__class__.__name__, "version", "_version", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["version"].is_global = True
-        if "about" not in self.data.keys():
-            self.data["about"] = Command(
-                "about", perform=self._about, permission=const.Permission.USER.value,
+            bc.commands.data["version"].is_global = True
+        if "about" not in bc.commands.data.keys():
+            bc.commands.data["about"] = Command(
+                __name__, self.__class__.__name__, "about", "_about", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["about"].is_global = True
-        if "addbgevent" not in self.data.keys():
-            self.data["addbgevent"] = Command(
-                "addbgevent", perform=self._addbgevent, permission=const.Permission.MOD.value,
+            bc.commands.data["about"].is_global = True
+        if "addbgevent" not in bc.commands.data.keys():
+            bc.commands.data["addbgevent"] = Command(
+                __name__, self.__class__.__name__, "addbgevent", "_addbgevent", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["addbgevent"].is_global = True
-        if "listbgevent" not in self.data.keys():
-            self.data["listbgevent"] = Command(
-                "listbgevent", perform=self._listbgevent, permission=const.Permission.USER.value,
+            bc.commands.data["addbgevent"].is_global = True
+        if "listbgevent" not in bc.commands.data.keys():
+            bc.commands.data["listbgevent"] = Command(
+                __name__, self.__class__.__name__, "listbgevent", "_listbgevent", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["listbgevent"].is_global = True
-        if "delbgevent" not in self.data.keys():
-            self.data["delbgevent"] = Command(
-                "delbgevent", perform=self._delbgevent, permission=const.Permission.MOD.value,
+            bc.commands.data["listbgevent"].is_global = True
+        if "delbgevent" not in bc.commands.data.keys():
+            bc.commands.data["delbgevent"] = Command(
+                __name__, self.__class__.__name__, "delbgevent", "_delbgevent", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["delbgevent"].is_global = True
-        if "random" not in self.data.keys():
-            self.data["random"] = Command(
-                "random", perform=self._random, permission=const.Permission.USER.value,
+            bc.commands.data["delbgevent"].is_global = True
+        if "random" not in bc.commands.data.keys():
+            bc.commands.data["random"] = Command(
+                __name__, self.__class__.__name__, "random", "_random", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["random"].is_global = True
-        if "randselect" not in self.data.keys():
-            self.data["randselect"] = Command(
-                "randselect", perform=self._randselect, permission=const.Permission.USER.value,
+            bc.commands.data["random"].is_global = True
+        if "randselect" not in bc.commands.data.keys():
+            bc.commands.data["randselect"] = Command(
+                __name__, self.__class__.__name__, "randselect", "_randselect", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["randselect"].is_global = True
-        if "silent" not in self.data.keys():
-            self.data["silent"] = Command(
-                "silent", perform=self._silent, permission=const.Permission.USER.value,
+            bc.commands.data["randselect"].is_global = True
+        if "silent" not in bc.commands.data.keys():
+            bc.commands.data["silent"] = Command(
+                __name__, self.__class__.__name__, "silent", "_silent", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["silent"].is_global = True
-        if "time" not in self.data.keys():
-            self.data["time"] = Command(
-                "time", perform=self._time, permission=const.Permission.USER.value,
+            bc.commands.data["silent"].is_global = True
+        if "time" not in bc.commands.data.keys():
+            bc.commands.data["time"] = Command(
+                __name__, self.__class__.__name__, "time", "_time", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["time"].is_global = True
-        if "uptime" not in self.data.keys():
-            self.data["uptime"] = Command(
-                "uptime", perform=self._uptime, permission=const.Permission.USER.value,
+            bc.commands.data["time"].is_global = True
+        if "uptime" not in bc.commands.data.keys():
+            bc.commands.data["uptime"] = Command(
+                __name__, self.__class__.__name__, "uptime", "_uptime", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["uptime"].is_global = True
-        if "status" not in self.data.keys():
-            self.data["status"] = Command(
-                "status", perform=self._status, permission=const.Permission.MOD.value,
+            bc.commands.data["uptime"].is_global = True
+        if "status" not in bc.commands.data.keys():
+            bc.commands.data["status"] = Command(
+                __name__, self.__class__.__name__, "status", "_status", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["status"].is_global = True
-        if "forchannel" not in self.data.keys():
-            self.data["forchannel"] = Command(
-                "forchannel", perform=self._forchannel, permission=const.Permission.MOD.value,
+            bc.commands.data["status"].is_global = True
+        if "forchannel" not in bc.commands.data.keys():
+            bc.commands.data["forchannel"] = Command(
+                __name__, self.__class__.__name__, "forchannel", "_forchannel", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["forchannel"].is_global = True
-        if "channelid" not in self.data.keys():
-            self.data["channelid"] = Command(
-                "channelid", perform=self._channelid, permission=const.Permission.MOD.value,
+            bc.commands.data["forchannel"].is_global = True
+        if "channelid" not in bc.commands.data.keys():
+            bc.commands.data["channelid"] = Command(
+                __name__, self.__class__.__name__, "channelid", "_channelid", permission=const.Permission.MOD.value,
                 subcommand=True)
-            self.data["channelid"].is_global = True
-        if "addalias" not in self.data.keys():
-            self.data["addalias"] = Command(
-                "addalias", perform=self._addalias, permission=const.Permission.MOD.value,
+            bc.commands.data["channelid"].is_global = True
+        if "addalias" not in bc.commands.data.keys():
+            bc.commands.data["addalias"] = Command(
+                __name__, self.__class__.__name__, "addalias", "_addalias", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["addalias"].is_global = True
-        if "delalias" not in self.data.keys():
-            self.data["delalias"] = Command(
-                "delalias", perform=self._delalias, permission=const.Permission.MOD.value,
+            bc.commands.data["addalias"].is_global = True
+        if "delalias" not in bc.commands.data.keys():
+            bc.commands.data["delalias"] = Command(
+                __name__, self.__class__.__name__, "delalias", "_delalias", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["delalias"].is_global = True
-        if "listalias" not in self.data.keys():
-            self.data["listalias"] = Command(
-                "listalias", perform=self._listalias, permission=const.Permission.USER.value,
+            bc.commands.data["delalias"].is_global = True
+        if "listalias" not in bc.commands.data.keys():
+            bc.commands.data["listalias"] = Command(
+                __name__, self.__class__.__name__, "listalias", "_listalias", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["listalias"].is_global = True
-        if "markov" not in self.data.keys():
-            self.data["markov"] = Command(
-                "markov", perform=self._markov, permission=const.Permission.USER.value,
+            bc.commands.data["listalias"].is_global = True
+        if "markov" not in bc.commands.data.keys():
+            bc.commands.data["markov"] = Command(
+                __name__, self.__class__.__name__, "markov", "_markov", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["markov"].is_global = True
-        if "markovgc" not in self.data.keys():
-            self.data["markovgc"] = Command(
-                "markovgc", perform=self._markovgc, permission=const.Permission.USER.value,
+            bc.commands.data["markov"].is_global = True
+        if "markovgc" not in bc.commands.data.keys():
+            bc.commands.data["markovgc"] = Command(
+                __name__, self.__class__.__name__, "markovgc", "_markovgc", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["markovgc"].is_global = True
-        if "delmarkov" not in self.data.keys():
-            self.data["delmarkov"] = Command(
-                "delmarkov", perform=self._delmarkov, permission=const.Permission.MOD.value,
+            bc.commands.data["markovgc"].is_global = True
+        if "delmarkov" not in bc.commands.data.keys():
+            bc.commands.data["delmarkov"] = Command(
+                __name__, self.__class__.__name__, "delmarkov", "_delmarkov", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["delmarkov"].is_global = True
-        if "findmarkov" not in self.data.keys():
-            self.data["findmarkov"] = Command(
-                "findmarkov", perform=self._findmarkov, permission=const.Permission.MOD.value,
+            bc.commands.data["delmarkov"].is_global = True
+        if "findmarkov" not in bc.commands.data.keys():
+            bc.commands.data["findmarkov"] = Command(
+                __name__, self.__class__.__name__, "findmarkov", "_findmarkov", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["findmarkov"].is_global = True
-        if "dropmarkov" not in self.data.keys():
-            self.data["dropmarkov"] = Command(
-                "dropmarkov", perform=self._dropmarkov, permission=const.Permission.ADMIN.value,
+            bc.commands.data["findmarkov"].is_global = True
+        if "dropmarkov" not in bc.commands.data.keys():
+            bc.commands.data["dropmarkov"] = Command(
+                __name__, self.__class__.__name__, "dropmarkov", "_dropmarkov", permission=const.Permission.ADMIN.value,
                 subcommand=False)
-            self.data["dropmarkov"].is_global = True
-        if "addmarkovfilter" not in self.data.keys():
-            self.data["addmarkovfilter"] = Command(
-                "addmarkovfilter", perform=self._addmarkovfilter, permission=const.Permission.MOD.value,
+            bc.commands.data["dropmarkov"].is_global = True
+        if "addmarkovfilter" not in bc.commands.data.keys():
+            bc.commands.data["addmarkovfilter"] = Command(
+                __name__, self.__class__.__name__, "addmarkovfilter", "_addmarkovfilter", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["addmarkovfilter"].is_global = True
-        if "listmarkovfilter" not in self.data.keys():
-            self.data["listmarkovfilter"] = Command(
-                "listmarkovfilter", perform=self._listmarkovfilter, permission=const.Permission.USER.value,
+            bc.commands.data["addmarkovfilter"].is_global = True
+        if "listmarkovfilter" not in bc.commands.data.keys():
+            bc.commands.data["listmarkovfilter"] = Command(
+                __name__, self.__class__.__name__, "listmarkovfilter", "_listmarkovfilter", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["listmarkovfilter"].is_global = True
-        if "delmarkovfilter" not in self.data.keys():
-            self.data["delmarkovfilter"] = Command(
-                "delmarkovfilter", perform=self._delmarkovfilter, permission=const.Permission.MOD.value,
+            bc.commands.data["listmarkovfilter"].is_global = True
+        if "delmarkovfilter" not in bc.commands.data.keys():
+            bc.commands.data["delmarkovfilter"] = Command(
+                __name__, self.__class__.__name__, "delmarkovfilter", "_delmarkovfilter", permission=const.Permission.MOD.value,
                 subcommand=True)
-            self.data["delmarkovfilter"].is_global = True
-        if "img" not in self.data.keys():
-            self.data["img"] = Command(
-                "img", perform=self._img, permission=const.Permission.USER.value,
+            bc.commands.data["delmarkovfilter"].is_global = True
+        if "img" not in bc.commands.data.keys():
+            bc.commands.data["img"] = Command(
+                __name__, self.__class__.__name__, "img", "_img", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["img"].is_global = True
-        if "wmeimg" not in self.data.keys():
-            self.data["wmeimg"] = Command(
-                "wmeimg", perform=self._wmeimg, permission=const.Permission.USER.value,
+            bc.commands.data["img"].is_global = True
+        if "wmeimg" not in bc.commands.data.keys():
+            bc.commands.data["wmeimg"] = Command(
+                __name__, self.__class__.__name__, "wmeimg", "_wmeimg", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["wmeimg"].is_global = True
-        if "listimg" not in self.data.keys():
-            self.data["listimg"] = Command(
-                "listimg", perform=self._listimg, permission=const.Permission.USER.value,
+            bc.commands.data["wmeimg"].is_global = True
+        if "listimg" not in bc.commands.data.keys():
+            bc.commands.data["listimg"] = Command(
+                __name__, self.__class__.__name__, "listimg", "_listimg", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["listimg"].is_global = True
-        if "addimg" not in self.data.keys():
-            self.data["addimg"] = Command(
-                "addimg", perform=self._addimg, permission=const.Permission.MOD.value,
+            bc.commands.data["listimg"].is_global = True
+        if "addimg" not in bc.commands.data.keys():
+            bc.commands.data["addimg"] = Command(
+                __name__, self.__class__.__name__, "addimg", "_addimg", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["addimg"].is_global = True
-        if "delimg" not in self.data.keys():
-            self.data["delimg"] = Command(
-                "delimg", perform=self._delimg, permission=const.Permission.MOD.value,
+            bc.commands.data["addimg"].is_global = True
+        if "delimg" not in bc.commands.data.keys():
+            bc.commands.data["delimg"] = Command(
+                __name__, self.__class__.__name__, "delimg", "_delimg", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["delimg"].is_global = True
-        if "tts" not in self.data.keys():
-            self.data["tts"] = Command(
-                "tts", perform=self._tts, permission=const.Permission.MOD.value,
+            bc.commands.data["delimg"].is_global = True
+        if "tts" not in bc.commands.data.keys():
+            bc.commands.data["tts"] = Command(
+                __name__, self.__class__.__name__, "tts", "_tts", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["tts"].is_global = True
-        if "urlencode" not in self.data.keys():
-            self.data["urlencode"] = Command(
-                "urlencode", perform=self._urlencode, permission=const.Permission.USER.value,
+            bc.commands.data["tts"].is_global = True
+        if "urlencode" not in bc.commands.data.keys():
+            bc.commands.data["urlencode"] = Command(
+                __name__, self.__class__.__name__, "urlencode", "_urlencode", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["urlencode"].is_global = True
-        if "emojify" not in self.data.keys():
-            self.data["emojify"] = Command(
-                "emojify", perform=self._emojify, permission=const.Permission.USER.value,
+            bc.commands.data["urlencode"].is_global = True
+        if "emojify" not in bc.commands.data.keys():
+            bc.commands.data["emojify"] = Command(
+                __name__, self.__class__.__name__, "emojify", "_emojify", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["emojify"].is_global = True
-        if "demojify" not in self.data.keys():
-            self.data["demojify"] = Command(
-                "demojify", perform=self._demojify, permission=const.Permission.USER.value,
+            bc.commands.data["emojify"].is_global = True
+        if "demojify" not in bc.commands.data.keys():
+            bc.commands.data["demojify"] = Command(
+                __name__, self.__class__.__name__, "demojify", "_demojify", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["demojify"].is_global = True
-        if "shutdown" not in self.data.keys():
-            self.data["shutdown"] = Command(
-                "shutdown", perform=self._shutdown, permission=const.Permission.ADMIN.value,
+            bc.commands.data["demojify"].is_global = True
+        if "shutdown" not in bc.commands.data.keys():
+            bc.commands.data["shutdown"] = Command(
+                __name__, self.__class__.__name__, "shutdown", "_shutdown", permission=const.Permission.ADMIN.value,
                 subcommand=False)
-            self.data["shutdown"].is_global = True
-        if "avatar" not in self.data.keys():
-            self.data["avatar"] = Command(
-                "avatar", perform=self._avatar, permission=const.Permission.MOD.value,
+            bc.commands.data["shutdown"].is_global = True
+        if "avatar" not in bc.commands.data.keys():
+            bc.commands.data["avatar"] = Command(
+                __name__, self.__class__.__name__, "avatar", "_avatar", permission=const.Permission.MOD.value,
                 subcommand=False)
-            self.data["avatar"].is_global = True
-        if "message" not in self.data.keys():
-            self.data["message"] = Command(
-                "message", perform=self._message, permission=const.Permission.USER.value,
+            bc.commands.data["avatar"].is_global = True
+        if "message" not in bc.commands.data.keys():
+            bc.commands.data["message"] = Command(
+                __name__, self.__class__.__name__, "message", "_message", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["message"].is_global = True
-        if "reminder" not in self.data.keys():
-            self.data["reminder"] = Command(
-                "reminder", perform=self._reminder, permission=const.Permission.USER.value,
+            bc.commands.data["message"].is_global = True
+        if "reminder" not in bc.commands.data.keys():
+            bc.commands.data["reminder"] = Command(
+                __name__, self.__class__.__name__, "reminder", "_reminder", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["reminder"].is_global = True
-        if "listreminder" not in self.data.keys():
-            self.data["listreminder"] = Command(
-                "listreminder", perform=self._listreminder, permission=const.Permission.USER.value,
+            bc.commands.data["reminder"].is_global = True
+        if "listreminder" not in bc.commands.data.keys():
+            bc.commands.data["listreminder"] = Command(
+                __name__, self.__class__.__name__, "listreminder", "_listreminder", permission=const.Permission.USER.value,
                 subcommand=True)
-            self.data["listreminder"].is_global = True
-        if "delreminder" not in self.data.keys():
-            self.data["delreminder"] = Command(
-                "delreminder", perform=self._delreminder, permission=const.Permission.USER.value,
+            bc.commands.data["listreminder"].is_global = True
+        if "delreminder" not in bc.commands.data.keys():
+            bc.commands.data["delreminder"] = Command(
+                __name__, self.__class__.__name__, "delreminder", "_delreminder", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["delreminder"].is_global = True
-        if "server" not in self.data.keys():
-            self.data["server"] = Command(
-                "server", perform=self._server, permission=const.Permission.USER.value,
+            bc.commands.data["delreminder"].is_global = True
+        if "server" not in bc.commands.data.keys():
+            bc.commands.data["server"] = Command(
+                __name__, self.__class__.__name__, "server", "_server", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["server"].is_global = True
-        if "quote" not in self.data.keys():
-            self.data["quote"] = Command(
-                "quote", perform=self._quote, permission=const.Permission.USER.value,
+            bc.commands.data["server"].is_global = True
+        if "quote" not in bc.commands.data.keys():
+            bc.commands.data["quote"] = Command(
+                __name__, self.__class__.__name__, "quote", "_quote", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["quote"].is_global = True
-        if "addquote" not in self.data.keys():
-            self.data["addquote"] = Command(
-                "addquote", perform=self._addquote, permission=const.Permission.USER.value,
+            bc.commands.data["quote"].is_global = True
+        if "addquote" not in bc.commands.data.keys():
+            bc.commands.data["addquote"] = Command(
+                __name__, self.__class__.__name__, "addquote", "_addquote", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["addquote"].is_global = True
-        if "listquote" not in self.data.keys():
-            self.data["listquote"] = Command(
-                "listquote", perform=self._listquote, permission=const.Permission.USER.value,
+            bc.commands.data["addquote"].is_global = True
+        if "listquote" not in bc.commands.data.keys():
+            bc.commands.data["listquote"] = Command(
+                __name__, self.__class__.__name__, "listquote", "_listquote", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["listquote"].is_global = True
-        if "delquote" not in self.data.keys():
-            self.data["delquote"] = Command(
-                "delquote", perform=self._delquote, permission=const.Permission.USER.value,
+            bc.commands.data["listquote"].is_global = True
+        if "delquote" not in bc.commands.data.keys():
+            bc.commands.data["delquote"] = Command(
+                __name__, self.__class__.__name__, "delquote", "_delquote", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["delquote"].is_global = True
-        if "setquoteauthor" not in self.data.keys():
-            self.data["setquoteauthor"] = Command(
-                "setquoteauthor", perform=self._setquoteauthor, permission=const.Permission.USER.value,
+            bc.commands.data["delquote"].is_global = True
+        if "setquoteauthor" not in bc.commands.data.keys():
+            bc.commands.data["setquoteauthor"] = Command(
+                __name__, self.__class__.__name__, "setquoteauthor", "_setquoteauthor", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["setquoteauthor"].is_global = True
-        if "echo" not in self.data.keys():
-            self.data["echo"] = Command(
-                "echo", message="@args@", permission=const.Permission.USER.value,
+            bc.commands.data["setquoteauthor"].is_global = True
+        if "echo" not in bc.commands.data.keys():
+            bc.commands.data["echo"] = Command(
+                __name__, self.__class__.__name__, "echo", message="@args@", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["echo"].is_global = True
-        if "code" not in self.data.keys():
-            self.data["code"] = Command(
-                "code", message="`@args@`", permission=const.Permission.USER.value,
+            bc.commands.data["echo"].is_global = True
+        if "code" not in bc.commands.data.keys():
+            bc.commands.data["code"] = Command(
+                __name__, self.__class__.__name__, "code", message="`@args@`", permission=const.Permission.USER.value,
                 subcommand=False)
-            self.data["code"].is_global = True
+            bc.commands.data["code"].is_global = True
 
-    async def _takechars(self, message, command, silent=False):
+    @staticmethod
+    async def _takechars(message, command, silent=False):
         """Take n characters of the string
     Examples:
         !takechars 2 hello
@@ -422,14 +419,16 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _countchars(self, message, command, silent=False):
+    @staticmethod
+    async def _countchars(message, command, silent=False):
         """Calculate length of the message
     Example: !countchars some text"""
         result = str(len(' '.join(command[1:])))
         await Util.response(message, result, silent)
         return result
 
-    async def _takewords(self, message, command, silent=False):
+    @staticmethod
+    async def _takewords(message, command, silent=False):
         """Take n words of the string
     Examples:
         !takewords 2 a b c
@@ -450,14 +449,16 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _countwords(self, message, command, silent=False):
+    @staticmethod
+    async def _countwords(message, command, silent=False):
         """Count amount of words
     Example: !count some text"""
         result = str(len(' '.join(command).split()) - 1)
         await Util.response(message, result, silent)
         return result
 
-    async def _takelines(self, message, command, silent=False):
+    @staticmethod
+    async def _takelines(message, command, silent=False):
         """Take n lines of the string
     Examples:
         !takelines 2 a
@@ -484,40 +485,46 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _countlines(self, message, command, silent=False):
+    @staticmethod
+    async def _countlines(message, command, silent=False):
         """Count amount of lines
     Example: !count some text"""
         result = str(len(' '.join(command).split('\n')))
         await Util.response(message, result, silent)
         return result
 
-    async def _tolower(self, message, command, silent=False):
+    @staticmethod
+    async def _tolower(message, command, silent=False):
         """Convert text to lower case
     Example: !tolower SoMe TeXt"""
         result = ' '.join(command[1:]).lower()
         await Util.response(message, result, silent)
         return result
 
-    async def _toupper(self, message, command, silent=False):
+    @staticmethod
+    async def _toupper(message, command, silent=False):
         """Convert text to upper case
     Example: !toupper SoMe TeXt"""
         result = ' '.join(command[1:]).upper()
         await Util.response(message, result, silent)
         return result
 
-    async def _ping(self, message, command, silent=False):
+    @staticmethod
+    async def _ping(message, command, silent=False):
         """Check whether the bot is active
     Example: !ping"""
         await Util.response(message, "Pong! " + message.author.mention, silent)
 
-    async def _spoiler(self, message, command, silent=False):
+    @staticmethod
+    async def _spoiler(message, command, silent=False):
         """Mark text as spoiler
     Example: !spoiler hello"""
         result = "||" + ' '.join(command[1:]) + "||"
         await Util.response(message, result, silent)
         return result
 
-    async def _profile(self, message, command, silent=False):
+    @staticmethod
+    async def _profile(message, command, silent=False):
         """Print information about user
     Examples:
         !profile
@@ -540,7 +547,8 @@ class BuiltinCommands:
         result += "Roles: " + ', '.join(filter(lambda x: x != "@everyone", map(str, info.roles)))
         await Util.response(message, result, silent)
 
-    async def _help(self, message, command, silent=False):
+    @staticmethod
+    async def _help(message, command, silent=False):
         """Print list of commands and get examples
     Examples:
         !help
@@ -549,13 +557,13 @@ class BuiltinCommands:
             return
         if len(command) == 1:
             commands = []
-            for command in self.data:
-                command = self.data[command]
+            for command in bc.commands.data:
+                command = bc.commands.data[command]
                 if command.perform is None:
                     s = (command.name, command.message)
                     commands.append(s)
             commands.sort()
-            version = self.config.get_version()
+            version = bc.commands.config.get_version()
             if ' ' in version:
                 version = "master"
             embed = discord.Embed(title="Help", color=0x717171)
@@ -569,10 +577,10 @@ class BuiltinCommands:
                 embed.add_field(name=command[0], value=command[1], inline=False)
             await Util.response(message, None, silent, embed=embed)
         elif len(command) == 2:
-            if command[1] in self.data:
-                command = self.data[command[1]]
+            if command[1] in bc.commands.data:
+                command = bc.commands.data[command[1]]
             elif command[1] in bc.commands.aliases.keys():
-                command = self.data[bc.commands.aliases[command[1]]]
+                command = bc.commands.data[bc.commands.aliases[command[1]]]
             else:
                 await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
                 return
@@ -587,49 +595,53 @@ class BuiltinCommands:
                 result += "    This command can be used as subcommand\n"
             await Util.response(message, result, silent)
 
-    async def _addcmd(self, message, command, silent=False):
+    @staticmethod
+    async def _addcmd(message, command, silent=False):
         """Add command
     Example: !addcmd hello Hello!"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
-        if command_name in self.data.keys():
+        if command_name in bc.commands.data.keys():
             await Util.response(message, "Command {} already exists".format(command_name), silent)
             return
-        self.data[command_name] = Command(command_name, message=' '.join(command[2:]))
-        self.data[command_name].channels.append(message.channel.id)
+        bc.commands.data[command_name] = Command(command_name, message=' '.join(command[2:]))
+        bc.commands.data[command_name].channels.append(message.channel.id)
         await Util.response(message, "Command '{}' -> '{}' successfully added".format(
-            command_name, self.data[command_name].message), silent)
+            command_name, bc.commands.data[command_name].message), silent)
 
-    async def _updcmd(self, message, command, silent=False):
+    @staticmethod
+    async def _updcmd(message, command, silent=False):
         """Update command (works only for commands that already exist)
     Example: !updcmd hello Hello!"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
-        if command_name in self.data.keys():
-            if self.data[command_name].message is None:
+        if command_name in bc.commands.data.keys():
+            if bc.commands.data[command_name].message is None:
                 await Util.response(message, "Command '{}' is not editable".format(command_name), silent)
                 return
-            self.data[command_name].message = ' '.join(command[2:])
+            bc.commands.data[command_name].message = ' '.join(command[2:])
             await Util.response(message, "Command '{}' -> '{}' successfully updated".format(
-                command_name, self.data[command_name].message), silent)
+                command_name, bc.commands.data[command_name].message), silent)
             return
         await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
-    async def _delcmd(self, message, command, silent=False):
+    @staticmethod
+    async def _delcmd(message, command, silent=False):
         """Delete command
     Example: !delcmd hello"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         command_name = command[1]
-        if command_name in self.data.keys():
-            self.data.pop(command_name, None)
+        if command_name in bc.commands.data.keys():
+            bc.commands.data.pop(command_name, None)
             await Util.response(message, "Command '{}' successfully deleted".format(command_name), silent)
             return
         await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
-    async def _enablecmd(self, message, command, silent=False):
+    @staticmethod
+    async def _enablecmd(message, command, silent=False):
         """Enable command in specified scope
     Examples:
         !enablecmd ping channel
@@ -638,25 +650,26 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
-        if command_name in self.data.keys():
+        if command_name in bc.commands.data.keys():
             if command[2] == "channel":
-                if message.channel.id not in self.data[command_name].channels:
-                    self.data[command_name].channels.append(message.channel.id)
+                if message.channel.id not in bc.commands.data[command_name].channels:
+                    bc.commands.data[command_name].channels.append(message.channel.id)
                 await Util.response(message, "Command '{}' is enabled in this channel".format(command_name), silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
-                    if channel.id not in self.data[command_name].channels:
-                        self.data[command_name].channels.append(channel.id)
+                    if channel.id not in bc.commands.data[command_name].channels:
+                        bc.commands.data[command_name].channels.append(channel.id)
                 await Util.response(message, "Command '{}' is enabled in this guild".format(command_name), silent)
             elif command[2] == "global":
-                self.data[command_name].is_global = True
+                bc.commands.data[command_name].is_global = True
                 await Util.response(message, "Command '{}' is enabled in global scope".format(command_name), silent)
             else:
                 await Util.response(message, "Unknown scope '{}'".format(command[2]), silent)
             return
         await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
-    async def _disablecmd(self, message, command, silent=False):
+    @staticmethod
+    async def _disablecmd(message, command, silent=False):
         """Disable command in specified scope
     Examples:
         !disablecmd ping channel
@@ -665,25 +678,26 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
-        if command_name in self.data.keys():
+        if command_name in bc.commands.data.keys():
             if command[2] == "channel":
-                if message.channel.id in self.data[command_name].channels:
-                    self.data[command_name].channels.remove(message.channel.id)
+                if message.channel.id in bc.commands.data[command_name].channels:
+                    bc.commands.data[command_name].channels.remove(message.channel.id)
                 await Util.response(message, "Command '{}' is disabled in this channel".format(command_name), silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
-                    if channel.id in self.data[command_name].channels:
-                        self.data[command_name].channels.remove(channel.id)
+                    if channel.id in bc.commands.data[command_name].channels:
+                        bc.commands.data[command_name].channels.remove(channel.id)
                 await Util.response(message, "Command '{}' is disabled in this guild".format(command_name), silent)
             elif command[2] == "global":
-                self.data[command_name].is_global = False
+                bc.commands.data[command_name].is_global = False
                 await Util.response(message, "Command '{}' is disabled in global scope".format(command_name), silent)
             else:
                 await Util.response(message, "Unknown scope '{}'".format(command[2]), silent)
             return
         await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
-    async def _permcmd(self, message, command, silent=False):
+    @staticmethod
+    async def _permcmd(message, command, silent=False):
         """Set commands permission
     Example: !permcmd ping 0"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
@@ -693,27 +707,29 @@ class BuiltinCommands:
                                     "Third argument of command '{}' should be an integer".format(command[0]), silent)
         if perm is None:
             return
-        if command_name in self.data.keys():
-            self.data[command_name].permission = perm
+        if command_name in bc.commands.data.keys():
+            bc.commands.data[command_name].permission = perm
             await Util.response(message, "Set permission level {} for command '{}'".format(
                 command[2], command_name), silent)
             return
         await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
-    async def _timescmd(self, message, command, silent=False):
+    @staticmethod
+    async def _timescmd(message, command, silent=False):
         """Print how many times command was invoked
     Example: !timescmd echo"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        if command[1] not in self.data.keys():
+        if command[1] not in bc.commands.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
-        com = self.data[command[1]]
+        com = bc.commands.data[command[1]]
         await Util.response(message, "Command '{}' was invoked {} times".format(
             command[1],
             str(com.times_called if hasattr(com, "times_called") else 0)), silent)
 
-    async def _permuser(self, message, command, silent=False):
+    @staticmethod
+    async def _permuser(message, command, silent=False):
         """Set user permission
     Example: !permcmd @nickname 0"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
@@ -723,14 +739,15 @@ class BuiltinCommands:
         if perm is None:
             return
         user_id = int(command[1][2:-1])
-        for user in self.config.users.keys():
-            if self.config.users[user].id == user_id:
-                self.config.users[user].permission_level = perm
+        for user in bc.commands.config.users.keys():
+            if bc.commands.config.users[user].id == user_id:
+                bc.commands.config.users[user].permission_level = perm
                 await Util.response(message, "User permissions are set to {}".format(command[2]), silent)
                 return
         await Util.response(message, "User '{}' is not found".format(command[1]), silent)
 
-    async def _whitelist(self, message, command, silent=False):
+    @staticmethod
+    async def _whitelist(message, command, silent=False):
         """Bot's whitelist
     Examples:
         !whitelist enable/disable
@@ -739,21 +756,22 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] == "enable":
-            self.config.guilds[message.channel.guild.id].is_whitelisted = True
+            bc.commands.config.guilds[message.channel.guild.id].is_whitelisted = True
             await Util.response(message, "This guild is whitelisted for bot", silent)
         elif command[1] == "disable":
-            self.config.guilds[message.channel.guild.id].is_whitelisted = False
+            bc.commands.config.guilds[message.channel.guild.id].is_whitelisted = False
             await Util.response(message, "This guild is not whitelisted for bot", silent)
         elif command[1] == "add":
-            self.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
+            bc.commands.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
             await Util.response(message, "This channel is added to bot's whitelist", silent)
         elif command[1] == "remove":
-            self.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
+            bc.commands.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
             await Util.response(message, "This channel is removed from bot's whitelist", silent)
         else:
             await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
 
-    async def _config(self, message, command, silent=False):
+    @staticmethod
+    async def _config(message, command, silent=False):
         """Setup some channel specific configurations
     Examples:
         !config reactions <enable/disable>
@@ -765,31 +783,31 @@ class BuiltinCommands:
         if len(command) == 1:
             result = "Config:\n"
             result += "Reactions: {}\n".format(
-                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist
+                "enabled" if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist
                 else "disabled")
             result += "Markov logging: {}\n".format(
-                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist
+                "enabled" if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].markov_whitelist
                 else "disabled")
             result += "Markov responses: {}\n".format(
-                "enabled" if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist
+                "enabled" if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].responses_whitelist
                 else "disabled")
             result += "Markov pings: {}\n".format(
-                "enabled" if self.config.guilds[message.channel.guild.id].markov_pings
+                "enabled" if bc.commands.config.guilds[message.channel.guild.id].markov_pings
                 else "disabled")
             await Util.response(message, result, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
                 if command[2] == "enable":
-                    if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist:
                         await Util.response(
                             message, "Adding reactions is already enabled for this channel", silent)
                     else:
-                        self.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
+                        bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding reactions is successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-                        self.config.guilds[message.channel.guild.id].reactions_whitelist.discard(message.channel.id)
+                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist:
+                        bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist.discard(message.channel.id)
                         await Util.response(
                             message, "Adding reactions is successfully disabled for this channel", silent)
                     else:
@@ -799,16 +817,16 @@ class BuiltinCommands:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovlog":
                 if command[2] == "enable":
-                    if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].markov_whitelist:
                         await Util.response(
                             message, "Adding messages to Markov model is already enabled for this channel", silent)
                     else:
-                        self.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
+                        bc.commands.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
-                        self.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
+                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].markov_whitelist:
+                        bc.commands.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully disabled for this channel",
                             silent)
@@ -817,16 +835,16 @@ class BuiltinCommands:
                             message, "Adding messages to Markov model is already disabled for this channel", silent)
             elif command[1] == "responses":
                 if command[2] == "enable":
-                    if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].responses_whitelist:
                         await Util.response(
                             message, "Bot responses on mentioning are already enabled for this channel", silent)
                     else:
-                        self.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                        bc.commands.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Bot responses on mentioning are successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
-                        self.config.guilds[message.channel.guild.id].responses_whitelist.discard(message.channel.id)
+                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].responses_whitelist:
+                        bc.commands.config.guilds[message.channel.guild.id].responses_whitelist.discard(message.channel.id)
                         await Util.response(
                             message, "Bot responses on mentioning are successfully disabled for this channel",
                             silent)
@@ -837,16 +855,16 @@ class BuiltinCommands:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovpings":
                 if command[2] == "enable":
-                    if self.config.guilds[message.channel.guild.id].markov_pings:
+                    if bc.commands.config.guilds[message.channel.guild.id].markov_pings:
                         await Util.response(
                             message, "Markov pings are already enabled for this channel", silent)
                     else:
-                        self.config.guilds[message.channel.guild.id].markov_pings = True
+                        bc.commands.config.guilds[message.channel.guild.id].markov_pings = True
                         await Util.response(
                             message, "Markov pings are successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if self.config.guilds[message.channel.guild.id].markov_pings:
-                        self.config.guilds[message.channel.guild.id].markov_pings = False
+                    if bc.commands.config.guilds[message.channel.guild.id].markov_pings:
+                        bc.commands.config.guilds[message.channel.guild.id].markov_pings = False
                         await Util.response(
                             message, "Markov pings are successfully disabled for this channel", silent)
                     else:
@@ -859,16 +877,18 @@ class BuiltinCommands:
         else:
             await Util.response(message, "Incorrect usage of command '{}'".format(command[0]), silent)
 
-    async def _addreaction(self, message, command, silent=False):
+    @staticmethod
+    async def _addreaction(message, command, silent=False):
         """Add reaction
     Example: !addreaction emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        self.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
+        bc.commands.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
         await Util.response(message, "Reaction '{}' on '{}' successfully added".format(
             command[1], ' '.join(command[2:])), silent)
 
-    async def _updreaction(self, message, command, silent=False):
+    @staticmethod
+    async def _updreaction(message, command, silent=False):
         """Update reaction
     Example: !updreaction index emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=4):
@@ -877,14 +897,15 @@ class BuiltinCommands:
                                      "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
         if index is None:
             return
-        if not (index >= 0 and index < len(self.config.reactions)):
+        if not (index >= 0 and index < len(bc.commands.config.reactions)):
             await Util.response(message, "Incorrect index of reaction!", silent)
             return
-        self.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
+        bc.commands.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
         await Util.response(message, "Reaction '{}' on '{}' successfully updated".format(
             command[1], ' '.join(command[2:])), silent)
 
-    async def _delreaction(self, message, command, silent=False):
+    @staticmethod
+    async def _delreaction(message, command, silent=False):
         """Delete reaction
     Examples:
         !delreaction emoji
@@ -894,29 +915,30 @@ class BuiltinCommands:
         index = -1
         try:
             index = int(command[1])
-            if not (index >= 0 and index < len(self.config.reactions)):
+            if not (index >= 0 and index < len(bc.commands.config.reactions)):
                 await Util.response(message, "Incorrect index of reaction!", silent)
                 return
-            reaction = self.config.reactions[index]
-            self.config.reactions.pop(index)
+            reaction = bc.commands.config.reactions[index]
+            bc.commands.config.reactions.pop(index)
             await Util.response(message, "Reaction '{}' -> '{}' successfully removed".format(
                 reaction.regex, reaction.emoji), silent)
         except Exception:
             i = 0
-            while i < len(self.config.reactions):
-                if self.config.reactions[i].emoji == command[1]:
-                    self.config.reactions.pop(i)
+            while i < len(bc.commands.config.reactions):
+                if bc.commands.config.reactions[i].emoji == command[1]:
+                    bc.commands.config.reactions.pop(i)
                 else:
                     i += 1
             await Util.response(message, "Reaction '{}' successfully removed".format(command[1]), silent)
 
-    async def _listreaction(self, message, command, silent=False):
+    @staticmethod
+    async def _listreaction(message, command, silent=False):
         """Show list of reactions
     Example: !listreaction"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for index, reaction in enumerate(self.config.reactions):
+        for index, reaction in enumerate(bc.commands.config.reactions):
             result += "{} - {}: {}\n".format(index, reaction.emoji, reaction.regex)
         if len(result) > 0:
             await Util.response(message, result, silent)
@@ -924,7 +946,8 @@ class BuiltinCommands:
             await Util.response(message, "No reactions found!", silent)
         return result
 
-    async def _wme(self, message, command, silent=False):
+    @staticmethod
+    async def _wme(message, command, silent=False):
         """Send direct message to author with something
     Example: !wme Hello!"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -935,7 +958,8 @@ class BuiltinCommands:
         result = "You asked me to send you this: " + result
         await Util.send_direct_message(message, result, silent)
 
-    async def _poll(self, message, command, silent=False):
+    @staticmethod
+    async def _poll(message, command, silent=False):
         """Create poll
     Example: !poll 60 option 1;option 2;option 3"""
         if not await Util.check_args_count(message, command, silent, min=3):
@@ -993,29 +1017,32 @@ class BuiltinCommands:
                         log.debug("Error on remove_reaction: {}".format(emoji.alphabet[i]))
                 return
 
-    async def _version(self, message, command, silent=False):
+    @staticmethod
+    async def _version(message, command, silent=False):
         """Get version of the bot
     Examples:
         !version
         !version short"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        result = self.config.get_version()
+        result = bc.commands.config.get_version()
         if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
             result = result[:7]
         await Util.response(message, result, silent)
         return result
 
-    async def _about(self, message, command, silent=False):
+    @staticmethod
+    async def _about(message, command, silent=False):
         """Get information about the bot
     Example: !about"""
         result = str(bc.bot_user) + ' (WalBot instance)\n'
         result += "Source code: <https://github.com/aobolensk/walbot>\n"
-        result += "Version: " + self.config.get_version() + '\n'
-        result += "Uptime: " + self.config.get_uptime() + '\n'
+        result += "Version: " + bc.commands.config.get_version() + '\n'
+        result += "Uptime: " + bc.commands.config.get_uptime() + '\n'
         await Util.response(message, result, silent)
 
-    async def _addbgevent(self, message, command, silent=False):
+    @staticmethod
+    async def _addbgevent(message, command, silent=False):
         """Add background event
     Example: !addbgevent 60 ping"""
         if not await Util.check_args_count(message, command, silent, min=3):
@@ -1025,14 +1052,15 @@ class BuiltinCommands:
                                         silent)
         if duration is None:
             return
-        message.content = self.config.commands_prefix + ' '.join(command[2:])
+        message.content = bc.commands.config.commands_prefix + ' '.join(command[2:])
         bc.background_events.append(BackgroundEvent(
-            self.config, message.channel, message, duration))
+            bc.commands.config, message.channel, message, duration))
         await Util.response(message, "Successfully added background event '{}' with period {}".format(
             message.content, str(duration)
         ), silent)
 
-    async def _listbgevent(self, message, command, silent=False):
+    @staticmethod
+    async def _listbgevent(message, command, silent=False):
         """Print a list of background events
     Example: !listbgevent"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1048,7 +1076,8 @@ class BuiltinCommands:
             await Util.response(message, "No background events found!", silent)
         return result
 
-    async def _delbgevent(self, message, command, silent=False):
+    @staticmethod
+    async def _delbgevent(message, command, silent=False):
         """Delete background event
     Example: !delbgevent 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1066,7 +1095,8 @@ class BuiltinCommands:
         else:
             await Util.response(message, "Invalid index of background task!", silent)
 
-    async def _random(self, message, command, silent=False):
+    @staticmethod
+    async def _random(message, command, silent=False):
         """Get random number in range [left, right]
     Example: !random 5 10"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
@@ -1086,7 +1116,8 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _randselect(self, message, command, silent=False):
+    @staticmethod
+    async def _randselect(message, command, silent=False):
         """Get random option among provided strings
     Example: !randselect a b c"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1096,19 +1127,21 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _silent(self, message, command, silent=False):
+    @staticmethod
+    async def _silent(message, command, silent=False):
         """Make the following command silent (without any output to the chat)
     Example: !silent ping"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         command = command[1:]
-        if command[0] not in self.data.keys():
+        if command[0] not in bc.commands.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
-            actor = self.data[command[0]]
+            actor = bc.commands.data[command[0]]
             await actor.run(message, command, None, silent=True)
 
-    async def _time(self, message, command, silent=False):
+    @staticmethod
+    async def _time(message, command, silent=False):
         """Show current time
     Example: !time"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1117,16 +1150,18 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _uptime(self, message, command, silent=False):
+    @staticmethod
+    async def _uptime(message, command, silent=False):
         """Show bot uptime
     Example: !uptime"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = self.config.get_uptime()
+        result = bc.commands.config.get_uptime()
         await Util.response(message, result, silent)
         return result
 
-    async def _status(self, message, command, silent=False):
+    @staticmethod
+    async def _status(message, command, silent=False):
         """Change bot status
     Examples:
         !status idle
@@ -1154,7 +1189,8 @@ class BuiltinCommands:
         else:
             await Util.response(message, "Unknown type of activity", silent)
 
-    async def _forchannel(self, message, command, silent=False):
+    @staticmethod
+    async def _forchannel(message, command, silent=False):
         """Executes command for channel
     Example: !forchannel <channel_id> ping"""
         if not await Util.check_args_count(message, command, silent, min=3):
@@ -1167,13 +1203,14 @@ class BuiltinCommands:
         message.channel = bc.get_channel(channel_id)
         command = command[2:]
         message.content = ' '.join(command)
-        if command[0] not in self.data.keys():
+        if command[0] not in bc.commands.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
-            actor = self.data[command[0]]
+            actor = bc.commands.data[command[0]]
             await actor.run(message, command, None, silent)
 
-    async def _channelid(self, message, command, silent=False):
+    @staticmethod
+    async def _channelid(message, command, silent=False):
         """Get channel ID
     Example: !channelid"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1182,16 +1219,17 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _addalias(self, message, command, silent=False):
+    @staticmethod
+    async def _addalias(message, command, silent=False):
         """Add alias for commands
     Usage: !addalias <command> <alias>
     Example: !addalias ping pong"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        if command[1] not in self.data.keys():
+        if command[1] not in bc.commands.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
-        if command[2] in self.data.keys():
+        if command[2] in bc.commands.data.keys():
             await Util.response(message, "Command '{}' already exists".format(command[2]), silent)
             return
         if command[2] in bc.commands.aliases.keys():
@@ -1201,7 +1239,8 @@ class BuiltinCommands:
         await Util.response(message, "Alias '{}' for '{}' was successfully created".format(
             command[2], command[1]), silent)
 
-    async def _delalias(self, message, command, silent=False):
+    @staticmethod
+    async def _delalias(message, command, silent=False):
         """Delete command alias
     Usage: !delalias <alias>
     Example: !delalias pong"""
@@ -1213,7 +1252,8 @@ class BuiltinCommands:
         bc.commands.aliases.pop(command[1])
         await Util.response(message, "Alias '{}' was successfully deleted".format(command[1]), silent)
 
-    async def _listalias(self, message, command, silent=False):
+    @staticmethod
+    async def _listalias(message, command, silent=False):
         """Show list of aliases
     Example: !listalias"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1224,16 +1264,18 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _markov(self, message, command, silent=False):
+    @staticmethod
+    async def _markov(message, command, silent=False):
         """Generate message using Markov chain
     Example: !markov"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = await self.config.disable_pings_in_response(message, bc.markov.generate())
+        result = await bc.commands.config.disable_pings_in_response(message, bc.markov.generate())
         await Util.response(message, result, silent)
         return result
 
-    async def _markovgc(self, message, command, silent=False):
+    @staticmethod
+    async def _markovgc(message, command, silent=False):
         """Garbage collect Markov model nodes
     Example: !markovgc"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1243,7 +1285,8 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _delmarkov(self, message, command, silent=False):
+    @staticmethod
+    async def _delmarkov(message, command, silent=False):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1253,7 +1296,8 @@ class BuiltinCommands:
         await Util.response(message, "Deleted {} words from model: {}".format(str(len(removed)),
                             str(removed)), silent, suppress_embeds=True)
 
-    async def _findmarkov(self, message, command, silent=False):
+    @staticmethod
+    async def _findmarkov(message, command, silent=False):
         """Match words in Markov model using regex
     Example: !findmarkov hello"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1263,7 +1307,8 @@ class BuiltinCommands:
         await Util.response(message, "Found {} words in model: {}".format(str(len(found)),
                             str(found)), silent, suppress_embeds=True)
 
-    async def _dropmarkov(self, message, command, silent=False):
+    @staticmethod
+    async def _dropmarkov(message, command, silent=False):
         """Drop Markov database
     Example: !dropmarkov"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1271,7 +1316,8 @@ class BuiltinCommands:
         bc.markov.__init__()
         await Util.response(message, "Markov database has been dropped!", silent)
 
-    async def _addmarkovfilter(self, message, command, silent=False):
+    @staticmethod
+    async def _addmarkovfilter(message, command, silent=False):
         """Add regular expression filter for Markov model
     Example: !addmarkovfilter"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1279,7 +1325,8 @@ class BuiltinCommands:
         bc.markov.filters.append(re.compile(command[1]))
         await Util.response(message, "Filter '{}' was successfully added for Markov model".format(command[1]), silent)
 
-    async def _listmarkovfilter(self, message, command, silent=False):
+    @staticmethod
+    async def _listmarkovfilter(message, command, silent=False):
         """Print a list of regular expression filters for Markov model
     Example: !listmarkovfilter"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1293,7 +1340,8 @@ class BuiltinCommands:
             await Util.response(message, "No filters for Markov model found!", silent)
         return result
 
-    async def _delmarkovfilter(self, message, command, silent=False):
+    @staticmethod
+    async def _delmarkovfilter(message, command, silent=False):
         """Delete regular expression filter for Markov model by index
     Example: !delmarkovfilter 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1310,7 +1358,8 @@ class BuiltinCommands:
         else:
             await Util.response(message, "Invalid index of filter!", silent)
 
-    async def _img(self, message, command, silent=False):
+    @staticmethod
+    async def _img(message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1332,7 +1381,8 @@ class BuiltinCommands:
                         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
                     break
 
-    async def _wmeimg(self, message, command, silent=False):
+    @staticmethod
+    async def _wmeimg(message, command, silent=False):
         """Send image in direct message to author
     Example: !wmeimg <image_name>"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1353,7 +1403,8 @@ class BuiltinCommands:
                             break
                     break
 
-    async def _listimg(self, message, command, silent=False):
+    @staticmethod
+    async def _listimg(message, command, silent=False):
         """List of available images for !img command
     Example: !listimg"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1369,7 +1420,8 @@ class BuiltinCommands:
         else:
             await Util.response(message, "No available images found!", silent)
 
-    async def _addimg(self, message, command, silent=False):
+    @staticmethod
+    async def _addimg(message, command, silent=False):
         """Add image for !img command
     Example: !addimg name url"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
@@ -1400,7 +1452,8 @@ class BuiltinCommands:
                 return
         await Util.response(message, "Image '{}' successfully added!".format(name), silent)
 
-    async def _delimg(self, message, command, silent=False):
+    @staticmethod
+    async def _delimg(message, command, silent=False):
         """Delete image for !img command
     Example: !delimg name"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1418,7 +1471,8 @@ class BuiltinCommands:
                         return
         await Util.response(message, "Image '{}' not found!".format(name), silent)
 
-    async def _tts(self, message, command, silent=False):
+    @staticmethod
+    async def _tts(message, command, silent=False):
         """Send text-to-speech (TTS) message
     Example: !tts Hello!"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1427,7 +1481,8 @@ class BuiltinCommands:
         await Util.response(message, text, silent, tts=True)
         log.debug("Sent TTS message: {}".format(text))
 
-    async def _urlencode(self, message, command, silent=False):
+    @staticmethod
+    async def _urlencode(message, command, silent=False):
         """Urlencode string
     Example: !urlencode hello, world!"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1437,7 +1492,8 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _emojify(self, message, command, silent=False):
+    @staticmethod
+    async def _emojify(message, command, silent=False):
         """Emojify text
     Example: !emojify Hello!"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1458,7 +1514,8 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _demojify(self, message, command, silent=False):
+    @staticmethod
+    async def _demojify(message, command, silent=False):
         """Demojify text
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if not await Util.check_args_count(message, command, silent, min=2):
@@ -1474,7 +1531,8 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _shutdown(self, message, command, silent=False):
+    @staticmethod
+    async def _shutdown(message, command, silent=False):
         """Shutdown the bot
     Example: !shutdown"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1482,7 +1540,8 @@ class BuiltinCommands:
         log.info(str(message.author) + " invoked shutting down the bot")
         await bc.close()
 
-    async def _avatar(self, message, command, silent=False):
+    @staticmethod
+    async def _avatar(message, command, silent=False):
         """Change bot avatar
     Example: !avatar <image>
     Hint: Use !listimg for list of available images"""
@@ -1500,7 +1559,8 @@ class BuiltinCommands:
                         return
         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
 
-    async def _message(self, message, command, silent=False):
+    @staticmethod
+    async def _message(message, command, silent=False):
         """Get message by its order number (from the end of channel history)
     Example: !message"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1522,7 +1582,8 @@ class BuiltinCommands:
         await Util.response(message, result, silent)
         return result
 
-    async def _reminder(self, message, command, silent=False):
+    @staticmethod
+    async def _reminder(message, command, silent=False):
         """Print message at particular time
     Example: !reminder 2020-01-01 00:00 Happy new year!"""
         if not await Util.check_args_count(message, command, silent, min=4):
@@ -1537,16 +1598,17 @@ class BuiltinCommands:
                                 silent)
             return
         text = ' '.join(command[3:])
-        self.config.reminders.append(Reminder(str(time), text, message.channel.id))
+        bc.commands.config.reminders.append(Reminder(str(time), text, message.channel.id))
         await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
 
-    async def _listreminder(self, message, command, silent=False):
+    @staticmethod
+    async def _listreminder(message, command, silent=False):
         """Print list of reminders
     Example: !listreminder"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         result = ""
-        reminders = sorted(zip(range(0, len(self.config.reminders)), self.config.reminders), key=lambda x: x[1])
+        reminders = sorted(zip(range(0, len(bc.commands.config.reminders)), bc.commands.config.reminders), key=lambda x: x[1])
         for index, reminder in reminders:
             result += "{} - {} (channel: {}) -> {}\n".format(
                 index, reminder.time, reminder.channel_id, reminder.message)
@@ -1556,7 +1618,8 @@ class BuiltinCommands:
             await Util.response(message, "No reminders found!", silent)
         return result
 
-    async def _delreminder(self, message, command, silent=False):
+    @staticmethod
+    async def _delreminder(message, command, silent=False):
         """Delete reminder by index
     Example: !delreminder 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1567,13 +1630,14 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(self.config.reminders):
-            self.config.reminders.pop(index)
+        if index >= 0 and index < len(bc.commands.config.reminders):
+            bc.commands.config.reminders.pop(index)
             await Util.response(message, "Successfully deleted reminder!", silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)
 
-    async def _server(self, message, command, silent=False):
+    @staticmethod
+    async def _server(message, command, silent=False):
         """Print information about current server
     Example: !server 0"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
@@ -1594,14 +1658,15 @@ class BuiltinCommands:
             result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
 
-    async def _quote(self, message, command, silent=False):
+    @staticmethod
+    async def _quote(message, command, silent=False):
         """Print some quote from quotes database
     Examples:
         !quote
         !quote 1"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        if len(self.config.quotes) == 0:
+        if len(bc.commands.config.quotes) == 0:
             await Util.response(message, "<Quotes database is empty>", silent)
             return
         if len(command) == 2:
@@ -1612,30 +1677,32 @@ class BuiltinCommands:
             if index is None:
                 return
         else:
-            index = random.randint(0, len(self.config.quotes) - 1)
-        if index >= 0 and index < len(self.config.quotes):
-            await Util.response(message, "Quote {}: {}".format(index, self.config.quotes[index].full_quote()), silent)
+            index = random.randint(0, len(bc.commands.config.quotes) - 1)
+        if index >= 0 and index < len(bc.commands.config.quotes):
+            await Util.response(message, "Quote {}: {}".format(index, bc.commands.config.quotes[index].full_quote()), silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
 
-    async def _addquote(self, message, command, silent=False):
+    @staticmethod
+    async def _addquote(message, command, silent=False):
         """Add quote to quotes database
     Example: !addquote Hello, world!"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         quote = ' '.join(command[1:])
-        self.config.quotes.append(Quote(quote, str(message.author)))
+        bc.commands.config.quotes.append(Quote(quote, str(message.author)))
         await Util.response(message,
                             "Quote '{}' was successfully added to quotes database with index {}".format(
-                                quote, len(self.config.quotes) - 1), silent)
+                                quote, len(bc.commands.config.quotes) - 1), silent)
 
-    async def _listquote(self, message, command, silent=False):
+    @staticmethod
+    async def _listquote(message, command, silent=False):
         """Print list of all quotes
     Example: !listquote"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for index, quote in enumerate(self.config.quotes):
+        for index, quote in enumerate(bc.commands.config.quotes):
             result += "{} -> {}\n".format(index, quote.quote())
         if len(result) > 0:
             await Util.response(message, result, silent)
@@ -1643,7 +1710,8 @@ class BuiltinCommands:
             await Util.response(message, "<Quotes database is empty>", silent)
         return result
 
-    async def _delquote(self, message, command, silent=False):
+    @staticmethod
+    async def _delquote(message, command, silent=False):
         """Delete quote from quotes database by index
     Example: !delquote 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
@@ -1654,13 +1722,14 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(self.config.quotes):
-            self.config.quotes.pop(index)
+        if index >= 0 and index < len(bc.commands.config.quotes):
+            bc.commands.config.quotes.pop(index)
             await Util.response(message, "Successfully deleted quote!", silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
 
-    async def _setquoteauthor(self, message, command, silent=False):
+    @staticmethod
+    async def _setquoteauthor(message, command, silent=False):
         """Set author of quote by its index
     Example: !setquoteauthor 0 WalBot"""
         if not await Util.check_args_count(message, command, silent, min=3):
@@ -1671,11 +1740,11 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(self.config.quotes):
+        if index >= 0 and index < len(bc.commands.config.quotes):
             author = ' '.join(command[2:])
-            self.config.quotes[index].author = author
+            bc.commands.config.quotes[index].author = author
             await Util.response(message,
                                 "Successfully set author '{}' for quote '{}'".format(
-                                    author, self.config.quotes[index].quote()), silent)
+                                    author, bc.commands.config.quotes[index].quote()), silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
