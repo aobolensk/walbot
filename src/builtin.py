@@ -217,11 +217,6 @@ class BuiltinCommands:
                 __name__, self.__class__.__name__, "_status",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["status"].is_global = True
-        if "forchannel" not in bc.commands.data.keys():
-            bc.commands.data["forchannel"] = Command(
-                __name__, self.__class__.__name__, "_forchannel",
-                permission=const.Permission.MOD.value, subcommand=False)
-            bc.commands.data["forchannel"].is_global = True
         if "channelid" not in bc.commands.data.keys():
             bc.commands.data["channelid"] = Command(
                 __name__, self.__class__.__name__, "_channelid",
@@ -1195,26 +1190,6 @@ class BuiltinCommands:
             await bc.change_presence(status=discord.Status.invisible)
         else:
             await Util.response(message, "Unknown type of activity", silent)
-
-    @staticmethod
-    async def _forchannel(message, command, silent=False):
-        """Executes command for channel
-    Example: !forchannel <channel_id> ping"""
-        if not await Util.check_args_count(message, command, silent, min=3):
-            return
-        channel_id = await Util.parse_int(message, command[1],
-                                          "Second argument of command '{}' should be an integer".format(command[0]),
-                                          silent)
-        if channel_id is None:
-            return
-        message.channel = bc.get_channel(channel_id)
-        command = command[2:]
-        message.content = ' '.join(command)
-        if command[0] not in bc.commands.data.keys():
-            await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
-        else:
-            actor = bc.commands.data[command[0]]
-            await actor.run(message, command, None, silent)
 
     @staticmethod
     async def _channelid(message, command, silent=False):

@@ -107,9 +107,6 @@
 **findmarkov**: Match words in Markov model using regex \
     Example: !findmarkov hello
 
-**forchannel**: Executes command for channel \
-    Example: !forchannel &lt;channel_id&gt; ping
-
 **help**: Print list of commands and get examples \
     Examples: \
         !help \
