@@ -115,25 +115,25 @@
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;
 
-**listalias**: Show list of aliases \
+**listalias**: Print list of aliases \
     Example: !listalias \
     *This command can be used as subcommand*
 
-**listbgevent**: Print a list of background events \
+**listbgevent**: Print list of background events \
     Example: !listbgevent \
     *This command can be used as subcommand*
 
-**listimg**: List of available images for !img command \
+**listimg**: Print list of available images for !img command \
     Example: !listimg
 
-**listmarkovfilter**: Print a list of regular expression filters for Markov model \
+**listmarkovfilter**: Print list of regular expression filters for Markov model \
     Example: !listmarkovfilter \
     *This command can be used as subcommand*
 
 **listquote**: Print list of all quotes \
     Example: !listquote
 
-**listreaction**: Show list of reactions \
+**listreaction**: Print list of reactions \
     Example: !listreaction \
     *This command can be used as subcommand*
 

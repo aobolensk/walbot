@@ -935,7 +935,7 @@ class BuiltinCommands:
 
     @staticmethod
     async def _listreaction(message, command, silent=False):
-        """Show list of reactions
+        """Print list of reactions
     Example: !listreaction"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
@@ -1063,7 +1063,7 @@ class BuiltinCommands:
 
     @staticmethod
     async def _listbgevent(message, command, silent=False):
-        """Print a list of background events
+        """Print list of background events
     Example: !listbgevent"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
@@ -1236,7 +1236,7 @@ class BuiltinCommands:
 
     @staticmethod
     async def _listalias(message, command, silent=False):
-        """Show list of aliases
+        """Print list of aliases
     Example: !listalias"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
@@ -1309,7 +1309,7 @@ class BuiltinCommands:
 
     @staticmethod
     async def _listmarkovfilter(message, command, silent=False):
-        """Print a list of regular expression filters for Markov model
+        """Print list of regular expression filters for Markov model
     Example: !listmarkovfilter"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
@@ -1387,7 +1387,7 @@ class BuiltinCommands:
 
     @staticmethod
     async def _listimg(message, command, silent=False):
-        """List of available images for !img command
+        """Print list of available images for !img command
     Example: !listimg"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
