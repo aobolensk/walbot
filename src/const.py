@@ -15,6 +15,7 @@ FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
 REMINDER_TIME_FORMAT = "%Y-%m-%d %H:%M"
 EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
 USER_ID_REGEX = re.compile(r'<@!(\d*)>')
+ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
 
 
 @unique
