@@ -21,10 +21,9 @@ class Commands:
     def export_help(self):
         with open(os.path.join(os.getcwd(), "docs", "Help.md"), "w", encoding="utf-8", newline='\n') as f:
             result = []
-            for command in self.data:
-                command = self.data[command]
+            for name, command in self.data.items():
                 if command.perform is not None:
-                    s = "**" + command.name + "**: "
+                    s = "**" + name + "**: "
                     s += " \\\n".join(getattr(getattr(sys.modules[command.module_name], command.class_name),
                                               command.perform).__doc__.split('\n'))
                     if command.subcommand:

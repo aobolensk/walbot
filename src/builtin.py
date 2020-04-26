@@ -5,6 +5,7 @@ import os
 import random
 import re
 import requests
+import sys
 import urllib.request
 
 from . import const
@@ -557,10 +558,9 @@ class BuiltinCommands:
             return
         if len(command) == 1:
             commands = []
-            for command in bc.commands.data:
-                command = bc.commands.data[command]
+            for name, command in bc.commands.data.items():
                 if command.perform is None:
-                    s = (command.name, command.message)
+                    s = (name, command.message)
                     commands.append(s)
             commands.sort()
             version = bc.commands.config.get_version()
@@ -577,6 +577,7 @@ class BuiltinCommands:
                 embed.add_field(name=command[0], value=command[1], inline=False)
             await Util.response(message, None, silent, embed=embed)
         elif len(command) == 2:
+            name = command[1]
             if command[1] in bc.commands.data:
                 command = bc.commands.data[command[1]]
             elif command[1] in bc.commands.aliases.keys():
@@ -584,9 +585,10 @@ class BuiltinCommands:
             else:
                 await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
                 return
-            result = command.name + ": "
+            result = name + ": "
             if command.perform is not None:
-                result += command.perform.__doc__
+                result += getattr(getattr(sys.modules[command.module_name], command.class_name),
+                                  command.perform).__doc__
             else:
                 result += command.message
             result += '\n'
