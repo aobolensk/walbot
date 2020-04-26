@@ -91,7 +91,8 @@ class Command:
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
-            return await getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)(message, command, silent)
+            return await getattr(getattr(sys.modules[self.module_name], self.class_name),
+                                 self.perform)(message, command, silent)
         elif self.message is not None:
             response = self.message
             response = response.replace("@author@", message.author.mention)

@@ -26,7 +26,8 @@ class Commands:
                 command = self.data[command]
                 if command.perform is not None:
                     s = "**" + command.name + "**: "
-                    s += " \\\n".join(getattr(getattr(sys.modules[command.module_name], command.class_name), command.perform).__doc__.split('\n'))
+                    s += " \\\n".join(getattr(getattr(sys.modules[command.module_name], command.class_name),
+                                              command.perform).__doc__.split('\n'))
                     if command.subcommand:
                         s += " \\\n    *This command can be used as subcommand*"
                     s += '\n'
