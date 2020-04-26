@@ -9,10 +9,10 @@ import urllib.request
 
 from . import const
 from . import emoji
-from .config import Command
-from .config import bc
 from .config import BackgroundEvent
+from .config import Command
 from .config import Reaction
+from .config import bc
 from .config import log
 from .quote import Quote
 from .reminder import Reminder

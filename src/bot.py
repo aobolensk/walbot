@@ -4,17 +4,17 @@ import discord
 import itertools
 import os
 import psutil
+import re
 import signal
 import time
-import re
 import yaml
 
 from . import const
-from .config import bc
-from .config import GuildSettings
-from .config import User
 from .config import Config
+from .config import GuildSettings
 from .config import SecretConfig
+from .config import User
+from .config import bc
 from .log import log
 from .markov import Markov
 

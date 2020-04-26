@@ -4,11 +4,11 @@ import psutil
 import yaml
 
 from . import const
-from .config import bc
-from .config import GuildSettings
-from .config import User
 from .config import Config
+from .config import GuildSettings
 from .config import SecretConfig
+from .config import User
+from .config import bc
 from .log import log
 
 

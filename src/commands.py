@@ -1,9 +1,8 @@
 import os
 import sys
 
-from .config import bc
-
 from .builtin import BuiltinCommands
+from .config import bc
 
 
 class Commands:
