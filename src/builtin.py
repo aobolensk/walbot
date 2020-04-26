@@ -23,377 +23,377 @@ class BuiltinCommands:
     def bind(self):
         if "takechars" not in bc.commands.data.keys():
             bc.commands.data["takechars"] = Command(
-                __name__, self.__class__.__name__, "takechars", "_takechars",
+                __name__, self.__class__.__name__, "_takechars",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["takechars"].is_global = True
         if "countchars" not in bc.commands.data.keys():
             bc.commands.data["countchars"] = Command(
-                __name__, self.__class__.__name__, "countchars", "_countchars",
+                __name__, self.__class__.__name__, "_countchars",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["countchars"].is_global = True
         if "takewords" not in bc.commands.data.keys():
             bc.commands.data["takewords"] = Command(
-                __name__, self.__class__.__name__, "takewords", "_takewords",
+                __name__, self.__class__.__name__, "_takewords",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["takewords"].is_global = True
         if "countwords" not in bc.commands.data.keys():
             bc.commands.data["countwords"] = Command(
-                __name__, self.__class__.__name__, "countwords", "_countwords",
+                __name__, self.__class__.__name__, "_countwords",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["countwords"].is_global = True
         if "takelines" not in bc.commands.data.keys():
             bc.commands.data["takelines"] = Command(
-                __name__, self.__class__.__name__, "takelines", "_takelines",
+                __name__, self.__class__.__name__, "_takelines",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["takelines"].is_global = True
         if "countlines" not in bc.commands.data.keys():
             bc.commands.data["countlines"] = Command(
-                __name__, self.__class__.__name__, "countlines", "_countlines",
+                __name__, self.__class__.__name__, "_countlines",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["countlines"].is_global = True
         if "tolower" not in bc.commands.data.keys():
             bc.commands.data["tolower"] = Command(
-                __name__, self.__class__.__name__, "tolower", "_tolower",
+                __name__, self.__class__.__name__, "_tolower",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["tolower"].is_global = True
         if "toupper" not in bc.commands.data.keys():
             bc.commands.data["toupper"] = Command(
-                __name__, self.__class__.__name__, "toupper", "_toupper",
+                __name__, self.__class__.__name__, "_toupper",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["toupper"].is_global = True
         if "ping" not in bc.commands.data.keys():
             bc.commands.data["ping"] = Command(
-                __name__, self.__class__.__name__, "ping", "_ping",
+                __name__, self.__class__.__name__, "_ping",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["ping"].is_global = True
         if "spoiler" not in bc.commands.data.keys():
             bc.commands.data["spoiler"] = Command(
-                __name__, self.__class__.__name__, "spoiler", "_spoiler",
+                __name__, self.__class__.__name__, "_spoiler",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["spoiler"].is_global = True
         if "help" not in bc.commands.data.keys():
             bc.commands.data["help"] = Command(
-                __name__, self.__class__.__name__, "help", "_help",
+                __name__, self.__class__.__name__, "_help",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["help"].is_global = True
         if "profile" not in bc.commands.data.keys():
             bc.commands.data["profile"] = Command(
-                __name__, self.__class__.__name__, "profile", "_profile",
+                __name__, self.__class__.__name__, "_profile",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["profile"].is_global = True
         if "addcmd" not in bc.commands.data.keys():
             bc.commands.data["addcmd"] = Command(
-                __name__, self.__class__.__name__, "addcmd", "_addcmd",
+                __name__, self.__class__.__name__, "_addcmd",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["addcmd"].is_global = True
         if "updcmd" not in bc.commands.data.keys():
             bc.commands.data["updcmd"] = Command(
-                __name__, self.__class__.__name__, "updcmd", "_updcmd",
+                __name__, self.__class__.__name__, "_updcmd",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["updcmd"].is_global = True
         if "delcmd" not in bc.commands.data.keys():
             bc.commands.data["delcmd"] = Command(
-                __name__, self.__class__.__name__, "delcmd", "_delcmd",
+                __name__, self.__class__.__name__, "_delcmd",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["delcmd"].is_global = True
         if "enablecmd" not in bc.commands.data.keys():
             bc.commands.data["enablecmd"] = Command(
-                __name__, self.__class__.__name__, "enablecmd", "_enablecmd",
+                __name__, self.__class__.__name__, "_enablecmd",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["enablecmd"].is_global = True
         if "disablecmd" not in bc.commands.data.keys():
             bc.commands.data["disablecmd"] = Command(
-                __name__, self.__class__.__name__, "disablecmd", "_disablecmd",
+                __name__, self.__class__.__name__, "_disablecmd",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["disablecmd"].is_global = True
         if "permcmd" not in bc.commands.data.keys():
             bc.commands.data["permcmd"] = Command(
-                __name__, self.__class__.__name__, "permcmd", "_permcmd",
+                __name__, self.__class__.__name__, "_permcmd",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["permcmd"].is_global = True
         if "timescmd" not in bc.commands.data.keys():
             bc.commands.data["timescmd"] = Command(
-                __name__, self.__class__.__name__, "timescmd", "_timescmd",
+                __name__, self.__class__.__name__, "_timescmd",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["timescmd"].is_global = True
         if "permuser" not in bc.commands.data.keys():
             bc.commands.data["permuser"] = Command(
-                __name__, self.__class__.__name__, "permuser", "_permuser",
+                __name__, self.__class__.__name__, "_permuser",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["permuser"].is_global = True
         if "whitelist" not in bc.commands.data.keys():
             bc.commands.data["whitelist"] = Command(
-                __name__, self.__class__.__name__, "whitelist", "_whitelist",
+                __name__, self.__class__.__name__, "_whitelist",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["whitelist"].is_global = True
         if "config" not in bc.commands.data.keys():
             bc.commands.data["config"] = Command(
-                __name__, self.__class__.__name__, "config", "_config",
+                __name__, self.__class__.__name__, "_config",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["config"].is_global = True
         if "addreaction" not in bc.commands.data.keys():
             bc.commands.data["addreaction"] = Command(
-                __name__, self.__class__.__name__, "addreaction", "_addreaction",
+                __name__, self.__class__.__name__, "_addreaction",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["addreaction"].is_global = True
         if "updreaction" not in bc.commands.data.keys():
             bc.commands.data["updreaction"] = Command(
-                __name__, self.__class__.__name__, "updreaction", "_updreaction",
+                __name__, self.__class__.__name__, "_updreaction",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["updreaction"].is_global = True
         if "delreaction" not in bc.commands.data.keys():
             bc.commands.data["delreaction"] = Command(
-                __name__, self.__class__.__name__, "delreaction", "_delreaction",
+                __name__, self.__class__.__name__, "_delreaction",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["delreaction"].is_global = True
         if "listreaction" not in bc.commands.data.keys():
             bc.commands.data["listreaction"] = Command(
-                __name__, self.__class__.__name__, "listreaction", "_listreaction",
+                __name__, self.__class__.__name__, "_listreaction",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["listreaction"].is_global = True
         if "wme" not in bc.commands.data.keys():
             bc.commands.data["wme"] = Command(
-                __name__, self.__class__.__name__, "wme", "_wme",
+                __name__, self.__class__.__name__, "_wme",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["wme"].is_global = True
         if "poll" not in bc.commands.data.keys():
             bc.commands.data["poll"] = Command(
-                __name__, self.__class__.__name__, "poll", "_poll",
+                __name__, self.__class__.__name__, "_poll",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["poll"].is_global = True
         if "version" not in bc.commands.data.keys():
             bc.commands.data["version"] = Command(
-                __name__, self.__class__.__name__, "version", "_version",
+                __name__, self.__class__.__name__, "_version",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["version"].is_global = True
         if "about" not in bc.commands.data.keys():
             bc.commands.data["about"] = Command(
-                __name__, self.__class__.__name__, "about", "_about",
+                __name__, self.__class__.__name__, "_about",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["about"].is_global = True
         if "addbgevent" not in bc.commands.data.keys():
             bc.commands.data["addbgevent"] = Command(
-                __name__, self.__class__.__name__, "addbgevent", "_addbgevent",
+                __name__, self.__class__.__name__, "_addbgevent",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["addbgevent"].is_global = True
         if "listbgevent" not in bc.commands.data.keys():
             bc.commands.data["listbgevent"] = Command(
-                __name__, self.__class__.__name__, "listbgevent", "_listbgevent",
+                __name__, self.__class__.__name__, "_listbgevent",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["listbgevent"].is_global = True
         if "delbgevent" not in bc.commands.data.keys():
             bc.commands.data["delbgevent"] = Command(
-                __name__, self.__class__.__name__, "delbgevent", "_delbgevent",
+                __name__, self.__class__.__name__, "_delbgevent",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["delbgevent"].is_global = True
         if "random" not in bc.commands.data.keys():
             bc.commands.data["random"] = Command(
-                __name__, self.__class__.__name__, "random", "_random",
+                __name__, self.__class__.__name__, "_random",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["random"].is_global = True
         if "randselect" not in bc.commands.data.keys():
             bc.commands.data["randselect"] = Command(
-                __name__, self.__class__.__name__, "randselect", "_randselect",
+                __name__, self.__class__.__name__, "_randselect",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["randselect"].is_global = True
         if "silent" not in bc.commands.data.keys():
             bc.commands.data["silent"] = Command(
-                __name__, self.__class__.__name__, "silent", "_silent",
+                __name__, self.__class__.__name__, "_silent",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["silent"].is_global = True
         if "time" not in bc.commands.data.keys():
             bc.commands.data["time"] = Command(
-                __name__, self.__class__.__name__, "time", "_time",
+                __name__, self.__class__.__name__, "_time",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["time"].is_global = True
         if "uptime" not in bc.commands.data.keys():
             bc.commands.data["uptime"] = Command(
-                __name__, self.__class__.__name__, "uptime", "_uptime",
+                __name__, self.__class__.__name__, "_uptime",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["uptime"].is_global = True
         if "status" not in bc.commands.data.keys():
             bc.commands.data["status"] = Command(
-                __name__, self.__class__.__name__, "status", "_status",
+                __name__, self.__class__.__name__, "_status",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["status"].is_global = True
         if "forchannel" not in bc.commands.data.keys():
             bc.commands.data["forchannel"] = Command(
-                __name__, self.__class__.__name__, "forchannel", "_forchannel",
+                __name__, self.__class__.__name__, "_forchannel",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["forchannel"].is_global = True
         if "channelid" not in bc.commands.data.keys():
             bc.commands.data["channelid"] = Command(
-                __name__, self.__class__.__name__, "channelid", "_channelid",
+                __name__, self.__class__.__name__, "_channelid",
                 permission=const.Permission.MOD.value, subcommand=True)
             bc.commands.data["channelid"].is_global = True
         if "addalias" not in bc.commands.data.keys():
             bc.commands.data["addalias"] = Command(
-                __name__, self.__class__.__name__, "addalias", "_addalias",
+                __name__, self.__class__.__name__, "_addalias",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["addalias"].is_global = True
         if "delalias" not in bc.commands.data.keys():
             bc.commands.data["delalias"] = Command(
-                __name__, self.__class__.__name__, "delalias", "_delalias",
+                __name__, self.__class__.__name__, "_delalias",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["delalias"].is_global = True
         if "listalias" not in bc.commands.data.keys():
             bc.commands.data["listalias"] = Command(
-                __name__, self.__class__.__name__, "listalias", "_listalias",
+                __name__, self.__class__.__name__, "_listalias",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["listalias"].is_global = True
         if "markov" not in bc.commands.data.keys():
             bc.commands.data["markov"] = Command(
-                __name__, self.__class__.__name__, "markov", "_markov",
+                __name__, self.__class__.__name__, "_markov",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["markov"].is_global = True
         if "markovgc" not in bc.commands.data.keys():
             bc.commands.data["markovgc"] = Command(
-                __name__, self.__class__.__name__, "markovgc", "_markovgc",
+                __name__, self.__class__.__name__, "_markovgc",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["markovgc"].is_global = True
         if "delmarkov" not in bc.commands.data.keys():
             bc.commands.data["delmarkov"] = Command(
-                __name__, self.__class__.__name__, "delmarkov", "_delmarkov",
+                __name__, self.__class__.__name__, "_delmarkov",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["delmarkov"].is_global = True
         if "findmarkov" not in bc.commands.data.keys():
             bc.commands.data["findmarkov"] = Command(
-                __name__, self.__class__.__name__, "findmarkov", "_findmarkov",
+                __name__, self.__class__.__name__, "_findmarkov",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["findmarkov"].is_global = True
         if "dropmarkov" not in bc.commands.data.keys():
             bc.commands.data["dropmarkov"] = Command(
-                __name__, self.__class__.__name__, "dropmarkov", "_dropmarkov",
+                __name__, self.__class__.__name__, "_dropmarkov",
                 permission=const.Permission.ADMIN.value, subcommand=False)
             bc.commands.data["dropmarkov"].is_global = True
         if "addmarkovfilter" not in bc.commands.data.keys():
             bc.commands.data["addmarkovfilter"] = Command(
-                __name__, self.__class__.__name__, "addmarkovfilter", "_addmarkovfilter",
+                __name__, self.__class__.__name__, "_addmarkovfilter",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["addmarkovfilter"].is_global = True
         if "listmarkovfilter" not in bc.commands.data.keys():
             bc.commands.data["listmarkovfilter"] = Command(
-                __name__, self.__class__.__name__, "listmarkovfilter", "_listmarkovfilter",
+                __name__, self.__class__.__name__, "_listmarkovfilter",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["listmarkovfilter"].is_global = True
         if "delmarkovfilter" not in bc.commands.data.keys():
             bc.commands.data["delmarkovfilter"] = Command(
-                __name__, self.__class__.__name__, "delmarkovfilter", "_delmarkovfilter",
+                __name__, self.__class__.__name__, "_delmarkovfilter",
                 permission=const.Permission.MOD.value, subcommand=True)
             bc.commands.data["delmarkovfilter"].is_global = True
         if "img" not in bc.commands.data.keys():
             bc.commands.data["img"] = Command(
-                __name__, self.__class__.__name__, "img", "_img",
+                __name__, self.__class__.__name__, "_img",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["img"].is_global = True
         if "wmeimg" not in bc.commands.data.keys():
             bc.commands.data["wmeimg"] = Command(
-                __name__, self.__class__.__name__, "wmeimg", "_wmeimg",
+                __name__, self.__class__.__name__, "_wmeimg",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["wmeimg"].is_global = True
         if "listimg" not in bc.commands.data.keys():
             bc.commands.data["listimg"] = Command(
-                __name__, self.__class__.__name__, "listimg", "_listimg",
+                __name__, self.__class__.__name__, "_listimg",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["listimg"].is_global = True
         if "addimg" not in bc.commands.data.keys():
             bc.commands.data["addimg"] = Command(
-                __name__, self.__class__.__name__, "addimg", "_addimg",
+                __name__, self.__class__.__name__, "_addimg",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["addimg"].is_global = True
         if "delimg" not in bc.commands.data.keys():
             bc.commands.data["delimg"] = Command(
-                __name__, self.__class__.__name__, "delimg", "_delimg",
+                __name__, self.__class__.__name__, "_delimg",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["delimg"].is_global = True
         if "tts" not in bc.commands.data.keys():
             bc.commands.data["tts"] = Command(
-                __name__, self.__class__.__name__, "tts", "_tts",
+                __name__, self.__class__.__name__, "_tts",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["tts"].is_global = True
         if "urlencode" not in bc.commands.data.keys():
             bc.commands.data["urlencode"] = Command(
-                __name__, self.__class__.__name__, "urlencode", "_urlencode",
+                __name__, self.__class__.__name__, "_urlencode",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["urlencode"].is_global = True
         if "emojify" not in bc.commands.data.keys():
             bc.commands.data["emojify"] = Command(
-                __name__, self.__class__.__name__, "emojify", "_emojify",
+                __name__, self.__class__.__name__, "_emojify",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["emojify"].is_global = True
         if "demojify" not in bc.commands.data.keys():
             bc.commands.data["demojify"] = Command(
-                __name__, self.__class__.__name__, "demojify", "_demojify",
+                __name__, self.__class__.__name__, "_demojify",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["demojify"].is_global = True
         if "shutdown" not in bc.commands.data.keys():
             bc.commands.data["shutdown"] = Command(
-                __name__, self.__class__.__name__, "shutdown", "_shutdown",
+                __name__, self.__class__.__name__, "_shutdown",
                 permission=const.Permission.ADMIN.value, subcommand=False)
             bc.commands.data["shutdown"].is_global = True
         if "avatar" not in bc.commands.data.keys():
             bc.commands.data["avatar"] = Command(
-                __name__, self.__class__.__name__, "avatar", "_avatar",
+                __name__, self.__class__.__name__, "_avatar",
                 permission=const.Permission.MOD.value, subcommand=False)
             bc.commands.data["avatar"].is_global = True
         if "message" not in bc.commands.data.keys():
             bc.commands.data["message"] = Command(
-                __name__, self.__class__.__name__, "message", "_message",
+                __name__, self.__class__.__name__, "_message",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["message"].is_global = True
         if "reminder" not in bc.commands.data.keys():
             bc.commands.data["reminder"] = Command(
-                __name__, self.__class__.__name__, "reminder", "_reminder",
+                __name__, self.__class__.__name__, "_reminder",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["reminder"].is_global = True
         if "listreminder" not in bc.commands.data.keys():
             bc.commands.data["listreminder"] = Command(
-                __name__, self.__class__.__name__, "listreminder", "_listreminder",
+                __name__, self.__class__.__name__, "_listreminder",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["listreminder"].is_global = True
         if "delreminder" not in bc.commands.data.keys():
             bc.commands.data["delreminder"] = Command(
-                __name__, self.__class__.__name__, "delreminder", "_delreminder",
+                __name__, self.__class__.__name__, "_delreminder",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["delreminder"].is_global = True
         if "server" not in bc.commands.data.keys():
             bc.commands.data["server"] = Command(
-                __name__, self.__class__.__name__, "server", "_server",
+                __name__, self.__class__.__name__, "_server",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["server"].is_global = True
         if "quote" not in bc.commands.data.keys():
             bc.commands.data["quote"] = Command(
-                __name__, self.__class__.__name__, "quote", "_quote",
+                __name__, self.__class__.__name__, "_quote",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["quote"].is_global = True
         if "addquote" not in bc.commands.data.keys():
             bc.commands.data["addquote"] = Command(
-                __name__, self.__class__.__name__, "addquote", "_addquote",
+                __name__, self.__class__.__name__, "_addquote",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["addquote"].is_global = True
         if "listquote" not in bc.commands.data.keys():
             bc.commands.data["listquote"] = Command(
-                __name__, self.__class__.__name__, "listquote", "_listquote",
+                __name__, self.__class__.__name__, "_listquote",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["listquote"].is_global = True
         if "delquote" not in bc.commands.data.keys():
             bc.commands.data["delquote"] = Command(
-                __name__, self.__class__.__name__, "delquote", "_delquote",
+                __name__, self.__class__.__name__, "_delquote",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["delquote"].is_global = True
         if "setquoteauthor" not in bc.commands.data.keys():
             bc.commands.data["setquoteauthor"] = Command(
-                __name__, self.__class__.__name__, "setquoteauthor", "_setquoteauthor",
+                __name__, self.__class__.__name__, "_setquoteauthor",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["setquoteauthor"].is_global = True
         if "echo" not in bc.commands.data.keys():
             bc.commands.data["echo"] = Command(
-                __name__, self.__class__.__name__, "echo", message="@args@",
+                __name__, self.__class__.__name__, message="@args@",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["echo"].is_global = True
         if "code" not in bc.commands.data.keys():
             bc.commands.data["code"] = Command(
-                __name__, self.__class__.__name__, "code", message="`@args@`",
+                __name__, self.__class__.__name__, message="`@args@`",
                 permission=const.Permission.USER.value, subcommand=False)
             bc.commands.data["code"].is_global = True
 
