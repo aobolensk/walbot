@@ -42,6 +42,4 @@ class Commands:
                         s += '\n'
                         s = s.replace('<', '&lt;').replace('>', '&gt;')
                         result.append(s)
-            result = list(set(result))
-            result.sort()
-            f.write('\n'.join(result))
+            f.write('\n'.join(sorted(list(set(result)))))
