@@ -3,9 +3,9 @@ import re
 from enum import Enum, unique
 
 
-config_path = "config.yaml"
-markov_path = "markov.yaml"
-secret_config_path = "secret.yaml"
+CONFIG_PATH = "config.yaml"
+MARKOV_PATH = "markov.yaml"
+SECRET_CONFIG_PATH = "secret.yaml"
 
 MAX_POLL_OPTIONS = 20
 DISCORD_MAX_MESSAGE_LENGTH = 2000

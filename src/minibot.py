@@ -73,21 +73,21 @@ def start():
         log.info("Using slow YAML Dumper")
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
-    if os.path.isfile(const.config_path):
-        with open(const.config_path, 'r') as f:
+    if os.path.isfile(const.CONFIG_PATH):
+        with open(const.CONFIG_PATH, 'r') as f:
             try:
                 config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
-                log.error("yaml.load failed on file: {}".format(const.config_path), exc_info=True)
+                log.error("yaml.load failed on file: {}".format(const.CONFIG_PATH), exc_info=True)
         config.__init__()
     if config is None:
         config = Config()
-    if os.path.isfile(const.secret_config_path):
-        with open(const.secret_config_path, 'r') as f:
+    if os.path.isfile(const.SECRET_CONFIG_PATH):
+        with open(const.SECRET_CONFIG_PATH, 'r') as f:
             try:
                 secret_config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
-                log.error("yaml.load failed on file: {}".format(const.secret_config_path), exc_info=True)
+                log.error("yaml.load failed on file: {}".format(const.SECRET_CONFIG_PATH), exc_info=True)
         secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
