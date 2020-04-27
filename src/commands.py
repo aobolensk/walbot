@@ -1,5 +1,4 @@
 import os
-import sys
 
 from .builtin import BuiltinCommands
 from .config import bc

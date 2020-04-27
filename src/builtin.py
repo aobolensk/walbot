@@ -5,7 +5,6 @@ import os
 import random
 import re
 import requests
-import sys
 import urllib.request
 
 from . import const
