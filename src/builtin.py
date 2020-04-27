@@ -1139,8 +1139,8 @@ class BuiltinCommands:
         if command[0] not in bc.commands.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
-            actor = bc.commands.data[command[0]]
-            await actor.run(message, command, None, silent=True)
+            cmd = bc.commands.data[command[0]]
+            await cmd.run(message, command, None, silent=True)
 
     @staticmethod
     async def _time(message, command, silent=False):

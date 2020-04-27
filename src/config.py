@@ -57,9 +57,9 @@ class Command:
                             result = ""
                             if len(command) > 0 and command[0] in bc.commands.data.keys():
                                 log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
-                                actor = bc.commands.data[command[0]]
-                                if actor.can_be_subcommand():
-                                    result = await actor.run(message, command, user, silent=True)
+                                cmd = bc.commands.data[command[0]]
+                                if cmd.can_be_subcommand():
+                                    result = await cmd.run(message, command, user, silent=True)
                                     if result is None:
                                         result = ""
                                 else:
@@ -125,8 +125,8 @@ class BackgroundEvent:
             if command[0] not in self.config.commands.data.keys():
                 await self.channel.send("Unknown command '{}'".format(command[0]))
             else:
-                actor = self.config.commands.data[command[0]]
-                await actor.run(self.message, command, None)
+                cmd = self.config.commands.data[command[0]]
+                await cmd.run(self.message, command, None)
 
     def cancel(self):
         self.task.cancel()
