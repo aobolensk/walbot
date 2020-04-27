@@ -582,8 +582,7 @@ class BuiltinCommands:
                 return
             result = name + ": "
             if command.perform is not None:
-                result += getattr(getattr(sys.modules[command.module_name], command.class_name),
-                                  command.perform).__doc__
+                result += command.get_actor().__doc__
             else:
                 result += command.message
             result += '\n'

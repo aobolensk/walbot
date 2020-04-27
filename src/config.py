@@ -39,6 +39,9 @@ class Command:
     def can_be_subcommand(self):
         return self.subcommand or self.message
 
+    def get_actor(self):
+        return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
+
     async def process_subcommands(self, content, message, user):
         while True:
             updated = False
@@ -90,8 +93,7 @@ class Command:
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
-            return await getattr(getattr(sys.modules[self.module_name], self.class_name),
-                                 self.perform)(message, command, silent)
+            return await self.get_actor()(message, command, silent)
         elif self.message is not None:
             response = self.message
             response = response.replace("@author@", message.author.mention)
