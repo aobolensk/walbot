@@ -52,9 +52,7 @@ class Markov:
             if word in self.model.keys():
                 current_node = current_node.get_next(word)
             else:
-                current_node = self.model[word] = MarkovNode(
-                    self, self.NodeType.word, word=word
-                )
+                current_node = self.model[word] = MarkovNode(self, self.NodeType.word, word=word)
         if current_node != self.model[""]:
             current_node.add_next(None)
 
