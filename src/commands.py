@@ -1,5 +1,4 @@
 import os
-import sys
 
 from .builtin import BuiltinCommands
 from .config import bc
@@ -29,8 +28,7 @@ class Commands:
                     if command.perform is not None:
                         s = "**" + name + "**: "
                         try:
-                            s += " \\\n".join(getattr(getattr(sys.modules[command.module_name], command.class_name),
-                                                      command.perform).__doc__.split('\n'))
+                            s += " \\\n".join(command.get_actor().__doc__.split('\n'))
                         except AttributeError:
                             del self.data[name]
                             log.warning("Command '{}' is not found and deleted from config and documentation".format(

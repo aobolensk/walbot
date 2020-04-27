@@ -39,6 +39,9 @@ class Command:
     def can_be_subcommand(self):
         return self.subcommand or self.message
 
+    def get_actor(self):
+        return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
+
     async def process_subcommands(self, content, message, user):
         while True:
             updated = False
@@ -57,9 +60,9 @@ class Command:
                             result = ""
                             if len(command) > 0 and command[0] in bc.commands.data.keys():
                                 log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
-                                actor = bc.commands.data[command[0]]
-                                if actor.can_be_subcommand():
-                                    result = await actor.run(message, command, user, silent=True)
+                                cmd = bc.commands.data[command[0]]
+                                if cmd.can_be_subcommand():
+                                    result = await cmd.run(message, command, user, silent=True)
                                     if result is None:
                                         result = ""
                                 else:
@@ -90,8 +93,7 @@ class Command:
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
-            return await getattr(getattr(sys.modules[self.module_name], self.class_name),
-                                 self.perform)(message, command, silent)
+            return await self.get_actor()(message, command, silent)
         elif self.message is not None:
             response = self.message
             response = response.replace("@author@", message.author.mention)
@@ -125,8 +127,8 @@ class BackgroundEvent:
             if command[0] not in self.config.commands.data.keys():
                 await self.channel.send("Unknown command '{}'".format(command[0]))
             else:
-                actor = self.config.commands.data[command[0]]
-                await actor.run(self.message, command, None)
+                cmd = self.config.commands.data[command[0]]
+                await cmd.run(self.message, command, None)
 
     def cancel(self):
         self.task.cancel()
