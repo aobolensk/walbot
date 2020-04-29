@@ -176,7 +176,8 @@ class Config:
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
 
-    def backup(self, *files, compress=True):
+    @staticmethod
+    def backup(*files, compress=True):
         compress_type = zipfile.ZIP_DEFLATED if compress else zipfile.ZIP_STORED
         for file in files:
             path = os.path.dirname(file)
@@ -238,7 +239,8 @@ class Config:
             log.error("Saving of Markov module data is failed", exc_info=True)
         markov_mutex.release()
 
-    def get_version(self):
+    @staticmethod
+    def get_version():
         if not os.path.exists(os.path.join(os.getcwd(), ".git")):
             return "Unable to get version (.git folder is not found)"
         if not os.path.exists(os.path.join(os.getcwd(), ".git/HEAD")):
@@ -254,7 +256,8 @@ class Config:
             commit_hash = f.readline()
         return commit_hash[:-1]
 
-    def get_uptime(self):
+    @staticmethod
+    def get_uptime():
         days, remainder = divmod(
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
