@@ -1056,8 +1056,7 @@ class BuiltinCommands:
         bc.background_events.append(BackgroundEvent(
             bc.commands.config, message.channel, message, duration))
         await Util.response(message, "Successfully added background event '{}' with period {}".format(
-            message.content, str(duration)
-        ), silent)
+                            message.content, str(duration)), silent)
 
     @staticmethod
     async def _listbgevent(message, command, silent=False):
@@ -1067,9 +1066,7 @@ class BuiltinCommands:
             return
         result = ""
         for index, event in enumerate(bc.background_events):
-            result += "{}: '{}' every {} seconds\n".format(
-                str(index), event.message.content, str(event.period)
-            )
+            result += "{}: '{}' every {} seconds\n".format(str(index), event.message.content, str(event.period))
         if result:
             await Util.response(message, result, silent)
         else:
@@ -1084,8 +1081,7 @@ class BuiltinCommands:
             return
         index = await Util.parse_int(message, command[1],
                                      "Second parameter for '{}' should be an index of background event"
-                                     .format(command[0]),
-                                     silent)
+                                     .format(command[0]), silent)
         if index is None:
             return
         if 0 <= index < len(bc.background_events):
