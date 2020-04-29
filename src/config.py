@@ -94,7 +94,7 @@ class Command:
         command = list(filter(None, command))
         if self.perform is not None:
             return await self.get_actor()(message, command, silent)
-        elif self.message is not None:
+        if self.message is not None:
             response = self.message
             response = response.replace("@author@", message.author.mention)
             response = response.replace("@args@", ' '.join(command[1:]))

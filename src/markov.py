@@ -29,8 +29,7 @@ class MarkovNode:
     def get_next(self, word):
         if word is not None:
             return self.markov.model[word]
-        else:
-            return self.markov.end_node
+        return self.markov.end_node
 
 
 class Markov:
@@ -87,8 +86,7 @@ class Markov:
             else:
                 if current_node == self.model[""] and len(current_node.next.items()) == 1:
                     return "<Markov database is empty>"
-                else:
-                    break
+                break
         result = result.strip()
         if not result:
             return "<Empty message was generated>"
