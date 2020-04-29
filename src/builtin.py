@@ -897,7 +897,7 @@ class BuiltinCommands:
                                      "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
         if index is None:
             return
-        if not (index >= 0 and index < len(bc.commands.config.reactions)):
+        if not (0 <= index < len(bc.commands.config.reactions)):
             await Util.response(message, "Incorrect index of reaction!", silent)
             return
         bc.commands.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
@@ -915,7 +915,7 @@ class BuiltinCommands:
         index = -1
         try:
             index = int(command[1])
-            if not (index >= 0 and index < len(bc.commands.config.reactions)):
+            if not (0 <= index < len(bc.commands.config.reactions)):
                 await Util.response(message, "Incorrect index of reaction!", silent)
                 return
             reaction = bc.commands.config.reactions[index]
@@ -1088,7 +1088,7 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(bc.background_events):
+        if 0 <= index < len(bc.background_events):
             bc.background_events[index].cancel()
             del bc.background_events[index]
             await Util.response(message, "Successfully deleted background task!", silent)
@@ -1332,7 +1332,7 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(bc.markov.filters):
+        if 0 <= index < len(bc.markov.filters):
             bc.markov.filters.pop(index)
             await Util.response(message, "Successfully deleted filter!", silent)
         else:
@@ -1614,7 +1614,7 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(bc.commands.config.reminders):
+        if 0 <= index < len(bc.commands.config.reminders):
             bc.commands.config.reminders.pop(index)
             await Util.response(message, "Successfully deleted reminder!", silent)
         else:
@@ -1662,7 +1662,7 @@ class BuiltinCommands:
                 return
         else:
             index = random.randint(0, len(bc.commands.config.quotes) - 1)
-        if index >= 0 and index < len(bc.commands.config.quotes):
+        if 0 <= index < len(bc.commands.config.quotes):
             await Util.response(message,
                                 "Quote {}: {}".format(index, bc.commands.config.quotes[index].full_quote()), silent)
         else:
@@ -1707,7 +1707,7 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(bc.commands.config.quotes):
+        if 0 <= index < len(bc.commands.config.quotes):
             bc.commands.config.quotes.pop(index)
             await Util.response(message, "Successfully deleted quote!", silent)
         else:
@@ -1725,7 +1725,7 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if index >= 0 and index < len(bc.commands.config.quotes):
+        if 0 <= index < len(bc.commands.config.quotes):
             author = ' '.join(command[2:])
             bc.commands.config.quotes[index].author = author
             await Util.response(message,
