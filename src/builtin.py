@@ -940,7 +940,7 @@ class BuiltinCommands:
         result = ""
         for index, reaction in enumerate(bc.commands.config.reactions):
             result += "{} - {}: {}\n".format(index, reaction.emoji, reaction.regex)
-        if len(result) > 0:
+        if result:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No reactions found!", silent)
@@ -953,7 +953,7 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[1:])
-        if len(result) == 0:
+        if not result:
             return
         result = "You asked me to send you this: " + result
         await Util.send_direct_message(message, result, silent)
@@ -1070,7 +1070,7 @@ class BuiltinCommands:
             result += "{}: '{}' every {} seconds\n".format(
                 str(index), event.message.content, str(event.period)
             )
-        if len(result) > 0:
+        if result:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No background events found!", silent)
@@ -1314,7 +1314,7 @@ class BuiltinCommands:
         result = ""
         for index, regex in enumerate(bc.markov.filters):
             result += "{} -> {}\n".format(index, regex.pattern)
-        if len(result) > 0:
+        if result:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No filters for Markov model found!", silent)
@@ -1395,7 +1395,7 @@ class BuiltinCommands:
                 for file in files:
                     result.append(os.path.splitext(os.path.basename(file))[0])
         result.sort()
-        if len(result) > 0:
+        if result:
             await Util.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
         else:
             await Util.response(message, "No available images found!", silent)
@@ -1596,7 +1596,7 @@ class BuiltinCommands:
         for index, reminder in reminders:
             result += "{} - {} (channel: {}) -> {}\n".format(
                 index, reminder.time, reminder.channel_id, reminder.message)
-        if len(result) > 0:
+        if result:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "No reminders found!", silent)
@@ -1650,7 +1650,7 @@ class BuiltinCommands:
         !quote 1"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        if len(bc.commands.config.quotes) == 0:
+        if not bc.commands.config.quotes:
             await Util.response(message, "<Quotes database is empty>", silent)
             return
         if len(command) == 2:
@@ -1689,7 +1689,7 @@ class BuiltinCommands:
         result = ""
         for index, quote in enumerate(bc.commands.config.quotes):
             result += "{} -> {}\n".format(index, quote.quote())
-        if len(result) > 0:
+        if result:
             await Util.response(message, result, silent)
         else:
             await Util.response(message, "<Quotes database is empty>", silent)

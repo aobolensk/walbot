@@ -90,7 +90,7 @@ class Markov:
                 else:
                     break
         result = result.strip()
-        if len(result) == 0:
+        if not result:
             return "<Empty message was generated>"
         return result
 

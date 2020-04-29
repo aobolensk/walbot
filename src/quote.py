@@ -12,7 +12,7 @@ class Quote:
         return self.quote()
 
     def get_author(self):
-        return ("(c) " + self.author) if len(self.author) > 0 else ""
+        return ("(c) " + self.author) if self.author else ""
 
     def quote(self):
         return "{} {}".format(self.message, self.get_author())

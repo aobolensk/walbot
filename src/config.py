@@ -58,7 +58,7 @@ class Command:
                                 else:
                                     await message.channel.send("Unknown command '{}'".format(command[0]))
                             result = ""
-                            if len(command) > 0 and command[0] in bc.commands.data.keys():
+                            if command and command[0] in bc.commands.data.keys():
                                 log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
                                 cmd = bc.commands.data[command[0]]
                                 if cmd.can_be_subcommand():
@@ -101,7 +101,7 @@ class Command:
             for i in range(len(command)):
                 response = response.replace("@arg" + str(i) + "@", command[i])
             response = await self.process_subcommands(response, message, user)
-            if len(response) > 0:
+            if response:
                 if not silent:
                     for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
                         await message.channel.send(chunk)
