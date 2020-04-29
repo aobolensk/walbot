@@ -1531,11 +1531,14 @@ class BuiltinCommands:
             if root.endswith("images"):
                 for file in files:
                     if os.path.splitext(os.path.basename(file))[0] == command[1]:
-                        with open(os.path.join("images", file), "rb") as f:
-                            await bc.bot_user.edit(avatar=f.read())
-                        log.info("{} changed bot avatar to {}".format(
-                            str(message.author),
-                            command[1]))
+                        try:
+                            with open(os.path.join("images", file), "rb") as f:
+                                await bc.bot_user.edit(avatar=f.read())
+                            await Util.response(message,
+                                                "Successfully changed bot avatar to {}".format(command[1]), silent)
+                        except discord.HTTPException as e:
+                            await Util.response(message,
+                                                "Failed to change bot avatar.\nError: {}".format(e), silent)
                         return
         await Util.response(message, "Image {} is not found!".format(command[1]), silent)
 
