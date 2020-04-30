@@ -116,7 +116,7 @@ class Markov:
 
     def check(self):
         for node in self.model.values():
-            if sum([x for x in node.next.values()]) != node.total_next:
-                node.total_next = sum([x for x in node.next.values()])
+            if sum(node.next.values()) != node.total_next:
+                node.total_next = sum(node.next.values())
                 return False
         return True
