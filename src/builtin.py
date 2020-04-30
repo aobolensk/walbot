@@ -61,6 +61,11 @@ class BuiltinCommands:
                 __name__, self.__class__.__name__, "_toupper",
                 permission=const.Permission.USER.value, subcommand=True)
             bc.commands.data["toupper"].is_global = True
+        if "range" not in bc.commands.data.keys():
+            bc.commands.data["range"] = Command(
+                __name__, self.__class__.__name__, "_range",
+                permission=const.Permission.USER.value, subcommand=True)
+            bc.commands.data["range"].is_global = True
         if "ping" not in bc.commands.data.keys():
             bc.commands.data["ping"] = Command(
                 __name__, self.__class__.__name__, "_ping",
@@ -501,6 +506,43 @@ class BuiltinCommands:
         """Convert text to upper case
     Example: !toupper SoMe TeXt"""
         result = ' '.join(command[1:]).upper()
+        await Util.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _range(message, command, silent=False):
+        """Generate range of numbers
+    Examples:
+        !range <stop>
+        !range <start> <stop>
+        !range <start> <stop> <step>"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=4):
+            return
+        start, stop, step = 0, 0, 1
+        if len(command) == 2:
+            stop = await Util.parse_int(message, command[1],
+                                        "Stop parameter in range '{}' should be an integer".format(command[0]),
+                                        silent)
+        else:
+            start = await Util.parse_int(message, command[1],
+                                         "Start parameter in range '{}' should be an integer".format(command[0]),
+                                         silent)
+            stop = await Util.parse_int(message, command[2],
+                                        "Stop parameter in range '{}' should be an integer".format(command[0]),
+                                        silent)
+            if len(command) == 4:
+                step = await Util.parse_int(message, command[3],
+                                            "Step parameter in range '{}' should be an integer".format(command[0]),
+                                            silent)
+        if start is None or stop is None or step is None:
+            return
+        result = ''
+        for iteration, number in enumerate(range(start, stop, step)):
+            print(iteration, number)
+            if iteration >= const.MAX_RANGE_ITERATIONS:
+                result = "Range iteration limit ({}) has exceeded".format(const.MAX_RANGE_ITERATIONS)
+                break
+            result += str(number) + ' '
         await Util.response(message, result, silent)
         return result
 

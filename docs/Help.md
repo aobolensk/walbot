@@ -182,6 +182,13 @@
     Example: !randselect a b c \
     *This command can be used as subcommand*
 
+**range**: Generate range of numbers \
+    Examples: \
+        !range &lt;stop&gt; \
+        !range &lt;start&gt; &lt;stop&gt; \
+        !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
+    *This command can be used as subcommand*
+
 **reminder**: Print message at particular time \
     Example: !reminder 2020-01-01 00:00 Happy new year!
 
