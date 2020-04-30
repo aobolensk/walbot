@@ -29,8 +29,8 @@ class Launcher:
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
-        __import__("src.bot", fromlist=['object']).stop()
-        __import__("src.minibot", fromlist=['object']).start()
+        self.stop()
+        __import__("src.bot", fromlist=['object']).start(main_bot=False)
 
     def help(self):
         """Print help message"""

@@ -153,7 +153,7 @@ class WalBot(discord.Client):
         log.info("<" + str(payload.message_id) + "> (delete)")
 
 
-def start():
+def start(main_bot=True):
     if os.path.exists(".bot_cache"):
         cache = None
         with open(".bot_cache", 'r') as f:
@@ -198,7 +198,10 @@ def start():
         secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
-    walBot = WalBot(config, secret_config)
+    if main_bot:
+        walBot = WalBot(config, secret_config)
+    else:
+        walBot = __import__("src.minibot", fromlist=['object']).MiniWalBot(config, secret_config)
     if secret_config.token is None:
         secret_config.token = input("Enter your token: ")
     # Starting the bot
