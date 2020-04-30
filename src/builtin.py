@@ -719,7 +719,7 @@ class BuiltinCommands:
                                      "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
         if index is None:
             return
-        if not (0 <= index < len(bc.commands.config.reactions)):
+        if not 0 <= index < len(bc.commands.config.reactions):
             await Util.response(message, "Incorrect index of reaction!", silent)
             return
         bc.commands.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
@@ -737,7 +737,7 @@ class BuiltinCommands:
         index = -1
         try:
             index = int(command[1])
-            if not (0 <= index < len(bc.commands.config.reactions)):
+            if not 0 <= index < len(bc.commands.config.reactions):
                 await Util.response(message, "Incorrect index of reaction!", silent)
                 return
             reaction = bc.commands.config.reactions[index]
