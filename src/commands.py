@@ -1,6 +1,7 @@
 import os
 
 from .builtin import BuiltinCommands
+from .config import Command
 from .config import bc
 from .config import log
 
@@ -41,3 +42,8 @@ class Commands:
                         s = s.replace('<', '&lt;').replace('>', '&gt;')
                         result.append(s)
             f.write('\n'.join(sorted(list(set(result)))))
+
+    def register_command(self, module_name, class_name, command_name, **kwargs):
+        if command_name[1:] not in self.data.keys():
+            self.data[command_name[1:]] = Command(module_name, class_name, command_name, **kwargs)
+            self.data[command_name[1:]].is_global = True
