@@ -538,7 +538,6 @@ class BuiltinCommands:
             return
         result = ''
         for iteration, number in enumerate(range(start, stop, step)):
-            print(iteration, number)
             if iteration >= const.MAX_RANGE_ITERATIONS:
                 result = "Range iteration limit ({}) has exceeded".format(const.MAX_RANGE_ITERATIONS)
                 break
