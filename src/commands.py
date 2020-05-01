@@ -45,5 +45,8 @@ class Commands:
 
     def register_command(self, module_name, class_name, command_name, **kwargs):
         if command_name[1:] not in self.data.keys():
-            self.data[command_name[1:]] = Command(module_name, class_name, command_name, **kwargs)
+            if kwargs.get("message", None):
+                self.data[command_name[1:]] = Command(module_name, class_name, **kwargs)
+            else:
+                self.data[command_name[1:]] = Command(module_name, class_name, command_name, **kwargs)
             self.data[command_name[1:]].is_global = True

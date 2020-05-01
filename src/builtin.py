@@ -167,16 +167,12 @@ class BuiltinCommands:
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "_setquoteauthor",
                                      permission=const.Permission.USER.value, subcommand=False)
-        if "echo" not in bc.commands.data.keys():
-            bc.commands.data["echo"] = Command(
-                __name__, self.__class__.__name__, message="@args@",
-                permission=const.Permission.USER.value, subcommand=False)
-            bc.commands.data["echo"].is_global = True
-        if "code" not in bc.commands.data.keys():
-            bc.commands.data["code"] = Command(
-                __name__, self.__class__.__name__, message="`@args@`",
-                permission=const.Permission.USER.value, subcommand=False)
-            bc.commands.data["code"].is_global = True
+        bc.commands.register_command(__name__, self.__class__.__name__, "_echo",
+                                     message="@args@",
+                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.__class__.__name__, "_code",
+                                     message="`@args@`",
+                                     permission=const.Permission.USER.value, subcommand=True)
 
     @staticmethod
     async def _takechars(message, command, silent=False):
