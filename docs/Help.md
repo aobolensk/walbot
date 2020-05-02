@@ -269,6 +269,9 @@
 **updreaction**: Update reaction \
     Example: !updreaction index emoji regex
 
+**updreminder**: Update reminder by index \
+    Example: !delreminder 0 2020-01-01 00:00 Happy new year!
+
 **uptime**: Show bot uptime \
     Example: !uptime \
     *This command can be used as subcommand*

@@ -151,6 +151,8 @@ class BuiltinCommands:
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "_reminder",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.__class__.__name__, "_updreminder",
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "_listreminder",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "_delreminder",
@@ -1391,12 +1393,38 @@ class BuiltinCommands:
         except ValueError:
             await Util.response(message, "{} does not match format {}\n"
                                 "More information about format: <https://strftime.org/>".format(
-                                    time, const.REMINDER_TIME_FORMAT),
-                                silent)
+                                    time, const.REMINDER_TIME_FORMAT), silent)
             return
         text = ' '.join(command[3:])
         bc.commands.config.reminders.append(Reminder(str(time), text, message.channel.id))
         await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
+
+    @staticmethod
+    async def _updreminder(message, command, silent=False):
+        """Update reminder by index
+    Example: !delreminder 0 2020-01-01 00:00 Happy new year!"""
+        if not await Util.check_args_count(message, command, silent, min=5):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Second parameter for '{}' should be an index of reminder"
+                                     .format(command[0]), silent)
+        if index is None:
+            return
+        if 0 <= index < len(bc.commands.config.reminders):
+            time = command[2] + ' ' + command[3]
+            try:
+                time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
+            except ValueError:
+                await Util.response(message, "{} does not match format {}\n"
+                                    "More information about format: <https://strftime.org/>".format(
+                                        time, const.REMINDER_TIME_FORMAT), silent)
+                return
+            text = ' '.join(command[4:])
+            bc.commands.config.reminders[index] = Reminder(str(time), text, message.channel.id)
+            await Util.response(message, "Successfully updated reminder {}: '{}' at {}".format(
+                                    index, text, time), silent)
+        else:
+            await Util.response(message, "Invalid index of reminder!", silent)
 
     @staticmethod
     async def _listreminder(message, command, silent=False):
