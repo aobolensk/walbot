@@ -21,158 +21,158 @@ from .utils import Util
 
 class BuiltinCommands:
     def bind(self):
-        bc.commands.register_command(__name__, self.__class__.__name__, "_takechars",
+        bc.commands.register_command(__name__, self.__class__.__name__, "takechars",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_countchars",
+        bc.commands.register_command(__name__, self.__class__.__name__, "countchars",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_takewords",
+        bc.commands.register_command(__name__, self.__class__.__name__, "takewords",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_countwords",
+        bc.commands.register_command(__name__, self.__class__.__name__, "countwords",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_takelines",
+        bc.commands.register_command(__name__, self.__class__.__name__, "takelines",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_countlines",
+        bc.commands.register_command(__name__, self.__class__.__name__, "countlines",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_tolower",
+        bc.commands.register_command(__name__, self.__class__.__name__, "tolower",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_toupper",
+        bc.commands.register_command(__name__, self.__class__.__name__, "toupper",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_range",
+        bc.commands.register_command(__name__, self.__class__.__name__, "range",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_ping",
+        bc.commands.register_command(__name__, self.__class__.__name__, "ping",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_spoiler",
+        bc.commands.register_command(__name__, self.__class__.__name__, "spoiler",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_help",
+        bc.commands.register_command(__name__, self.__class__.__name__, "help",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_profile",
+        bc.commands.register_command(__name__, self.__class__.__name__, "profile",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addcmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_updcmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "updcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delcmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_enablecmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "enablecmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_disablecmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "disablecmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_permcmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "permcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_timescmd",
+        bc.commands.register_command(__name__, self.__class__.__name__, "timescmd",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_permuser",
+        bc.commands.register_command(__name__, self.__class__.__name__, "permuser",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_whitelist",
+        bc.commands.register_command(__name__, self.__class__.__name__, "whitelist",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_config",
+        bc.commands.register_command(__name__, self.__class__.__name__, "config",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addreaction",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_updreaction",
+        bc.commands.register_command(__name__, self.__class__.__name__, "updreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delreaction",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listreaction",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listreaction",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_wme",
+        bc.commands.register_command(__name__, self.__class__.__name__, "wme",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_poll",
+        bc.commands.register_command(__name__, self.__class__.__name__, "poll",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_version",
+        bc.commands.register_command(__name__, self.__class__.__name__, "version",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_about",
+        bc.commands.register_command(__name__, self.__class__.__name__, "about",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addbgevent",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addbgevent",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listbgevent",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listbgevent",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delbgevent",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delbgevent",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_random",
+        bc.commands.register_command(__name__, self.__class__.__name__, "random",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_randselect",
+        bc.commands.register_command(__name__, self.__class__.__name__, "randselect",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_silent",
+        bc.commands.register_command(__name__, self.__class__.__name__, "silent",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_time",
+        bc.commands.register_command(__name__, self.__class__.__name__, "time",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_uptime",
+        bc.commands.register_command(__name__, self.__class__.__name__, "uptime",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_status",
+        bc.commands.register_command(__name__, self.__class__.__name__, "status",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_channelid",
+        bc.commands.register_command(__name__, self.__class__.__name__, "channelid",
                                      permission=const.Permission.MOD.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addalias",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addalias",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delalias",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delalias",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listalias",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listalias",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_markov",
+        bc.commands.register_command(__name__, self.__class__.__name__, "markov",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_markovgc",
+        bc.commands.register_command(__name__, self.__class__.__name__, "markovgc",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delmarkov",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_findmarkov",
+        bc.commands.register_command(__name__, self.__class__.__name__, "findmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_dropmarkov",
+        bc.commands.register_command(__name__, self.__class__.__name__, "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addmarkovfilter",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listmarkovfilter",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listmarkovfilter",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delmarkovfilter",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_img",
+        bc.commands.register_command(__name__, self.__class__.__name__, "img",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_wmeimg",
+        bc.commands.register_command(__name__, self.__class__.__name__, "wmeimg",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listimg",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listimg",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addimg",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addimg",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delimg",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delimg",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_tts",
+        bc.commands.register_command(__name__, self.__class__.__name__, "tts",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_urlencode",
+        bc.commands.register_command(__name__, self.__class__.__name__, "urlencode",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_emojify",
+        bc.commands.register_command(__name__, self.__class__.__name__, "emojify",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_demojify",
+        bc.commands.register_command(__name__, self.__class__.__name__, "demojify",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_shutdown",
+        bc.commands.register_command(__name__, self.__class__.__name__, "shutdown",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_avatar",
+        bc.commands.register_command(__name__, self.__class__.__name__, "avatar",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_message",
+        bc.commands.register_command(__name__, self.__class__.__name__, "message",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_reminder",
+        bc.commands.register_command(__name__, self.__class__.__name__, "reminder",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_updreminder",
+        bc.commands.register_command(__name__, self.__class__.__name__, "updreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listreminder",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listreminder",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delreminder",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_server",
+        bc.commands.register_command(__name__, self.__class__.__name__, "server",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_quote",
+        bc.commands.register_command(__name__, self.__class__.__name__, "quote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_addquote",
+        bc.commands.register_command(__name__, self.__class__.__name__, "addquote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_listquote",
+        bc.commands.register_command(__name__, self.__class__.__name__, "listquote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_delquote",
+        bc.commands.register_command(__name__, self.__class__.__name__, "delquote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_setquoteauthor",
+        bc.commands.register_command(__name__, self.__class__.__name__, "setquoteauthor",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_echo",
+        bc.commands.register_command(__name__, self.__class__.__name__, "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__class__.__name__, "_code",
+        bc.commands.register_command(__name__, self.__class__.__name__, "code",
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
 
