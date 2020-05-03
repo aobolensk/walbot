@@ -175,10 +175,11 @@ class Config:
             self.quotes = []
         if not hasattr(self, "commands_prefix"):
             self.commands_prefix = "!"
+        if not hasattr(self, "compress"):
+            self.compress = True
 
-    @staticmethod
-    def backup(*files, compress=True):
-        compress_type = zipfile.ZIP_DEFLATED if compress else zipfile.ZIP_STORED
+    def backup(self, *files):
+        compress_type = zipfile.ZIP_DEFLATED if self.compress else zipfile.ZIP_STORED
         for file in files:
             path = os.path.dirname(file)
             name, ext = os.path.splitext(os.path.basename(file))
