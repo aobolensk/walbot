@@ -1174,7 +1174,7 @@ class BuiltinCommands:
                             await Util.response(message,
                                                 "https://cdn.discordapp.com/emojis/{}.png".format(r.group(2)), silent)
                             break
-                        await Util.response(message, "Image {} is not found!".format(command[1]), silent)
+                        await Util.response(message, "Image {} is not found!".format(command[i]), silent)
                     break
 
     @staticmethod
