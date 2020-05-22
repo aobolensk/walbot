@@ -1436,8 +1436,8 @@ class BuiltinCommands:
         reminders = sorted(zip(range(0, len(bc.commands.config.reminders)), bc.commands.config.reminders),
                            key=lambda x: x[1])
         for index, reminder in reminders:
-            result += "{} - {} (channel: {}) -> {}\n".format(
-                index, reminder.time, reminder.channel_id, reminder.message)
+            result += "{} - {} in {} -> {}\n".format(
+                index, reminder.time, "<#{}>".format(reminder.channel_id), reminder.message)
         if result:
             await Util.response(message, result, silent)
         else:
