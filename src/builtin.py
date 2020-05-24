@@ -535,6 +535,8 @@ class BuiltinCommands:
     Example: !timescmd echo"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
+        if command[1] in bc.config.commands.aliases.keys():
+            command[1] = bc.config.commands.aliases[command[1]]
         if command[1] not in bc.commands.data.keys():
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
