@@ -321,6 +321,8 @@ class BuiltinCommands:
                 result = "Range iteration limit ({}) has exceeded".format(const.MAX_RANGE_ITERATIONS)
                 break
             result += str(number) + ' '
+        else:
+            result = result[:-1]
         await Util.response(message, result, silent)
         return result
 
