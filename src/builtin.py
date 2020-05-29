@@ -890,7 +890,8 @@ class BuiltinCommands:
             return
         result = ""
         for index, event in enumerate(bc.background_events):
-            result += "{}: '{}' every {} seconds\n".format(str(index), event.message.content, str(event.period))
+            result += "{}: '{}' every {} seconds, channel: {}\n".format(
+                str(index), event.message.content, str(event.period), "<#{}>".format(event.channel.id))
         if result:
             await Util.response(message, result, silent)
         else:
