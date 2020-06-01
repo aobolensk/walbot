@@ -959,6 +959,7 @@ class BuiltinCommands:
             await Util.response(message, "Unknown command '{}'".format(command[0]), silent)
         else:
             cmd = bc.commands.data[command[0]]
+            message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, None, silent=True)
 
     @staticmethod
