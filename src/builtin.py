@@ -798,7 +798,9 @@ class BuiltinCommands:
         options = ' '.join(command[2:])
         options = options.split(';')
         if len(options) > const.MAX_POLL_OPTIONS:
-            await Util.response(message, "Too many options for poll", silent)
+            await Util.response(message,
+                                "Too many options for poll (got: {}, max: {})".format(
+                                    len(options), const.MAX_POLL_OPTIONS), silent)
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
