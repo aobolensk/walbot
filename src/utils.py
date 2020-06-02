@@ -67,3 +67,11 @@ class Util:
         except ValueError:
             await Util.response(message, error_message, silent)
             return
+
+    @staticmethod
+    async def parse_float(message, string, error_message, silent):
+        try:
+            return float(string)
+        except ValueError:
+            await Util.response(message, error_message, silent)
+            return

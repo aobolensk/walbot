@@ -924,18 +924,21 @@ class BuiltinCommands:
     Example: !random 5 10"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        left = await Util.parse_int(message, command[1],
-                                    "Left border should be an integer", silent)
+        left = await Util.parse_float(message, command[1],
+                                      "Left border should be a number", silent)
         if left is None:
             return
-        right = await Util.parse_int(message, command[2],
-                                     "Right border should be an integer", silent)
+        right = await Util.parse_float(message, command[2],
+                                       "Right border should be a number", silent)
         if right is None:
             return
         if left > right:
             await Util.response(message, "Left border should be less or equal than right", silent)
             return
-        result = str(random.randint(left, right))
+        if const.INTEGER_NUMBER.fullmatch(command[1]) and const.INTEGER_NUMBER.fullmatch(command[2]):
+            result = str(random.randint(int(left), int(right)))  # integer random
+        else:
+            result = str(random.uniform(left, right))  # float random
         await Util.response(message, result, silent)
         return result
 
