@@ -110,6 +110,7 @@
 **help**: Print list of commands and get examples \
     Examples: \
         !help \
+        !help -p \
         !help help
 
 **img**: Send image (use !listimg for list of available images) \

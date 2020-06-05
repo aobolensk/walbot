@@ -369,6 +369,7 @@ class BuiltinCommands:
         """Print list of commands and get examples
     Examples:
         !help
+        !help -p
         !help help"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
