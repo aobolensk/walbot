@@ -372,23 +372,30 @@ class BuiltinCommands:
         !help help"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        if len(command) == 1:
+        if len(command) == 1 or (len(command) == 2 and command[1] == '-p'):
             commands = []
-            for name, command in bc.commands.data.items():
-                if command.perform is None:
-                    s = (name, command.message)
+            for name, cmd in bc.commands.data.items():
+                if cmd.perform is None:
+                    s = (name, cmd.message)
                     commands.append(s)
             commands.sort()
             version = bc.commands.config.get_version()
-            embed = discord.Embed(title="Help", color=0x717171)
-            embed.add_field(
-                name="Built-in commands",
-                value=("<https://github.com/aobolensk/walbot/blob/" +
-                       (version if version != ' ' else "master") + "/docs/Help.md>"),
-                inline=False)
-            for command in commands:
-                embed.add_field(name=command[0], value=command[1], inline=False)
-            await Util.response(message, None, silent, embed=embed)
+            if len(command) == 2 and command[1] == '-p':
+                result = ("Built-in commands <https://github.com/aobolensk/walbot/blob/" +
+                          (version if version != ' ' else "master") + "/docs/Help.md>\n")
+                for cmd in commands:
+                    result += "**{}**: {}\n".format(cmd[0], cmd[1])
+                await Util.response(message, result, silent)
+            else:
+                embed = discord.Embed(title="Help", color=0x717171)
+                embed.add_field(
+                    name="Built-in commands",
+                    value=("<https://github.com/aobolensk/walbot/blob/" +
+                           (version if version != ' ' else "master") + "/docs/Help.md>"),
+                    inline=False)
+                for cmd in commands:
+                    embed.add_field(name=cmd[0], value=cmd[1], inline=False)
+                await Util.response(message, None, silent, embed=embed)
         elif len(command) == 2:
             name = command[1]
             if command[1] in bc.commands.data:
