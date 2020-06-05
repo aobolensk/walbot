@@ -380,15 +380,12 @@ class BuiltinCommands:
                     commands.append(s)
             commands.sort()
             version = bc.commands.config.get_version()
-            if ' ' in version:
-                version = "master"
             embed = discord.Embed(title="Help", color=0x717171)
             embed.add_field(
                 name="Built-in commands",
                 value=("<https://github.com/aobolensk/walbot/blob/" +
-                       version + "/docs/Help.md>"),
-                inline=False
-            )
+                       (version if version != ' ' else "master") + "/docs/Help.md>"),
+                inline=False)
             for command in commands:
                 embed.add_field(name=command[0], value=command[1], inline=False)
             await Util.response(message, None, silent, embed=embed)
