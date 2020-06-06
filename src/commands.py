@@ -9,10 +9,10 @@ from .config import log
 class Commands:
     def __init__(self, config):
         self.config = config
-        self.data = dict()
+        if not hasattr(self, "data"):
+            self.data = dict()
         if not hasattr(self, "aliases"):
             self.aliases = dict()
-        self.update()
 
     def update(self):
         bc.commands = self
