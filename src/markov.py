@@ -3,11 +3,11 @@ import re
 import yaml
 
 from .log import log
+from .config import bc
 
 
 class MarkovNode:
     def __init__(self, markov, node_type, word=None):
-        self.markov = markov
         self.type = node_type
         if self.type == Markov.NodeType.word:
             self.word = word
@@ -28,8 +28,8 @@ class MarkovNode:
 
     def get_next(self, word):
         if word is not None:
-            return self.markov.model[word]
-        return self.markov.end_node
+            return bc.markov.model[word]
+        return bc.markov.end_node
 
 
 class Markov:
@@ -116,6 +116,8 @@ class Markov:
 
     def check(self):
         for node in self.model.values():
+            if hasattr(node, "markov"):
+                del node.__dict__["markov"]
             if sum(node.next.values()) != node.total_next:
                 node.total_next = sum(node.next.values())
                 return False
