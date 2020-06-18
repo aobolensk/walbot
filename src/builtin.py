@@ -60,7 +60,7 @@ class BuiltinCommands:
         bc.commands.register_command(__name__, self.__class__.__name__, "permcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "timescmd",
-                                     permission=const.Permission.USER.value, subcommand=False)
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "permuser",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "whitelist",
@@ -539,8 +539,10 @@ class BuiltinCommands:
     @staticmethod
     async def _timescmd(message, command, silent=False):
         """Print how many times command was invoked
-    Example: !timescmd echo"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+    Examples:
+        !timescmd echo
+        !timescmd echo -s"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         if command[1] in bc.config.commands.aliases.keys():
             command[1] = bc.config.commands.aliases[command[1]]
@@ -548,9 +550,13 @@ class BuiltinCommands:
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
         com = bc.commands.data[command[1]]
-        await Util.response(message, "Command '{}' was invoked {} times".format(
-            command[1],
-            str(com.times_called if hasattr(com, "times_called") else 0)), silent)
+        times = str(com.times_called if hasattr(com, "times_called") else 0)
+        if len(command) == 3 and command[2] == '-s':
+            result = "{}".format(times)
+        else:
+            result = "Command '{}' was invoked {} times".format(command[1], times)
+        await Util.response(message, result, silent)
+        return result
 
     @staticmethod
     async def _permuser(message, command, silent=False):

@@ -251,7 +251,10 @@
     *This command can be used as subcommand*
 
 **timescmd**: Print how many times command was invoked \
-    Example: !timescmd echo
+    Examples: \
+        !timescmd echo \
+        !timescmd echo -s \
+    *This command can be used as subcommand*
 
 **tolower**: Convert text to lower case \
     Example: !tolower SoMe TeXt \
