@@ -1,17 +1,13 @@
+import argparse
 import sys
 
 
 class Launcher:
-    def __init__(self, command):
-        if not (sys.version_info.major >= 3 and sys.version_info.minor >= 5):
-            print("Python {}.{}.{} is not supported. You need Python 3.5+".format(
-                sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
-            exit(1)
-        if command in [x for x in dir(self) if not x.startswith('_')]:
-            getattr(self, command)()
-        else:
-            print("Invalid argument {}".format(command))
-            self.help()
+    def __init__(self):
+        parser = argparse.ArgumentParser(description='WalBot')
+        parser.add_argument("action", choices=[x for x in dir(self) if not x.startswith('_')], help='Action for bot')
+        args = parser.parse_args()
+        getattr(self, args.action)()
 
     def start(self):
         """Start the bot"""
@@ -41,10 +37,11 @@ class Launcher:
 
 
 def main():
-    if len(sys.argv) == 2:
-        Launcher(sys.argv[1])
-    else:
-        Launcher("help")
+    if not (sys.version_info.major >= 3 and sys.version_info.minor >= 5):
+        print("Python {}.{}.{} is not supported. You need Python 3.5+".format(
+              sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+        exit(1)
+    Launcher()
 
 
 if __name__ == "__main__":
