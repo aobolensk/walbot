@@ -42,10 +42,11 @@ class WalBot(discord.Client):
                     bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
                 except Exception:
                     log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
-        if bc.markov.check():
-            log.info("Markov model has passed all checks")
-        else:
-            log.info("Markov model has not passed checks, but all errors were fixed")
+        if not bc.args.fast_start:
+            if bc.markov.check():
+                log.info("Markov model has passed all checks")
+            else:
+                log.info("Markov model has not passed checks, but all errors were fixed")
 
     async def change_status(self, string, type):
         await self.change_presence(activity=discord.Activity(name=string, type=type))
@@ -153,7 +154,7 @@ class WalBot(discord.Client):
         log.info("<" + str(payload.message_id) + "> (delete)")
 
 
-def start(main_bot=True):
+def start(args, main_bot=True):
     if os.path.exists(".bot_cache"):
         cache = None
         with open(".bot_cache", 'r') as f:
@@ -166,6 +167,7 @@ def start(main_bot=True):
     # Before starting the bot
     config = None
     secret_config = None
+    bc.args = args
     try:
         bc.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")

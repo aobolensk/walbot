@@ -4,14 +4,17 @@ import sys
 
 class Launcher:
     def __init__(self):
-        parser = argparse.ArgumentParser(description='WalBot')
+        parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument("action", choices=[x for x in dir(self) if not x.startswith('_')], help='Action for bot')
-        args = parser.parse_args()
-        getattr(self, args.action)()
+        parser.add_argument("--fast_start", action="store_true",
+                            help="Disable some things to make bot start faster:\n" +
+                                 "- Disable Markov model check on start\n")
+        self.args = parser.parse_args()
+        getattr(self, self.args.action)()
 
     def start(self):
         """Start the bot"""
-        __import__("src.bot", fromlist=['object']).start()
+        __import__("src.bot", fromlist=['object']).start(self.args)
 
     def stop(self):
         """Stop the bot"""
