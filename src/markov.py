@@ -68,9 +68,9 @@ class Markov:
     def find_words(self, regex):
         return [self.model[word].word for word in self.model if re.search(regex, word)]
 
-    def generate(self):
-        current_node = self.model[""]
-        result = ""
+    def generate(self, word=""):
+        current_node = self.model[word]
+        result = word + ' '
         while current_node != self.end_node:
             index = random.randint(0, max(0, current_node.total_next - 1))
             s = 0

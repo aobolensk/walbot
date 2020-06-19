@@ -1086,9 +1086,13 @@ class BuiltinCommands:
     async def _markov(message, command, silent=False):
         """Generate message using Markov chain
     Example: !markov"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+        if not await Util.check_args_count(message, command, silent, min=1):
             return
-        result = await bc.commands.config.disable_pings_in_response(message, bc.markov.generate())
+        if len(command) > 1:
+            result = bc.markov.generate(word=command[-1])
+        else:
+            result = bc.markov.generate()
+        result = await bc.commands.config.disable_pings_in_response(message, result)
         await Util.response(message, result, silent)
         return result
 
