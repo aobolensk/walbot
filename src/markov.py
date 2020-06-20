@@ -69,6 +69,8 @@ class Markov:
         return [self.model[word].word for word in self.model if re.search(regex, word)]
 
     def generate(self, word=""):
+        if word not in self.model.keys():
+            return "<Empty message was generated>"
         current_node = self.model[word]
         result = word + ' '
         while current_node != self.end_node:
