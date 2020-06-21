@@ -61,7 +61,7 @@ class BuiltinCommands:
         bc.commands.register_command(__name__, self.__class__.__name__, "disablecmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "permcmd",
-                                     permission=const.Permission.MOD.value, subcommand=False)
+                                     permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "timescmd",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "permuser",
