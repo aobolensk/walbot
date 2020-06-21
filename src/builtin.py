@@ -416,8 +416,12 @@ class BuiltinCommands:
             result = name + ": "
             if command.perform is not None:
                 result += command.get_actor().__doc__
-            else:
+            elif command.message is not None:
                 result += command.message
+            elif command.cmd_line is not None:
+                result += "calls external command '{}'".format(command.cmd_line)
+            else:
+                result += "<error>"
             result += '\n'
             result += "    Required permission level: {}\n".format(command.permission)
             if command.subcommand:
