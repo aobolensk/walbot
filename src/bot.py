@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import discord
 import itertools
 import os
 import psutil
@@ -8,6 +7,8 @@ import re
 import signal
 import time
 import yaml
+
+import discord
 
 from . import const
 from .config import Config

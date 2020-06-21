@@ -5,8 +5,9 @@ import re
 import subprocess
 import sys
 import threading
-import yaml
 import zipfile
+
+import yaml
 
 from . import const
 from .log import log
