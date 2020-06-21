@@ -110,10 +110,14 @@ class Command:
                         await message.channel.send(chunk)
                 return response
         elif self.cmd_line is not None:
-            process = subprocess.run(self.cmd_line, shell=True, check=True,
-                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            result = process.stdout.decode("utf-8")
-            await Util.response(message, result, silent)
+            result = ""
+            try:
+                process = subprocess.run(self.cmd_line, shell=True, check=True,
+                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                result = process.stdout.decode("utf-8")
+                await Util.response(message, result, silent)
+            except subprocess.CalledProcessError as e:
+                await Util.response(message, "<Command failed with error code {}>".format(e.returncode), silent)
             return result
         else:
             await message.channel.send("Command '{}' is not callable".format(command[0]))
