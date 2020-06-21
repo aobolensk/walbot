@@ -24,7 +24,8 @@ bc = BotController()
 
 
 class Command:
-    def __init__(self, module_name=None, class_name=None, perform=None, message=None, cmd_line=None, permission=0, subcommand=False):
+    def __init__(self, module_name=None, class_name=None,
+                 perform=None, message=None, cmd_line=None, permission=0, subcommand=False):
         self.module_name = module_name
         self.class_name = class_name
         self.perform = perform
