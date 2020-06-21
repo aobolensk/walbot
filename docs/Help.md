@@ -160,7 +160,7 @@
     Example: !permcmd ping 0
 
 **permuser**: Set user permission \
-    Example: !permcmd @nickname 0
+    Example: !permuser @nickname 0
 
 **ping**: Check whether the bot is active \
     Example: !ping
