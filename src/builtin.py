@@ -5,6 +5,7 @@ import os
 import random
 import re
 import requests
+import subprocess
 import urllib.request
 
 from . import const
@@ -67,6 +68,8 @@ class BuiltinCommands:
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "permuser",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
+        bc.commands.register_command(__name__, self.__class__.__name__, "extexec",
+                                     permission=const.Permission.ADMIN.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "whitelist",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "config",
@@ -617,6 +620,18 @@ class BuiltinCommands:
                 await Util.response(message, "User permissions are set to {}".format(command[2]), silent)
                 return
         await Util.response(message, "User '{}' is not found".format(command[1]), silent)
+
+    @staticmethod
+    async def _extexec(message, command, silent=False):
+        """Execute external shell command
+    Example: !extexec uname -a"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        process = subprocess.run(' '.join(command[1:]), shell=True, check=True,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = process.stdout.decode("utf-8")
+        await Util.response(message, result, silent)
+        return result
 
     @staticmethod
     async def _whitelist(message, command, silent=False):

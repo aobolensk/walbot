@@ -107,6 +107,10 @@
         !enablecmd ping guild \
         !enablecmd ping global
 
+**extexec**: Execute external shell command \
+    Example: !extexec uname -a \
+    *This command can be used as subcommand*
+
 **findmarkov**: Match words in Markov model using regex \
     Example: !findmarkov hello
 
