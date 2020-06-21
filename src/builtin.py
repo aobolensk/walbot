@@ -442,6 +442,7 @@ class BuiltinCommands:
     @staticmethod
     async def _addextcmd(message, command, silent=False):
         """Add command that executes external process
+    Note: Be careful when you are executing external commands!
     Example: !addextcmd uname uname -a"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
@@ -474,6 +475,7 @@ class BuiltinCommands:
     @staticmethod
     async def _updextcmd(message, command, silent=False):
         """Update command that executes external process (works only for commands that already exist)
+    Note: Be careful when you are executing external commands!
     Example: !updextcmd uname uname -a"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
@@ -624,6 +626,7 @@ class BuiltinCommands:
     @staticmethod
     async def _extexec(message, command, silent=False):
         """Execute external shell command
+    Note: Be careful when you are executing external commands!
     Example: !extexec uname -a"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return

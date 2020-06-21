@@ -12,6 +12,7 @@
     Example: !addcmd hello Hello!
 
 **addextcmd**: Add command that executes external process \
+    Note: Be careful when you are executing external commands! \
     Example: !addextcmd uname uname -a
 
 **addimg**: Add image for !img command \
@@ -108,6 +109,7 @@
         !enablecmd ping global
 
 **extexec**: Execute external shell command \
+    Note: Be careful when you are executing external commands! \
     Example: !extexec uname -a \
     *This command can be used as subcommand*
 
@@ -278,6 +280,7 @@
     Example: !updcmd hello Hello!
 
 **updextcmd**: Update command that executes external process (works only for commands that already exist) \
+    Note: Be careful when you are executing external commands! \
     Example: !updextcmd uname uname -a
 
 **updreaction**: Update reaction \
