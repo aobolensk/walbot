@@ -7,7 +7,7 @@ from .config import bc
 
 
 class MarkovNode:
-    def __init__(self, markov, node_type, word=None):
+    def __init__(self, node_type, word=None):
         self.type = node_type
         if self.type == Markov.NodeType.word:
             self.word = word
@@ -39,8 +39,8 @@ class Markov:
         end = 2
 
     def __init__(self):
-        self.model = {"": MarkovNode(self, self.NodeType.begin)}
-        self.end_node = MarkovNode(self, self.NodeType.end)
+        self.model = {"": MarkovNode(self.NodeType.begin)}
+        self.end_node = MarkovNode(self.NodeType.end)
         self.filters = []
 
     def add_string(self, text):
@@ -51,7 +51,7 @@ class Markov:
             if word in self.model.keys():
                 current_node = current_node.get_next(word)
             else:
-                current_node = self.model[word] = MarkovNode(self, self.NodeType.word, word=word)
+                current_node = self.model[word] = MarkovNode(self.NodeType.word, word=word)
         if current_node != self.model[""]:
             current_node.add_next(None)
 
