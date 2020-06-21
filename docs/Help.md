@@ -12,7 +12,7 @@
     Example: !addcmd hello Hello!
 
 **addextcmd**: Add command that executes external process \
-    Example: !addextcmd uname -a
+    Example: !addextcmd uname uname -a
 
 **addimg**: Add image for !img command \
     Example: !addimg name url
@@ -272,6 +272,9 @@
 
 **updcmd**: Update command (works only for commands that already exist) \
     Example: !updcmd hello Hello!
+
+**updextcmd**: Update command that executes external process (works only for commands that already exist) \
+    Example: !updextcmd uname uname -a
 
 **updreaction**: Update reaction \
     Example: !updreaction index emoji regex
