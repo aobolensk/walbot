@@ -482,7 +482,7 @@ class BuiltinCommands:
             bc.commands.data[command_name].cmd_line = ' '.join(command[2:])
             await Util.response(message,
                                 "Command '{}' that calls external command '{}' is successfully updated".format(
-                                command_name, bc.commands.data[command_name].cmd_line), silent)
+                                    command_name, bc.commands.data[command_name].cmd_line), silent)
             return
         await Util.response(message, "Command '{}' does not exist".format(command_name), silent)
 
