@@ -118,6 +118,7 @@ class Command:
                 for i in range(len(command)):
                     cmd_line = cmd_line.replace("@arg" + str(i) + "@", command[i])
                 cmd_line = await self.process_subcommands(cmd_line, message, user)
+                log.debug("Processing external command: " + cmd_line)
                 process = subprocess.run(cmd_line, shell=True, check=True,
                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 result = process.stdout.decode("utf-8")
