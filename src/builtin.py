@@ -578,14 +578,19 @@ class BuiltinCommands:
     @staticmethod
     async def _permuser(message, command, silent=False):
         """Set user permission
-    Example: !permcmd @nickname 0"""
+    Example: !permuser @nickname 0"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         perm = await Util.parse_int(message, command[2],
                                     "Third argument of command '{}' should be an integer".format(command[0]), silent)
         if perm is None:
             return
-        user_id = int(command[1][2:-1])
+        r = const.USER_ID_REGEX.search(command[1])
+        if r is None:
+            await Util.response(message,
+                                "Second argument of command '{}' should be user ping".format(command[0]), silent)
+            return
+        user_id = int(r.group(1))
         for user in bc.commands.config.users.keys():
             if bc.commands.config.users[user].id == user_id:
                 bc.commands.config.users[user].permission_level = perm
