@@ -383,8 +383,11 @@ class BuiltinCommands:
         if len(command) == 1 or (len(command) == 2 and command[1] == '-p'):
             commands = []
             for name, cmd in bc.commands.data.items():
-                if cmd.perform is None:
+                if cmd.message is not None:
                     s = (name, cmd.message)
+                    commands.append(s)
+                elif cmd.cmd_line is not None:
+                    s = (name, "calls external command '{}'".format(cmd.cmd_line))
                     commands.append(s)
             commands.sort()
             version = bc.commands.config.get_version()
