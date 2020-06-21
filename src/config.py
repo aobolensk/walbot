@@ -112,7 +112,13 @@ class Command:
         elif self.cmd_line is not None:
             result = ""
             try:
-                process = subprocess.run(self.cmd_line, shell=True, check=True,
+                cmd_line = self.cmd_line[:]
+                cmd_line = cmd_line.replace("@author@", message.author.mention)
+                cmd_line = cmd_line.replace("@args@", ' '.join(command[1:]))
+                for i in range(len(command)):
+                    cmd_line = cmd_line.replace("@arg" + str(i) + "@", command[i])
+                cmd_line = await self.process_subcommands(cmd_line, message, user)
+                process = subprocess.run(cmd_line, shell=True, check=True,
                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 result = process.stdout.decode("utf-8")
                 await Util.response(message, result, silent)
