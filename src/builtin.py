@@ -42,8 +42,6 @@ class BuiltinCommands:
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "ping",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__class__.__name__, "spoiler",
-                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "help",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "profile",
@@ -338,14 +336,6 @@ class BuiltinCommands:
         """Check whether the bot is active
     Example: !ping"""
         await Util.response(message, "Pong! " + message.author.mention, silent)
-
-    @staticmethod
-    async def _spoiler(message, command, silent=False):
-        """Mark text as spoiler
-    Example: !spoiler hello"""
-        result = "||" + ' '.join(command[1:]) + "||"
-        await Util.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _profile(message, command, silent=False):
