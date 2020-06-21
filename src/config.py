@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import os
 import re
+import subprocess
 import sys
 import threading
 import yaml
@@ -23,13 +24,14 @@ bc = BotController()
 
 
 class Command:
-    def __init__(self, module_name=None, class_name=None, perform=None, message=None, permission=0, subcommand=False):
+    def __init__(self, module_name=None, class_name=None, perform=None, message=None, cmd_line=None, permission=0, subcommand=False):
         self.module_name = module_name
         self.class_name = class_name
         self.perform = perform
         self.permission = permission
         self.subcommand = subcommand
         self.message = message
+        self.cmd_line = cmd_line
         self.is_global = False
         self.channels = []
 
@@ -37,7 +39,7 @@ class Command:
         return self.is_global or (channel_id in self.channels)
 
     def can_be_subcommand(self):
-        return self.subcommand or self.message
+        return self.subcommand or self.message or self.cmd_line
 
     def get_actor(self):
         return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
@@ -88,13 +90,13 @@ class Command:
             self.times_called = 1
         else:
             self.times_called += 1
-        if message.content.split(' ')[0][1:] not in ["addcmd", "updcmd"]:
+        if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd"]:
             message.content = await self.process_subcommands(message.content, message, user)
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
             return await self.get_actor()(message, command, silent)
-        if self.message is not None:
+        elif self.message is not None:
             response = self.message
             response = response.replace("@author@", message.author.mention)
             response = response.replace("@args@", ' '.join(command[1:]))
@@ -106,6 +108,12 @@ class Command:
                     for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
                         await message.channel.send(chunk)
                 return response
+        elif self.cmd_line is not None:
+            process = subprocess.run(self.cmd_line, shell=True, check=True,
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = process.stdout.decode("utf-8")
+            await Util.response(message, result, silent)
+            return result
         else:
             await message.channel.send("Command '{}' is not callable".format(command[0]))
 

@@ -11,6 +11,9 @@
 **addcmd**: Add command \
     Example: !addcmd hello Hello!
 
+**addextcmd**: Add command that executes external process \
+    Example: !addextcmd uname -a
+
 **addimg**: Add image for !img command \
     Example: !addimg name url
 

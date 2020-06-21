@@ -49,6 +49,8 @@ class BuiltinCommands:
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "addcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_command(__name__, self.__class__.__name__, "addextcmd",
+                                     permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "updcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "delcmd",
@@ -431,6 +433,21 @@ class BuiltinCommands:
         bc.commands.data[command_name].channels.append(message.channel.id)
         await Util.response(message, "Command '{}' -> '{}' successfully added".format(
             command_name, bc.commands.data[command_name].message), silent)
+
+    @staticmethod
+    async def _addextcmd(message, command, silent=False):
+        """Add command that executes external process
+    Example: !addextcmd uname -a"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        command_name = command[1]
+        if command_name in bc.commands.data.keys():
+            await Util.response(message, "Command {} already exists".format(command_name), silent)
+            return
+        bc.commands.data[command_name] = Command(command_name, cmd_line=' '.join(command[2:]))
+        bc.commands.data[command_name].channels.append(message.channel.id)
+        await Util.response(message, "Command '{}' that calls external command '{}' is successfully added".format(
+            command_name, bc.commands.data[command_name].cmd_line), silent)
 
     @staticmethod
     async def _updcmd(message, command, silent=False):
