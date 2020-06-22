@@ -1152,6 +1152,8 @@ class BuiltinCommands:
             return
         if len(command) > 1:
             result = bc.markov.generate(word=command[-1])
+            if result != "<Empty message was generated>":
+                result = ' '.join(command[1:-1]) + ' ' + result
         else:
             result = bc.markov.generate()
         result = await bc.commands.config.disable_pings_in_response(message, result)
