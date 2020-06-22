@@ -2,13 +2,13 @@ import asyncio
 import datetime
 import itertools
 import os
-import psutil
 import re
 import signal
 import time
-import yaml
 
 import discord
+import psutil
+import yaml
 
 from . import const
 from .config import Config

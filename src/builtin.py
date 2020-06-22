@@ -3,11 +3,11 @@ import datetime
 import os
 import random
 import re
-import requests
 import subprocess
 import urllib.request
 
 import discord
+import requests
 
 from . import const
 from . import emoji
