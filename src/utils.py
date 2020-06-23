@@ -22,6 +22,7 @@ class Util:
                 msg = await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
                 if kwargs.get("suppress_embeds", False):
                     await msg.edit(suppress=True)
+            return msg
         else:
             log.info("[SILENT] -> " + content)
 
