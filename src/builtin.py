@@ -1151,7 +1151,10 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=1):
             return
         if len(command) > 1:
-            result = bc.markov.generate(word=command[-1])
+            for i in range(const.MAX_MARKOV_ATTEMPTS):
+                result = bc.markov.generate(word=command[-1])
+                if len(result) > 1:
+                    break
             if result != "<Empty message was generated>":
                 result = ' '.join(command[1:-1]) + ' ' + result
         else:
