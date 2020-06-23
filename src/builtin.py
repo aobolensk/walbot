@@ -878,7 +878,7 @@ class BuiltinCommands:
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
             poll_message += emoji.alphabet[i] + " -> " + options[i] + '\n'
-        poll_message = await message.channel.send(poll_message)
+        poll_message = await Util.response(message, poll_message, silent)
         for i in range(len(options)):
             try:
                 await poll_message.add_reaction(emoji.alphabet[i])
