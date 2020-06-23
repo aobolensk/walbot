@@ -46,6 +46,13 @@ class Command:
     def get_actor(self):
         return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
 
+    async def process_variables(self, string, message, command):
+        string = string.replace("@author@", message.author.mention)
+        string = string.replace("@args@", ' '.join(command[1:]))
+        for i in range(len(command)):
+            string = string.replace("@arg" + str(i) + "@", command[i])
+        return string
+
     async def process_subcommands(self, content, message, user):
         while True:
             updated = False
@@ -100,10 +107,7 @@ class Command:
             return await self.get_actor()(message, command, silent)
         elif self.message is not None:
             response = self.message
-            response = response.replace("@author@", message.author.mention)
-            response = response.replace("@args@", ' '.join(command[1:]))
-            for i in range(len(command)):
-                response = response.replace("@arg" + str(i) + "@", command[i])
+            response = await self.process_variables(response, message, command)
             response = await self.process_subcommands(response, message, user)
             if response:
                 if not silent:
@@ -114,10 +118,7 @@ class Command:
             result = ""
             try:
                 cmd_line = self.cmd_line[:]
-                cmd_line = cmd_line.replace("@author@", message.author.mention)
-                cmd_line = cmd_line.replace("@args@", ' '.join(command[1:]))
-                for i in range(len(command)):
-                    cmd_line = cmd_line.replace("@arg" + str(i) + "@", command[i])
+                cmd_line = await self.process_variables(cmd_line, message, command)
                 cmd_line = await self.process_subcommands(cmd_line, message, user)
                 log.debug("Processing external command: " + cmd_line)
                 process = subprocess.run(cmd_line, shell=True, check=True,
