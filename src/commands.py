@@ -1,6 +1,7 @@
+import importlib
+import inspect
 import os
 
-from .builtin import BuiltinCommands
 from .config import Command
 from .config import bc
 from .config import log
@@ -16,7 +17,24 @@ class Commands:
 
     def update(self):
         bc.commands = self
-        BuiltinCommands().bind()
+        cmd_directory = os.path.join(os.path.dirname(__file__), "cmd")
+        cmd_modules = ['.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
+                       if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
+        for module in cmd_modules:
+            builtin = importlib.import_module(module, "src.cmd")
+            commands = [obj[1] for obj in inspect.getmembers(builtin, inspect.isclass)
+                        if obj[1].__module__ == "src.cmd" + module]
+            if len(commands) == 1:
+                commands = commands[0]
+                if "bind" in [func[0] for func in inspect.getmembers(commands, inspect.isfunction)
+                              if not func[0].startswith('_')]:
+                    commands.bind(commands)
+                else:
+                    log.error("Class '{}' does not have bind() function".format(commands.__name__))
+            elif len(commands) >= 1:
+                log.error("Module 'src.cmd{}' have more than 1 class in it".format(module))
+            else:
+                log.error("Module 'src.cmd{}' have no classes in it".format(module))
         self.export_help()
 
     def export_help(self):
