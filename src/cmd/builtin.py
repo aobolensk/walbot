@@ -1412,7 +1412,7 @@ class BuiltinCommands:
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        text = message.content[len(command[0])+1:].lower()
+        text = message.content[len(command[0])+1:]
         result = ""
         i = 0
         while i < len(text):
