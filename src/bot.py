@@ -164,7 +164,7 @@ def start(args, main_bot=True):
         if cache is not None:
             pid = int(cache)
             if psutil.pid_exists(pid):
-                print("Bot is already running!")
+                log.error("Bot is already running!")
                 return
     # Before starting the bot
     config = None
@@ -227,12 +227,12 @@ def start(args, main_bot=True):
 def stop():
     cache = None
     if not os.path.exists(".bot_cache"):
-        print("Could not stop the bot (cache file does not exist)")
+        log.error("Could not stop the bot (cache file does not exist)")
         return
     with open(".bot_cache", 'r') as f:
         cache = f.read()
     if cache is None:
-        print("Could not stop the bot (cache file does not contain pid)")
+        log.error("Could not stop the bot (cache file does not contain pid)")
         return
     pid = int(cache)
     if psutil.pid_exists(pid):
@@ -241,8 +241,8 @@ def stop():
             is_running = psutil.pid_exists(pid)
             if not is_running:
                 break
-            print("Bot is still running. Please, wait...")
+            log.debug("Bot is still running. Please, wait...")
             time.sleep(0.5)
-        print("Bot is stopped!")
+        log.info("Bot is stopped!")
     else:
-        print("Could not stop the bot (bot is not running)")
+        log.error("Could not stop the bot (bot is not running)")
