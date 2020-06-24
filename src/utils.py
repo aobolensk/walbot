@@ -15,9 +15,7 @@ class Util:
                     if kwargs.get("suppress_embeds", False):
                         await msg.edit(suppress=True)
             elif kwargs.get("files", None):
-                msg = await message.channel.send(
-                        None,
-                        files=kwargs.get("files", None))
+                msg = await message.channel.send(None, files=kwargs.get("files", None))
             if kwargs.get("embed", None):
                 msg = await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
                 if kwargs.get("suppress_embeds", False):
@@ -40,9 +38,7 @@ class Util:
                     if kwargs.get("suppress_embeds", False):
                         await msg.edit(suppress=True)
             elif kwargs.get("files", None):
-                msg = await message.author.dm_channel.send(
-                        None,
-                        files=kwargs.get("files", None))
+                msg = await message.author.dm_channel.send(None, files=kwargs.get("files", None))
         else:
             log.info("[SILENT] -> " + content)
 
