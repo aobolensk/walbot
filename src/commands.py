@@ -1,6 +1,6 @@
 import os
 
-from .builtin import BuiltinCommands
+from .cmd.builtin import BuiltinCommands
 from .config import Command
 from .config import bc
 from .config import log
