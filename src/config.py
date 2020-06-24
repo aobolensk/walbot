@@ -304,8 +304,8 @@ class Config:
                     if str(role.id) == r.group(1):
                         response = const.ROLE_ID_REGEX.sub("`{}`".format(role.name), response, count=1)
                         break
-            response = re.sub("@everyone", "`@everyone`", response)
-            response = re.sub("@here", "`@here`", response)
+            response = re.sub(const.ROLE_EVERYONE, "`" + const.ROLE_EVERYONE + "`", response)
+            response = re.sub(const.ROLE_HERE, "`" + const.ROLE_HERE + "`", response)
         return response
 
 

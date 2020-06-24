@@ -361,7 +361,8 @@ class BuiltinCommands:
             if status != "offline"]
         result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
         result += "Created at: " + str(info.created_at) + '\n'
-        result += "Roles: " + ', '.join([x if x != '@everyone' else 'everyone' for x in map(str, info.roles)])
+        result += "Roles: " + ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:]
+                                         for x in map(str, info.roles)])
         await Util.response(message, result, silent)
 
     @staticmethod
@@ -1585,7 +1586,7 @@ class BuiltinCommands:
                     str(member),
                     (("owner, " if member.id == g.owner_id else "") +
                      str(message.guild.get_member(member.id).status)),
-                    ', '.join(filter(lambda x: x != "@everyone", map(str, member.roles)))))
+                    ', '.join(filter(lambda x: x != const.ROLE_EVERYONE, map(str, member.roles)))))
             result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
 

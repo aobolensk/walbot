@@ -20,6 +20,9 @@ USER_ID_REGEX = re.compile(r'<@!(\d*)>')
 ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
 INTEGER_NUMBER = re.compile(r'[-+]?\d+')
 
+ROLE_EVERYONE = "@everyone"
+ROLE_HERE = "@here"
+
 
 @unique
 class Permission(Enum):
