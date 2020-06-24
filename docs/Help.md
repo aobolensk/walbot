@@ -202,6 +202,9 @@
 **reminder**: Print message at particular time \
     Example: !reminder 2020-01-01 00:00 Happy new year!
 
+**restart**: Restart the bot \
+    Example: !restart
+
 **server**: Print information about current server \
     Example: !server 0
 

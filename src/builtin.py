@@ -151,6 +151,8 @@ class BuiltinCommands:
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.__class__.__name__, "shutdown",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
+        bc.commands.register_command(__name__, self.__class__.__name__, "restart",
+                                     permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "avatar",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.__class__.__name__, "message",
@@ -1427,6 +1429,16 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         log.info(str(message.author) + " invoked shutting down the bot")
+        await bc.close()
+
+    @staticmethod
+    async def _restart(message, command, silent=False):
+        """Restart the bot
+    Example: !restart"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        log.info(str(message.author) + " invoked restarting the bot")
+        bc._restart = True
         await bc.close()
 
     @staticmethod

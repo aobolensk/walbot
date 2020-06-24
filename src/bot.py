@@ -4,6 +4,7 @@ import itertools
 import os
 import re
 import signal
+import sys
 import time
 
 import discord
@@ -168,6 +169,7 @@ def start(args, main_bot=True):
     # Before starting the bot
     config = None
     secret_config = None
+    bc._restart = False
     bc.args = args
     try:
         bc.yaml_loader = yaml.CLoader
@@ -216,6 +218,10 @@ def start(args, main_bot=True):
     log.info("Bot is disconnected!")
     config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
     os.remove(".bot_cache")
+    if bc._restart:
+        cmd = "{} '{}' start".format(sys.executable, os.path.dirname(__file__) + "/../main.py")
+        log.info("Calling: " + cmd)
+        os.system(cmd)
 
 
 def stop():
