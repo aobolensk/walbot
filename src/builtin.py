@@ -361,7 +361,7 @@ class BuiltinCommands:
             if status != "offline"]
         result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
         result += "Created at: " + str(info.created_at) + '\n'
-        result += "Roles: " + ', '.join(filter(lambda x: x != "@everyone", map(str, info.roles)))
+        result += "Roles: " + ', '.join([x if x != '@everyone' else 'everyone' for x in map(str, info.roles)])
         await Util.response(message, result, silent)
 
     @staticmethod
