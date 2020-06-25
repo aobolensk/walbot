@@ -33,3 +33,10 @@ $ git clone https://github.com/yaml/pyyaml
 $ cd pyyaml
 $ sudo python setup.py --with-libyaml install
 ```
+
+### Using walbot in Docker container
+
+```console
+$ docker build -t walbot .
+$ docker run -it walbot /bin/bash
+```
