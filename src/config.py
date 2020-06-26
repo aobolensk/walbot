@@ -36,6 +36,7 @@ class Command:
         self.cmd_line = cmd_line
         self.is_global = False
         self.channels = []
+        self.times_called = 0
 
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)
@@ -95,10 +96,7 @@ class Command:
         if user is not None and self.permission > user.permission_level:
             await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
             return
-        if not hasattr(self, "times_called"):
-            self.times_called = 1
-        else:
-            self.times_called += 1
+        self.times_called += 1
         if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd"]:
             message.content = await self.process_subcommands(message.content, message, user)
         command = message.content[1:].split(' ')
@@ -185,6 +183,8 @@ class Config:
         if not hasattr(self, "commands"):
             self.commands = commands.Commands(self)
         self.commands.update()
+        if not hasattr(self, "version"):
+            self.version = const.CONFIG_VERSION
         if not hasattr(self, "reactions"):
             self.reactions = []
         if not hasattr(self, "guilds"):
@@ -313,3 +313,5 @@ class SecretConfig:
     def __init__(self):
         if not hasattr(self, "token"):
             self.token = None
+        if not hasattr(self, "version"):
+            self.version = const.SECRET_CONFIG_VERSION

@@ -19,6 +19,7 @@ from .config import User
 from .config import bc
 from .log import log
 from .markov import Markov
+from .utils import Util
 
 
 class WalBot(discord.Client):
@@ -36,14 +37,6 @@ class WalBot(discord.Client):
         bc.get_channel = self.get_channel
         bc.close = self.close
         bc.secret_config = self.secret_config
-        if not os.path.exists(const.MARKOV_PATH):
-            bc.markov = Markov()
-        else:
-            with open(const.MARKOV_PATH, 'rb') as f:
-                try:
-                    bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
-                except Exception:
-                    log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
         if not bc.args.fast_start:
             if bc.markov.check():
                 log.info("Markov model has passed all checks")
@@ -157,6 +150,7 @@ class WalBot(discord.Client):
 
 
 def start(args, main_bot=True):
+    # Check whether bot is already running
     if os.path.exists(".bot_cache"):
         cache = None
         with open(".bot_cache", 'r') as f:
@@ -166,11 +160,12 @@ def start(args, main_bot=True):
             if psutil.pid_exists(pid):
                 log.error("Bot is already running!")
                 return
-    # Before starting the bot
+    # Some variable initializations
     config = None
     secret_config = None
     bc._restart = False
     bc.args = args
+    # Selecting YAML parser
     try:
         bc.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")
@@ -183,8 +178,10 @@ def start(args, main_bot=True):
     except Exception:
         bc.yaml_dumper = yaml.Dumper
         log.info("Using slow YAML Dumper")
+    # Saving application pd in order to safely stop it later
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
+    # Read config.yaml
     if os.path.isfile(const.CONFIG_PATH):
         with open(const.CONFIG_PATH, 'r') as f:
             try:
@@ -194,6 +191,7 @@ def start(args, main_bot=True):
         config.__init__()
     if config is None:
         config = Config()
+    # Read secret.yaml
     if os.path.isfile(const.SECRET_CONFIG_PATH):
         with open(const.SECRET_CONFIG_PATH, 'r') as f:
             try:
@@ -203,10 +201,28 @@ def start(args, main_bot=True):
         secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
+    # Read markov.yaml
+    if os.path.isfile(const.MARKOV_PATH):
+        with open(const.MARKOV_PATH, 'rb') as f:
+            try:
+                bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
+            except Exception:
+                log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
+    if bc.markov is None:
+        bc.markov = Markov()
+    # Check config versions
+    ok = True
+    ok &= Util.check_version("Config", config.version, const.CONFIG_VERSION)
+    ok &= Util.check_version("Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION)
+    ok &= Util.check_version("Secret config", secret_config.version, const.SECRET_CONFIG_VERSION)
+    if not ok:
+        sys.exit(1)
+    # Constructing bot instance
     if main_bot:
         walBot = WalBot(config, secret_config)
     else:
         walBot = __import__("src.minibot", fromlist=['object']).MiniWalBot(config, secret_config)
+    # Checking authentication token
     if secret_config.token is None:
         secret_config.token = input("Enter your token: ")
     # Starting the bot
