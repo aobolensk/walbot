@@ -150,6 +150,7 @@ class WalBot(discord.Client):
 
 
 def start(args, main_bot=True):
+    # Check whether bot is already running
     if os.path.exists(".bot_cache"):
         cache = None
         with open(".bot_cache", 'r') as f:
@@ -159,11 +160,12 @@ def start(args, main_bot=True):
             if psutil.pid_exists(pid):
                 log.error("Bot is already running!")
                 return
-    # Before starting the bot
+    # Some variable initializations
     config = None
     secret_config = None
     bc._restart = False
     bc.args = args
+    # Selecting YAML parser
     try:
         bc.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")
@@ -176,8 +178,10 @@ def start(args, main_bot=True):
     except Exception:
         bc.yaml_dumper = yaml.Dumper
         log.info("Using slow YAML Dumper")
+    # Saving application pd in order to safely stop it later
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
+    # Read config.yaml
     if os.path.isfile(const.CONFIG_PATH):
         with open(const.CONFIG_PATH, 'r') as f:
             try:
@@ -187,6 +191,7 @@ def start(args, main_bot=True):
         config.__init__()
     if config is None:
         config = Config()
+    # Read secret.yaml
     if os.path.isfile(const.SECRET_CONFIG_PATH):
         with open(const.SECRET_CONFIG_PATH, 'r') as f:
             try:
@@ -196,6 +201,7 @@ def start(args, main_bot=True):
         secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
+    # Read markov.yaml
     if os.path.isfile(const.MARKOV_PATH):
         with open(const.MARKOV_PATH, 'rb') as f:
             try:
