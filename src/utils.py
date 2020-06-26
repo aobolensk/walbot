@@ -72,3 +72,10 @@ class Util:
         except ValueError:
             await Util.response(message, error_message, silent)
             return
+
+    @staticmethod
+    def check_version(name, actual, expected):
+        if (actual != expected):
+            log.error("{} versions mismatch. Expected: {}, but actual: {}".format(name, expected, actual))
+            return False
+        return True

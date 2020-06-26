@@ -19,6 +19,7 @@ from .config import User
 from .config import bc
 from .log import log
 from .markov import Markov
+from .utils import Util
 
 
 class WalBot(discord.Client):
@@ -203,10 +204,19 @@ def start(args, main_bot=True):
                 log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
     if bc.markov is None:
         bc.markov = Markov()
+    # Check config versions
+    ok = True
+    ok &= Util.check_version("Config", config.version, const.CONFIG_VERSION)
+    ok &= Util.check_version("Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION)
+    ok &= Util.check_version("Secret config", secret_config.version, const.SECRET_CONFIG_VERSION)
+    if not ok:
+        sys.exit(1)
+    # Constructing bot instance
     if main_bot:
         walBot = WalBot(config, secret_config)
     else:
         walBot = __import__("src.minibot", fromlist=['object']).MiniWalBot(config, secret_config)
+    # Checking authentication token
     if secret_config.token is None:
         secret_config.token = input("Enter your token: ")
     # Starting the bot
