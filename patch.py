@@ -24,6 +24,15 @@ def read_file(path):
     return content
 
 
+def save_file(path, config):
+    try:
+        yaml_dumper = yaml.CDumper
+    except Exception:
+        yaml_dumper = yaml.Dumper
+    with open(path, 'wb') as f:
+        f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))
+
+
 def main():
     parser = argparse.ArgumentParser(description='WalBot config patcher', formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("file",
@@ -40,6 +49,7 @@ def main():
         sys.exit(1)
     log.info("WalBot config patch tool: {}@{}".format(args.file, config.version))
     Updater(args.file, config)
+    save_file(args.file, config)
 
 
 if __name__ == "__main__":
