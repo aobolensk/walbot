@@ -2,6 +2,9 @@ import re
 
 from enum import Enum, unique
 
+CONFIG_VERSION = '0.0.1'
+MARKOV_CONFIG_VERSION = '0.0.1'
+SECRET_CONFIG_VERSION = '0.0.1'
 
 CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"

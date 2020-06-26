@@ -185,6 +185,8 @@ class Config:
         if not hasattr(self, "commands"):
             self.commands = commands.Commands(self)
         self.commands.update()
+        if not hasattr(self, "version"):
+            self.version = const.CONFIG_VERSION
         if not hasattr(self, "reactions"):
             self.reactions = []
         if not hasattr(self, "guilds"):
@@ -313,3 +315,5 @@ class SecretConfig:
     def __init__(self):
         if not hasattr(self, "token"):
             self.token = None
+        if not hasattr(self, "version"):
+            self.version = const.SECRET_CONFIG_VERSION

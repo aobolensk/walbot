@@ -2,6 +2,7 @@ import random
 import re
 import yaml
 
+from . import const
 from .log import log
 from .config import bc
 
@@ -42,6 +43,7 @@ class Markov:
         self.model = {"": MarkovNode(self.NodeType.begin)}
         self.end_node = MarkovNode(self.NodeType.end)
         self.filters = []
+        self.version = const.MARKOV_CONFIG_VERSION
 
     def add_string(self, text):
         words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
