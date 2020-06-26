@@ -593,7 +593,7 @@ class BuiltinCommands:
             await Util.response(message, "Unknown command '{}'".format(command[1]), silent)
             return
         com = bc.commands.data[command[1]]
-        times = str(com.times_called if hasattr(com, "times_called") else 0)
+        times = com.times_called
         if len(command) == 3 and command[2] == '-s':
             result = "{}".format(times)
         else:
