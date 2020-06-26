@@ -36,14 +36,6 @@ class WalBot(discord.Client):
         bc.get_channel = self.get_channel
         bc.close = self.close
         bc.secret_config = self.secret_config
-        if not os.path.exists(const.MARKOV_PATH):
-            bc.markov = Markov()
-        else:
-            with open(const.MARKOV_PATH, 'rb') as f:
-                try:
-                    bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
-                except Exception:
-                    log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
         if not bc.args.fast_start:
             if bc.markov.check():
                 log.info("Markov model has passed all checks")
@@ -203,6 +195,14 @@ def start(args, main_bot=True):
         secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
+    if os.path.isfile(const.MARKOV_PATH):
+        with open(const.MARKOV_PATH, 'rb') as f:
+            try:
+                bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
+            except Exception:
+                log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
+    if bc.markov is None:
+        bc.markov = Markov()
     if main_bot:
         walBot = WalBot(config, secret_config)
     else:
