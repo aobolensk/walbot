@@ -15,7 +15,7 @@ class Updater:
                     config.commands.data[key].times_called = 0
             config.version = "0.0.2"
             log.info("Successfully upgraded your config.yaml to version 0.0.2")
-        elif config.version == "0.0.2":
+        if config.version == "0.0.2":
             config.__dict__["ids"] = {"reminder": 1}
             reminders = config.reminders
             config.reminders = {}
@@ -24,7 +24,7 @@ class Updater:
                 config.ids["reminder"] += 1
             config.version = "0.0.3"
             log.info("Successfully upgraded your config.yaml to version 0.0.3")
-        elif config.version == "0.0.3":
+        if config.version == "0.0.3":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
