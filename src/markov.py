@@ -120,8 +120,6 @@ class Markov:
 
     def check(self):
         for node in self.model.values():
-            if hasattr(node, "markov"):
-                del node.__dict__["markov"]
             if sum(node.next.values()) != node.total_next:
                 node.total_next = sum(node.next.values())
                 return False
