@@ -9,6 +9,8 @@ class Launcher:
         parser.add_argument("--fast_start", action="store_true",
                             help="Disable some things to make bot start faster:\n" +
                                  "- Disable Markov model check on start\n")
+        parser.add_argument("--patch", action="store_true",
+                            help="Call script for patching config files before starting the bot")
         self.args = parser.parse_args()
         getattr(self, self.args.action)()
 

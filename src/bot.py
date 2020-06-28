@@ -181,6 +181,11 @@ def start(args, main_bot=True):
     # Saving application pd in order to safely stop it later
     with open(".bot_cache", 'w') as f:
         f.write(str(os.getpid()))
+    # Executing patch tool if it is necessary
+    if args.patch:
+        cmd = "'{}' '{}' all".format(sys.executable, os.path.dirname(__file__) + "/../patch.py")
+        log.info("Executing patch tool: " + cmd)
+        os.system(cmd)
     # Read config.yaml
     if os.path.isfile(const.CONFIG_PATH):
         with open(const.CONFIG_PATH, 'r') as f:
