@@ -1544,10 +1544,12 @@ class BuiltinCommands:
     Example: !listreminder"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        result = ""
+        reminder_list = []
         for index, reminder in bc.commands.config.reminders.items():
-            result += "{} - {} in {} -> {}\n".format(
-                index, reminder.time, "<#{}>".format(reminder.channel_id), reminder.message)
+            reminder_list.append((reminder.time, "{} - {} in {} -> {}".format(
+                index, reminder.time, "<#{}>".format(reminder.channel_id), reminder.message)))
+        reminder_list.sort()
+        result = '\n'.join([x[1] for x in reminder_list])
         if result:
             await Util.response(message, result, silent)
         else:
