@@ -18,7 +18,7 @@ $ python main.py start          # Start the bot
 $ python main.py stop           # Stop the bot
 $ python main.py restart        # Restart the bot
 $ python main.py suspend        # Start dummy bot (useful for maintenance)
-$ python main.py help           # Get help
+$ python main.py -h             # Get help
 ```
 
 ### How to setup fast YAML loader and dumper?

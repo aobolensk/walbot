@@ -33,13 +33,6 @@ class Launcher:
         self.stop()
         __import__("src.bot", fromlist=['object']).start(main_bot=False)
 
-    def help(self):
-        """Print help message"""
-        print("Usage: " + sys.executable + ' ' + __file__ + " <action>", file=sys.stderr)
-        print("Possible actions:", file=sys.stderr)
-        for f in [x for x in dir(self) if not x.startswith('_')]:
-            print("{} -> {}".format(f, getattr(self, f).__doc__), file=sys.stderr)
-
 
 def main():
     if not (sys.version_info.major >= 3 and sys.version_info.minor >= 5):
