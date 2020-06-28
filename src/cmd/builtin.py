@@ -1506,7 +1506,9 @@ class BuiltinCommands:
                                     time, const.REMINDER_TIME_FORMAT), silent)
             return
         text = ' '.join(command[3:])
-        bc.commands.config.reminders.append(Reminder(str(time), text, message.channel.id))
+        bc.commands.config.reminders[bc.commands.config.ids["reminder"]] = Reminder(
+            str(time), text, message.channel.id)
+        bc.commands.config.ids["reminder"] += 1
         await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
 
     @staticmethod
@@ -1520,7 +1522,7 @@ class BuiltinCommands:
                                      .format(command[0]), silent)
         if index is None:
             return
-        if 0 <= index < len(bc.commands.config.reminders):
+        if index in bc.commands.config.reminders.keys():
             time = command[2] + ' ' + command[3]
             try:
                 time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
@@ -1543,9 +1545,7 @@ class BuiltinCommands:
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         result = ""
-        reminders = sorted(zip(range(0, len(bc.commands.config.reminders)), bc.commands.config.reminders),
-                           key=lambda x: x[1])
-        for index, reminder in reminders:
+        for index, reminder in bc.commands.config.reminders.items():
             result += "{} - {} in {} -> {}\n".format(
                 index, reminder.time, "<#{}>".format(reminder.channel_id), reminder.message)
         if result:
@@ -1566,7 +1566,7 @@ class BuiltinCommands:
                                      silent)
         if index is None:
             return
-        if 0 <= index < len(bc.commands.config.reminders):
+        if index in bc.commands.config.reminders.keys():
             bc.commands.config.reminders.pop(index)
             await Util.response(message, "Successfully deleted reminder!", silent)
         else:

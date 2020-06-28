@@ -192,7 +192,7 @@ class Config:
         if not hasattr(self, "users"):
             self.users = dict()
         if not hasattr(self, "reminders"):
-            self.reminders = []
+            self.reminders = {}
         if not hasattr(self, "quotes"):
             self.quotes = []
         if not hasattr(self, "commands_prefix"):
