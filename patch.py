@@ -35,21 +35,30 @@ def save_file(path, config):
 
 def main():
     parser = argparse.ArgumentParser(description='WalBot config patcher', formatter_class=argparse.RawTextHelpFormatter)
+    files = [
+        "config.yaml",
+        "markov.yaml",
+        "secret.yaml",
+    ]
     parser.add_argument("file",
                         choices=[
-                            "config.yaml",
-                            "markov.yaml",
-                            "secret.yaml"
+                            "all",
+                            *files,
                         ],
+                        nargs='?',
+                        default="all",
                         help='Config file to patch')
     args = parser.parse_args()
-    config = read_file(args.file)
-    if not hasattr(config, "version"):
-        log.error("Config does not have 'version' field")
-        sys.exit(1)
-    log.info("WalBot config patch tool: {}@{}".format(args.file, config.version))
-    Updater(args.file, config)
-    save_file(args.file, config)
+    if args.file != "all":
+        files = [args.file]
+    for file in files:
+        config = read_file(file)
+        if not hasattr(config, "version"):
+            log.error("Config does not have 'version' field")
+            sys.exit(1)
+        log.info("WalBot config patch tool: {}@{}".format(file, config.version))
+        Updater(file, config)
+        save_file(file, config)
 
 
 if __name__ == "__main__":
