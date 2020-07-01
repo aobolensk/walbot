@@ -16,8 +16,6 @@ from ..config import Command
 from ..config import Reaction
 from ..config import bc
 from ..config import log
-from ..quote import Quote
-from ..reminder import Reminder
 from ..utils import Util
 
 
@@ -157,25 +155,7 @@ class BuiltinCommands:
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, "BuiltinCommands", "message",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "reminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "updreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listreminder",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, "BuiltinCommands", "server",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "quote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addquote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listquote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delquote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "setquoteauthor",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, "BuiltinCommands", "echo",
                                      message="@args@",
@@ -1492,89 +1472,6 @@ class BuiltinCommands:
         return result
 
     @staticmethod
-    async def _reminder(message, command, silent=False):
-        """Print message at particular time
-    Example: !reminder 2020-01-01 00:00 Happy new year!"""
-        if not await Util.check_args_count(message, command, silent, min=4):
-            return
-        time = command[1] + ' ' + command[2]
-        try:
-            time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
-        except ValueError:
-            await Util.response(message, "{} does not match format {}\n"
-                                "More information about format: <https://strftime.org/>".format(
-                                    time, const.REMINDER_TIME_FORMAT), silent)
-            return
-        text = ' '.join(command[3:])
-        bc.commands.config.reminders[bc.commands.config.ids["reminder"]] = Reminder(
-            str(time), text, message.channel.id)
-        bc.commands.config.ids["reminder"] += 1
-        await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
-
-    @staticmethod
-    async def _updreminder(message, command, silent=False):
-        """Update reminder by index
-    Example: !delreminder 0 2020-01-01 00:00 Happy new year!"""
-        if not await Util.check_args_count(message, command, silent, min=5):
-            return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of reminder"
-                                     .format(command[0]), silent)
-        if index is None:
-            return
-        if index in bc.commands.config.reminders.keys():
-            time = command[2] + ' ' + command[3]
-            try:
-                time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
-            except ValueError:
-                await Util.response(message, "{} does not match format {}\n"
-                                    "More information about format: <https://strftime.org/>".format(
-                                        time, const.REMINDER_TIME_FORMAT), silent)
-                return
-            text = ' '.join(command[4:])
-            bc.commands.config.reminders[index] = Reminder(str(time), text, message.channel.id)
-            await Util.response(message, "Successfully updated reminder {}: '{}' at {}".format(
-                                    index, text, time), silent)
-        else:
-            await Util.response(message, "Invalid index of reminder!", silent)
-
-    @staticmethod
-    async def _listreminder(message, command, silent=False):
-        """Print list of reminders
-    Example: !listreminder"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        reminder_list = []
-        for index, reminder in bc.commands.config.reminders.items():
-            reminder_list.append((reminder.time, "{} - {} in {} -> {}".format(
-                index, reminder.time, "<#{}>".format(reminder.channel_id), reminder.message)))
-        reminder_list.sort()
-        result = '\n'.join([x[1] for x in reminder_list])
-        if result:
-            await Util.response(message, result, silent)
-        else:
-            await Util.response(message, "No reminders found!", silent)
-        return result
-
-    @staticmethod
-    async def _delreminder(message, command, silent=False):
-        """Delete reminder by index
-    Example: !delreminder 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of reminder"
-                                     .format(command[0]),
-                                     silent)
-        if index is None:
-            return
-        if index in bc.commands.config.reminders.keys():
-            bc.commands.config.reminders.pop(index)
-            await Util.response(message, "Successfully deleted reminder!", silent)
-        else:
-            await Util.response(message, "Invalid index of reminder!", silent)
-
-    @staticmethod
     async def _server(message, command, silent=False):
         """Print information about current server
     Example: !server 0"""
@@ -1595,95 +1492,3 @@ class BuiltinCommands:
                     ', '.join(filter(lambda x: x != const.ROLE_EVERYONE, map(str, member.roles)))))
             result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
-
-    @staticmethod
-    async def _quote(message, command, silent=False):
-        """Print some quote from quotes database
-    Examples:
-        !quote
-        !quote 1"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if not bc.commands.config.quotes:
-            await Util.response(message, "<Quotes database is empty>", silent)
-            return
-        if len(command) == 2:
-            index = await Util.parse_int(message, command[1],
-                                         "Second parameter for '{}' should be an index of quote"
-                                         .format(command[0]),
-                                         silent)
-            if index is None:
-                return
-        else:
-            index = random.randint(0, len(bc.commands.config.quotes) - 1)
-        if 0 <= index < len(bc.commands.config.quotes):
-            await Util.response(message,
-                                "Quote {}: {}".format(index, bc.commands.config.quotes[index].full_quote()), silent)
-        else:
-            await Util.response(message, "Invalid index of quote!", silent)
-
-    @staticmethod
-    async def _addquote(message, command, silent=False):
-        """Add quote to quotes database
-    Example: !addquote Hello, world!"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        quote = ' '.join(command[1:])
-        bc.commands.config.quotes.append(Quote(quote, str(message.author)))
-        await Util.response(message,
-                            "Quote '{}' was successfully added to quotes database with index {}".format(
-                                quote, len(bc.commands.config.quotes) - 1), silent)
-
-    @staticmethod
-    async def _listquote(message, command, silent=False):
-        """Print list of all quotes
-    Example: !listquote"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = ""
-        for index, quote in enumerate(bc.commands.config.quotes):
-            result += "{} -> {}\n".format(index, quote.quote())
-        if result:
-            await Util.response(message, result, silent)
-        else:
-            await Util.response(message, "<Quotes database is empty>", silent)
-        return result
-
-    @staticmethod
-    async def _delquote(message, command, silent=False):
-        """Delete quote from quotes database by index
-    Example: !delquote 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of quote"
-                                     .format(command[0]),
-                                     silent)
-        if index is None:
-            return
-        if 0 <= index < len(bc.commands.config.quotes):
-            bc.commands.config.quotes.pop(index)
-            await Util.response(message, "Successfully deleted quote!", silent)
-        else:
-            await Util.response(message, "Invalid index of quote!", silent)
-
-    @staticmethod
-    async def _setquoteauthor(message, command, silent=False):
-        """Set author of quote by its index
-    Example: !setquoteauthor 0 WalBot"""
-        if not await Util.check_args_count(message, command, silent, min=3):
-            return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of quote"
-                                     .format(command[0]),
-                                     silent)
-        if index is None:
-            return
-        if 0 <= index < len(bc.commands.config.quotes):
-            author = ' '.join(command[2:])
-            bc.commands.config.quotes[index].author = author
-            await Util.response(message,
-                                "Successfully set author '{}' for quote '{}'".format(
-                                    author, bc.commands.config.quotes[index].quote()), silent)
-        else:
-            await Util.response(message, "Invalid index of quote!", silent)

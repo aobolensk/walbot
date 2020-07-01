@@ -25,6 +25,15 @@ class Updater:
             config.version = "0.0.3"
             log.info("Successfully upgraded your config.yaml to version 0.0.3")
         if config.version == "0.0.3":
+            for com in ("quote", "addquote", "listquote", "delquote", "setquoteauthor"):
+                config.__dict__["commands"].__dict__["data"][com].module_name = "src.cmd.quote"
+                config.__dict__["commands"].__dict__["data"][com].class_name = "QuoteCommands"
+            for com in ("reminder", "updreminder", "listreminder", "delreminder"):
+                config.__dict__["commands"].__dict__["data"][com].module_name = "src.cmd.reminder"
+                config.__dict__["commands"].__dict__["data"][com].class_name = "ReminderCommands"
+            config.version = "0.0.4"
+            log.info("Successfully upgraded your config.yaml to version 0.0.4")
+        if config.version == "0.0.4":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
