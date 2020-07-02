@@ -11,6 +11,8 @@ class Launcher:
                                  "- Disable Markov model check on start\n")
         parser.add_argument("--patch", action="store_true",
                             help="Call script for patching config files before starting the bot")
+        if sys.platform in ("linux", "darwin"):
+            parser.add_argument("--nohup", action="store_true", help="Ignore SIGHUP and redirect output to nohup.out")
         self.args = parser.parse_args()
         getattr(self, self.args.action)()
 

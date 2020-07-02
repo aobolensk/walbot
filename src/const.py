@@ -6,6 +6,8 @@ CONFIG_VERSION = '0.0.4'
 MARKOV_CONFIG_VERSION = '0.0.1'
 SECRET_CONFIG_VERSION = '0.0.1'
 
+NOHUP_FILE_PATH = "nohup.out"
+
 CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"

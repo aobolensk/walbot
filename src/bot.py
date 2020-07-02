@@ -164,6 +164,17 @@ def start(args, main_bot=True):
     secret_config = None
     bc._restart = False
     bc.args = args
+    # Handle --nohup flag
+    if args.nohup:
+        if sys.platform in ("linux", "darwin"):
+            fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
+            log.info("Output is redirected to {}".format(const.NOHUP_FILE_PATH))
+            os.dup2(fd, sys.stdout.fileno())
+            os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
+            os.close(fd)
+            signal.signal(signal.SIGHUP, signal.SIG_IGN)
+        else:
+            log.warning("Option '--nohup' is not supported on your platform")
     # Selecting YAML parser
     try:
         bc.yaml_loader = yaml.CLoader
