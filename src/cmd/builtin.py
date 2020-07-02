@@ -1136,7 +1136,7 @@ class BuiltinCommands:
         if len(command) > 1:
             for i in range(const.MAX_MARKOV_ATTEMPTS):
                 result = bc.markov.generate(word=command[-1])
-                if len(result.split()) > 1:
+                if len(result.split()) > len(command) - 1:
                     break
             if result != "<Empty message was generated>":
                 result = ' '.join(command[1:-1]) + ' ' + result
