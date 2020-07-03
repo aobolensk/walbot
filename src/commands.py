@@ -8,7 +8,7 @@ from .config import log
 
 class BaseCmd:
     def bind(self):
-        raise NotImplementedError
+        raise NotImplementedError("Class {} does not have bind() function".format(self.__name__))
 
 
 class Commands:
