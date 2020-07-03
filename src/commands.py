@@ -6,6 +6,11 @@ from .config import bc
 from .config import log
 
 
+class BaseCmd:
+    def bind(self):
+        raise NotImplementedError("Class {} does not have bind() function".format(self.__name__))
+
+
 class Commands:
     def __init__(self, config):
         self.config = config
@@ -22,7 +27,7 @@ class Commands:
         for module in cmd_modules:
             builtin = __import__("src.cmd" + module, fromlist=['object'])
             commands = [obj[1] for obj in inspect.getmembers(builtin, inspect.isclass)
-                        if obj[1].__module__ == "src.cmd" + module]
+                        if (obj[1].__module__ == "src.cmd" + module) and issubclass(obj[1], BaseCmd)]
             if len(commands) == 1:
                 commands = commands[0]
                 if "bind" in [func[0] for func in inspect.getmembers(commands, inspect.isfunction)

@@ -1,12 +1,13 @@
 import datetime
 
 from .. import const
+from ..commands import BaseCmd
 from ..config import bc
 from ..reminder import Reminder
 from ..utils import Util
 
 
-class ReminderCommands:
+class ReminderCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, "ReminderCommands", "reminder",
                                      permission=const.Permission.USER.value, subcommand=False)
