@@ -54,7 +54,7 @@ def main():
     for file in files:
         config = read_file(file)
         if not hasattr(config, "version"):
-            log.error("Config does not have 'version' field")
+            log.error("{} does not have 'version' field".format(file))
             sys.exit(1)
         log.info("WalBot config patch tool: {}@{}".format(file, config.version))
         Updater(file, config)
