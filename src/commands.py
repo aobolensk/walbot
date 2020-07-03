@@ -6,6 +6,11 @@ from .config import bc
 from .config import log
 
 
+class BaseCmd:
+    def bind(self):
+        raise NotImplementedError
+
+
 class Commands:
     def __init__(self, config):
         self.config = config

@@ -1,12 +1,13 @@
 import random
 
 from .. import const
+from ..commands import BaseCmd
 from ..config import bc
 from ..quote import Quote
 from ..utils import Util
 
 
-class QuoteCommands:
+class QuoteCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, "QuoteCommands", "quote",
                                      permission=const.Permission.USER.value, subcommand=False)

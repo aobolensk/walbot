@@ -11,6 +11,7 @@ import requests
 
 from .. import const
 from .. import emoji
+from ..commands import BaseCmd
 from ..config import BackgroundEvent
 from ..config import Command
 from ..config import Reaction
@@ -19,7 +20,7 @@ from ..config import log
 from ..utils import Util
 
 
-class BuiltinCommands:
+class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, "BuiltinCommands", "takechars",
                                      permission=const.Permission.USER.value, subcommand=True)
