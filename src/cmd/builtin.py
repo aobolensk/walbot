@@ -614,7 +614,9 @@ class BuiltinCommands(BaseCmd):
             return
         result = ""
         try:
-            process = subprocess.run(' '.join(command[1:]), shell=True, check=True,
+            cmd_line = ' '.join(command[1:])
+            log.debug("Processing external command: " + cmd_line)
+            process = subprocess.run(cmd_line, shell=True, check=True,
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             result = process.stdout.decode("utf-8")
             await Util.response(message, result, silent)
