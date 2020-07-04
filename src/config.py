@@ -144,6 +144,7 @@ class BackgroundEvent:
         command[0] = command[0][1:]
         while True:
             await asyncio.sleep(self.period)
+            log.debug("Triggered background event: {}".format(' '.join(command)))
             if command[0] not in self.config.commands.data.keys():
                 await self.channel.send("Unknown command '{}'".format(command[0]))
             else:
