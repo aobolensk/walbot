@@ -6,7 +6,11 @@ from ..log import log
 class Updater:
     def __init__(self, path, config):
         """Dispaching config to its updater by config name"""
+        self.modified = False
         getattr(self, os.path.splitext(path)[0])(config)
+
+    def result(self):
+        return self.modified
 
     def config(self, config):
         if config.version == "0.0.1":
@@ -14,6 +18,7 @@ class Updater:
                 if not hasattr(config.commands.data[key], "times_called"):
                     config.commands.data[key].times_called = 0
             config.version = "0.0.2"
+            self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.2")
         if config.version == "0.0.2":
             config.__dict__["ids"] = {"reminder": 1}
@@ -23,6 +28,7 @@ class Updater:
                 config.reminders[config.ids["reminder"]] = reminder
                 config.ids["reminder"] += 1
             config.version = "0.0.3"
+            self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.3")
         if config.version == "0.0.3":
             for com in ("quote", "addquote", "listquote", "delquote", "setquoteauthor"):
@@ -32,6 +38,7 @@ class Updater:
                 config.__dict__["commands"].__dict__["data"][com].module_name = "src.cmd.reminder"
                 config.__dict__["commands"].__dict__["data"][com].class_name = "ReminderCommands"
             config.version = "0.0.4"
+            self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.4")
         if config.version == "0.0.4":
             log.info("Version is up to date!")

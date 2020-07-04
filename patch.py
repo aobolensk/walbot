@@ -57,8 +57,9 @@ def main():
             log.error("{} does not have 'version' field".format(file))
             sys.exit(1)
         log.info("WalBot config patch tool: {}@{}".format(file, config.version))
-        Updater(file, config)
-        save_file(file, config)
+        if Updater(file, config).result():
+            save_file(file, config)
+            log.info("Successfully saved file: {}".format(config.version))
 
 
 if __name__ == "__main__":
