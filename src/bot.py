@@ -165,8 +165,8 @@ def start(args, main_bot=True):
     bc._restart = False
     bc.args = args
     # Handle --nohup flag
-    if args.nohup:
-        if sys.platform in ("linux", "darwin"):
+    if sys.platform in ("linux", "darwin"):
+        if args.nohup:
             fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
             log.info("Output is redirected to {}".format(const.NOHUP_FILE_PATH))
             os.dup2(fd, sys.stdout.fileno())
@@ -217,6 +217,7 @@ def start(args, main_bot=True):
     if secret_config is None:
         secret_config = SecretConfig()
     # Read markov.yaml
+    bc.markov = None
     if os.path.isfile(const.MARKOV_PATH):
         with open(const.MARKOV_PATH, 'rb') as f:
             try:
