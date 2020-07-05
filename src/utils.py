@@ -6,6 +6,7 @@ class Util:
     @staticmethod
     async def response(message, content, silent, **kwargs):
         if not silent:
+            msg = None
             if content:
                 for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                     msg = await message.channel.send(
