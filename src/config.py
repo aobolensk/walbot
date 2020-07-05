@@ -47,14 +47,16 @@ class Command:
     def get_actor(self):
         return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
 
-    async def process_variables(self, string, message, command):
+    async def process_variables(self, string, message, command, safe=False):
         string = string.replace("@author@", message.author.mention)
-        string = string.replace("@args@", ' '.join(command[1:]))
+        if not safe or const.ALNUM_STRING.match(' '.join(command[1:])):
+            string = string.replace("@args@", ' '.join(command[1:]))
         for i in range(len(command)):
-            string = string.replace("@arg" + str(i) + "@", command[i])
+            if not safe or const.ALNUM_STRING.match(command[i]):
+                string = string.replace("@arg" + str(i) + "@", command[i])
         return string
 
-    async def process_subcommands(self, content, message, user):
+    async def process_subcommands(self, content, message, user, safe=False):
         while True:
             updated = False
             for i in range(len(content)):
@@ -75,7 +77,7 @@ class Command:
                                 cmd = bc.commands.data[command[0]]
                                 if cmd.can_be_subcommand():
                                     result = await cmd.run(message, command, user, silent=True)
-                                    if result is None:
+                                    if result is None or (safe and not const.ALNUM_STRING.match(content)):
                                         result = ""
                                 else:
                                     await message.channel.send("Command '{}' can not be used as subcommand"
@@ -116,8 +118,8 @@ class Command:
             result = ""
             try:
                 cmd_line = self.cmd_line[:]
-                cmd_line = await self.process_variables(cmd_line, message, command)
-                cmd_line = await self.process_subcommands(cmd_line, message, user)
+                cmd_line = await self.process_variables(cmd_line, message, command, safe=True)
+                cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
                 log.debug("Processing external command: " + cmd_line)
                 process = subprocess.run(cmd_line, shell=True, check=True,
                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)

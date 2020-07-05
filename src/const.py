@@ -18,6 +18,7 @@ DISCORD_MAX_MESSAGE_LENGTH = 2000
 MAX_MESSAGE_HISTORY_DEPTH = 1000
 MAX_MARKOV_ATTEMPTS = 64
 
+ALNUM_STRING = re.compile('^[A-Za-zА-Яа-яЁё0-9 ]+$')
 FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
 REMINDER_TIME_FORMAT = "%Y-%m-%d %H:%M"
 EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
