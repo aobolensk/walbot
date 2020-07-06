@@ -173,8 +173,6 @@ def start(args, main_bot=True):
             os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
             os.close(fd)
             signal.signal(signal.SIGHUP, signal.SIG_IGN)
-        else:
-            log.warning("Option '--nohup' is not supported on your platform")
     # Selecting YAML parser
     try:
         bc.yaml_loader = yaml.CLoader
