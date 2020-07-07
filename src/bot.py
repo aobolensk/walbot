@@ -148,17 +148,27 @@ class WalBot(discord.Client):
         log.info("<" + str(payload.message_id) + "> (delete)")
 
 
-def start(args, main_bot=True):
-    # Check whether bot is already running
+def parse_bot_cache():
+    pid = None
     if os.path.exists(".bot_cache"):
         cache = None
         with open(".bot_cache", 'r') as f:
             cache = f.read()
         if cache is not None:
-            pid = int(cache)
-            if psutil.pid_exists(pid):
-                log.error("Bot is already running!")
-                return
+            try:
+                pid = int(cache)
+            except ValueError:
+                log.warning("Could not read pid from .bot_cache")
+                os.remove(".bot_cache")
+    return pid
+
+
+def start(args, main_bot=True):
+    # Check whether bot is already running
+    pid = parse_bot_cache()
+    if pid is not None and psutil.pid_exists(pid):
+        log.error("Bot is already running!")
+        return
     # Some variable initializations
     config = None
     secret_config = None
@@ -255,16 +265,13 @@ def start(args, main_bot=True):
 
 
 def stop():
-    cache = None
     if not os.path.exists(".bot_cache"):
         log.error("Could not stop the bot (cache file does not exist)")
         return
-    with open(".bot_cache", 'r') as f:
-        cache = f.read()
-    if cache is None:
+    pid = parse_bot_cache()
+    if pid is None:
         log.error("Could not stop the bot (cache file does not contain pid)")
         return
-    pid = int(cache)
     if psutil.pid_exists(pid):
         os.kill(pid, signal.SIGINT)
         while True:
