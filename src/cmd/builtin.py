@@ -361,7 +361,7 @@ class BuiltinCommands(BaseCmd):
                 if cmd.message is not None:
                     s = (name, cmd.message)
                     commands.append(s)
-                elif hasattr(command, "cmd_line") and cmd.cmd_line is not None:
+                elif hasattr(cmd, "cmd_line") and cmd.cmd_line is not None:
                     s = (name, "calls external command '{}'".format(cmd.cmd_line))
                     commands.append(s)
             commands.sort()
@@ -396,7 +396,7 @@ class BuiltinCommands(BaseCmd):
                 result += command.get_actor().__doc__
             elif command.message is not None:
                 result += command.message
-            elif command.cmd_line is not None:
+            elif hasattr(command, "cmd_line") and command.cmd_line is not None:
                 result += "calls external command '{}'".format(command.cmd_line)
             else:
                 result += "<error>"
