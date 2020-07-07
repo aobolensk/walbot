@@ -41,6 +41,13 @@ class Updater:
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.4")
         if config.version == "0.0.4":
+            for key in config.commands.data.keys():
+                if not hasattr(config.commands.data[key], "cmd_line"):
+                    config.commands.data[key].cmd_line = None
+            config.version = "0.0.5"
+            self.modified = True
+            log.info("Successfully upgraded your config.yaml to version 0.0.5")
+        elif config.version == "0.0.5":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
