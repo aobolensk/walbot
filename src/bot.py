@@ -150,16 +150,16 @@ class WalBot(discord.Client):
 
 def parse_bot_cache():
     pid = None
-    if os.path.exists(".bot_cache"):
+    if os.path.exists(const.BOT_CACHE_FILE_PATH):
         cache = None
-        with open(".bot_cache", 'r') as f:
+        with open(const.BOT_CACHE_FILE_PATH, 'r') as f:
             cache = f.read()
         if cache is not None:
             try:
                 pid = int(cache)
             except ValueError:
                 log.warning("Could not read pid from .bot_cache")
-                os.remove(".bot_cache")
+                os.remove(const.BOT_CACHE_FILE_PATH)
     return pid
 
 
@@ -197,7 +197,7 @@ def start(args, main_bot=True):
         bc.yaml_dumper = yaml.Dumper
         log.info("Using slow YAML Dumper")
     # Saving application pd in order to safely stop it later
-    with open(".bot_cache", 'w') as f:
+    with open(const.BOT_CACHE_FILE_PATH, 'w') as f:
         f.write(str(os.getpid()))
     # Executing patch tool if it is necessary
     if args.patch:
@@ -257,7 +257,7 @@ def start(args, main_bot=True):
     bc.background_loop = None
     log.info("Bot is disconnected!")
     config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
-    os.remove(".bot_cache")
+    os.remove(const.BOT_CACHE_FILE_PATH)
     if bc._restart:
         cmd = "'{}' '{}' start".format(sys.executable, os.path.dirname(__file__) + "/../main.py")
         log.info("Calling: " + cmd)
@@ -265,7 +265,7 @@ def start(args, main_bot=True):
 
 
 def stop():
-    if not os.path.exists(".bot_cache"):
+    if not os.path.exists(const.BOT_CACHE_FILE_PATH):
         log.error("Could not stop the bot (cache file does not exist)")
         return
     pid = parse_bot_cache()

@@ -6,6 +6,7 @@ CONFIG_VERSION = '0.0.4'
 MARKOV_CONFIG_VERSION = '0.0.1'
 SECRET_CONFIG_VERSION = '0.0.1'
 
+BOT_CACHE_FILE_PATH = ".bot_cache"
 NOHUP_FILE_PATH = "nohup.out"
 
 CONFIG_PATH = "config.yaml"
