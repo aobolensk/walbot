@@ -243,14 +243,14 @@ def start(args, main_bot=True):
         sys.exit(1)
     # Constructing bot instance
     if main_bot:
-        walBot = WalBot(config, secret_config)
+        walbot = WalBot(config, secret_config)
     else:
-        walBot = __import__("src.minibot", fromlist=['object']).MiniWalBot(config, secret_config)
+        walbot = __import__("src.minibot", fromlist=['object']).MiniWalBot(config, secret_config)
     # Checking authentication token
     if secret_config.token is None:
         secret_config.token = input("Enter your token: ")
     # Starting the bot
-    walBot.run(secret_config.token)
+    walbot.run(secret_config.token)
     # After stopping the bot
     for event in bc.background_events:
         event.cancel()
