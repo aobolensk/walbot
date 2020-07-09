@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 import sys
 
 import yaml
@@ -56,8 +57,12 @@ def main():
         if not hasattr(config, "version"):
             log.error("{} does not have 'version' field".format(file))
             sys.exit(1)
-        log.info("WalBot config patch tool: {}@{}".format(file, config.version))
+        version = config.version
+        log.info("WalBot config patch tool: {}@{}".format(file, version))
         if Updater(file, config).result():
+            if not os.path.exists("backup"):
+                os.makedirs("backup")
+            shutil.copyfile(file, "backup/" + file + ".bak." + version)
             save_file(file, config)
             log.info("Successfully saved file: {}".format(config.version))
 
