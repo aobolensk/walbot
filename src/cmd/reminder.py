@@ -41,7 +41,7 @@ class ReminderCommands(BaseCmd):
     @staticmethod
     async def _updreminder(message, command, silent=False):
         """Update reminder by index
-    Example: !delreminder 0 2020-01-01 00:00 Happy new year!"""
+    Example: !updreminder 0 2020-01-01 00:00 Happy new year!"""
         if not await Util.check_args_count(message, command, silent, min=5):
             return
         index = await Util.parse_int(message, command[1],
