@@ -32,11 +32,11 @@ class Updater:
             log.info("Successfully upgraded your config.yaml to version 0.0.3")
         if config.version == "0.0.3":
             for com in ("quote", "addquote", "listquote", "delquote", "setquoteauthor"):
-                config.__dict__["commands"].__dict__["data"][com].module_name = "src.cmd.quote"
-                config.__dict__["commands"].__dict__["data"][com].class_name = "QuoteCommands"
+                config.commands.data[com].module_name = "src.cmd.quote"
+                config.commands.data[com].class_name = "QuoteCommands"
             for com in ("reminder", "updreminder", "listreminder", "delreminder"):
-                config.__dict__["commands"].__dict__["data"][com].module_name = "src.cmd.reminder"
-                config.__dict__["commands"].__dict__["data"][com].class_name = "ReminderCommands"
+                config.commands.data[com].module_name = "src.cmd.reminder"
+                config.commands.data[com].class_name = "ReminderCommands"
             config.version = "0.0.4"
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.4")
