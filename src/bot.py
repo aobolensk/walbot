@@ -261,7 +261,15 @@ def start(args, main_bot=True):
     if bc._restart:
         cmd = "'{}' '{}' start".format(sys.executable, os.path.dirname(__file__) + "/../main.py")
         log.info("Calling: " + cmd)
-        os.system(cmd)
+        if sys.platform in ("linux", "darwin"):
+            fork = os.fork()
+            if fork == 0:
+                os.system(cmd)
+            elif fork > 0:
+                log.info("Stopping current instance of the bot")
+                sys.exit(0)
+        else:
+            os.system(cmd)
 
 
 def stop():
