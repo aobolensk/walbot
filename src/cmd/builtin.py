@@ -3,7 +3,6 @@ import datetime
 import os
 import random
 import re
-import subprocess
 import urllib.request
 
 import discord
