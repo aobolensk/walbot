@@ -614,17 +614,7 @@ class BuiltinCommands(BaseCmd):
     Example: !extexec uname -a"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        result = ""
-        try:
-            cmd_line = ' '.join(command[1:])
-            log.debug("Processing external command: " + cmd_line)
-            process = subprocess.run(cmd_line, shell=True, check=True,
-                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            result = process.stdout.decode("utf-8")
-            await Util.response(message, result, silent)
-        except subprocess.CalledProcessError as e:
-            await Util.response(message, "<Command failed with error code {}>".format(e.returncode), silent)
-        return result
+        return await Util.run_external_command(message, ' '.join(command[1:]), silent)
 
     @staticmethod
     async def _whitelist(message, command, silent=False):

@@ -1,3 +1,5 @@
+import subprocess
+
 from . import const
 from .log import log
 
@@ -80,3 +82,15 @@ class Util:
             log.error("{} versions mismatch. Expected: {}, but actual: {}".format(name, expected, actual))
             return False
         return True
+
+    @staticmethod
+    async def run_external_command(message, cmd_line, silent=False):
+        try:
+            log.debug("Processing external command: " + cmd_line)
+            process = subprocess.run(cmd_line, shell=True, check=True,
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = process.stdout.decode("utf-8")
+            await Util.response(message, result, silent)
+        except subprocess.CalledProcessError as e:
+            await Util.response(message, "<Command failed with error code {}>".format(e.returncode), silent)
+        return result

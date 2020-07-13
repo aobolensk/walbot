@@ -115,19 +115,10 @@ class Command:
                         await message.channel.send(chunk)
                 return response
         elif self.cmd_line is not None:
-            result = ""
-            try:
-                cmd_line = self.cmd_line[:]
-                cmd_line = await self.process_variables(cmd_line, message, command, safe=True)
-                cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
-                log.debug("Processing external command: " + cmd_line)
-                process = subprocess.run(cmd_line, shell=True, check=True,
-                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                result = process.stdout.decode("utf-8")
-                await Util.response(message, result, silent)
-            except subprocess.CalledProcessError as e:
-                await Util.response(message, "<Command failed with error code {}>".format(e.returncode), silent)
-            return result
+            cmd_line = self.cmd_line[:]
+            cmd_line = await self.process_variables(cmd_line, message, command, safe=True)
+            cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
+            return await Util.run_external_command(message, cmd_line, silent)
         else:
             await message.channel.send("Command '{}' is not callable".format(command[0]))
 
