@@ -25,8 +25,8 @@ class Commands:
         cmd_modules = ['.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
                        if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
         for module in cmd_modules:
-            builtin = __import__("src.cmd" + module, fromlist=['object'])
-            commands = [obj[1] for obj in inspect.getmembers(builtin, inspect.isclass)
+            commands_file = __import__("src.cmd" + module, fromlist=['object'])
+            commands = [obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
                         if (obj[1].__module__ == "src.cmd" + module) and issubclass(obj[1], BaseCmd)]
             if len(commands) == 1:
                 commands = commands[0]
