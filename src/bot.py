@@ -211,7 +211,7 @@ def start(args, main_bot=True):
                 config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
                 log.error("yaml.load failed on file: {}".format(const.CONFIG_PATH), exc_info=True)
-        config.__init__()
+        config.commands.update()
     if config is None:
         config = Config()
     # Read secret.yaml
@@ -221,7 +221,6 @@ def start(args, main_bot=True):
                 secret_config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
                 log.error("yaml.load failed on file: {}".format(const.SECRET_CONFIG_PATH), exc_info=True)
-        secret_config.__init__()
     if secret_config is None:
         secret_config = SecretConfig()
     # Read markov.yaml
