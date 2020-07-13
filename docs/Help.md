@@ -170,7 +170,7 @@
 **permuser**: Set user permission \
     Example: !permuser @nickname 0
 
-**ping**: Check whether the bot is active \
+**ping**: Check whether the bot is active and get ping in ms \
     Example: !ping
 
 **poll**: Create poll \

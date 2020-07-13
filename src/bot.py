@@ -32,6 +32,7 @@ class WalBot(discord.Client):
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
+        bc.latency = lambda: self.latency
         bc.change_status = self.change_status
         bc.change_presence = self.change_presence
         bc.get_channel = self.get_channel

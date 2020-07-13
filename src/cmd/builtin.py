@@ -317,9 +317,11 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _ping(message, command, silent=False):
-        """Check whether the bot is active
+        """Check whether the bot is active and get latency in ms
     Example: !ping"""
-        await Util.response(message, "Pong! " + message.author.mention, silent)
+        result = ":ping_pong: Pong! {} :ping_pong:\n".format(message.author.mention)
+        result += "Latency: {} ms".format(round(bc.latency() * 1000))
+        await Util.response(message, result, silent)
 
     @staticmethod
     async def _profile(message, command, silent=False):
