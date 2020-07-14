@@ -913,7 +913,7 @@ class BuiltinCommands(BaseCmd):
     Example: !about"""
         result = str(bc.bot_user) + ' (WalBot instance)\n'
         result += "Source code: <https://github.com/aobolensk/walbot>\n"
-        result += "Version: " + bc.commands.config.get_version() + '\n'
+        result += "Version: {} (discord.py: {})\n".format(bc.commands.config.get_version(), discord.__version__)
         result += "Uptime: " + bc.commands.config.get_uptime() + '\n'
         await Util.response(message, result, silent)
 
