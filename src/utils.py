@@ -86,9 +86,11 @@ class Util:
     @staticmethod
     async def run_external_command(message, cmd_line, silent=False):
         try:
-            log.debug("Processing external command: " + cmd_line)
+            log.debug("Processing external command: '{}'".format(cmd_line))
             process = subprocess.run(cmd_line, shell=True, check=True,
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            log.debug("External command '{}' finished execution with return code: {}".format(
+                cmd_line, process.returncode))
             result = process.stdout.decode("utf-8")
             await Util.response(message, result, silent)
         except subprocess.CalledProcessError as e:
