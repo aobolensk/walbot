@@ -2,7 +2,7 @@ import re
 
 from enum import Enum, unique
 
-CONFIG_VERSION = '0.0.5'
+CONFIG_VERSION = '0.0.6'
 MARKOV_CONFIG_VERSION = '0.0.1'
 SECRET_CONFIG_VERSION = '0.0.1'
 
