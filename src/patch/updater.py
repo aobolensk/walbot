@@ -47,7 +47,15 @@ class Updater:
             config.version = "0.0.5"
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.5")
-        elif config.version == "0.0.5":
+        if config.version == "0.0.5":
+            for com in ("markov", "markovgc", "delmarkov", "findmarkov", "dropmarkov", "addmarkovfilter",
+                        "listmarkovfilter", "delmarkovfilter"):
+                config.commands.data[com].module_name = "src.cmd.markov"
+                config.commands.data[com].class_name = "MarkovCommands"
+            config.version = "0.0.6"
+            self.modified = True
+            log.info("Successfully upgraded your config.yaml to version 0.0.6")
+        if config.version == "0.0.6":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
