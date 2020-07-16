@@ -21,6 +21,10 @@ $ python main.py suspend        # Start dummy bot (useful for maintenance)
 $ python main.py -h             # Get help
 ```
 
+### Documentation
+
+Patch tool docs: [Read](docs/Patch.md)
+
 ### How to setup fast YAML loader and dumper?
 
 Debian/Ubuntu:
@@ -39,15 +43,4 @@ $ sudo python setup.py --with-libyaml install
 ```console
 $ docker build -t walbot .
 $ docker run -it walbot /bin/bash
-```
-
-### Patch tool command line options:
-```shell
-$ python patch.py               # Patch all .yaml files
-$ python patch.py config.yaml   # Patch config
-$ python patch.py markov.yaml   # Patch Markov model config
-$ python patch.py secret.yaml   # Patch secret config
-$ python patch.py -h            # Get help for patch tool
-
-$ python main.py start --patch  # Start the bot and patch all config files
 ```
