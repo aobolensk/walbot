@@ -40,7 +40,7 @@ class MarkovCommands(BaseCmd):
                 result = ' '.join(command[1:-1]) + ' ' + result
         else:
             result = bc.markov.generate()
-        result = await bc.commands.config.disable_pings_in_response(message, result)
+        result = await bc.config.disable_pings_in_response(message, result)
         await Util.response(message, result, silent)
         return result
 

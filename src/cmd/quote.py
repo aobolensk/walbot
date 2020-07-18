@@ -28,7 +28,7 @@ class QuoteCommands(BaseCmd):
         !quote 1"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        if not bc.commands.config.quotes:
+        if not bc.config.quotes:
             await Util.response(message, "<Quotes database is empty>", silent)
             return
         if len(command) == 2:
@@ -39,10 +39,10 @@ class QuoteCommands(BaseCmd):
             if index is None:
                 return
         else:
-            index = random.randint(0, len(bc.commands.config.quotes) - 1)
-        if 0 <= index < len(bc.commands.config.quotes):
+            index = random.randint(0, len(bc.config.quotes) - 1)
+        if 0 <= index < len(bc.config.quotes):
             await Util.response(message,
-                                "Quote {}: {}".format(index, bc.commands.config.quotes[index].full_quote()), silent)
+                                "Quote {}: {}".format(index, bc.config.quotes[index].full_quote()), silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
 
@@ -53,10 +53,10 @@ class QuoteCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         quote = ' '.join(command[1:])
-        bc.commands.config.quotes.append(Quote(quote, str(message.author)))
+        bc.config.quotes.append(Quote(quote, str(message.author)))
         await Util.response(message,
                             "Quote '{}' was successfully added to quotes database with index {}".format(
-                                quote, len(bc.commands.config.quotes) - 1), silent)
+                                quote, len(bc.config.quotes) - 1), silent)
 
     @staticmethod
     async def _listquote(message, command, silent=False):
@@ -65,7 +65,7 @@ class QuoteCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for index, quote in enumerate(bc.commands.config.quotes):
+        for index, quote in enumerate(bc.config.quotes):
             result += "{} -> {}\n".format(index, quote.quote())
         if result:
             await Util.response(message, result, silent)
@@ -85,8 +85,8 @@ class QuoteCommands(BaseCmd):
                                      silent)
         if index is None:
             return
-        if 0 <= index < len(bc.commands.config.quotes):
-            bc.commands.config.quotes.pop(index)
+        if 0 <= index < len(bc.config.quotes):
+            bc.config.quotes.pop(index)
             await Util.response(message, "Successfully deleted quote!", silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
@@ -103,11 +103,11 @@ class QuoteCommands(BaseCmd):
                                      silent)
         if index is None:
             return
-        if 0 <= index < len(bc.commands.config.quotes):
+        if 0 <= index < len(bc.config.quotes):
             author = ' '.join(command[2:])
-            bc.commands.config.quotes[index].author = author
+            bc.config.quotes[index].author = author
             await Util.response(message,
                                 "Successfully set author '{}' for quote '{}'".format(
-                                    author, bc.commands.config.quotes[index].quote()), silent)
+                                    author, bc.config.quotes[index].quote()), silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)

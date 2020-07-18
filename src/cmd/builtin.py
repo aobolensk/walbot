@@ -350,7 +350,7 @@ class BuiltinCommands(BaseCmd):
                     s = (name, "calls external command '{}'".format(cmd.cmd_line))
                     commands.append(s)
             commands.sort()
-            version = bc.commands.config.get_version()
+            version = bc.config.get_version()
             if len(command) == 2 and command[1] == '-p':
                 result = ("Built-in commands <https://github.com/aobolensk/walbot/blob/" +
                           (version if version != ' ' else "master") + "/docs/Help.md>\n")
@@ -583,9 +583,9 @@ class BuiltinCommands(BaseCmd):
                                 "Second argument of command '{}' should be user ping".format(command[0]), silent)
             return
         user_id = int(r.group(1))
-        for user in bc.commands.config.users.keys():
-            if bc.commands.config.users[user].id == user_id:
-                bc.commands.config.users[user].permission_level = perm
+        for user in bc.config.users.keys():
+            if bc.config.users[user].id == user_id:
+                bc.config.users[user].permission_level = perm
                 await Util.response(message, "User permissions are set to {}".format(command[2]), silent)
                 return
         await Util.response(message, "User '{}' is not found".format(command[1]), silent)
@@ -609,16 +609,16 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] == "enable":
-            bc.commands.config.guilds[message.channel.guild.id].is_whitelisted = True
+            bc.config.guilds[message.channel.guild.id].is_whitelisted = True
             await Util.response(message, "This guild is whitelisted for bot", silent)
         elif command[1] == "disable":
-            bc.commands.config.guilds[message.channel.guild.id].is_whitelisted = False
+            bc.config.guilds[message.channel.guild.id].is_whitelisted = False
             await Util.response(message, "This guild is not whitelisted for bot", silent)
         elif command[1] == "add":
-            bc.commands.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
+            bc.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
             await Util.response(message, "This channel is added to bot's whitelist", silent)
         elif command[1] == "remove":
-            bc.commands.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
+            bc.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
             await Util.response(message, "This channel is removed from bot's whitelist", silent)
         else:
             await Util.response(message, "Unknown argument '{}'".format(command[1]), silent)
@@ -637,33 +637,33 @@ class BuiltinCommands(BaseCmd):
             result = "Config:\n"
             result += "Reactions: {}\n".format(
                 "enabled" if (message.channel.id
-                              in bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist)
+                              in bc.config.guilds[message.channel.guild.id].reactions_whitelist)
                 else "disabled")
             result += "Markov logging: {}\n".format(
                 "enabled" if (message.channel.id
-                              in bc.commands.config.guilds[message.channel.guild.id].markov_whitelist)
+                              in bc.config.guilds[message.channel.guild.id].markov_whitelist)
                 else "disabled")
             result += "Markov responses: {}\n".format(
                 "enabled" if (message.channel.id
-                              in bc.commands.config.guilds[message.channel.guild.id].responses_whitelist)
+                              in bc.config.guilds[message.channel.guild.id].responses_whitelist)
                 else "disabled")
             result += "Markov pings: {}\n".format(
-                "enabled" if bc.commands.config.guilds[message.channel.guild.id].markov_pings
+                "enabled" if bc.config.guilds[message.channel.guild.id].markov_pings
                 else "disabled")
             await Util.response(message, result, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
                 if command[2] == "enable":
-                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist:
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
                         await Util.response(
                             message, "Adding reactions is already enabled for this channel", silent)
                     else:
-                        bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
+                        bc.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding reactions is successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist:
-                        bc.commands.config.guilds[message.channel.guild.id].reactions_whitelist.discard(
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
+                        bc.config.guilds[message.channel.guild.id].reactions_whitelist.discard(
                             message.channel.id)
                         await Util.response(
                             message, "Adding reactions is successfully disabled for this channel", silent)
@@ -674,16 +674,16 @@ class BuiltinCommands(BaseCmd):
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovlog":
                 if command[2] == "enable":
-                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].markov_whitelist:
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist:
                         await Util.response(
                             message, "Adding messages to Markov model is already enabled for this channel", silent)
                     else:
-                        bc.commands.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
+                        bc.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].markov_whitelist:
-                        bc.commands.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist:
+                        bc.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully disabled for this channel",
                             silent)
@@ -692,16 +692,16 @@ class BuiltinCommands(BaseCmd):
                             message, "Adding messages to Markov model is already disabled for this channel", silent)
             elif command[1] == "responses":
                 if command[2] == "enable":
-                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].responses_whitelist:
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                         await Util.response(
                             message, "Bot responses on mentioning are already enabled for this channel", silent)
                     else:
-                        bc.commands.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                        bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Bot responses on mentioning are successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if message.channel.id in bc.commands.config.guilds[message.channel.guild.id].responses_whitelist:
-                        bc.commands.config.guilds[message.channel.guild.id].responses_whitelist.discard(
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
+                        bc.config.guilds[message.channel.guild.id].responses_whitelist.discard(
                             message.channel.id)
                         await Util.response(
                             message, "Bot responses on mentioning are successfully disabled for this channel",
@@ -713,16 +713,16 @@ class BuiltinCommands(BaseCmd):
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovpings":
                 if command[2] == "enable":
-                    if bc.commands.config.guilds[message.channel.guild.id].markov_pings:
+                    if bc.config.guilds[message.channel.guild.id].markov_pings:
                         await Util.response(
                             message, "Markov pings are already enabled for this channel", silent)
                     else:
-                        bc.commands.config.guilds[message.channel.guild.id].markov_pings = True
+                        bc.config.guilds[message.channel.guild.id].markov_pings = True
                         await Util.response(
                             message, "Markov pings are successfully enabled for this channel", silent)
                 elif command[2] == "disable":
-                    if bc.commands.config.guilds[message.channel.guild.id].markov_pings:
-                        bc.commands.config.guilds[message.channel.guild.id].markov_pings = False
+                    if bc.config.guilds[message.channel.guild.id].markov_pings:
+                        bc.config.guilds[message.channel.guild.id].markov_pings = False
                         await Util.response(
                             message, "Markov pings are successfully disabled for this channel", silent)
                     else:
@@ -741,7 +741,7 @@ class BuiltinCommands(BaseCmd):
     Example: !addreaction emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        bc.commands.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
+        bc.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
         await Util.response(message, "Reaction '{}' on '{}' successfully added".format(
             command[1], ' '.join(command[2:])), silent)
 
@@ -755,10 +755,10 @@ class BuiltinCommands(BaseCmd):
                                      "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
         if index is None:
             return
-        if not 0 <= index < len(bc.commands.config.reactions):
+        if not 0 <= index < len(bc.config.reactions):
             await Util.response(message, "Incorrect index of reaction!", silent)
             return
-        bc.commands.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
+        bc.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
         await Util.response(message, "Reaction '{}' on '{}' successfully updated".format(
             command[1], ' '.join(command[2:])), silent)
 
@@ -773,18 +773,18 @@ class BuiltinCommands(BaseCmd):
         index = -1
         try:
             index = int(command[1])
-            if not 0 <= index < len(bc.commands.config.reactions):
+            if not 0 <= index < len(bc.config.reactions):
                 await Util.response(message, "Incorrect index of reaction!", silent)
                 return
-            reaction = bc.commands.config.reactions[index]
-            bc.commands.config.reactions.pop(index)
+            reaction = bc.config.reactions[index]
+            bc.config.reactions.pop(index)
             await Util.response(message, "Reaction '{}' -> '{}' successfully removed".format(
                 reaction.regex, reaction.emoji), silent)
         except Exception:
             i = 0
-            while i < len(bc.commands.config.reactions):
-                if bc.commands.config.reactions[i].emoji == command[1]:
-                    bc.commands.config.reactions.pop(i)
+            while i < len(bc.config.reactions):
+                if bc.config.reactions[i].emoji == command[1]:
+                    bc.config.reactions.pop(i)
                 else:
                     i += 1
             await Util.response(message, "Reaction '{}' successfully removed".format(command[1]), silent)
@@ -796,7 +796,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for index, reaction in enumerate(bc.commands.config.reactions):
+        for index, reaction in enumerate(bc.config.reactions):
             result += "{} - {}: {}\n".format(index, reaction.emoji, reaction.regex)
         if result:
             await Util.response(message, result, silent)
@@ -885,7 +885,7 @@ class BuiltinCommands(BaseCmd):
         !version short"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        result = bc.commands.config.get_version()
+        result = bc.config.get_version()
         if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
             result = result[:7]
         await Util.response(message, result, silent)
@@ -897,8 +897,8 @@ class BuiltinCommands(BaseCmd):
     Example: !about"""
         result = str(bc.bot_user) + ' (WalBot instance)\n'
         result += "Source code: <https://github.com/aobolensk/walbot>\n"
-        result += "Version: {} (discord.py: {})\n".format(bc.commands.config.get_version(), discord.__version__)
-        result += "Uptime: " + bc.commands.config.get_uptime() + '\n'
+        result += "Version: {} (discord.py: {})\n".format(bc.config.get_version(), discord.__version__)
+        result += "Uptime: " + bc.config.get_uptime() + '\n'
         await Util.response(message, result, silent)
 
     @staticmethod
@@ -912,9 +912,9 @@ class BuiltinCommands(BaseCmd):
                                         silent)
         if duration is None:
             return
-        message.content = bc.commands.config.commands_prefix + ' '.join(command[2:])
+        message.content = bc.config.commands_prefix + ' '.join(command[2:])
         bc.background_events.append(BackgroundEvent(
-            bc.commands.config, message.channel, message, duration))
+            bc.config, message.channel, message, duration))
         await Util.response(message, "Successfully added background event '{}' with period {}".format(
                             message.content, str(duration)), silent)
 
@@ -1017,7 +1017,7 @@ class BuiltinCommands(BaseCmd):
     Example: !uptime"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = bc.commands.config.get_uptime()
+        result = bc.config.get_uptime()
         await Util.response(message, result, silent)
         return result
 

@@ -33,9 +33,9 @@ class ReminderCommands(BaseCmd):
                                     time, const.REMINDER_TIME_FORMAT), silent)
             return
         text = ' '.join(command[3:])
-        bc.commands.config.reminders[bc.commands.config.ids["reminder"]] = Reminder(
+        bc.config.reminders[bc.config.ids["reminder"]] = Reminder(
             str(time), text, message.channel.id)
-        bc.commands.config.ids["reminder"] += 1
+        bc.config.ids["reminder"] += 1
         await Util.response(message, "Reminder '{}' added at {}".format(text, time), silent)
 
     @staticmethod
@@ -49,7 +49,7 @@ class ReminderCommands(BaseCmd):
                                      .format(command[0]), silent)
         if index is None:
             return
-        if index in bc.commands.config.reminders.keys():
+        if index in bc.config.reminders.keys():
             time = command[2] + ' ' + command[3]
             try:
                 time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
@@ -59,7 +59,7 @@ class ReminderCommands(BaseCmd):
                                         time, const.REMINDER_TIME_FORMAT), silent)
                 return
             text = ' '.join(command[4:])
-            bc.commands.config.reminders[index] = Reminder(str(time), text, message.channel.id)
+            bc.config.reminders[index] = Reminder(str(time), text, message.channel.id)
             await Util.response(message, "Successfully updated reminder {}: '{}' at {}".format(
                                     index, text, time), silent)
         else:
@@ -72,7 +72,7 @@ class ReminderCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         reminder_list = []
-        for index, reminder in bc.commands.config.reminders.items():
+        for index, reminder in bc.config.reminders.items():
             reminder_list.append((reminder.time, "{} - {} in {} -> {}".format(
                 index, reminder.time, "<#{}>".format(reminder.channel_id), reminder.message)))
         reminder_list.sort()
@@ -95,8 +95,8 @@ class ReminderCommands(BaseCmd):
                                      silent)
         if index is None:
             return
-        if index in bc.commands.config.reminders.keys():
-            bc.commands.config.reminders.pop(index)
+        if index in bc.config.reminders.keys():
+            bc.config.reminders.pop(index)
             await Util.response(message, "Successfully deleted reminder!", silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)
