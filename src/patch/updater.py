@@ -56,6 +56,12 @@ class Updater:
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.6")
         if config.version == "0.0.6":
+            if hasattr(config.commands, "config"):
+                delattr(config.commands, "config")
+            config.version = "0.0.7"
+            self.modified = True
+            log.info("Successfully upgraded your config.yaml to version 0.0.7")
+        if config.version == "0.0.7":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))

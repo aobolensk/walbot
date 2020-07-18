@@ -13,7 +13,6 @@ class BaseCmd:
 
 class Commands:
     def __init__(self, config):
-        self.config = config
         if not hasattr(self, "data"):
             self.data = dict()
         if not hasattr(self, "aliases"):
