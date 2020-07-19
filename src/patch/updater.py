@@ -74,6 +74,16 @@ class Updater:
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.8")
         if config.version == "0.0.8":
+            config.ids["reaction"] = 1
+            reactions = config.reactions
+            config.reactions = {}
+            for reaction in reactions:
+                config.reactions[config.ids["reaction"]] = reaction
+                config.ids["reaction"] += 1
+            config.version = "0.0.9"
+            self.modified = True
+            log.info("Successfully upgraded your config.yaml to version 0.0.9")
+        if config.version == "0.0.9":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))

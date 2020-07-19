@@ -81,7 +81,6 @@
 
 **delreaction**: Delete reaction \
     Examples: \
-        !delreaction emoji \
         !delreaction index
 
 **delreminder**: Delete reminder by index \
