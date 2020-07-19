@@ -51,11 +51,11 @@ class WalBot(discord.Client):
         await self.wait_until_ready()
         index = 1
         while not self.is_closed():
-            if index % 10 == 0:
+            if index % self.config.saving["backup"]["period"] == 0:
                 self.config.backup(const.CONFIG_PATH, const.MARKOV_PATH)
             self.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH)
             index += 1
-            await asyncio.sleep(10 * 60)
+            await asyncio.sleep(self.config.saving["period"] * 60)
 
     async def process_reminders(self):
         await self.wait_until_ready()

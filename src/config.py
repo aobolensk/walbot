@@ -182,10 +182,16 @@ class Config:
         self.reminders = {}
         self.quotes = []
         self.commands_prefix = "!"
-        self.compress = True
+        self.saving = {
+            "backup": {
+                "compress": True,
+                "period": 10,
+            },
+            "period": 10,
+        }
 
     def backup(self, *files):
-        compress_type = zipfile.ZIP_DEFLATED if self.compress else zipfile.ZIP_STORED
+        compress_type = zipfile.ZIP_DEFLATED if self.saving["backup"]["compress"] else zipfile.ZIP_STORED
         for file in files:
             path = os.path.dirname(file)
             name, ext = os.path.splitext(os.path.basename(file))

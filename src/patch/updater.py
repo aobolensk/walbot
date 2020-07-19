@@ -62,6 +62,18 @@ class Updater:
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.7")
         if config.version == "0.0.7":
+            config.__dict__["saving"] = {
+                "backup": {
+                    "compress": config.compress,
+                    "period": 10,
+                },
+                "period": 10,
+            }
+            delattr(config, "compress")
+            config.version = "0.0.8"
+            self.modified = True
+            log.info("Successfully upgraded your config.yaml to version 0.0.8")
+        if config.version == "0.0.8":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
