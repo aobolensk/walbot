@@ -173,25 +173,16 @@ class User:
 class Config:
     def __init__(self):
         commands = __import__("commands", globals(), locals(), level=1)
-        if not hasattr(self, "commands"):
-            self.commands = commands.Commands(self)
+        self.commands = commands.Commands(self)
         self.commands.update()
-        if not hasattr(self, "version"):
-            self.version = const.CONFIG_VERSION
-        if not hasattr(self, "reactions"):
-            self.reactions = []
-        if not hasattr(self, "guilds"):
-            self.guilds = dict()
-        if not hasattr(self, "users"):
-            self.users = dict()
-        if not hasattr(self, "reminders"):
-            self.reminders = {}
-        if not hasattr(self, "quotes"):
-            self.quotes = []
-        if not hasattr(self, "commands_prefix"):
-            self.commands_prefix = "!"
-        if not hasattr(self, "compress"):
-            self.compress = True
+        self.version = const.CONFIG_VERSION
+        self.reactions = []
+        self.guilds = dict()
+        self.users = dict()
+        self.reminders = {}
+        self.quotes = []
+        self.commands_prefix = "!"
+        self.compress = True
 
     def backup(self, *files):
         compress_type = zipfile.ZIP_DEFLATED if self.compress else zipfile.ZIP_STORED
@@ -304,7 +295,5 @@ class Config:
 
 class SecretConfig:
     def __init__(self):
-        if not hasattr(self, "token"):
-            self.token = None
-        if not hasattr(self, "version"):
-            self.version = const.SECRET_CONFIG_VERSION
+        self.token = None
+        self.version = const.SECRET_CONFIG_VERSION
