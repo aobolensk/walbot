@@ -741,7 +741,8 @@ class BuiltinCommands(BaseCmd):
     Example: !addreaction emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        bc.config.reactions.append(Reaction(' '.join(command[2:]), command[1]))
+        bc.config.reactions[bc.config.ids["reaction"]] = Reaction(' '.join(command[2:]), command[1])
+        bc.config.ids["reaction"] += 1
         await Util.response(message, "Reaction '{}' on '{}' successfully added".format(
             command[1], ' '.join(command[2:])), silent)
 
@@ -755,39 +756,30 @@ class BuiltinCommands(BaseCmd):
                                      "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
         if index is None:
             return
-        if not 0 <= index < len(bc.config.reactions):
+        if index in bc.config.reactions.keys():
+            bc.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
+            await Util.response(message, "Reaction '{}' on '{}' successfully updated".format(
+                command[1], ' '.join(command[2:])), silent)
+        else:
             await Util.response(message, "Incorrect index of reaction!", silent)
-            return
-        bc.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
-        await Util.response(message, "Reaction '{}' on '{}' successfully updated".format(
-            command[1], ' '.join(command[2:])), silent)
 
     @staticmethod
     async def _delreaction(message, command, silent=False):
         """Delete reaction
     Examples:
-        !delreaction emoji
         !delreaction index"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        index = -1
-        try:
-            index = int(command[1])
-            if not 0 <= index < len(bc.config.reactions):
-                await Util.response(message, "Incorrect index of reaction!", silent)
-                return
-            reaction = bc.config.reactions[index]
+        index = await Util.parse_int(
+            message, command[1],
+            "Second parameter for '{}' should be an index of reaction".format(command[0]), silent)
+        if index is None:
+            return
+        if index in bc.config.reactions.keys():
             bc.config.reactions.pop(index)
-            await Util.response(message, "Reaction '{}' -> '{}' successfully removed".format(
-                reaction.regex, reaction.emoji), silent)
-        except Exception:
-            i = 0
-            while i < len(bc.config.reactions):
-                if bc.config.reactions[i].emoji == command[1]:
-                    bc.config.reactions.pop(i)
-                else:
-                    i += 1
-            await Util.response(message, "Reaction '{}' successfully removed".format(command[1]), silent)
+            await Util.response(message, "Successfully deleted reaction!", silent)
+        else:
+            await Util.response(message, "Invalid index of reaction!", silent)
 
     @staticmethod
     async def _listreaction(message, command, silent=False):
@@ -796,7 +788,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for index, reaction in enumerate(bc.config.reactions):
+        for index, reaction in bc.config.reactions.items():
             result += "{} - {}: {}\n".format(index, reaction.emoji, reaction.regex)
         if result:
             await Util.response(message, result, silent)
