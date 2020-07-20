@@ -201,7 +201,7 @@ def start(args, main_bot=True):
         f.write(str(os.getpid()))
     # Executing patch tool if it is necessary
     if args.patch:
-        cmd = "'{}' '{}' all".format(sys.executable, os.path.dirname(__file__) + "/../patch.py")
+        cmd = "'{}' '{}' all".format(sys.executable, os.path.dirname(__file__) + "/../tools/patch.py")
         log.info("Executing patch tool: " + cmd)
         os.system(cmd)
     # Read config.yaml

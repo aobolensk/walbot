@@ -13,11 +13,11 @@ To create new patch for one of YAML configs you need to do the following things:
 
 ### Command line options:
 ```shell
-$ python patch.py               # Patch all .yaml files
-$ python patch.py config.yaml   # Patch config
-$ python patch.py markov.yaml   # Patch Markov model config
-$ python patch.py secret.yaml   # Patch secret config
-$ python patch.py -h            # Get help for patch tool
+$ python tools/patch.py               # Patch all .yaml files
+$ python tools/patch.py config.yaml   # Patch config
+$ python tools/patch.py markov.yaml   # Patch Markov model config
+$ python tools/patch.py secret.yaml   # Patch secret config
+$ python tools/patch.py -h            # Get help for patch tool
 
 $ python main.py start --patch  # Start the bot and patch all config files
 ```
