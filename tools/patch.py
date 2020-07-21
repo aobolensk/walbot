@@ -43,6 +43,9 @@ def main():
         files = [args.file]
     for file in files:
         config = Util.read_config_file(file)
+        if config is None:
+            log.error("File '{}' does not exist".format(file))
+            sys.exit(1)
         if not hasattr(config, "version"):
             log.error("{} does not have 'version' field".format(file))
             sys.exit(1)
