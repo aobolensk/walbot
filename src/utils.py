@@ -113,5 +113,5 @@ class Util:
                 except Exception:
                     log.error("File '{}' can not be read!".format(path))
         else:
-            log.error("File '{}' does not exist!".format(path))
+            return None
         return content
