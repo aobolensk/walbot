@@ -1,4 +1,7 @@
+import os
 import subprocess
+
+import yaml
 
 from . import const
 from .log import log
@@ -96,3 +99,19 @@ class Util:
         except subprocess.CalledProcessError as e:
             await Util.response(message, "<Command failed with error code {}>".format(e.returncode), silent)
         return result
+
+    @staticmethod
+    def read_config_file(path):
+        try:
+            yaml_loader = yaml.CLoader
+        except Exception:
+            yaml_loader = yaml.Loader
+        if os.path.isfile(path):
+            with open(path, 'r') as f:
+                try:
+                    content = yaml.load(f.read(), Loader=yaml_loader)
+                except Exception:
+                    log.error("File '{}' can not be read!".format(path))
+        else:
+            log.error("File '{}' does not exist!".format(path))
+        return content
