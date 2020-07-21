@@ -9,24 +9,9 @@ try:
     sys.path.append(os.getcwd())
     from src.log import log
     from src.patch.updater import Updater
+    from src.utils import Util
 except ModuleNotFoundError as e:
     raise e
-
-
-def read_file(path):
-    try:
-        yaml_loader = yaml.CLoader
-    except Exception:
-        yaml_loader = yaml.Loader
-    if os.path.isfile(path):
-        with open(path, 'r') as f:
-            try:
-                content = yaml.load(f.read(), Loader=yaml_loader)
-            except Exception:
-                log.error("File '{}' can not be read!".format(path))
-    else:
-        log.error("File '{}' does not exist!".format(path))
-    return content
 
 
 def save_file(path, config):
@@ -57,7 +42,10 @@ def main():
     if args.file != "all":
         files = [args.file]
     for file in files:
-        config = read_file(file)
+        config = Util.read_config_file(file)
+        if config is None:
+            log.error("File '{}' does not exist".format(file))
+            sys.exit(1)
         if not hasattr(config, "version"):
             log.error("{} does not have 'version' field".format(file))
             sys.exit(1)
