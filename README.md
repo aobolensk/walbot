@@ -24,7 +24,7 @@ $ python main.py -h             # Get help
 ### Documentation
 
 Patch tool docs: [Read](docs/Patch.md) \
-Builtin commands list: [Read](docs/Help.md)
+Builtin commands list: [Read](docs/Commands.md)
 
 ### How to setup fast YAML loader and dumper?
 

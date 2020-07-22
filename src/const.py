@@ -1,4 +1,3 @@
-import os
 import re
 
 from enum import Enum, unique
@@ -13,7 +12,7 @@ NOHUP_FILE_PATH = "nohup.out"
 CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"
-COMMANDS_DOC_PATH = os.path.join("docs", "Help.md")
+COMMANDS_DOC_PATH = "docs/Commands.md"
 
 MAX_POLL_OPTIONS = 20
 MAX_RANGE_ITERATIONS = 500
