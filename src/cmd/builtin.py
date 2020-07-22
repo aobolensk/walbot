@@ -353,7 +353,7 @@ class BuiltinCommands(BaseCmd):
             version = bc.config.get_version()
             if len(command) == 2 and command[1] == '-p':
                 result = ("Built-in commands <https://github.com/aobolensk/walbot/blob/" +
-                          (version if version != ' ' else "master") + "/docs/Help.md>\n")
+                          (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">\n")
                 for cmd in commands:
                     result += "**{}**: {}\n".format(cmd[0], cmd[1])
                 await Util.response(message, result, silent)
@@ -362,7 +362,7 @@ class BuiltinCommands(BaseCmd):
                 embed.add_field(
                     name="Built-in commands",
                     value=("<https://github.com/aobolensk/walbot/blob/" +
-                           (version if version != ' ' else "master") + "/docs/Help.md>"),
+                           (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">"),
                     inline=False)
                 for cmd in commands:
                     embed.add_field(name=cmd[0], value=cmd[1], inline=False)
