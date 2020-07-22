@@ -114,7 +114,7 @@ class WalBot(discord.Client):
             bc.markov.add_string(message.content)
         if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             return
-        for reaction in self.config.reactions:
+        for reaction in self.config.reactions.values():
             if re.search(reaction.regex, message.content):
                 log.info("Added reaction " + reaction.emoji)
                 try:
