@@ -26,4 +26,4 @@ jobs:
     - name: Update docs
       run: python tools/docs.py
     - name: Compare docs
-      run: git diff --exit-code docs/Help.md
+      run: git diff --exit-code docs/Commands.md
