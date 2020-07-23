@@ -141,6 +141,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, "BuiltinCommands", "server",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, "BuiltinCommands", "pin",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, "BuiltinCommands", "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1359,3 +1361,22 @@ class BuiltinCommands(BaseCmd):
                     ', '.join(filter(lambda x: x != const.ROLE_EVERYONE, map(str, member.roles)))))
             result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
+
+    @staticmethod
+    async def _pin(message, command, silent=False):
+        """Print pinned message by its index
+    Example: !pin 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(message, command[1],
+                                     "Message index should be an integer", silent)
+        if index is None:
+            return
+        pins = await message.channel.pins()
+        result = ""
+        if 0 <= index < len(pins):
+            result = pins[index].content + '\nBy ' + str(message.author)
+        else:
+            Util.response(message, "Invalid index of pinned message!", silent)
+        await Util.response(message, result, silent)
+        return result

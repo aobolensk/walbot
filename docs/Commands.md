@@ -169,6 +169,10 @@
 **permuser**: Set user permission \
     Example: !permuser @nickname 0
 
+**pin**: Print pinned message by its index \
+    Example: !pin 0 \
+    *This command can be used as subcommand*
+
 **ping**: Check whether the bot is active and get latency in ms \
     Example: !ping
 
