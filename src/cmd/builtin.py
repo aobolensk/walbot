@@ -1105,6 +1105,9 @@ class BuiltinCommands(BaseCmd):
     Example: !img <image_name>"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
+        if not os.path.isdir("images"):
+            await Util.response(message, "No images found!", silent)
+            return
         for i in range(1, len(command)):
             for root, _, files in os.walk("images"):
                 if root.endswith("images"):
@@ -1127,6 +1130,9 @@ class BuiltinCommands(BaseCmd):
         """Send image in direct message to author
     Example: !wmeimg <image_name>"""
         if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        if not os.path.isdir("images"):
+            await Util.response(message, "No images found!", silent)
             return
         for i in range(1, len(command)):
             for root, _, files in os.walk("images"):
