@@ -30,7 +30,7 @@ Builtin commands list: [Read](docs/Commands.md)
 
 Debian/Ubuntu:
 ```console
-$ sudo apt install libyaml-dev python3-yaml
+$ sudo apt install python3-yaml
 ```
 Alternative:
 ```console
