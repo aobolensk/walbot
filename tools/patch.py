@@ -5,13 +5,9 @@ import sys
 
 import yaml
 
-try:
-    sys.path.append(os.getcwd())
-    from src.log import log
-    from src.patch.updater import Updater
-    from src.utils import Util
-except ModuleNotFoundError as e:
-    raise e
+from src.log import log
+from src.patch.updater import Updater
+from src.utils import Util
 
 
 def save_file(path, config):
@@ -23,22 +19,12 @@ def save_file(path, config):
         f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))
 
 
-def main():
-    parser = argparse.ArgumentParser(description='WalBot config patcher', formatter_class=argparse.RawTextHelpFormatter)
+def main(args):
     files = [
         "config.yaml",
         "markov.yaml",
         "secret.yaml",
     ]
-    parser.add_argument("file",
-                        choices=[
-                            "all",
-                            *files,
-                        ],
-                        nargs='?',
-                        default="all",
-                        help='Config file to patch')
-    args = parser.parse_args()
     if args.file != "all":
         files = [args.file]
     for file in files:
@@ -57,7 +43,3 @@ def main():
             shutil.copyfile(file, "backup/" + file + ".bak." + version)
             save_file(file, config)
             log.info("Successfully saved file: {}".format(config.version))
-
-
-if __name__ == "__main__":
-    main()

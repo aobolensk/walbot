@@ -2,16 +2,19 @@
 import argparse
 import sys
 
+from src import const
+
 
 class Launcher:
     def __init__(self):
         parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
         # parser.add_argument("action", choices=[x for x in dir(self) if not x.startswith('_')], help='Action for bot')
         subparsers = parser.add_subparsers(dest="action")
-        sp = dict([
+        sp = dict([ # subparsers
             (cmd, subparsers.add_parser(cmd, help=getattr(self, cmd).__doc__))
             for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
-        ])  # subparsers
+        ])
+        # Start
         sp["start"].add_argument("--fast_start", action="store_true",
                                  help="Disable some things to make bot start faster:\n" +
                                       "- Disable Markov model check on start\n")
@@ -20,6 +23,17 @@ class Launcher:
         if sys.platform in ("linux", "darwin"):
             sp["start"].add_argument("--nohup", action="store_true",
                                      help="Ignore SIGHUP and redirect output to nohup.out")
+        # Docs
+        sp["docs"].add_argument("-o", "--out_file", default=const.COMMANDS_DOC_PATH,
+                                help="Path to output file")
+        # Patch
+        files = [
+            "config.yaml",
+            "markov.yaml",
+            "secret.yaml",
+        ]
+        sp["patch"].add_argument("file", nargs='?', default="all", help='Config file to patch',
+                                 choices=["all", *files])
         self.args = parser.parse_args()
         getattr(self, self.args.action)()
 
@@ -41,6 +55,14 @@ class Launcher:
         """Stop the main bot and start mini-bot"""
         self.stop()
         __import__("src.bot", fromlist=['object']).start(main_bot=False)
+
+    def docs(self):
+        """Generate command docs"""
+        __import__("tools.docs", fromlist=['object']).main(self.args)
+
+    def patch(self):
+        """Patch config"""
+        __import__("tools.patch", fromlist=['object']).main(self.args)
 
 
 def main():
