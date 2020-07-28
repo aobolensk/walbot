@@ -8,9 +8,8 @@ from src import const
 class Launcher:
     def __init__(self):
         parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
-        # parser.add_argument("action", choices=[x for x in dir(self) if not x.startswith('_')], help='Action for bot')
         subparsers = parser.add_subparsers(dest="action")
-        sp = dict([ # subparsers
+        sp = dict([  # subparsers
             (cmd, subparsers.add_parser(cmd, help=getattr(self, cmd).__doc__))
             for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
         ])
