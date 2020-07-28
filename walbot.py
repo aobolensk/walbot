@@ -6,14 +6,20 @@ import sys
 class Launcher:
     def __init__(self):
         parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
-        parser.add_argument("action", choices=[x for x in dir(self) if not x.startswith('_')], help='Action for bot')
-        parser.add_argument("--fast_start", action="store_true",
-                            help="Disable some things to make bot start faster:\n" +
-                                 "- Disable Markov model check on start\n")
-        parser.add_argument("--patch", action="store_true",
-                            help="Call script for patching config files before starting the bot")
+        # parser.add_argument("action", choices=[x for x in dir(self) if not x.startswith('_')], help='Action for bot')
+        subparsers = parser.add_subparsers(dest="action")
+        sp = dict([
+            (cmd, subparsers.add_parser(cmd, help=getattr(self, cmd).__doc__))
+            for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
+        ])  # subparsers
+        sp["start"].add_argument("--fast_start", action="store_true",
+                                 help="Disable some things to make bot start faster:\n" +
+                                      "- Disable Markov model check on start\n")
+        sp["start"].add_argument("--patch", action="store_true",
+                                 help="Call script for patching config files before starting the bot")
         if sys.platform in ("linux", "darwin"):
-            parser.add_argument("--nohup", action="store_true", help="Ignore SIGHUP and redirect output to nohup.out")
+            sp["start"].add_argument("--nohup", action="store_true",
+                                     help="Ignore SIGHUP and redirect output to nohup.out")
         self.args = parser.parse_args()
         getattr(self, self.args.action)()
 
