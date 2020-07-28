@@ -24,6 +24,6 @@ jobs:
     - name: Install dependencies
       run: python -m pip install -r requirements.txt
     - name: Update docs
-      run: python tools/docs.py
+      run: python walbot.py docs
     - name: Compare docs
       run: git diff --exit-code docs/Commands.md

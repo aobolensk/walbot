@@ -9,16 +9,16 @@ Requirements:
 Quick start:
 ```shell
 $ python -m pip install -r requirements.txt
-$ python main.py start
+$ python walbot.py start
 ```
 
 Command line options overview:
 ```shell
-$ python main.py start          # Start the bot
-$ python main.py stop           # Stop the bot
-$ python main.py restart        # Restart the bot
-$ python main.py suspend        # Start dummy bot (useful for maintenance)
-$ python main.py -h             # Get help
+$ python walbot.py start          # Start the bot
+$ python walbot.py stop           # Stop the bot
+$ python walbot.py restart        # Restart the bot
+$ python walbot.py suspend        # Start dummy bot (useful for maintenance)
+$ python walbot.py -h             # Get help
 ```
 
 ### Documentation
