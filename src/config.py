@@ -153,6 +153,12 @@ class Reaction:
         self.emoji = emoji
 
 
+class Response:
+    def __init__(self, regex, text):
+        self.regex = regex
+        self.text = text
+
+
 class GuildSettings:
     def __init__(self, id):
         self.id = id
@@ -180,11 +186,13 @@ class Config:
         self.guilds = dict()
         self.users = dict()
         self.reminders = {}
+        self.responses = {}
         self.quotes = []
         self.commands_prefix = "!"
         self.ids = {
             "reminder": 1,
             "reaction": 1,
+            "response": 1,
         }
         self.saving = {
             "backup": {

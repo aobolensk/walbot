@@ -112,6 +112,9 @@ class WalBot(discord.Client):
                 await message.channel.send(message.author.mention + ' ' + result)
         elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
             bc.markov.add_string(message.content)
+        for response in self.config.responses.values():
+            if re.search(response.regex, message.content):
+                await Util.response(message, response.text, False)
         if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             return
         for reaction in self.config.reactions.values():
