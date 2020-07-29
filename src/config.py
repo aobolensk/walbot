@@ -182,11 +182,11 @@ class Config:
         self.commands = commands.Commands(self)
         self.commands.update()
         self.version = const.CONFIG_VERSION
-        self.reactions = []
+        self.reactions = dict()
         self.guilds = dict()
         self.users = dict()
-        self.reminders = {}
-        self.responses = {}
+        self.reminders = dict()
+        self.responses = dict()
         self.quotes = []
         self.commands_prefix = "!"
         self.ids = {
