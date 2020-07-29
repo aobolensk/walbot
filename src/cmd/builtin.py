@@ -1103,10 +1103,17 @@ class BuiltinCommands(BaseCmd):
     async def _img(message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
         if not os.path.isdir("images"):
             await Util.response(message, "No images found!", silent)
+            return
+        if len(command) == 1:
+            list_images = os.listdir("images")
+            if len(list_images) == 0:
+                await Util.response(message, "No images found!", silent)
+                return
+            result = random.randint(0, len(list_images)-1)  # integer random
+            await Util.response(message, None, silent,
+                                files=[discord.File(os.path.join("images", list_images[result]))])
             return
         for i in range(1, len(command)):
             for root, _, files in os.walk("images"):
