@@ -182,6 +182,10 @@ class Config:
         self.reminders = {}
         self.quotes = []
         self.commands_prefix = "!"
+        self.ids = {
+            "reminder": 1,
+            "reaction": 1,
+        }
         self.saving = {
             "backup": {
                 "compress": True,
