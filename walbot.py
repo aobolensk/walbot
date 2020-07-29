@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import importlib
 import sys
 
 from src import const
@@ -34,34 +35,37 @@ class Launcher:
         sp["patch"].add_argument("file", nargs='?', default="all", help='Config file to patch',
                                  choices=["all", *files])
         self.args = parser.parse_args()
-        getattr(self, self.args.action)()
+        if self.args.action is None:
+            parser.print_help()
+        else:
+            getattr(self, self.args.action)()
 
     def start(self):
         """Start the bot"""
-        __import__("src.bot", fromlist=['object']).start(self.args)
+        importlib.import_module("src.bot").start(self.args)
 
     def stop(self):
         """Stop the bot"""
-        __import__("src.bot", fromlist=['object']).stop()
+        importlib.import_module("src.bot").stop()
 
     def restart(self):
         """Restart the bot"""
-        bot = __import__("src.bot", fromlist=['object'])
+        bot = importlib.import_module("src.bot")
         bot.stop()
         bot.start()
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
         self.stop()
-        __import__("src.bot", fromlist=['object']).start(main_bot=False)
+        importlib.import_module("src.bot").start(main_bot=False)
 
     def docs(self):
         """Generate command docs"""
-        __import__("tools.docs", fromlist=['object']).main(self.args)
+        importlib.import_module("tools.docs").main(self.args)
 
     def patch(self):
         """Patch config"""
-        __import__("tools.patch", fromlist=['object']).main(self.args)
+        importlib.import_module("tools.patch").main(self.args)
 
 
 def main():
