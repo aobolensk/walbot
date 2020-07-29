@@ -12,14 +12,17 @@ class Updater:
     def result(self):
         return self.modified
 
+    def _bump_version(self, config, new_version):
+        config.version = new_version
+        self.modified = True
+        log.info("Successfully upgraded your config.yaml to version {}".format(new_version))
+
     def config(self, config):
         if config.version == "0.0.1":
             for key in config.commands.data.keys():
                 if not hasattr(config.commands.data[key], "times_called"):
                     config.commands.data[key].times_called = 0
-            config.version = "0.0.2"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.2")
+            self._bump_version(config, "0.0.2")
         if config.version == "0.0.2":
             config.__dict__["ids"] = {"reminder": 1}
             reminders = config.reminders
@@ -27,9 +30,7 @@ class Updater:
             for reminder in reminders:
                 config.reminders[config.ids["reminder"]] = reminder
                 config.ids["reminder"] += 1
-            config.version = "0.0.3"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.3")
+            self._bump_version(config, "0.0.3")
         if config.version == "0.0.3":
             for com in ("quote", "addquote", "listquote", "delquote", "setquoteauthor"):
                 config.commands.data[com].module_name = "src.cmd.quote"
@@ -37,30 +38,22 @@ class Updater:
             for com in ("reminder", "updreminder", "listreminder", "delreminder"):
                 config.commands.data[com].module_name = "src.cmd.reminder"
                 config.commands.data[com].class_name = "ReminderCommands"
-            config.version = "0.0.4"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.4")
+            self._bump_version(config, "0.0.4")
         if config.version == "0.0.4":
             for key in config.commands.data.keys():
                 if not hasattr(config.commands.data[key], "cmd_line"):
                     config.commands.data[key].cmd_line = None
-            config.version = "0.0.5"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.5")
+            self._bump_version(config, "0.0.5")
         if config.version == "0.0.5":
             for com in ("markov", "markovgc", "delmarkov", "findmarkov", "dropmarkov", "addmarkovfilter",
                         "listmarkovfilter", "delmarkovfilter"):
                 config.commands.data[com].module_name = "src.cmd.markov"
                 config.commands.data[com].class_name = "MarkovCommands"
-            config.version = "0.0.6"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.6")
+            self._bump_version(config, "0.0.6")
         if config.version == "0.0.6":
             if hasattr(config.commands, "config"):
                 delattr(config.commands, "config")
-            config.version = "0.0.7"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.7")
+            self._bump_version(config, "0.0.7")
         if config.version == "0.0.7":
             config.__dict__["saving"] = {
                 "backup": {
@@ -70,9 +63,7 @@ class Updater:
                 "period": 10,
             }
             delattr(config, "compress")
-            config.version = "0.0.8"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.8")
+            self._bump_version(config, "0.0.8")
         if config.version == "0.0.8":
             config.ids["reaction"] = 1
             reactions = config.reactions
@@ -80,15 +71,11 @@ class Updater:
             for reaction in reactions:
                 config.reactions[config.ids["reaction"]] = reaction
                 config.ids["reaction"] += 1
-            config.version = "0.0.9"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.9")
+            self._bump_version(config, "0.0.9")
         if config.version == "0.0.9":
             config.__dict__["responses"] = dict()
             config.ids["response"] = 1
-            config.version = "0.0.10"
-            self.modified = True
-            log.info("Successfully upgraded your config.yaml to version 0.0.10")
+            self._bump_version(config, "0.0.10")
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
