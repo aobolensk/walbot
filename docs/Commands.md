@@ -29,6 +29,9 @@
 **addreaction**: Add reaction \
     Example: !addreaction emoji regex
 
+**addresponse**: Add bot response on message that contains particular regex \
+    Example: !addresponse regex;text
+
 **avatar**: Change bot avatar \
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images
@@ -85,6 +88,10 @@
 
 **delreminder**: Delete reminder by index \
     Example: !delreminder 0
+
+**delresponse**: Delete response \
+    Examples: \
+        !delresponse index
 
 **demojify**: Demojify text \
     Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
@@ -150,6 +157,10 @@
 
 **listreminder**: Print list of reminders \
     Example: !listreminder \
+    *This command can be used as subcommand*
+
+**listresponse**: Print list of responses \
+    Example: !listresponse \
     *This command can be used as subcommand*
 
 **markov**: Generate message using Markov chain \
@@ -292,6 +303,9 @@
 
 **updreminder**: Update reminder by index \
     Example: !updreminder 0 2020-01-01 00:00 Happy new year!
+
+**updresponse**: Update bot response \
+    Example: !updresponse index regex;text
 
 **uptime**: Show bot uptime \
     Example: !uptime \

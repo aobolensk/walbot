@@ -84,6 +84,11 @@ class Updater:
             self.modified = True
             log.info("Successfully upgraded your config.yaml to version 0.0.9")
         if config.version == "0.0.9":
+            config.__dict__["responses"] = dict()
+            config.ids["response"] = 1
+            config.version = "0.0.10"
+            self.modified = True
+            log.info("Successfully upgraded your config.yaml to version 0.0.10")
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
