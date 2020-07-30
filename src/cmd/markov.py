@@ -8,21 +8,21 @@ from ..utils import Util
 
 class MarkovCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, "MarkovCommands", "markov",
+        bc.commands.register_command(__name__, self.__name__, "markov",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "MarkovCommands", "markovgc",
+        bc.commands.register_command(__name__, self.__name__, "markovgc",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "MarkovCommands", "delmarkov",
+        bc.commands.register_command(__name__, self.__name__, "delmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "MarkovCommands", "findmarkov",
+        bc.commands.register_command(__name__, self.__name__, "findmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "MarkovCommands", "dropmarkov",
+        bc.commands.register_command(__name__, self.__name__, "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "MarkovCommands", "addmarkovfilter",
+        bc.commands.register_command(__name__, self.__name__, "addmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "MarkovCommands", "listmarkovfilter",
+        bc.commands.register_command(__name__, self.__name__, "listmarkovfilter",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "MarkovCommands", "delmarkovfilter",
+        bc.commands.register_command(__name__, self.__name__, "delmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=True)
 
     @staticmethod

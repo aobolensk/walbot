@@ -9,13 +9,13 @@ from ..utils import Util
 
 class ReminderCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, "ReminderCommands", "reminder",
+        bc.commands.register_command(__name__, self.__name__, "reminder",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "ReminderCommands", "updreminder",
+        bc.commands.register_command(__name__, self.__name__, "updreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "ReminderCommands", "listreminder",
+        bc.commands.register_command(__name__, self.__name__, "listreminder",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "ReminderCommands", "delreminder",
+        bc.commands.register_command(__name__, self.__name__, "delreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod

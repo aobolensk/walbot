@@ -22,140 +22,140 @@ from ..utils import Util
 
 class BuiltinCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, "BuiltinCommands", "takechars",
+        bc.commands.register_command(__name__, self.__name__, "takechars",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "countchars",
+        bc.commands.register_command(__name__, self.__name__, "countchars",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "takewords",
+        bc.commands.register_command(__name__, self.__name__, "takewords",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "countwords",
+        bc.commands.register_command(__name__, self.__name__, "countwords",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "takelines",
+        bc.commands.register_command(__name__, self.__name__, "takelines",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "countlines",
+        bc.commands.register_command(__name__, self.__name__, "countlines",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "tolower",
+        bc.commands.register_command(__name__, self.__name__, "tolower",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "toupper",
+        bc.commands.register_command(__name__, self.__name__, "toupper",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "range",
+        bc.commands.register_command(__name__, self.__name__, "range",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "ping",
+        bc.commands.register_command(__name__, self.__name__, "ping",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "help",
+        bc.commands.register_command(__name__, self.__name__, "help",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "profile",
+        bc.commands.register_command(__name__, self.__name__, "profile",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addcmd",
+        bc.commands.register_command(__name__, self.__name__, "addcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addextcmd",
+        bc.commands.register_command(__name__, self.__name__, "addextcmd",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "updcmd",
+        bc.commands.register_command(__name__, self.__name__, "updcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "updextcmd",
+        bc.commands.register_command(__name__, self.__name__, "updextcmd",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delcmd",
+        bc.commands.register_command(__name__, self.__name__, "delcmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "enablecmd",
+        bc.commands.register_command(__name__, self.__name__, "enablecmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "disablecmd",
+        bc.commands.register_command(__name__, self.__name__, "disablecmd",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "permcmd",
+        bc.commands.register_command(__name__, self.__name__, "permcmd",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "timescmd",
+        bc.commands.register_command(__name__, self.__name__, "timescmd",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "permuser",
+        bc.commands.register_command(__name__, self.__name__, "permuser",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "extexec",
+        bc.commands.register_command(__name__, self.__name__, "extexec",
                                      permission=const.Permission.ADMIN.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "whitelist",
+        bc.commands.register_command(__name__, self.__name__, "whitelist",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "config",
+        bc.commands.register_command(__name__, self.__name__, "config",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addreaction",
+        bc.commands.register_command(__name__, self.__name__, "addreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "updreaction",
+        bc.commands.register_command(__name__, self.__name__, "updreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delreaction",
+        bc.commands.register_command(__name__, self.__name__, "delreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listreaction",
+        bc.commands.register_command(__name__, self.__name__, "listreaction",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addresponse",
+        bc.commands.register_command(__name__, self.__name__, "addresponse",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "updresponse",
+        bc.commands.register_command(__name__, self.__name__, "updresponse",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delresponse",
+        bc.commands.register_command(__name__, self.__name__, "delresponse",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listresponse",
+        bc.commands.register_command(__name__, self.__name__, "listresponse",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "wme",
+        bc.commands.register_command(__name__, self.__name__, "wme",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "poll",
+        bc.commands.register_command(__name__, self.__name__, "poll",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "version",
+        bc.commands.register_command(__name__, self.__name__, "version",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "about",
+        bc.commands.register_command(__name__, self.__name__, "about",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addbgevent",
+        bc.commands.register_command(__name__, self.__name__, "addbgevent",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listbgevent",
+        bc.commands.register_command(__name__, self.__name__, "listbgevent",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delbgevent",
+        bc.commands.register_command(__name__, self.__name__, "delbgevent",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "random",
+        bc.commands.register_command(__name__, self.__name__, "random",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "randselect",
+        bc.commands.register_command(__name__, self.__name__, "randselect",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "silent",
+        bc.commands.register_command(__name__, self.__name__, "silent",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "time",
+        bc.commands.register_command(__name__, self.__name__, "time",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "uptime",
+        bc.commands.register_command(__name__, self.__name__, "uptime",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "status",
+        bc.commands.register_command(__name__, self.__name__, "status",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "channelid",
+        bc.commands.register_command(__name__, self.__name__, "channelid",
                                      permission=const.Permission.MOD.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addalias",
+        bc.commands.register_command(__name__, self.__name__, "addalias",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delalias",
+        bc.commands.register_command(__name__, self.__name__, "delalias",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listalias",
+        bc.commands.register_command(__name__, self.__name__, "listalias",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "img",
+        bc.commands.register_command(__name__, self.__name__, "img",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "wmeimg",
+        bc.commands.register_command(__name__, self.__name__, "wmeimg",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "listimg",
+        bc.commands.register_command(__name__, self.__name__, "listimg",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "addimg",
+        bc.commands.register_command(__name__, self.__name__, "addimg",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "delimg",
+        bc.commands.register_command(__name__, self.__name__, "delimg",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "tts",
+        bc.commands.register_command(__name__, self.__name__, "tts",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "urlencode",
+        bc.commands.register_command(__name__, self.__name__, "urlencode",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "emojify",
+        bc.commands.register_command(__name__, self.__name__, "emojify",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "demojify",
+        bc.commands.register_command(__name__, self.__name__, "demojify",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "shutdown",
+        bc.commands.register_command(__name__, self.__name__, "shutdown",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "restart",
+        bc.commands.register_command(__name__, self.__name__, "restart",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "avatar",
+        bc.commands.register_command(__name__, self.__name__, "avatar",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "message",
+        bc.commands.register_command(__name__, self.__name__, "message",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "server",
+        bc.commands.register_command(__name__, self.__name__, "server",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, "BuiltinCommands", "pin",
+        bc.commands.register_command(__name__, self.__name__, "pin",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "echo",
+        bc.commands.register_command(__name__, self.__name__, "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, "BuiltinCommands", "code",
+        bc.commands.register_command(__name__, self.__name__, "code",
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
 
