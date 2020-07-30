@@ -98,7 +98,7 @@ class Command:
             await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
             return
         self.times_called += 1
-        if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd"]:
+        if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd", "addbgevent"]:
             message.content = await self.process_subcommands(message.content, message, user)
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
@@ -141,7 +141,9 @@ class BackgroundEvent:
                 await self.channel.send("Unknown command '{}'".format(command[0]))
             else:
                 cmd = self.config.commands.data[command[0]]
+                saved_content = self.message.content
                 await cmd.run(self.message, command, None)
+                self.message.content = saved_content
 
     def cancel(self):
         self.task.cancel()
