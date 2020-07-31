@@ -61,7 +61,7 @@ class Command:
                     n1 = int(res.group(1))
                 if res.group(2):
                     n2 = int(res.group(2))+1
-                if not 0 < n1 < len(command) or not 0 < n2 <= len(command):
+                if not 0 < n1 < len(command) or not 0 < n2 <= len(command) or n1 > n2:
                     it += res.end()
                     continue
                 oldlen = len(string)
