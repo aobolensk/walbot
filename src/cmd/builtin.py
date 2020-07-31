@@ -370,15 +370,13 @@ class BuiltinCommands(BaseCmd):
                     result += "**{}**: {}\n".format(cmd[0], cmd[1])
                 await Util.response(message, result, silent)
             else:
-                embed = discord.Embed(title="Help", color=0x717171)
-                embed.add_field(
-                    name="Built-in commands",
-                    value=("<https://github.com/aobolensk/walbot/blob/" +
-                           (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">"),
-                    inline=False)
-                for cmd in commands:
-                    embed.add_field(name=cmd[0], value=cmd[1], inline=False)
-                await Util.response(message, None, silent, embed=embed)
+                commands.insert(0, ("Built-in commands", ("<https://github.com/aobolensk/walbot/blob/" +
+                                (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">")))
+                for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+                    embed = discord.Embed(title="Help", color=0x717171)
+                    for cmd in chunk:
+                        embed.add_field(name=cmd[0], value=cmd[1], inline=False)
+                    await Util.response(message, None, silent, embed=embed)
         elif len(command) == 2:
             name = command[1]
             if command[1] in bc.commands.data:
