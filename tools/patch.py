@@ -18,12 +18,7 @@ def save_file(path, config):
         f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))
 
 
-def main(args):
-    files = [
-        "config.yaml",
-        "markov.yaml",
-        "secret.yaml",
-    ]
+def main(args, files):
     if args.file != "all":
         files = [args.file]
     for file in files:

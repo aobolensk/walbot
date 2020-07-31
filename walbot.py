@@ -27,13 +27,13 @@ class Launcher:
         sp["docs"].add_argument("-o", "--out_file", default=const.COMMANDS_DOC_PATH,
                                 help="Path to output file")
         # Patch
-        files = [
+        self.config_files = [
             "config.yaml",
             "markov.yaml",
             "secret.yaml",
         ]
         sp["patch"].add_argument("file", nargs='?', default="all", help='Config file to patch',
-                                 choices=["all", *files])
+                                 choices=["all", *self.config_files])
         self.args = parser.parse_args()
         if self.args.action is None:
             parser.print_help()
@@ -65,7 +65,7 @@ class Launcher:
 
     def patch(self):
         """Patch config"""
-        importlib.import_module("tools.patch").main(self.args)
+        importlib.import_module("tools.patch").main(self.args, self.config_files)
 
 
 def main():
