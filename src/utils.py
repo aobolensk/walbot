@@ -88,6 +88,7 @@ class Util:
 
     @staticmethod
     async def run_external_command(message, cmd_line, silent=False):
+        result = ""
         try:
             log.debug("Processing external command: '{}'".format(cmd_line))
             process = subprocess.run(cmd_line, shell=True, check=True,
@@ -109,9 +110,7 @@ class Util:
         if os.path.isfile(path):
             with open(path, 'r') as f:
                 try:
-                    content = yaml.load(f.read(), Loader=yaml_loader)
+                    return yaml.load(f.read(), Loader=yaml_loader)
                 except Exception:
                     log.error("File '{}' can not be read!".format(path))
-        else:
-            return None
-        return content
+        return None
