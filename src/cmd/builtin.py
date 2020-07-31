@@ -325,6 +325,7 @@ class BuiltinCommands(BaseCmd):
         !profile `@user`"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
+        info = ""
         if len(command) == 1:
             info = message.author
         elif len(command) == 2:

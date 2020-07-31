@@ -32,6 +32,7 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1):
             return
         if len(command) > 1:
+            result = ""
             for i in range(const.MAX_MARKOV_ATTEMPTS):
                 result = bc.markov.generate(word=command[-1])
                 if len(result.split()) > len(command) - 1:
