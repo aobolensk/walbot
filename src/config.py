@@ -50,6 +50,23 @@ class Command:
         string = string.replace("@author@", message.author.mention)
         if not safe or const.ALNUM_STRING.match(' '.join(command[1:])):
             string = string.replace("@args@", ' '.join(command[1:]))
+            it = 0
+            while True:
+                res = const.ARGS_REGEX.search(string[it:])
+                if res is None:
+                    break
+                n1 = 1
+                n2 = len(command)
+                if res.group(1):
+                    n1 = int(res.group(1))
+                if res.group(2):
+                    n2 = int(res.group(2))+1
+                if not 0 < n1 < len(command) or not 0 < n2 <= len(command):
+                    it += res.end()
+                    continue
+                oldlen = len(string)
+                string = string.replace(res.group(0), ' '.join(command[n1:n2]), 1)
+                it += res.end()+len(string)-oldlen
         for i in range(len(command)):
             if not safe or const.ALNUM_STRING.match(command[i]):
                 string = string.replace("@arg" + str(i) + "@", command[i])
