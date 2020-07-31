@@ -76,6 +76,7 @@ class Updater:
             config.__dict__["responses"] = dict()
             config.ids["response"] = 1
             self._bump_version(config, "0.0.10")
+        if config.version == "0.0.10":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))
