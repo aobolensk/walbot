@@ -33,6 +33,10 @@ Debian/Ubuntu:
 ```console
 $ sudo apt install python3-yaml
 ```
+Arch Linux/Manjaro:
+```console
+$ sudo pacman -S python-yaml
+```
 Alternative:
 ```console
 $ git clone https://github.com/yaml/pyyaml
