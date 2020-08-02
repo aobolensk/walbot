@@ -65,7 +65,8 @@ class Command:
                     it += res.end()
                     continue
                 oldlen = len(string)
-                string = string.replace(res.group(0), ' '.join(command[n1:n2]), 1)
+                if not safe or const.ALNUM_STRING.match(' '.join(command[n1:n2])):
+                    string = string.replace(res.group(0), ' '.join(command[n1:n2]), 1)
                 it += res.end()+len(string)-oldlen
         for i in range(len(command)):
             if not safe or const.ALNUM_STRING.match(command[i]):
