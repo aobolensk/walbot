@@ -3,16 +3,16 @@
 # walbot
 Discord bot in Python
 
-Requirements:
+### Requirements:
 - Python 3.5+
 
-Quick start:
+### Quick start:
 ```shell
 $ python -m pip install -r requirements.txt
 $ python walbot.py start
 ```
 
-Command line options overview:
+### Command line options overview:
 ```shell
 $ python walbot.py start          # Start the bot
 $ python walbot.py stop           # Stop the bot
