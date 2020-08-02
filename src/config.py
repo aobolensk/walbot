@@ -278,6 +278,7 @@ class Config:
                 args=(markov_file, bc.yaml_dumper))
             thread.start()
             if wait:
+                log.info("Waiting for saving of Markov module data...")
                 thread.join()
                 log.info("Saving of Markov is waited")
         except Exception:
