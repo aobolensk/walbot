@@ -12,7 +12,7 @@ from src.utils import Util
 def save_file(path, config):
     try:
         yaml_dumper = yaml.CDumper
-    except Exception:
+    except AttributeError:
         yaml_dumper = yaml.Dumper
     with open(path, 'wb') as f:
         f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))

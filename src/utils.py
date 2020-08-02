@@ -105,7 +105,7 @@ class Util:
     def read_config_file(path):
         try:
             yaml_loader = yaml.CLoader
-        except Exception:
+        except AttributeError:
             yaml_loader = yaml.Loader
         if os.path.isfile(path):
             with open(path, 'r') as f:

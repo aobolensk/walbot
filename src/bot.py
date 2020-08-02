@@ -190,13 +190,13 @@ def start(args, main_bot=True):
     try:
         bc.yaml_loader = yaml.CLoader
         log.info("Using fast YAML Loader")
-    except Exception:
+    except AttributeError:
         bc.yaml_loader = yaml.Loader
         log.info("Using slow YAML Loader")
     try:
         bc.yaml_dumper = yaml.CDumper
         log.info("Using fast YAML Dumper")
-    except Exception:
+    except AttributeError:
         bc.yaml_dumper = yaml.Dumper
         log.info("Using slow YAML Dumper")
     # Saving application pd in order to safely stop it later
