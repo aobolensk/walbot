@@ -71,7 +71,7 @@ class WalBot(discord.Client):
                     to_remove.append(key)
             for key in to_remove:
                 self.config.reminders.pop(key)
-            await asyncio.sleep(30)
+            await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self):
         log.info("Logged in as: {} {} ({})".format(self.user.name, self.user.id, self.__class__.__name__))
