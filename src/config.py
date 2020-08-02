@@ -48,7 +48,7 @@ class Command:
 
     async def process_variables(self, string, message, command, safe=False):
         string = string.replace("@author@", message.author.mention)
-        if not safe or const.ALNUM_STRING.match(' '.join(command[1:])):
+        if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[1:])):
             string = string.replace("@args@", ' '.join(command[1:]))
             it = 0
             while True:
@@ -65,11 +65,11 @@ class Command:
                     it += res.end()
                     continue
                 oldlen = len(string)
-                if not safe or const.ALNUM_STRING.match(' '.join(command[n1:n2])):
+                if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[n1:n2])):
                     string = string.replace(res.group(0), ' '.join(command[n1:n2]), 1)
                 it += res.end()+len(string)-oldlen
         for i in range(len(command)):
-            if not safe or const.ALNUM_STRING.match(command[i]):
+            if not safe or const.ALNUM_STRING_REGEX.match(command[i]):
                 string = string.replace("@arg" + str(i) + "@", command[i])
         return string
 
@@ -94,7 +94,7 @@ class Command:
                                 cmd = bc.commands.data[command[0]]
                                 if cmd.can_be_subcommand():
                                     result = await cmd.run(message, command, user, silent=True)
-                                    if result is None or (safe and not const.ALNUM_STRING.match(content)):
+                                    if result is None or (safe and not const.ALNUM_STRING_REGEX.match(content)):
                                         result = ""
                                 else:
                                     await message.channel.send("Command '{}' can not be used as subcommand"
