@@ -100,6 +100,7 @@ class Command:
                                     await message.channel.send("Command '{}' can not be used as subcommand"
                                                                .format(command[0]))
                             content = content[:j-1] + result + content[i+1:]
+                            log.debug2("Command (during processing subcommands): {}".format(content))
                             break
                 if updated:
                     break
@@ -117,15 +118,22 @@ class Command:
             return
         self.times_called += 1
         if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd", "addbgevent"]:
+            log.debug2("Command (before processing): {}".format(message.content))
             message.content = await self.process_subcommands(message.content, message, user)
+            log.debug2("Command (after processing subcommands): {}".format(message.content))
+        else:
+            log.debug2("Subcommands are not processed!")
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
             return await self.get_actor()(message, command, silent)
         elif self.message is not None:
             response = self.message
+            log.debug2("Command (before processing): {}".format(response))
             response = await self.process_variables(response, message, command)
+            log.debug2("Command (after processing variables): {}".format(response))
             response = await self.process_subcommands(response, message, user)
+            log.debug2("Command (after processing subcommands): {}".format(response))
             if response:
                 if not silent:
                     for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
@@ -133,8 +141,11 @@ class Command:
                 return response
         elif self.cmd_line is not None:
             cmd_line = self.cmd_line[:]
+            log.debug2("Command (before processing): {}".format(cmd_line))
             cmd_line = await self.process_variables(cmd_line, message, command, safe=True)
+            log.debug2("Command (after processing variables): {}".format(cmd_line))
             cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
+            log.debug2("Command (after processing subcommands): {}".format(cmd_line))
             return await Util.run_external_command(message, cmd_line, silent)
         else:
             await message.channel.send("Command '{}' is not callable".format(command[0]))
