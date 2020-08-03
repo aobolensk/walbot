@@ -259,7 +259,8 @@ def start(args, main_bot=True):
         event.cancel()
     bc.background_loop = None
     log.info("Bot is disconnected!")
-    config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
+    if main_bot:
+        config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
     os.remove(const.BOT_CACHE_FILE_PATH)
     if bc._restart:
         cmd = "'{}' '{}' start".format(sys.executable, os.path.dirname(__file__) + "/../walbot.py")
