@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import importlib
 import itertools
 import os
 import re
@@ -247,7 +248,7 @@ def start(args, main_bot=True):
     if main_bot:
         walbot = WalBot(config, secret_config)
     else:
-        walbot = __import__("src.minibot", fromlist=['object']).MiniWalBot(config, secret_config)
+        walbot = importlib.import_module("src.minibot").MiniWalBot(config, secret_config)
     # Checking authentication token
     if secret_config.token is None:
         secret_config.token = input("Enter your token: ")
