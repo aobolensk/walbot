@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import imghdr
 import os
 import random
 import re
@@ -1126,13 +1127,20 @@ class BuiltinCommands(BaseCmd):
                         return
         if not os.path.exists("images"):
             os.makedirs("images")
-        with open(os.path.join("images", name + '.' + ext), 'wb') as f:
+        image_path = os.path.join("images", name + '.' + ext)
+        with open(image_path, 'wb') as f:
             try:
                 f.write(requests.get(url).content)
             except Exception:
                 await Util.response(message, "Image downloading failed!", silent)
                 log.error("Image downloading failed!", exc_info=True)
                 return
+        if imghdr.what(image_path) is None:
+            await Util.response(message, "Received file is not an image", silent)
+            log.error("Received file is not an image!")
+            os.remove(image_path)
+            log.info("Removed file {}".format(image_path))
+            return
         await Util.response(message, "Image '{}' successfully added!".format(name), silent)
 
     @staticmethod
