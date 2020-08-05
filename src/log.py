@@ -32,6 +32,9 @@ class Log:
         console_handler.setLevel(self.DEBUG)
         console_handler.setFormatter(formatter)
         self.log.addHandler(console_handler)
+        # Create logs folder
+        if not os.path.exists("logs"):
+            os.makedirs("logs")
         # File handler (logs/error.log)
         err_log_file_hdl = logging.FileHandler(os.path.join("logs", "error.log"), encoding="utf-8")
         err_log_file_hdl.setLevel(self.ERROR)
