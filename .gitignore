@@ -17,5 +17,5 @@ images/
 .bot_cache
 
 # Bot logs
-log.txt
+logs/
 nohup.out

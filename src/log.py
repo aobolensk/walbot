@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import os
 
 
 class Log:
@@ -31,11 +32,16 @@ class Log:
         console_handler.setLevel(self.DEBUG)
         console_handler.setFormatter(formatter)
         self.log.addHandler(console_handler)
-        # File handler (log.txt)
-        log_file_handler = logging.FileHandler("log.txt", encoding="utf-8")
-        log_file_handler.setLevel(self.DEBUG)
-        log_file_handler.setFormatter(formatter)
-        self.log.addHandler(log_file_handler)
+        # File handler (logs/error.log)
+        err_log_file_hdl = logging.FileHandler(os.path.join("logs", "error.log"), encoding="utf-8")
+        err_log_file_hdl.setLevel(self.ERROR)
+        err_log_file_hdl.setFormatter(formatter)
+        self.log.addHandler(err_log_file_hdl)
+        # File handler (logs/walbot.log)
+        general_log_file_hdl = logging.FileHandler(os.path.join("logs", "walbot.log"), encoding="utf-8")
+        general_log_file_hdl.setLevel(self.DEBUG)
+        general_log_file_hdl.setFormatter(formatter)
+        self.log.addHandler(general_log_file_hdl)
         # Add basic log functions
         self.debug = self.log.debug
         self.info = self.log.info
