@@ -41,7 +41,9 @@ class Log:
         err_log_file_hdl.setFormatter(formatter)
         self.log.addHandler(err_log_file_hdl)
         # File handler (logs/walbot.log)
-        general_log_file_hdl = logging.FileHandler(os.path.join("logs", "walbot.log"), encoding="utf-8")
+        general_log_file_hdl = logging.handlers.RotatingFileHandler(
+            os.path.join("logs", "walbot.log"), encoding="utf-8",
+            maxBytes=10240, backupCount=20)
         general_log_file_hdl.setLevel(self.DEBUG)
         general_log_file_hdl.setFormatter(formatter)
         self.log.addHandler(general_log_file_hdl)
