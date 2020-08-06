@@ -13,6 +13,8 @@ class Log:
     DEBUG2: int = 9
     NOTSET: int = 0
 
+    MAX_FILESIZE: int = 3 * 1024 * 1024
+
     def debug2(self, msg, *args, **kwargs):
         self.log.log(self.DEBUG2, msg, *args, **kwargs)
 
@@ -36,14 +38,16 @@ class Log:
         if not os.path.exists("logs"):
             os.makedirs("logs")
         # File handler (logs/error.log)
-        err_log_file_hdl = logging.FileHandler(os.path.join("logs", "error.log"), encoding="utf-8")
+        err_log_file_hdl = logging.handlers.RotatingFileHandler(
+            os.path.join("logs", "error.log"), encoding="utf-8",
+            maxBytes=self.MAX_FILESIZE, backupCount=20)
         err_log_file_hdl.setLevel(self.ERROR)
         err_log_file_hdl.setFormatter(formatter)
         self.log.addHandler(err_log_file_hdl)
         # File handler (logs/walbot.log)
         general_log_file_hdl = logging.handlers.RotatingFileHandler(
             os.path.join("logs", "walbot.log"), encoding="utf-8",
-            maxBytes=10240000, backupCount=20)
+            maxBytes=self.MAX_FILESIZE, backupCount=20)
         general_log_file_hdl.setLevel(self.DEBUG)
         general_log_file_hdl.setFormatter(formatter)
         self.log.addHandler(general_log_file_hdl)
