@@ -114,3 +114,24 @@ class Util:
                 except Exception:
                     log.error("File '{}' can not be read!".format(path))
         return None
+
+    class YAML:
+        @staticmethod
+        def get_loader():
+            try:
+                log.debug("Using fast YAML Loader")
+                loader = yaml.CLoader
+            except AttributeError:
+                log.debug("Using slow YAML Loader")
+                loader = yaml.Loader
+            return loader
+
+        @staticmethod
+        def get_dumper():
+            try:
+                log.debug("Using fast YAML Dumper")
+                dumper = yaml.CDumper
+            except AttributeError:
+                log.debug("Using slow YAML Dumper")
+                dumper = yaml.Dumper
+            return dumper

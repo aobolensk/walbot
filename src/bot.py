@@ -188,18 +188,8 @@ def start(args, main_bot=True):
         os.close(fd)
         signal.signal(signal.SIGHUP, signal.SIG_IGN)
     # Selecting YAML parser
-    try:
-        bc.yaml_loader = yaml.CLoader
-        log.info("Using fast YAML Loader")
-    except AttributeError:
-        bc.yaml_loader = yaml.Loader
-        log.info("Using slow YAML Loader")
-    try:
-        bc.yaml_dumper = yaml.CDumper
-        log.info("Using fast YAML Dumper")
-    except AttributeError:
-        bc.yaml_dumper = yaml.Dumper
-        log.info("Using slow YAML Dumper")
+    bc.yaml_loader = Util.YAML.get_loader()
+    bc.yaml_dumper = Util.YAML.get_dumper()
     # Saving application pd in order to safely stop it later
     with open(const.BOT_CACHE_FILE_PATH, 'w') as f:
         f.write(str(os.getpid()))
