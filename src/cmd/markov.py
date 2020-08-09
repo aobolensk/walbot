@@ -8,21 +8,21 @@ from ..utils import Util
 
 class MarkovCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.__name__, "markov",
+        bc.commands.register_command(__name__, self.get_classname(), "markov",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__name__, "markovgc",
+        bc.commands.register_command(__name__, self.get_classname(), "markovgc",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "delmarkov",
+        bc.commands.register_command(__name__, self.get_classname(), "delmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "findmarkov",
+        bc.commands.register_command(__name__, self.get_classname(), "findmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "dropmarkov",
+        bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "addmarkovfilter",
+        bc.commands.register_command(__name__, self.get_classname(), "addmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "listmarkovfilter",
+        bc.commands.register_command(__name__, self.get_classname(), "listmarkovfilter",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__name__, "delmarkovfilter",
+        bc.commands.register_command(__name__, self.get_classname(), "delmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=True)
 
     @staticmethod

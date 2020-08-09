@@ -9,8 +9,12 @@ from .config import log
 
 
 class BaseCmd:
+    @classmethod
+    def get_classname(cls):
+        return cls.__name__
+
     def bind(self):
-        raise NotImplementedError("Class {} does not have bind() function".format(self.__name__))
+        raise NotImplementedError("Class {} does not have bind() function".format(self.get_classname()))
 
 
 class Commands:
@@ -68,6 +72,7 @@ class Commands:
             f.write('\n'.join(sorted(list(set(result)))))
 
     def register_command(self, module_name, class_name, command_name, **kwargs):
+        log.debug2("Registering command: {} {} {}".format(module_name, class_name, command_name))
         if command_name not in self.data.keys():
             if kwargs.get("message", None):
                 self.data[command_name] = Command(module_name, class_name, **kwargs)

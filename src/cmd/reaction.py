@@ -8,21 +8,21 @@ from ..utils import Util
 
 class ReactionCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.__name__, "addreaction",
+        bc.commands.register_command(__name__, self.get_classname(), "addreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "updreaction",
+        bc.commands.register_command(__name__, self.get_classname(), "updreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "delreaction",
+        bc.commands.register_command(__name__, self.get_classname(), "delreaction",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "listreaction",
+        bc.commands.register_command(__name__, self.get_classname(), "listreaction",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.__name__, "addresponse",
+        bc.commands.register_command(__name__, self.get_classname(), "addresponse",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "updresponse",
+        bc.commands.register_command(__name__, self.get_classname(), "updresponse",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "delresponse",
+        bc.commands.register_command(__name__, self.get_classname(), "delresponse",
                                      permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "listresponse",
+        bc.commands.register_command(__name__, self.get_classname(), "listresponse",
                                      permission=const.Permission.USER.value, subcommand=True)
 
     @staticmethod

@@ -9,15 +9,15 @@ from ..utils import Util
 
 class QuoteCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.__name__, "quote",
+        bc.commands.register_command(__name__, self.get_classname(), "quote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "addquote",
+        bc.commands.register_command(__name__, self.get_classname(), "addquote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "listquote",
+        bc.commands.register_command(__name__, self.get_classname(), "listquote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "delquote",
+        bc.commands.register_command(__name__, self.get_classname(), "delquote",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.__name__, "setquoteauthor",
+        bc.commands.register_command(__name__, self.get_classname(), "setquoteauthor",
                                      permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
