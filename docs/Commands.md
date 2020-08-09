@@ -21,7 +21,7 @@
     Example: !addimg name url
 
 **addmarkovfilter**: Add regular expression filter for Markov model \
-    Example: !addmarkovfilter
+    Example: !addmarkovfilter regex
 
 **addquote**: Add quote to quotes database \
     Example: !addquote Hello, world!
