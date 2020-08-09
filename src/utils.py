@@ -119,19 +119,19 @@ class Util:
         @staticmethod
         def get_loader():
             try:
-                log.debug("Using fast YAML Loader")
                 loader = yaml.CLoader
+                log.debug("Using fast YAML Loader")
             except AttributeError:
-                log.debug("Using slow YAML Loader")
                 loader = yaml.Loader
+                log.debug("Using slow YAML Loader")
             return loader
 
         @staticmethod
         def get_dumper():
             try:
-                log.debug("Using fast YAML Dumper")
                 dumper = yaml.CDumper
+                log.debug("Using fast YAML Dumper")
             except AttributeError:
-                log.debug("Using slow YAML Dumper")
                 dumper = yaml.Dumper
+                log.debug("Using slow YAML Dumper")
             return dumper
