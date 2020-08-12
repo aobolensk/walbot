@@ -1,6 +1,6 @@
 import re
 
-from enum import Enum, unique
+import enum
 
 CONFIG_VERSION = '0.0.10'
 MARKOV_CONFIG_VERSION = '0.0.1'
@@ -37,14 +37,14 @@ ROLE_EVERYONE = "@everyone"
 ROLE_HERE = "@here"
 
 
-@unique
-class Permission(Enum):
+@enum.unique
+class Permission(enum.IntEnum):
     USER = 0
     MOD = 1
     ADMIN = 2
 
 
-class LogLevel:
+class LogLevel(enum.IntEnum):
     # Logging levels: https://docs.python.org/3/library/logging.html#logging-levels
     CRITICAL = 50
     ERROR = 40
