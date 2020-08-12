@@ -68,7 +68,7 @@ class Launcher:
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
-        self.stop()
+        self.stop(self.args)
         importlib.import_module("src.bot").start(self.args, main_bot=False)
 
     def docs(self):

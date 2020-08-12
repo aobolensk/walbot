@@ -1,6 +1,5 @@
-import re
-
 import enum
+import re
 
 CONFIG_VERSION = '0.0.10'
 MARKOV_CONFIG_VERSION = '0.0.1'
