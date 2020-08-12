@@ -13,9 +13,11 @@ CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"
 COMMANDS_DOC_PATH = "docs/Commands.md"
+LOGS_DIRECTORY = "logs"
 
 MAX_POLL_OPTIONS = 20
 MAX_RANGE_ITERATIONS = 500
+MAX_LOG_FILESIZE = 3 * 1024 * 1024
 DISCORD_MAX_EMBED_FILEDS_COUNT = 25
 DISCORD_MAX_MESSAGE_LENGTH = 2000
 MAX_MESSAGE_HISTORY_DEPTH = 1000
@@ -40,3 +42,14 @@ class Permission(Enum):
     USER = 0
     MOD = 1
     ADMIN = 2
+
+
+class LogLevel:
+    # Logging levels: https://docs.python.org/3/library/logging.html#logging-levels
+    CRITICAL = 50
+    ERROR = 40
+    WARNING = 30
+    INFO = 20
+    DEBUG = 10
+    DEBUG2 = 9
+    NOTSET = 0
