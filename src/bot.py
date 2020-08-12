@@ -266,7 +266,7 @@ def start(args, main_bot=True):
             os.system(cmd)
 
 
-def stop():
+def stop(_):
     if not os.path.exists(const.BOT_CACHE_FILE_PATH):
         log.error("Could not stop the bot (cache file does not exist)")
         return
