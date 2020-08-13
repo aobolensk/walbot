@@ -328,8 +328,7 @@ class Config:
                 if r is None:
                     break
                 response = const.USER_ID_REGEX.sub(
-                                  str(await message.guild.fetch_member(r.group(1))),
-                                  response, count=1)
+                    str(await message.guild.fetch_member(r.group(1))), response, count=1)
             while True:
                 r = const.ROLE_ID_REGEX.search(response)
                 if r is None:

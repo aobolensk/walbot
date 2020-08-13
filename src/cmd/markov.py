@@ -64,8 +64,9 @@ class MarkovCommands(BaseCmd):
             return
         regex = ' '.join(command[1:])
         removed = bc.markov.del_words(regex)
-        await Util.response(message, "Deleted {} words from model: {}".format(str(len(removed)),
-                            str(removed)), silent, suppress_embeds=True)
+        await Util.response(
+            message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)),
+            silent, suppress_embeds=True)
 
     @staticmethod
     async def _findmarkov(message, command, silent=False):
@@ -75,8 +76,9 @@ class MarkovCommands(BaseCmd):
             return
         regex = ' '.join(command[1:])
         found = bc.markov.find_words(regex)
-        await Util.response(message, "Found {} words in model: {}".format(str(len(found)),
-                            str(found)), silent, suppress_embeds=True)
+        await Util.response(
+            message, "Found {} words in model: {}".format(str(len(found)), str(found)),
+            silent, suppress_embeds=True)
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):

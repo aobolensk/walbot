@@ -60,8 +60,8 @@ class Commands:
                             s += " \\\n".join(command.get_actor().__doc__.split('\n'))
                         except AttributeError:
                             del self.data[name]
-                            log.warning("Command '{}' is not found and deleted from config and documentation".format(
-                                        name))
+                            log.warning(
+                                "Command '{}' is not found and deleted from config and documentation".format(name))
                             repeat = True
                             break
                         if command.subcommand:

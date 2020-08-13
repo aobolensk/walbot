@@ -32,8 +32,7 @@ class MiniWalBot(discord.Client):
                 self.config.users[message.author.id] = User(message.author.id)
             if self.config.users[message.author.id].permission_level < const.Permission.USER.value:
                 return
-            if (not message.content.startswith(self.config.commands_prefix) and
-               not self.user.mentioned_in(message)):
+            if not message.content.startswith(self.config.commands_prefix) and not self.user.mentioned_in(message):
                 return
             await message.channel.send("<Maintenance break>")
         except Exception:

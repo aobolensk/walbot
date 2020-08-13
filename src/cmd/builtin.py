@@ -316,9 +316,10 @@ class BuiltinCommands(BaseCmd):
         result = message.author.mention + '\n'
         result += "User: " + str(info) + '\n'
         result += "Avatar: <" + str(info.avatar_url) + '>\n'
-        status = [platform for (platform, status) in zip(
-            ["desktop", "mobile", "browser"],
-            [str(info.desktop_status), str(info.mobile_status), str(info.web_status)])
+        status = [
+            platform for (platform, status) in zip(
+                ["desktop", "mobile", "browser"],
+                [str(info.desktop_status), str(info.mobile_status), str(info.web_status)])
             if status != "offline"]
         result += "Status: " + str(info.status) + ' (' + ', '.join(status) + ')\n'
         result += "Created at: " + str(info.created_at) + '\n'
@@ -353,8 +354,10 @@ class BuiltinCommands(BaseCmd):
                     result += "**{}**: {}\n".format(cmd[0], cmd[1])
                 await Util.response(message, result, silent)
             else:
-                commands.insert(0, ("Built-in commands", ("<https://github.com/aobolensk/walbot/blob/" +
-                                (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">")))
+                commands.insert(
+                    0, ("Built-in commands", (
+                        "<https://github.com/aobolensk/walbot/blob/" +
+                        (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">")))
                 for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
                     embed = discord.Embed(title="Help", color=0x717171)
                     for cmd in chunk:
@@ -837,10 +840,10 @@ class BuiltinCommands(BaseCmd):
         if duration is None:
             return
         message.content = bc.config.commands_prefix + ' '.join(command[2:])
-        bc.background_events.append(BackgroundEvent(
-            bc.config, message.channel, message, duration))
-        await Util.response(message, "Successfully added background event '{}' with period {}".format(
-                            message.content, str(duration)), silent)
+        bc.background_events.append(BackgroundEvent(bc.config, message.channel, message, duration))
+        await Util.response(
+            message, "Successfully added background event '{}' with period {}".format(message.content, str(duration)),
+            silent)
 
     @staticmethod
     async def _listbgevent(message, command, silent=False):

@@ -60,8 +60,8 @@ class ReminderCommands(BaseCmd):
                 return
             text = ' '.join(command[4:])
             bc.config.reminders[index] = Reminder(str(time), text, message.channel.id)
-            await Util.response(message, "Successfully updated reminder {}: '{}' at {}".format(
-                                    index, text, time), silent)
+            await Util.response(
+                message, "Successfully updated reminder {}: '{}' at {}".format(index, text, time), silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)
 
