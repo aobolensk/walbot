@@ -66,7 +66,8 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
-                    await channel.send("You asked to remind at {} -> {}".format(now, rem.message))
+                    await channel.send("{}\nYou asked to remind at {} -> {}".format(
+                        ' '.join(rem.users), now, rem.message))
                     to_remove.append(key)
                 elif rem < now:
                     to_remove.append(key)

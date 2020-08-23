@@ -77,6 +77,10 @@ class Updater:
             config.ids["response"] = 1
             self._bump_version(config, "0.0.10")
         if config.version == "0.0.10":
+            for index in config.reminders.keys():
+                config.reminders[index].__dict__["users"] = []
+            self._bump_version(config, "0.0.11")
+        if config.version == "0.0.11":
             log.info("Version is up to date!")
         else:
             log.error("Unknown version {}!".format(config.version))

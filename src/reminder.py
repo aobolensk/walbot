@@ -3,6 +3,7 @@ class Reminder:
         self.time = time
         self.message = message
         self.channel_id = channel_id
+        self.users = []
 
     def __eq__(self, time):
         return self.time == time

@@ -218,6 +218,9 @@
 **reminder**: Print message at particular time \
     Example: !reminder 2020-01-01 00:00 Happy new year!
 
+**remindme**: Ask bot to ping you when it sends reminder \
+    Example: !remindme 0
+
 **restart**: Restart the bot \
     Example: !restart
 

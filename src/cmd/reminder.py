@@ -17,6 +17,8 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "delreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "remindme",
+                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _reminder(message, command, silent=False):
@@ -98,5 +100,22 @@ class ReminderCommands(BaseCmd):
         if index in bc.config.reminders.keys():
             bc.config.reminders.pop(index)
             await Util.response(message, "Successfully deleted reminder!", silent)
+        else:
+            await Util.response(message, "Invalid index of reminder!", silent)
+
+    @staticmethod
+    async def _remindme(message, command, silent=False):
+        """Ask bot to ping you when it sends reminder
+    Example: !remindme 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            message, command[1],
+            "Second parameter for '{}' should be an index of reminder".format(command[0]), silent)
+        if index is None:
+            return
+        if index in bc.config.reminders.keys():
+            bc.config.reminders[index].users.append(message.author.mention)
+            await Util.response(message, "You will be notified when reminder {} is sent".format(index), silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)
