@@ -15,7 +15,7 @@ class Quote:
         return ("(c) " + self.author) if self.author else ""
 
     def quote(self):
-        return "{} {}".format(self.message, self.get_author())
+        return f"{self.message} {self.get_author()}"
 
     def full_quote(self):
-        return "{} {}\nAdded by: {} at {}".format(self.message, self.get_author(), self.added_by, self.timestamp)
+        return f"{self.message} {self.get_author()}\nAdded by: {self.added_by} at {self.timestamp}"

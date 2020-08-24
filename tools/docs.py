@@ -10,5 +10,5 @@ def main(args):
     if config is None:
         config = Config()
     config.commands.update()
-    log.info("Exporting help to {}".format(args.out_file))
+    log.info(f"Exporting help to {args.out_file}")
     config.commands.export_help(args.out_file)

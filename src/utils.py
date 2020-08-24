@@ -51,10 +51,10 @@ class Util:
     @staticmethod
     async def check_args_count(message, command, silent, min=None, max=None):
         if min and len(command) < min:
-            await Util.response(message, "Too few arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, f"Too few arguments for command '{command[0]}'", silent)
             return False
         if max and len(command) > max:
-            await Util.response(message, "Too many arguments for command '{}'".format(command[0]), silent)
+            await Util.response(message, f"Too many arguments for command '{command[0]}'", silent)
             return False
         return True
 
@@ -82,7 +82,7 @@ class Util:
     @staticmethod
     def check_version(name, actual, expected):
         if (actual != expected):
-            log.error("{} versions mismatch. Expected: {}, but actual: {}".format(name, expected, actual))
+            log.error(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
             return False
         return True
 
@@ -90,15 +90,14 @@ class Util:
     async def run_external_command(message, cmd_line, silent=False):
         result = ""
         try:
-            log.debug("Processing external command: '{}'".format(cmd_line))
+            log.debug(f"Processing external command: '{cmd_line}'")
             process = subprocess.run(cmd_line, shell=True, check=True,
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            log.debug("External command '{}' finished execution with return code: {}".format(
-                cmd_line, process.returncode))
+            log.debug(f"External command '{cmd_line}' finished execution with return code: {process.returncode}")
             result = process.stdout.decode("utf-8")
             await Util.response(message, result, silent)
         except subprocess.CalledProcessError as e:
-            await Util.response(message, "<Command failed with error code {}>".format(e.returncode), silent)
+            await Util.response(message, f"<Command failed with error code {e.returncode}>", silent)
         return result
 
     @staticmethod
@@ -112,7 +111,7 @@ class Util:
                 try:
                     return yaml.load(f.read(), Loader=yaml_loader)
                 except Exception:
-                    log.error("File '{}' can not be read!".format(path))
+                    log.error(f"File '{path}' can not be read!")
         return None
 
     class YAML:

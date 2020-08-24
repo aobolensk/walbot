@@ -66,8 +66,7 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
-                    await channel.send("{}\nYou asked to remind at {} -> {}".format(
-                        ' '.join(rem.users), now, rem.message))
+                    await channel.send(f"{' '.join(rem.users)}\nYou asked to remind at {now} -> {rem.message}")
                     to_remove.append(key)
                 elif rem < now:
                     to_remove.append(key)
@@ -76,7 +75,7 @@ class WalBot(discord.Client):
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self):
-        log.info("Logged in as: {} {} ({})".format(self.user.name, self.user.id, self.__class__.__name__))
+        log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
@@ -138,7 +137,7 @@ class WalBot(discord.Client):
             if command[0] in self.config.commands.aliases.keys():
                 command[0] = self.config.commands.aliases[command[0]]
             else:
-                await message.channel.send("Unknown command '{}'".format(command[0]))
+                await message.channel.send(f"Unknown command '{command[0]}'")
                 return
         await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
 
@@ -183,7 +182,7 @@ def start(args, main_bot=True):
     # Handle --nohup flag
     if sys.platform in ("linux", "darwin") and args.nohup:
         fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
-        log.info("Output is redirected to {}".format(const.NOHUP_FILE_PATH))
+        log.info(f"Output is redirected to {const.NOHUP_FILE_PATH}")
         os.dup2(fd, sys.stdout.fileno())
         os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
         os.close(fd)
@@ -196,7 +195,7 @@ def start(args, main_bot=True):
         f.write(str(os.getpid()))
     # Executing patch tool if it is necessary
     if args.patch:
-        cmd = "'{}' '{}' all".format(sys.executable, os.path.dirname(__file__) + "/../tools/patch.py")
+        cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
         log.info("Executing patch tool: " + cmd)
         os.system(cmd)
     # Read config.yaml
@@ -205,7 +204,7 @@ def start(args, main_bot=True):
             try:
                 config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
-                log.error("yaml.load failed on file: {}".format(const.CONFIG_PATH), exc_info=True)
+                log.error(f"yaml.load failed on file: {const.CONFIG_PATH}", exc_info=True)
         config.commands.update()
     if config is None:
         config = Config()
@@ -215,7 +214,7 @@ def start(args, main_bot=True):
             try:
                 secret_config = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
-                log.error("yaml.load failed on file: {}".format(const.SECRET_CONFIG_PATH), exc_info=True)
+                log.error(f"yaml.load failed on file: {const.SECRET_CONFIG_PATH}", exc_info=True)
     if secret_config is None:
         secret_config = SecretConfig()
     # Read markov.yaml
@@ -225,7 +224,7 @@ def start(args, main_bot=True):
             try:
                 bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
             except Exception:
-                log.error("yaml.load failed on file: {}".format(const.MARKOV_PATH), exc_info=True)
+                log.error(f"yaml.load failed on file: {const.MARKOV_PATH}", exc_info=True)
     if bc.markov is None:
         bc.markov = Markov()
     # Check config versions
@@ -254,7 +253,7 @@ def start(args, main_bot=True):
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
     os.remove(const.BOT_CACHE_FILE_PATH)
     if bc._restart:
-        cmd = "'{}' '{}' start".format(sys.executable, os.path.dirname(__file__) + "/../walbot.py")
+        cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../walbot.py'}' start"
         log.info("Calling: " + cmd)
         if sys.platform in ("linux", "darwin"):
             fork = os.fork()

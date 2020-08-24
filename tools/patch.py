@@ -21,16 +21,16 @@ def main(args, files):
     for file in files:
         config = Util.read_config_file(file)
         if config is None:
-            log.error("File '{}' does not exist".format(file))
+            log.error(f"File '{file}' does not exist")
             sys.exit(1)
         if not hasattr(config, "version"):
-            log.error("{} does not have 'version' field".format(file))
+            log.error(f"{file} does not have 'version' field")
             sys.exit(1)
         version = config.version
-        log.info("WalBot config patch tool: {}@{}".format(file, version))
+        log.info(f"WalBot config patch tool: {file}@{version}")
         if Updater(file, config).result():
             if not os.path.exists("backup"):
                 os.makedirs("backup")
             shutil.copyfile(file, "backup/" + file + ".bak." + version)
             save_file(file, config)
-            log.info("Successfully saved file: {}".format(config.version))
+            log.info(f"Successfully saved file: {config.version}")

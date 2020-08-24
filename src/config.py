@@ -87,20 +87,19 @@ class Command:
                                 if command[0] in bc.config.commands.aliases.keys():
                                     command[0] = bc.config.commands.aliases[command[0]]
                                 else:
-                                    await message.channel.send("Unknown command '{}'".format(command[0]))
+                                    await message.channel.send(f"Unknown command '{command[0]}'")
                             result = ""
                             if command and command[0] in bc.commands.data.keys():
-                                log.debug("Processing subcommand: {}: {}".format(command[0], message.content))
+                                log.debug(f"Processing subcommand: {command[0]}: {message.content}")
                                 cmd = bc.commands.data[command[0]]
                                 if cmd.can_be_subcommand():
                                     result = await cmd.run(message, command, user, silent=True)
                                     if result is None or (safe and not const.ALNUM_STRING_REGEX.match(content)):
                                         result = ""
                                 else:
-                                    await message.channel.send("Command '{}' can not be used as subcommand"
-                                                               .format(command[0]))
+                                    await message.channel.send(f"Command '{command[0]}' can not be used as subcommand")
                             content = content[:j-1] + result + content[i+1:]
-                            log.debug2("Command (during processing subcommands): {}".format(content))
+                            log.debug2(f"Command (during processing subcommands): {content}")
                             break
                 if updated:
                     break
@@ -109,18 +108,18 @@ class Command:
         return content
 
     async def run(self, message, command, user, silent=False):
-        log.debug("Processing command: {}".format(message.content))
+        log.debug(f"Processing command: {message.content}")
         if not self.is_available(message.channel.id):
-            await message.channel.send("Command '{}' is not available in this channel".format(command[0]))
+            await message.channel.send(f"Command '{command[0]}' is not available in this channel")
             return
         if user is not None and self.permission > user.permission_level:
-            await message.channel.send("You don't have permission to call command '{}'".format(command[0]))
+            await message.channel.send(f"You don't have permission to call command '{command[0]}'")
             return
         self.times_called += 1
         if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd", "addbgevent"]:
-            log.debug2("Command (before processing): {}".format(message.content))
+            log.debug2(f"Command (before processing): {message.content}")
             message.content = await self.process_subcommands(message.content, message, user)
-            log.debug2("Command (after processing subcommands): {}".format(message.content))
+            log.debug2(f"Command (after processing subcommands): {message.content}")
         else:
             log.debug2("Subcommands are not processed!")
         command = message.content[1:].split(' ')
@@ -129,11 +128,11 @@ class Command:
             return await self.get_actor()(message, command, silent)
         elif self.message is not None:
             response = self.message
-            log.debug2("Command (before processing): {}".format(response))
+            log.debug2(f"Command (before processing): {response}")
             response = await self.process_variables(response, message, command)
-            log.debug2("Command (after processing variables): {}".format(response))
+            log.debug2(f"Command (after processing variables): {response}")
             response = await self.process_subcommands(response, message, user)
-            log.debug2("Command (after processing subcommands): {}".format(response))
+            log.debug2(f"Command (after processing subcommands): {response}")
             if response:
                 if not silent:
                     for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
@@ -141,14 +140,14 @@ class Command:
                 return response
         elif self.cmd_line is not None:
             cmd_line = self.cmd_line[:]
-            log.debug2("Command (before processing): {}".format(cmd_line))
+            log.debug2(f"Command (before processing): {cmd_line}")
             cmd_line = await self.process_variables(cmd_line, message, command, safe=True)
-            log.debug2("Command (after processing variables): {}".format(cmd_line))
+            log.debug2(f"Command (after processing variables): {cmd_line}")
             cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
-            log.debug2("Command (after processing subcommands): {}".format(cmd_line))
+            log.debug2(f"Command (after processing subcommands): {cmd_line}")
             return await Util.run_external_command(message, cmd_line, silent)
         else:
-            await message.channel.send("Command '{}' is not callable".format(command[0]))
+            await message.channel.send(f"Command '{command[0]}' is not callable")
 
 
 class BackgroundEvent:
@@ -165,9 +164,9 @@ class BackgroundEvent:
         command[0] = command[0][1:]
         while True:
             await asyncio.sleep(self.period)
-            log.debug("Triggered background event: {}".format(' '.join(command)))
+            log.debug(f"Triggered background event: {' '.join(command)}")
             if command[0] not in self.config.commands.data.keys():
-                await self.channel.send("Unknown command '{}'".format(command[0]))
+                await self.channel.send(f"Unknown command '{command[0]}'")
             else:
                 cmd = self.config.commands.data[command[0]]
                 saved_content = self.message.content
@@ -247,9 +246,9 @@ class Config:
                 with zipfile.ZipFile(backup_archive, mode='w') as zf:
                     zf.write(file, arcname=backup_file, compress_type=compress_type)
             except Exception as e:
-                log.error("Unable to create backup {} -> {}: {}".format(file, backup_file, e))
+                log.error(f"Unable to create backup {file} -> {backup_file}: {e}")
             else:
-                log.info("Created backup for {}: {}".format(file, backup_file))
+                log.info(f"Created backup for {file}: {backup_file}")
 
     def save(self, config_file, markov_file, secret_config_file, wait=False):
         config_mutex = threading.Lock()
@@ -319,7 +318,7 @@ class Config:
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
-        return "{}:{:02}:{:02}:{:02}".format(days, hours, minutes, seconds)
+        return f"{days}:{hours:02}:{minutes:02}:{seconds:02}"
 
     async def disable_pings_in_response(self, message, response):
         if not self.guilds[message.channel.guild.id].markov_pings:
@@ -335,7 +334,7 @@ class Config:
                     break
                 for role in message.guild.roles:
                     if str(role.id) == r.group(1):
-                        response = const.ROLE_ID_REGEX.sub("`{}`".format(role.name), response, count=1)
+                        response = const.ROLE_ID_REGEX.sub(f"`{role.name}`", response, count=1)
                         break
             response = re.sub(const.ROLE_EVERYONE, "`" + const.ROLE_EVERYONE + "`", response)
             response = re.sub(const.ROLE_HERE, "`" + const.ROLE_HERE + "`", response)

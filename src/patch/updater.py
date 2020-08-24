@@ -15,7 +15,7 @@ class Updater:
     def _bump_version(self, config, new_version):
         config.version = new_version
         self.modified = True
-        log.info("Successfully upgraded your config.yaml to version {}".format(new_version))
+        log.info(f"Successfully upgraded your config.yaml to version {new_version}")
 
     def config(self, config):
         if config.version == "0.0.1":
@@ -83,16 +83,16 @@ class Updater:
         if config.version == "0.0.11":
             log.info("Version is up to date!")
         else:
-            log.error("Unknown version {}!".format(config.version))
+            log.error(f"Unknown version {config.version}!")
 
     def markov(self, config):
         if config.version == "0.0.1":
             log.info("Version is up to date!")
         else:
-            log.error("Unknown version {}!".format(config.version))
+            log.error(f"Unknown version {config.version}!")
 
     def secret(self, config):
         if config.version == "0.0.1":
             log.info("Version is up to date!")
         else:
-            log.error("Unknown version {}!".format(config.version))
+            log.error(f"Unknown version {config.version}!")
