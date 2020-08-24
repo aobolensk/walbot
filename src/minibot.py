@@ -13,7 +13,7 @@ class MiniWalBot(discord.Client):
         self.secret_config = secret_config
 
     async def on_ready(self):
-        log.info("Logged in as: {} {} ({})".format(self.user.name, self.user.id, self.__class__.__name__))
+        log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)

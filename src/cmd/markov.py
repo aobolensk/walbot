@@ -52,7 +52,7 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = bc.markov.gc()
-        result = "Garbage collected {} items: {}".format(len(result), ', '.join(result))
+        result = f"Garbage collected {len(result)} items: {', '.join(result)}"
         await Util.response(message, result, silent)
         return result
 
@@ -65,8 +65,7 @@ class MarkovCommands(BaseCmd):
         regex = ' '.join(command[1:])
         removed = bc.markov.del_words(regex)
         await Util.response(
-            message, "Deleted {} words from model: {}".format(str(len(removed)), str(removed)),
-            silent, suppress_embeds=True)
+            message, f"Deleted {len(removed)} words from model: {removed}", silent, suppress_embeds=True)
 
     @staticmethod
     async def _findmarkov(message, command, silent=False):
@@ -76,9 +75,7 @@ class MarkovCommands(BaseCmd):
             return
         regex = ' '.join(command[1:])
         found = bc.markov.find_words(regex)
-        await Util.response(
-            message, "Found {} words in model: {}".format(str(len(found)), str(found)),
-            silent, suppress_embeds=True)
+        await Util.response(message, f"Found {len(found)} words in model: {found}", silent, suppress_embeds=True)
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):
@@ -96,7 +93,7 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         bc.markov.filters.append(re.compile(command[1]))
-        await Util.response(message, "Filter '{}' was successfully added for Markov model".format(command[1]), silent)
+        await Util.response(message, f"Filter '{command[1]}' was successfully added for Markov model", silent)
 
     @staticmethod
     async def _listmarkovfilter(message, command, silent=False):
@@ -106,7 +103,7 @@ class MarkovCommands(BaseCmd):
             return
         result = ""
         for index, regex in enumerate(bc.markov.filters):
-            result += "{} -> {}\n".format(index, regex.pattern)
+            result += f"{index} -> {regex.pattern}\n"
         if result:
             await Util.response(message, result, silent)
         else:
@@ -119,10 +116,8 @@ class MarkovCommands(BaseCmd):
     Example: !delmarkovfilter 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of filter"
-                                     .format(command[0]),
-                                     silent)
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of filter", silent)
         if index is None:
             return
         if 0 <= index < len(bc.markov.filters):

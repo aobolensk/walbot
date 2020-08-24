@@ -33,8 +33,7 @@ class ReactionCommands(BaseCmd):
             return
         bc.config.reactions[bc.config.ids["reaction"]] = Reaction(' '.join(command[2:]), command[1])
         bc.config.ids["reaction"] += 1
-        await Util.response(message, "Reaction '{}' on '{}' successfully added".format(
-            command[1], ' '.join(command[2:])), silent)
+        await Util.response(message, f"Reaction '{command[1]}' on '{' '.join(command[2:])}' successfully added", silent)
 
     @staticmethod
     async def _updreaction(message, command, silent=False):
@@ -42,14 +41,14 @@ class ReactionCommands(BaseCmd):
     Example: !updreaction index emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=4):
             return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should an index (integer)", silent)
         if index is None:
             return
         if index in bc.config.reactions.keys():
             bc.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
-            await Util.response(message, "Reaction '{}' on '{}' successfully updated".format(
-                command[1], ' '.join(command[2:])), silent)
+            await Util.response(
+                message, f"Reaction '{command[1]}' on '{' '.join(command[2:])}' successfully updated", silent)
         else:
             await Util.response(message, "Incorrect index of reaction!", silent)
 
@@ -61,8 +60,7 @@ class ReactionCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         index = await Util.parse_int(
-            message, command[1],
-            "Second parameter for '{}' should be an index of reaction".format(command[0]), silent)
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reaction", silent)
         if index is None:
             return
         if index in bc.config.reactions.keys():
@@ -79,7 +77,7 @@ class ReactionCommands(BaseCmd):
             return
         result = ""
         for index, reaction in bc.config.reactions.items():
-            result += "{} - {}: {}\n".format(index, reaction.emoji, reaction.regex)
+            result += f"{index} - {reaction.emoji}: {reaction.regex}\n"
         if result:
             await Util.response(message, result, silent)
         else:
@@ -100,7 +98,7 @@ class ReactionCommands(BaseCmd):
         regex, text = parts
         bc.config.responses[bc.config.ids["response"]] = Response(regex, text)
         bc.config.ids["response"] += 1
-        await Util.response(message, "Response '{}' on '{}' successfully added".format(text, regex), silent)
+        await Util.response(message, f"Response '{text}' on '{regex}' successfully added", silent)
 
     @staticmethod
     async def _updresponse(message, command, silent=False):
@@ -108,8 +106,8 @@ class ReactionCommands(BaseCmd):
     Example: !updresponse index regex;text"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should an index (integer)".format(command[0]), silent)
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should an index (integer)", silent)
         if index is None:
             return
         if index in bc.config.responses.keys():
@@ -120,7 +118,7 @@ class ReactionCommands(BaseCmd):
                 return
             regex, text = parts
             bc.config.responses[index] = Response(regex, text)
-            await Util.response(message, "Response '{}' on '{}' successfully updated".format(text, regex), silent)
+            await Util.response(message, f"Response '{text}' on '{regex}' successfully updated", silent)
         else:
             await Util.response(message, "Incorrect index of response!", silent)
 
@@ -132,8 +130,7 @@ class ReactionCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         index = await Util.parse_int(
-            message, command[1],
-            "Second parameter for '{}' should be an index of response".format(command[0]), silent)
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of response", silent)
         if index is None:
             return
         if index in bc.config.responses.keys():
@@ -150,7 +147,7 @@ class ReactionCommands(BaseCmd):
             return
         result = ""
         for index, response in bc.config.responses.items():
-            result += "{} - {}: {}\n".format(index, response.regex, response.text)
+            result += f"{index} - {response.regex}: {response.text}\n"
         if result:
             await Util.response(message, result, silent)
         else:

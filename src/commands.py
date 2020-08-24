@@ -14,7 +14,7 @@ class BaseCmd:
         return cls.__name__
 
     def bind(self):
-        raise NotImplementedError("Class {} does not have bind() function".format(self.get_classname()))
+        raise NotImplementedError(f"Class {self.get_classname()} does not have bind() function")
 
 
 class Commands:
@@ -39,11 +39,11 @@ class Commands:
                               if not func[0].startswith('_')]:
                     commands.bind(commands)
                 else:
-                    log.error("Class '{}' does not have bind() function".format(commands.__name__))
+                    log.error(f"Class '{commands.__name__}' does not have bind() function")
             elif len(commands) >= 1:
-                log.error("Module 'src.cmd{}' have more than 1 class in it".format(module))
+                log.error(f"Module 'src.cmd{module}' have more than 1 class in it")
             else:
-                log.error("Module 'src.cmd{}' have no classes in it".format(module))
+                log.error(f"Module 'src.cmd{module}' have no classes in it")
         self.export_help(const.COMMANDS_DOC_PATH)
 
     def export_help(self, file_path):
@@ -60,8 +60,7 @@ class Commands:
                             s += " \\\n".join(command.get_actor().__doc__.split('\n'))
                         except AttributeError:
                             del self.data[name]
-                            log.warning(
-                                "Command '{}' is not found and deleted from config and documentation".format(name))
+                            log.warning(f"Command '{name}' is not found and deleted from config and documentation")
                             repeat = True
                             break
                         if command.subcommand:
@@ -72,7 +71,7 @@ class Commands:
             f.write('\n'.join(sorted(list(set(result)))))
 
     def register_command(self, module_name, class_name, command_name, **kwargs):
-        log.debug2("Registering command: {} {} {}".format(module_name, class_name, command_name))
+        log.debug2(f"Registering command: {module_name} {class_name} {command_name}")
         if command_name not in self.data.keys():
             if kwargs.get("message", None):
                 self.data[command_name] = Command(module_name, class_name, **kwargs)

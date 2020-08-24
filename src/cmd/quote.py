@@ -32,17 +32,14 @@ class QuoteCommands(BaseCmd):
             await Util.response(message, "<Quotes database is empty>", silent)
             return
         if len(command) == 2:
-            index = await Util.parse_int(message, command[1],
-                                         "Second parameter for '{}' should be an index of quote"
-                                         .format(command[0]),
-                                         silent)
+            index = await Util.parse_int(
+                message, command[1], f"Second parameter for '{command[0]}' should be an index of quote", silent)
             if index is None:
                 return
         else:
             index = random.randint(0, len(bc.config.quotes) - 1)
         if 0 <= index < len(bc.config.quotes):
-            await Util.response(message,
-                                "Quote {}: {}".format(index, bc.config.quotes[index].full_quote()), silent)
+            await Util.response(message, f"Quote {index}: {bc.config.quotes[index].full_quote()}", silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
 
@@ -54,9 +51,10 @@ class QuoteCommands(BaseCmd):
             return
         quote = ' '.join(command[1:])
         bc.config.quotes.append(Quote(quote, str(message.author)))
-        await Util.response(message,
-                            "Quote '{}' was successfully added to quotes database with index {}".format(
-                                quote, len(bc.config.quotes) - 1), silent)
+        await Util.response(
+            message,
+            f"Quote '{quote}' was successfully added to quotes database with index {len(bc.config.quotes) - 1}",
+            silent)
 
     @staticmethod
     async def _listquote(message, command, silent=False):
@@ -66,7 +64,7 @@ class QuoteCommands(BaseCmd):
             return
         result = ""
         for index, quote in enumerate(bc.config.quotes):
-            result += "{} -> {}\n".format(index, quote.quote())
+            result += f"{index} -> {quote.quote()}\n"
         if result:
             await Util.response(message, result, silent)
         else:
@@ -79,10 +77,8 @@ class QuoteCommands(BaseCmd):
     Example: !delquote 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of quote"
-                                     .format(command[0]),
-                                     silent)
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of quote", silent)
         if index is None:
             return
         if 0 <= index < len(bc.config.quotes):
@@ -97,17 +93,14 @@ class QuoteCommands(BaseCmd):
     Example: !setquoteauthor 0 WalBot"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        index = await Util.parse_int(message, command[1],
-                                     "Second parameter for '{}' should be an index of quote"
-                                     .format(command[0]),
-                                     silent)
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of quote", silent)
         if index is None:
             return
         if 0 <= index < len(bc.config.quotes):
             author = ' '.join(command[2:])
             bc.config.quotes[index].author = author
-            await Util.response(message,
-                                "Successfully set author '{}' for quote '{}'".format(
-                                    author, bc.config.quotes[index].quote()), silent)
+            await Util.response(
+                message, f"Successfully set author '{author}' for quote '{bc.config.quotes[index].quote()}'", silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
