@@ -1289,7 +1289,8 @@ class BuiltinCommands(BaseCmd):
         g = message.guild
         result = (f"**Server**: '{g.name}', members: {g.member_count}, region: {g.region}, "
                   f"created: {g.created_at.replace(microsecond=0)}\n")
-        result += f"**Icon**: <{g.icon_url}>\n"
+        icon_url = f"<{g.icon_url}>" if g.icon_url else "<no icon>"
+        result += f"**Icon**: {icon_url}\n"
         if g.member_count <= 16:
             result += "**Members**:\n"
             members = []
