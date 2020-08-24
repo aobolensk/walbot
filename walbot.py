@@ -11,6 +11,14 @@ import sys
 from src import const
 
 
+if __name__ == "__main__":
+    """Check Python interpreter version"""
+    if not (sys.version_info.major >= 3 and sys.version_info.minor >= 6):
+        print("Python {}.{}.{} is not supported. You need Python 3.5+".format(
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+        sys.exit(1)
+
+
 class Launcher:
     """This class parses provided command line options and dispatches execution depending on them."""
 
@@ -83,10 +91,6 @@ class Launcher:
 
 def main():
     """WalBot launcher entrypoint"""
-    if not (sys.version_info.major >= 3 and sys.version_info.minor >= 5):
-        print("Python {}.{}.{} is not supported. You need Python 3.5+".format(
-            sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
-        sys.exit(1)
     Launcher()
 
 
