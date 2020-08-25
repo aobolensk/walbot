@@ -628,16 +628,16 @@ class BuiltinCommands(BaseCmd):
             return
         if len(command) == 1:
             result = "Config:\n"
-            result += "Reactions: " + (
+            result += "Reactions (reactions): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov logging: " + (
+            result += "Markov logging (markovlog): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov responses: " + (
+            result += "Markov responses (responses): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov pings: " + (
+            result += "Markov pings (markovpings): " + (
                 'enabled' if bc.config.guilds[message.channel.guild.id].markov_pings
                 else 'disabled') + "\n"
             await Util.response(message, result, silent)
