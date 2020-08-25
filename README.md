@@ -18,6 +18,8 @@ $ python walbot.py start          # Start the bot
 $ python walbot.py stop           # Stop the bot
 $ python walbot.py restart        # Restart the bot
 $ python walbot.py suspend        # Start dummy bot (useful for maintenance)
+$ python walbot.py docs           # Generate commands documentation
+$ python walbot.py patch          # Patch config files
 $ python walbot.py -h             # Get help
 ```
 
