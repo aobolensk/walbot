@@ -44,9 +44,15 @@ class Markov:
         self.end_node = MarkovNode(self.NodeType.end)
         self.filters = []
         self.version = const.MARKOV_CONFIG_VERSION
+        self.min_chars = 10
+        self.min_words = 2
 
     def add_string(self, text):
+        if len(text) < self.min_chars:
+            return
         words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
+        if len(words) < self.min_words:
+            return
         current_node = self.model[""]
         for word in words:
             current_node.add_next(word)
