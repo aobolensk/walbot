@@ -643,7 +643,7 @@ class BuiltinCommands(BaseCmd):
             await Util.response(message, result, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
-                if command[2] == "enable":
+                if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
                         await Util.response(
                             message, "Adding reactions is already enabled for this channel", silent)
@@ -651,7 +651,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding reactions is successfully enabled for this channel", silent)
-                elif command[2] == "disable":
+                elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
                         bc.config.guilds[message.channel.guild.id].reactions_whitelist.discard(
                             message.channel.id)
@@ -663,7 +663,7 @@ class BuiltinCommands(BaseCmd):
                 else:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovlog":
-                if command[2] == "enable":
+                if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist:
                         await Util.response(
                             message, "Adding messages to Markov model is already enabled for this channel", silent)
@@ -671,7 +671,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully enabled for this channel", silent)
-                elif command[2] == "disable":
+                elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist:
                         bc.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
                         await Util.response(
@@ -681,7 +681,7 @@ class BuiltinCommands(BaseCmd):
                         await Util.response(
                             message, "Adding messages to Markov model is already disabled for this channel", silent)
             elif command[1] == "responses":
-                if command[2] == "enable":
+                if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                         await Util.response(
                             message, "Bot responses on mentioning are already enabled for this channel", silent)
@@ -689,7 +689,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Bot responses on mentioning are successfully enabled for this channel", silent)
-                elif command[2] == "disable":
+                elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                         bc.config.guilds[message.channel.guild.id].responses_whitelist.discard(
                             message.channel.id)
@@ -702,7 +702,7 @@ class BuiltinCommands(BaseCmd):
                 else:
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovpings":
-                if command[2] == "enable":
+                if command[2] in ("enable", "true", "on"):
                     if bc.config.guilds[message.channel.guild.id].markov_pings:
                         await Util.response(
                             message, "Markov pings are already enabled for this channel", silent)
@@ -710,7 +710,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.guilds[message.channel.guild.id].markov_pings = True
                         await Util.response(
                             message, "Markov pings are successfully enabled for this channel", silent)
-                elif command[2] == "disable":
+                elif command[2] in ("disable", "false", "off"):
                     if bc.config.guilds[message.channel.guild.id].markov_pings:
                         bc.config.guilds[message.channel.guild.id].markov_pings = False
                         await Util.response(
