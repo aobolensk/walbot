@@ -7,7 +7,6 @@ import re
 import urllib.request
 
 import discord
-import requests
 
 from .. import const
 from .. import emoji
@@ -1120,7 +1119,9 @@ class BuiltinCommands(BaseCmd):
         image_path = os.path.join("images", name + '.' + ext)
         with open(image_path, 'wb') as f:
             try:
-                f.write(requests.get(url).content)
+                rq = urllib.request.Request(url)
+                with urllib.request.urlopen(rq) as response:
+                    f.write(response.read())
             except Exception:
                 await Util.response(message, "Image downloading failed!", silent)
                 log.error("Image downloading failed!", exc_info=True)
