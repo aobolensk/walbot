@@ -10,7 +10,6 @@ import time
 
 import discord
 import psutil
-import yaml
 
 from . import const
 from .config import Config
