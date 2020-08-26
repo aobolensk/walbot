@@ -102,16 +102,13 @@ class Util:
 
     @staticmethod
     def read_config_file(path):
-        try:
-            yaml_loader = yaml.CLoader
-        except AttributeError:
-            yaml_loader = yaml.Loader
+        yaml_loader = Util.YAML.get_loader()
         if os.path.isfile(path):
             with open(path, 'r') as f:
                 try:
                     return yaml.load(f.read(), Loader=yaml_loader)
                 except Exception:
-                    log.error(f"File '{path}' can not be read!")
+                    log.error(f"File '{path}' can not be read!", exc_info=True)
         return None
 
     class YAML:

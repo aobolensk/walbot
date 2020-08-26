@@ -198,33 +198,15 @@ def start(args, main_bot=True):
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
         log.info("Executing patch tool: " + cmd)
         os.system(cmd)
-    # Read config.yaml
-    if os.path.isfile(const.CONFIG_PATH):
-        with open(const.CONFIG_PATH, 'r') as f:
-            try:
-                config = yaml.load(f.read(), Loader=bc.yaml_loader)
-            except Exception:
-                log.error(f"yaml.load failed on file: {const.CONFIG_PATH}", exc_info=True)
-        config.commands.update()
+    # Read configuration files
+    config = Util.read_config_file(const.CONFIG_PATH)
     if config is None:
         config = Config()
-    # Read secret.yaml
-    if os.path.isfile(const.SECRET_CONFIG_PATH):
-        with open(const.SECRET_CONFIG_PATH, 'r') as f:
-            try:
-                secret_config = yaml.load(f.read(), Loader=bc.yaml_loader)
-            except Exception:
-                log.error(f"yaml.load failed on file: {const.SECRET_CONFIG_PATH}", exc_info=True)
+    config.commands.update()
+    secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
     if secret_config is None:
         secret_config = SecretConfig()
-    # Read markov.yaml
-    bc.markov = None
-    if os.path.isfile(const.MARKOV_PATH):
-        with open(const.MARKOV_PATH, 'rb') as f:
-            try:
-                bc.markov = yaml.load(f.read(), Loader=bc.yaml_loader)
-            except Exception:
-                log.error(f"yaml.load failed on file: {const.MARKOV_PATH}", exc_info=True)
+    bc.markov = Util.read_config_file(const.MARKOV_PATH)
     if bc.markov is None:
         bc.markov = Markov()
     # Check config versions
