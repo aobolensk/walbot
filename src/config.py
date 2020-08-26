@@ -16,8 +16,13 @@ from .utils import Util
 class BotController:
     def __init__(self):
         self.background_events = []
-        self.background_loop = None
         self.deployment_time = datetime.datetime.now()
+        self.background_loop = None
+        self.commands = None
+        self.config = None
+        self.markov = None
+        self.secret_config = None
+        self.yaml_dumper = None
 
 
 bc = BotController()
