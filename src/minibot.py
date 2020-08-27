@@ -8,7 +8,7 @@ from .log import log
 
 class MiniWalBot(discord.Client):
     def __init__(self, config, secret_config):
-        super(MiniWalBot, self).__init__()
+        super().__init__()
         self.config = config
         self.secret_config = secret_config
 
