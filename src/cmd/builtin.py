@@ -1124,6 +1124,7 @@ class BuiltinCommands(BaseCmd):
                     f.write(response.read())
             except Exception:
                 await Util.response(message, "Image downloading failed!", silent)
+                os.remove(image_path)
                 log.error("Image downloading failed!", exc_info=True)
                 return
         if imghdr.what(image_path) is None:
