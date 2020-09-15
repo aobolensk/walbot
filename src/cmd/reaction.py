@@ -77,7 +77,7 @@ class ReactionCommands(BaseCmd):
             return
         result = ""
         for index, reaction in bc.config.reactions.items():
-            result += f"{index} - {reaction.emoji}: {reaction.regex}\n"
+            result += f"{index} - {reaction.emoji}: `{reaction.regex}`\n"
         if result:
             await Util.response(message, result, silent)
         else:
@@ -147,7 +147,7 @@ class ReactionCommands(BaseCmd):
             return
         result = ""
         for index, response in bc.config.responses.items():
-            result += f"{index} - {response.regex}: {response.text}\n"
+            result += f"{index} - `{response.regex}`: {response.text}\n"
         if result:
             await Util.response(message, result, silent)
         else:

@@ -225,7 +225,7 @@
     Example: !restart
 
 **server**: Print information about current server \
-    Example: !server 0
+    Example: !server
 
 **setquoteauthor**: Set author of quote by its index \
     Example: !setquoteauthor 0 WalBot

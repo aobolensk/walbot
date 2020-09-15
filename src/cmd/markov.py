@@ -103,7 +103,7 @@ class MarkovCommands(BaseCmd):
             return
         result = ""
         for index, regex in enumerate(bc.markov.filters):
-            result += f"{index} -> {regex.pattern}\n"
+            result += f"{index} -> `{regex.pattern}`\n"
         if result:
             await Util.response(message, result, silent)
         else:
