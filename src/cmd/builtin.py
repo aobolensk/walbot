@@ -735,7 +735,7 @@ class BuiltinCommands(BaseCmd):
         if not result:
             return
         result = "You asked me to send you this: " + result
-        await Util.send_direct_message(message, result, silent)
+        await Util.send_direct_message(message.author, result, silent)
 
     @staticmethod
     async def _poll(message, command, silent=False):
@@ -1066,8 +1066,8 @@ class BuiltinCommands(BaseCmd):
                 if root.endswith("images"):
                     for file in files:
                         if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
-                            await Util.send_direct_message(message, None, silent,
-                                                           files=[discord.File(os.path.join("images", file))])
+                            await Util.send_direct_message(
+                                message.author, None, silent, files=[discord.File(os.path.join("images", file))])
                             break
                     else:
                         r = const.EMOJI_REGEX.match(command[i])

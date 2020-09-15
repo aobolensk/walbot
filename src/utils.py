@@ -31,20 +31,20 @@ class Util:
             log.info("[SILENT] -> " + content)
 
     @staticmethod
-    async def send_direct_message(message, content, silent, **kwargs):
+    async def send_direct_message(author, content, silent, **kwargs):
         if not silent:
-            if message.author.dm_channel is None:
-                await message.author.create_dm()
+            if author.dm_channel is None:
+                await author.create_dm()
             if content:
                 for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
-                    msg = await message.author.dm_channel.send(
+                    msg = await author.dm_channel.send(
                         chunk,
                         tts=kwargs.get("tts", False),
                         files=kwargs.get("files", None))
                     if kwargs.get("suppress_embeds", False):
                         await msg.edit(suppress=True)
             elif kwargs.get("files", None):
-                msg = await message.author.dm_channel.send(None, files=kwargs.get("files", None))
+                msg = await author.dm_channel.send(None, files=kwargs.get("files", None))
         else:
             log.info("[SILENT] -> " + content)
 
