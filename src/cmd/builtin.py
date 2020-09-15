@@ -1285,7 +1285,7 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _server(message, command, silent=False):
         """Print information about current server
-    Example: !server 0"""
+    Example: !server"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         g = message.guild
