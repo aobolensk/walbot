@@ -9,7 +9,7 @@ from ..utils import Util
 
 class ReminderCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "reminder",
+        bc.commands.register_command(__name__, self.get_classname(), "addreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "updreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
@@ -21,9 +21,9 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
-    async def _reminder(message, command, silent=False):
+    async def _addreminder(message, command, silent=False):
         """Print message at particular time
-    Example: !reminder 2020-01-01 00:00 Happy new year!"""
+    Example: !addreminder 2020-01-01 00:00 Happy new year!"""
         if not await Util.check_args_count(message, command, silent, min=4):
             return
         time = command[1] + ' ' + command[2]

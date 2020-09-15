@@ -81,6 +81,14 @@ class Updater:
                 config.reminders[index].__dict__["users"] = []
             self._bump_version(config, "0.0.11")
         if config.version == "0.0.11":
+            if "addreminder" in config.commands.aliases.keys():
+                del config.commands.aliases["addreminder"]
+            config.commands.data["addreminder"] = config.commands.data["reminder"]
+            del config.commands.data["reminder"]
+            config.commands.data["addreminder"].module_name = "src.cmd.reminder"
+            config.commands.data["addreminder"].perform = "_addreminder"
+            self._bump_version(config, "0.0.12")
+        if config.version == "0.0.12":
             log.info("Version is up to date!")
         else:
             log.error(f"Unknown version {config.version}!")

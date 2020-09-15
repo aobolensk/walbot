@@ -29,6 +29,9 @@
 **addreaction**: Add reaction \
     Example: !addreaction emoji regex
 
+**addreminder**: Print message at particular time \
+    Example: !addreminder 2020-01-01 00:00 Happy new year!
+
 **addresponse**: Add bot response on message that contains particular regex \
     Example: !addresponse regex;text
 
@@ -214,9 +217,6 @@
         !range &lt;start&gt; &lt;stop&gt; \
         !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
     *This command can be used as subcommand*
-
-**reminder**: Print message at particular time \
-    Example: !reminder 2020-01-01 00:00 Happy new year!
 
 **remindme**: Ask bot to ping you when it sends reminder \
     Example: !remindme 0
