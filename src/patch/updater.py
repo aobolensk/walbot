@@ -89,6 +89,12 @@ class Updater:
             config.commands.data["addreminder"].perform = "_addreminder"
             self._bump_version(config, "0.0.12")
         if config.version == "0.0.12":
+            for index, reminder in config.reminders.items():
+                reminder.__dict__["ping_users"] = reminder.users
+                del reminder.__dict__["users"]
+                reminder.__dict__["whisper_users"] = []
+            self._bump_version(config, "0.0.13")
+        if config.version == "0.0.13":
             log.info("Version is up to date!")
         else:
             log.error(f"Unknown version {config.version}!")

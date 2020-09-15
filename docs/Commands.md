@@ -219,7 +219,10 @@
     *This command can be used as subcommand*
 
 **remindme**: Ask bot to ping you when it sends reminder \
-    Example: !remindme 0
+    Example: !remindme 1
+
+**remindwme**: Ask bot to send direct message you when it sends reminder \
+    Example: !remindwme 1
 
 **restart**: Restart the bot \
     Example: !restart

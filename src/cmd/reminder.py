@@ -19,6 +19,8 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "remindme",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "remindwme",
+                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _addreminder(message, command, silent=False):
@@ -101,7 +103,7 @@ class ReminderCommands(BaseCmd):
     @staticmethod
     async def _remindme(message, command, silent=False):
         """Ask bot to ping you when it sends reminder
-    Example: !remindme 0"""
+    Example: !remindme 1"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         index = await Util.parse_int(
@@ -109,7 +111,24 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index in bc.config.reminders.keys():
-            bc.config.reminders[index].users.append(message.author.mention)
-            await Util.response(message, f"You will be notified when reminder {index} is sent", silent)
+            bc.config.reminders[index].ping_users.append(message.author.mention)
+            await Util.response(message, f"You will be mentioned when reminder {index} is sent", silent)
+        else:
+            await Util.response(message, "Invalid index of reminder!", silent)
+
+    @staticmethod
+    async def _remindwme(message, command, silent=False):
+        """Ask bot to send direct message you when it sends reminder
+    Example: !remindwme 1"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index in bc.config.reminders.keys():
+            bc.config.reminders[index].whisper_users.append(message.author.id)
+            await Util.response(
+                message, f"You will be notified in direct messages when reminder {index} is sent", silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)

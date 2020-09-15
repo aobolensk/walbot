@@ -65,7 +65,10 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
-                    await channel.send(f"{' '.join(rem.users)}\nYou asked to remind at {now} -> {rem.message}")
+                    await channel.send(f"{' '.join(rem.ping_users)}\nYou asked to remind at {now} -> {rem.message}")
+                    for user_id in rem.whisper_users:
+                        await Util.send_direct_message(
+                            self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                     to_remove.append(key)
                 elif rem < now:
                     to_remove.append(key)
