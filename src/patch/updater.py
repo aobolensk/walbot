@@ -6,6 +6,7 @@ from ..log import log
 class Updater:
     def __init__(self, path, config):
         """Dispaching config to its updater by config name"""
+        self.config_path = path
         self.modified = False
         getattr(self, os.path.splitext(path)[0])(config)
 
@@ -95,9 +96,9 @@ class Updater:
                 reminder.__dict__["whisper_users"] = []
             self._bump_version(config, "0.0.13")
         if config.version == "0.0.13":
-            log.info("Version is up to date!")
+            log.info(f"Version of {self.config_path} is up to date!")
         else:
-            log.error(f"Unknown version {config.version}!")
+            log.error(f"Unknown version {config.version} for {self.config_path}!")
 
     def markov(self, config):
         if config.version == "0.0.1":
@@ -105,12 +106,12 @@ class Updater:
             config.__dict__["min_words"] = 1
             self._bump_version(config, "0.0.2")
         if config.version == "0.0.2":
-            log.info("Version is up to date!")
+            log.info(f"Version of {self.config_path} is up to date!")
         else:
-            log.error(f"Unknown version {config.version}!")
+            log.error(f"Unknown version {config.version} for {self.config_path}!")
 
     def secret(self, config):
         if config.version == "0.0.1":
-            log.info("Version is up to date!")
+            log.info(f"Version of {self.config_path} is up to date!")
         else:
-            log.error(f"Unknown version {config.version}!")
+            log.error(f"Unknown version {config.version} for {self.config_path}!")
