@@ -179,7 +179,7 @@ def start(args, main_bot=True):
     # Some variable initializations
     config = None
     secret_config = None
-    bc._restart = False
+    bc.restart_flag = False
     bc.args = args
     # Handle --nohup flag
     if sys.platform in ("linux", "darwin") and args.nohup:
@@ -236,7 +236,7 @@ def start(args, main_bot=True):
     if main_bot:
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
     os.remove(const.BOT_CACHE_FILE_PATH)
-    if bc._restart:
+    if bc.restart_flag:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../walbot.py'}' start"
         log.info("Calling: " + cmd)
         if sys.platform in ("linux", "darwin"):

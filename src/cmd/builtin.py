@@ -1237,7 +1237,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         log.info(str(message.author) + " invoked restarting the bot")
-        bc._restart = True
+        bc.restart_flag = True
         await bc.close()
 
     @staticmethod
