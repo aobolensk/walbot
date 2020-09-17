@@ -1122,6 +1122,9 @@ class BuiltinCommands(BaseCmd):
                 rq = urllib.request.Request(url)
                 with urllib.request.urlopen(rq) as response:
                     f.write(response.read())
+            except ValueError:
+                await Util.response(message, "Incorrect image URL format!", silent)
+                return
             except Exception:
                 await Util.response(message, "Image downloading failed!", silent)
                 os.remove(image_path)
