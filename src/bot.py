@@ -85,7 +85,7 @@ class WalBot(discord.Client):
 
     async def on_message(self, message):
         try:
-            log.info("<" + str(message.id) + "> " + str(message.author) + " -> " + message.content)
+            log.info(f"<{message.id}> {message.author} -> {message.content}")
             if message.author.id == self.user.id:
                 return
             if isinstance(message.channel, discord.DMChannel):
@@ -145,14 +145,13 @@ class WalBot(discord.Client):
 
     async def on_raw_message_edit(self, payload):
         try:
-            log.info("<" + str(payload.message_id) + "> (edit) " +
-                     payload.data["author"]["username"] + "#" + payload.data["author"]["discriminator"] +
-                     " -> " + payload.data["content"])
+            log.info(f"<{payload.message_id}> (edit) {payload.data['author']['username']}#"
+                     f"{payload.data['author']['discriminator']} -> {payload.data['content']}")
         except KeyError:
             pass
 
     async def on_raw_message_delete(self, payload):
-        log.info("<" + str(payload.message_id) + "> (delete)")
+        log.info(f"<{payload.message_id}> (delete)")
 
 
 def parse_bot_cache():

@@ -18,7 +18,7 @@ class BaseCmd:
 
 
 class Commands:
-    def __init__(self, config):
+    def __init__(self):
         if not hasattr(self, "data"):
             self.data = dict()
         if not hasattr(self, "aliases"):
@@ -40,7 +40,7 @@ class Commands:
                     commands.bind(commands)
                 else:
                     log.error(f"Class '{commands.__name__}' does not have bind() function")
-            elif len(commands) >= 1:
+            elif len(commands) > 1:
                 log.error(f"Module 'src.cmd{module}' have more than 1 class in it")
             else:
                 log.error(f"Module 'src.cmd{module}' have no classes in it")
