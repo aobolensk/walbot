@@ -239,6 +239,9 @@
 **silent**: Make the following command silent (without any output to the chat) \
     Example: !silent ping
 
+**slowmode**: Edit slowmode \
+    Example: !slowmode 0
+
 **status**: Change bot status \
     Examples: \
         !status idle \

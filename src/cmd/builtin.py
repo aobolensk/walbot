@@ -134,6 +134,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "pin",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "slowmode",
+                                     permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1325,3 +1327,19 @@ class BuiltinCommands(BaseCmd):
             Util.response(message, "Invalid index of pinned message!", silent)
         await Util.response(message, result, silent)
         return result
+
+    @staticmethod
+    async def _slowmode(message, command, silent=False):
+        """Edit slowmode
+    Example: !slowmode 0"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        duration = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
+        if duration is None:
+            return
+        await message.channel.edit(slowmode_delay=duration)
+        if duration == 0:
+            await Util.response(message, "Slowmode is disabled for current channel", silent)
+        else:
+            await Util.response(message, f"Slowmode is set to {duration} seconds", silent)
