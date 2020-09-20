@@ -214,7 +214,7 @@ class User:
 class Config:
     def __init__(self):
         commands = __import__("commands", globals(), locals(), level=1)
-        self.commands = commands.Commands(self)
+        self.commands = commands.Commands()
         self.commands.update()
         self.version = const.CONFIG_VERSION
         self.reactions = dict()
