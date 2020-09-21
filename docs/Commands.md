@@ -48,6 +48,7 @@
         !config reactions &lt;enable/disable&gt; \
         !config markovlog &lt;enable/disable&gt; \
         !config responses &lt;enable/disable&gt; \
+        !config markovresponses &lt;enable/disable&gt; \
         !config markovpings &lt;enable/disable&gt;
 
 **countchars**: Calculate length of the message \

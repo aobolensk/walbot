@@ -625,6 +625,7 @@ class BuiltinCommands(BaseCmd):
         !config reactions <enable/disable>
         !config markovlog <enable/disable>
         !config responses <enable/disable>
+        !config markovresponses <enable/disable>
         !config markovpings <enable/disable>"""
         if not await Util.check_args_count(message, command, silent, min=1, max=3):
             return
@@ -635,6 +636,9 @@ class BuiltinCommands(BaseCmd):
                 else 'disabled') + "\n"
             result += "Markov logging (markovlog): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist)
+                else 'disabled') + "\n"
+            result += "Bot responses (responses): " + (
+                'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist)
                 else 'disabled') + "\n"
             result += "Markov responses (markovresponses): " + (
                 'enabled' if (message.channel.id in
@@ -683,6 +687,27 @@ class BuiltinCommands(BaseCmd):
                     else:
                         await Util.response(
                             message, "Adding messages to Markov model is already disabled for this channel", silent)
+            elif command[1] == "responses":
+                if command[2] in ("enable", "true", "on"):
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
+                        await Util.response(
+                            message, "Bot responses are already enabled for this channel", silent)
+                    else:
+                        bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Bot responses are successfully enabled for this channel", silent)
+                elif command[2] in ("disable", "false", "off"):
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
+                        bc.config.guilds[message.channel.guild.id].responses_whitelist.discard(
+                            message.channel.id)
+                        await Util.response(
+                            message, "Bot responses are successfully disabled for this channel",
+                            silent)
+                    else:
+                        await Util.response(
+                            message, "Bot responses are already disabled for this channel", silent)
+                else:
+                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovresponses":
                 if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:

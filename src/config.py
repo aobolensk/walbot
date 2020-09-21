@@ -201,6 +201,7 @@ class GuildSettings:
         self.whitelist = set()
         self.markov_logging_whitelist = set()
         self.markov_responses_whitelist = set()
+        self.responses_whitelist = set()
         self.reactions_whitelist = set()
         self.markov_pings = True
 
