@@ -15,7 +15,7 @@ class MarkovCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "delmarkov",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "findmarkov",
-                                     permission=const.Permission.MOD.value, subcommand=False)
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addmarkovfilter",
@@ -70,12 +70,21 @@ class MarkovCommands(BaseCmd):
     @staticmethod
     async def _findmarkov(message, command, silent=False):
         """Match words in Markov model using regex
-    Example: !findmarkov hello"""
+    Examples:
+        !findmarkov hello
+        !findmarkov hello -f"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        regex = ' '.join(command[1:])
+        regex = command[1]
         found = bc.markov.find_words(regex)
-        await Util.response(message, f"Found {len(found)} words in model: {found}", silent, suppress_embeds=True)
+        amount = len(found)
+        if not (len(command) > 2 and command[2] == '-f' and
+                bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
+            found = found[:100]
+        await Util.response(
+            message, f"Found {amount} words in model: {found}"
+                     f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
+            silent, suppress_embeds=True)
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):

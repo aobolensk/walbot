@@ -126,7 +126,9 @@
     *This command can be used as subcommand*
 
 **findmarkov**: Match words in Markov model using regex \
-    Example: !findmarkov hello
+    Examples: \
+        !findmarkov hello \
+        !findmarkov hello -f
 
 **help**: Print list of commands and get examples \
     Examples: \
