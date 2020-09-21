@@ -110,23 +110,23 @@ class WalBot(discord.Client):
         if (self.user.mentioned_in(message) or self.user.id in [
                 member.id for member in list(
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
-            if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_responses_whitelist:
                 result = await self.config.disable_pings_in_response(message, bc.markov.generate())
                 await message.channel.send(message.author.mention + ' ' + result)
-        elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_whitelist:
+        elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
             bc.markov.add_string(message.content)
-        for response in self.config.responses.values():
-            if re.search(response.regex, message.content):
-                await Util.response(message, response.text, False)
-        if message.channel.id not in self.config.guilds[message.channel.guild.id].reactions_whitelist:
-            return
-        for reaction in self.config.reactions.values():
-            if re.search(reaction.regex, message.content):
-                log.info("Added reaction " + reaction.emoji)
-                try:
-                    await message.add_reaction(reaction.emoji)
-                except discord.HTTPException:
-                    pass
+        if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+            for response in self.config.responses.values():
+                if re.search(response.regex, message.content):
+                    await Util.response(message, response.text, False)
+        if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+            for reaction in self.config.reactions.values():
+                if re.search(reaction.regex, message.content):
+                    log.info("Added reaction " + reaction.emoji)
+                    try:
+                        await message.add_reaction(reaction.emoji)
+                    except discord.HTTPException:
+                        pass
 
     async def process_command(self, message):
         command = message.content.split(' ')

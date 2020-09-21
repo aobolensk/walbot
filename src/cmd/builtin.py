@@ -625,6 +625,7 @@ class BuiltinCommands(BaseCmd):
         !config reactions <enable/disable>
         !config markovlog <enable/disable>
         !config responses <enable/disable>
+        !config markovresponses <enable/disable>
         !config markovpings <enable/disable>"""
         if not await Util.check_args_count(message, command, silent, min=1, max=3):
             return
@@ -634,10 +635,14 @@ class BuiltinCommands(BaseCmd):
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist)
                 else 'disabled') + "\n"
             result += "Markov logging (markovlog): " + (
-                'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist)
+                'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov responses (responses): " + (
+            result += "Bot responses (responses): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist)
+                else 'disabled') + "\n"
+            result += "Markov responses (markovresponses): " + (
+                'enabled' if (message.channel.id in
+                              bc.config.guilds[message.channel.guild.id].markov_responses_whitelist)
                 else 'disabled') + "\n"
             result += "Markov pings (markovpings): " + (
                 'enabled' if bc.config.guilds[message.channel.guild.id].markov_pings
@@ -666,16 +671,16 @@ class BuiltinCommands(BaseCmd):
                     await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovlog":
                 if command[2] in ("enable", "true", "on"):
-                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist:
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist:
                         await Util.response(
                             message, "Adding messages to Markov model is already enabled for this channel", silent)
                     else:
-                        bc.config.guilds[message.channel.guild.id].markov_whitelist.add(message.channel.id)
+                        bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.add(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
-                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_whitelist:
-                        bc.config.guilds[message.channel.guild.id].markov_whitelist.discard(message.channel.id)
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist:
+                        bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.discard(message.channel.id)
                         await Util.response(
                             message, "Adding messages to Markov model is successfully disabled for this channel",
                             silent)
@@ -686,14 +691,35 @@ class BuiltinCommands(BaseCmd):
                 if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                         await Util.response(
-                            message, "Bot responses on mentioning are already enabled for this channel", silent)
+                            message, "Bot responses are already enabled for this channel", silent)
                     else:
                         bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
                         await Util.response(
-                            message, "Bot responses on mentioning are successfully enabled for this channel", silent)
+                            message, "Bot responses are successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                         bc.config.guilds[message.channel.guild.id].responses_whitelist.discard(
+                            message.channel.id)
+                        await Util.response(
+                            message, "Bot responses are successfully disabled for this channel",
+                            silent)
+                    else:
+                        await Util.response(
+                            message, "Bot responses are already disabled for this channel", silent)
+                else:
+                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+            elif command[1] == "markovresponses":
+                if command[2] in ("enable", "true", "on"):
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:
+                        await Util.response(
+                            message, "Bot responses on mentioning are already enabled for this channel", silent)
+                    else:
+                        bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.add(message.channel.id)
+                        await Util.response(
+                            message, "Bot responses on mentioning are successfully enabled for this channel", silent)
+                elif command[2] in ("disable", "false", "off"):
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:
+                        bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.discard(
                             message.channel.id)
                         await Util.response(
                             message, "Bot responses on mentioning are successfully disabled for this channel",

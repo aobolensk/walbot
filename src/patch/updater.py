@@ -96,6 +96,17 @@ class Updater:
                 reminder.__dict__["whisper_users"] = []
             self._bump_version(config, "0.0.13")
         if config.version == "0.0.13":
+            for guild in config.guilds.values():
+                guild.__dict__["markov_logging_whitelist"] = guild.markov_whitelist
+                del guild.__dict__["markov_whitelist"]
+                guild.__dict__["markov_responses_whitelist"] = guild.responses_whitelist
+                del guild.__dict__["responses_whitelist"]
+            self._bump_version(config, "0.0.14")
+        if config.version == "0.0.14":
+            for guild in config.guilds.values():
+                guild.__dict__["responses_whitelist"] = set()
+            self._bump_version(config, "0.0.15")
+        if config.version == "0.0.15":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
