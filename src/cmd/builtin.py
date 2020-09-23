@@ -842,10 +842,12 @@ class BuiltinCommands(BaseCmd):
     async def _about(message, command, silent=False):
         """Get information about the bot
     Example: !about"""
-        result = str(bc.bot_user) + ' (WalBot instance)\n'
-        result += "Source code: <https://github.com/aobolensk/walbot>\n"
-        result += f"Version: {bc.config.get_version()} (discord.py: {discord.__version__})\n"
-        result += "Uptime: " + bc.config.get_uptime() + '\n'
+        ver = discord.version_info
+        result = (f"{bc.bot_user} (WalBot instance)\n"
+                  "Source code: <https://github.com/aobolensk/walbot>\n"
+                  f"Version: {bc.config.get_version()} "
+                  f"(discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel})\n"
+                  f"Uptime: {bc.config.get_uptime()}\n")
         await Util.response(message, result, silent)
 
     @staticmethod
