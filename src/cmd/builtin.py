@@ -340,7 +340,7 @@ class BuiltinCommands(BaseCmd):
                     s = (name, cmd.message)
                     commands.append(s)
                 elif cmd.cmd_line is not None:
-                    s = (name, f"calls external command '{cmd.cmd_line}'")
+                    s = (name, f"calls external command `{cmd.cmd_line}`")
                     commands.append(s)
             commands.sort()
             version = bc.config.get_version()
@@ -375,7 +375,7 @@ class BuiltinCommands(BaseCmd):
             elif command.message is not None:
                 result += command.message
             elif command.cmd_line is not None:
-                result += f"calls external command '{command.cmd_line}'"
+                result += f"calls external command `{command.cmd_line}`"
             else:
                 result += "<error>"
             result += '\n'
@@ -415,7 +415,7 @@ class BuiltinCommands(BaseCmd):
         bc.commands.data[command_name].channels.append(message.channel.id)
         await Util.response(
             message, f"Command '{command_name}' that calls external command "
-                     f"'{bc.commands.data[command_name].cmd_line}' is successfully added", silent)
+                     f"`{bc.commands.data[command_name].cmd_line}` is successfully added", silent)
 
     @staticmethod
     async def _updcmd(message, command, silent=False):
@@ -450,7 +450,7 @@ class BuiltinCommands(BaseCmd):
             bc.commands.data[command_name].cmd_line = ' '.join(command[2:])
             await Util.response(
                 message, f"Command '{command_name}' that calls external command "
-                         f"'{bc.commands.data[command_name].cmd_line}' is successfully updated", silent)
+                         f"`{bc.commands.data[command_name].cmd_line}` is successfully updated", silent)
             return
         await Util.response(message, f"Command '{command_name}' does not exist", silent)
 
