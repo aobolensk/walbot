@@ -19,6 +19,7 @@ from .config import User
 from .config import bc
 from .log import log
 from .markov import Markov
+from .repl import Repl
 from .utils import Util
 
 
@@ -29,6 +30,7 @@ class WalBot(discord.Client):
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
         self.loop.create_task(self.process_reminders())
+        self.repl = Repl()
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -228,6 +230,7 @@ def start(args, main_bot=True):
     # Starting the bot
     walbot.run(secret_config.token)
     # After stopping the bot
+    walbot.repl.stop()
     for event in bc.background_events:
         event.cancel()
     bc.background_loop = None
