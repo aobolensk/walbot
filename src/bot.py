@@ -30,7 +30,6 @@ class WalBot(discord.Client):
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
         self.loop.create_task(self.process_reminders())
-        self.repl = Repl()
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -80,6 +79,7 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
+        self.repl = Repl(self.config.repl["port"])
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)

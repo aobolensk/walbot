@@ -107,6 +107,10 @@ class Updater:
                 guild.__dict__["responses_whitelist"] = set()
             self._bump_version(config, "0.0.15")
         if config.version == "0.0.15":
+            config.__dict__["repl"] = {}
+            config.repl["port"] = 8080  # set default port for REPL
+            self._bump_version(config, "0.0.16")
+        if config.version == "0.0.16":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

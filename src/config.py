@@ -237,6 +237,9 @@ class Config:
             },
             "period": 10,
         }
+        self.repl = {
+            "port": 8080,
+        }
 
     def backup(self, *files):
         compress_type = zipfile.ZIP_DEFLATED if self.saving["backup"]["compress"] else zipfile.ZIP_STORED

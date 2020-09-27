@@ -1,7 +1,7 @@
 import enum
 import re
 
-CONFIG_VERSION = '0.0.15'
+CONFIG_VERSION = '0.0.16'
 MARKOV_CONFIG_VERSION = '0.0.2'
 SECRET_CONFIG_VERSION = '0.0.1'
 
