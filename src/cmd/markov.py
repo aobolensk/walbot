@@ -63,7 +63,11 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         regex = ' '.join(command[1:])
-        removed = bc.markov.del_words(regex)
+        try:
+            removed = bc.markov.del_words(regex)
+        except re.error as e:
+            await Util.response(message, f"Invalid regular expression: {e}", silent)
+            return
         await Util.response(
             message, f"Deleted {len(removed)} words from model: {removed}", silent, suppress_embeds=True)
 
@@ -76,7 +80,11 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         regex = command[1]
-        found = bc.markov.find_words(regex)
+        try:
+            found = bc.markov.find_words(regex)
+        except re.error as e:
+            await Util.response(message, f"Invalid regular expression: {e}", silent)
+            return
         amount = len(found)
         if not (len(command) > 2 and command[2] == '-f' and
                 bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
