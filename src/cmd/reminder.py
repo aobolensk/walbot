@@ -154,8 +154,8 @@ class ReminderCommands(BaseCmd):
             f"Third parameter for '{command[0]}' should be duration of period between reminders", silent)
         if duration is None:
             return
-        if duration <= 0:
-            await Util.response(message, "Duration should be positive!", silent)
+        if duration < 0:
+            await Util.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
             return
         bc.config.reminders[index].repeat_after = duration
         await Util.response(message, f"Reminder {index} will be repeated every {duration} minutes!", silent)
