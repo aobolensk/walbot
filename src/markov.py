@@ -46,6 +46,7 @@ class Markov:
         self.version = const.MARKOV_CONFIG_VERSION
         self.min_chars = 10
         self.min_words = 2
+        self.chains_generated = 0
 
     def add_string(self, text):
         if len(text) < self.min_chars:
@@ -100,6 +101,7 @@ class Markov:
         result = result.strip()
         if not result:
             return "<Empty message was generated>"
+        self.chains_generated += 1
         return result
 
     def gc(self, node=None):

@@ -125,6 +125,9 @@ class Updater:
             config.__dict__["min_words"] = 1
             self._bump_version(config, "0.0.2")
         if config.version == "0.0.2":
+            config.__dict__["chains_generated"] = 0
+            self._bump_version(config, "0.0.3")
+        if config.version == "0.0.3":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
