@@ -227,6 +227,10 @@
 **remindwme**: Ask bot to send direct message you when it sends reminder \
     Example: !remindwme 1
 
+**repeatreminder**: Make reminder repeating with particular period \
+    Example: !repeatreminder 1 1440 \
+    Note: specify number of minutes
+
 **restart**: Restart the bot \
     Example: !restart
 

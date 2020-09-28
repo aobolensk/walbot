@@ -21,6 +21,8 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "remindwme",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "repeatreminder",
+                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _addreminder(message, command, silent=False):
@@ -132,3 +134,28 @@ class ReminderCommands(BaseCmd):
                 message, f"You will be notified in direct messages when reminder {index} is sent", silent)
         else:
             await Util.response(message, "Invalid index of reminder!", silent)
+
+    @staticmethod
+    async def _repeatreminder(message, command, silent=False):
+        """Make reminder repeating with particular period
+    Example: !repeatreminder 1 1440
+    Note: specify number of minutes"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            await Util.response(message, "Invalid index of reminder!", silent)
+            return
+        duration = await Util.parse_int(
+            message, command[2],
+            f"Third parameter for '{command[0]}' should be duration of period between reminders", silent)
+        if duration is None:
+            return
+        if duration <= 0:
+            await Util.response(message, "Duration should be positive!", silent)
+            return
+        bc.config.reminders[index].repeat_after = duration
+        await Util.response(message, f"Reminder {index} will be repeated every {duration} minutes!", silent)

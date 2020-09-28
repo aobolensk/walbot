@@ -5,6 +5,7 @@ class Reminder:
         self.channel_id = channel_id
         self.ping_users = []
         self.whisper_users = []
+        self.repeat_after = 0
 
     def __eq__(self, time):
         return self.time == time

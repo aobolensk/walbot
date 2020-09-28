@@ -19,6 +19,7 @@ from .config import User
 from .config import bc
 from .log import log
 from .markov import Markov
+from .reminder import Reminder
 from .repl import Repl
 from .utils import Util
 
@@ -63,6 +64,7 @@ class WalBot(discord.Client):
         while not self.is_closed():
             now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_TIME_FORMAT)
             to_remove = []
+            to_append = []
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
@@ -70,11 +72,20 @@ class WalBot(discord.Client):
                     for user_id in rem.whisper_users:
                         await Util.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
+                    if rem.repeat_after > 0:
+                        new_time = datetime.datetime.now().replace(second=0, microsecond=0) + datetime.timedelta(minutes=rem.repeat_after)
+                        new_time = new_time.strftime(const.REMINDER_TIME_FORMAT)
+                        to_append.append(Reminder(str(new_time), rem.message, rem.channel_id))
+                        to_append[-1].repeat_after = rem.repeat_after
                     to_remove.append(key)
                 elif rem < now:
                     to_remove.append(key)
             for key in to_remove:
                 self.config.reminders.pop(key)
+            for item in to_append:
+                key = self.config.ids["reminder"]
+                self.config.reminders[key] = item
+                self.config.ids["reminder"] += 1
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self):

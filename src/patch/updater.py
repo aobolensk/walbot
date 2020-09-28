@@ -111,6 +111,10 @@ class Updater:
             config.repl["port"] = 8080  # set default port for REPL
             self._bump_version(config, "0.0.16")
         if config.version == "0.0.16":
+            for reminder in config.reminders.values():
+                reminder.__dict__["repeat_after"] = 0
+            self._bump_version(config, "0.0.17")
+        if config.version == "0.0.17":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
