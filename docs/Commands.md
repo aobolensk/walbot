@@ -249,6 +249,9 @@
 **slowmode**: Edit slowmode \
     Example: !slowmode 0
 
+**statmarkov**: Show stats for Markov module \
+    Example: !statmarkov
+
 **status**: Change bot status \
     Examples: \
         !status idle \

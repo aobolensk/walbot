@@ -16,6 +16,8 @@ class MarkovCommands(BaseCmd):
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "findmarkov",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "statmarkov",
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addmarkovfilter",
@@ -102,6 +104,19 @@ class MarkovCommands(BaseCmd):
             return
         bc.markov.__init__()
         await Util.response(message, "Markov database has been dropped!", silent)
+
+    @staticmethod
+    async def _statmarkov(message, command, silent=False):
+        """Show stats for Markov module
+    Example: !statmarkov"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        pairs_count = sum(word.total_next for word in bc.markov.model.values())
+        result = (f"Markov module stats:\n"
+                  f"Markov chains generated: {bc.markov.chains_generated}\n"
+                  f"Words count: {len(bc.markov.model)}\n"
+                  f"Pairs (word -> word) count: {pairs_count}\n")
+        await Util.response(message, result, silent)
 
     @staticmethod
     async def _addmarkovfilter(message, command, silent=False):
