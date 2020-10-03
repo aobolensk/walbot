@@ -21,18 +21,21 @@ class Repl:
         self.sock.listen()
         while True:
             log.debug(f"REPL initialized on port {self.port}")
-            conn, addr = self.sock.accept()
-            with conn:
-                log.debug(f"Connected by {addr}")
-                while True:
-                    data = conn.recv(1024)
-                    if not data:
-                        break
-                    line = data.decode("utf-8").strip()
-                    response = ""
-                    if line == "ping":
-                        response = "Pong!\n"
-                    conn.send(response.encode("utf-8"))
+            try:
+                conn, addr = self.sock.accept()
+                with conn:
+                    log.debug(f"Connected by {addr}")
+                    while True:
+                        data = conn.recv(1024)
+                        if not data:
+                            break
+                        line = data.decode("utf-8").strip()
+                        response = ""
+                        if line == "ping":
+                            response = "Pong!\n"
+                        conn.send(response.encode("utf-8"))
+            except OSError as e:
+                log.warning(f"REPL: {e}")
 
     def stop(self):
         if self.sock:
