@@ -88,6 +88,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "randselect",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "randselects",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "silent",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "time",
@@ -924,12 +926,24 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _randselect(message, command, silent=False):
-        """Get random option among provided strings
+        """Get random option among provided strings (split by space)
     Example: !randselect a b c"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         index = random.randint(1, len(command) - 1)
         result = command[index]
+        await Util.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _randselects(message, command, silent=False):
+        """Get random option among provided strings (split by semicolon)
+    Example: !randselects a;b;c"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        options = ' '.join(command[1:]).split(';')
+        index = random.randint(0, len(options) - 1)
+        result = options[index]
         await Util.response(message, result, silent)
         return result
 
