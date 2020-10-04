@@ -1,18 +1,51 @@
+import inspect
+import itertools
 import threading
 import socket
 
+from .config import bc
 from .log import log
 
 REPL_HOST = ''
 
 
+class REPLCommands:
+    @staticmethod
+    def help(message):
+        commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
+                    if not func[0].startswith('_')]
+        return ', '.join(commands)
+
+    @staticmethod
+    def ping(message):
+        return "Pong!"
+
+    @staticmethod
+    def channels(message):
+        guilds = ((channel.id, channel.name) for channel in
+                  itertools.chain.from_iterable(guild.text_channels for guild in bc.guilds))
+        result = ""
+        for guild in guilds:
+            result += f"{guild[0]} -> {guild[1]}\n"
+        return result
+
+
 class Repl:
     def __init__(self, port) -> None:
+        self.channel = None
         self.sock = None
         self.port = port
         thread = threading.Thread(target=self.start)
         thread.setDaemon(True)
         thread.start()
+
+    def parse_command(self, message) -> str:
+        message = message.split(' ')
+        commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
+                    if not func[0].startswith('_')]
+        if message[0] in commands:
+            return getattr(REPLCommands, message[0])(message).strip() + '\n'
+        return "\n"
 
     def start(self) -> None:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
@@ -26,14 +59,11 @@ class Repl:
                 with conn:
                     log.debug(f"Connected by {addr}")
                     while True:
+                        conn.send("> ".encode("utf-8"))
                         data = conn.recv(1024)
                         if not data:
                             break
-                        line = data.decode("utf-8").strip()
-                        response = ""
-                        if line == "ping":
-                            response = "Pong!\n"
-                        conn.send(response.encode("utf-8"))
+                        conn.send(self.parse_command(data.decode("utf-8").strip()).encode("utf-8"))
             except OSError as e:
                 log.warning(f"REPL: {e}")
 
