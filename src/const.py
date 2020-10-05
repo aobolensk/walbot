@@ -1,7 +1,7 @@
 import enum
 import re
 
-DISCORD_LIB_VERSION = '1.5.1'
+DISCORD_LIB_VERSION = '1.5.0'
 
 CONFIG_VERSION = '0.0.17'
 MARKOV_CONFIG_VERSION = '0.0.3'

@@ -227,10 +227,25 @@ def start(args, main_bot=True):
         bc.markov = Markov()
     # Check config versions
     ok = True
-    ok &= Util.check_version("discord.py", discord.__version__, const.DISCORD_LIB_VERSION)
-    ok &= Util.check_version("Config", config.version, const.CONFIG_VERSION)
-    ok &= Util.check_version("Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION)
-    ok &= Util.check_version("Secret config", secret_config.version, const.SECRET_CONFIG_VERSION)
+    ok &= Util.check_version("discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
+                             solutions=[
+                                 "execute: python -m pip install -r requirements.txt",
+                             ])
+    ok &= Util.check_version("Config", config.version, const.CONFIG_VERSION,
+                             solutions=[
+                                 "run patch tool",
+                                 "remove config.yaml (settings will be lost!)",
+                             ])
+    ok &= Util.check_version("Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
+                             solutions=[
+                                 "run patch tool",
+                                 "remove markov.yaml (Markov model will be lost!)",
+                             ])
+    ok &= Util.check_version("Secret config", secret_config.version, const.SECRET_CONFIG_VERSION,
+                             solutions=[
+                                 "run patch tool",
+                                 "remove secret.yaml (your Discord authentication token will be lost!)",
+                             ])
     if not ok:
         sys.exit(1)
     # Constructing bot instance
