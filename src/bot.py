@@ -227,6 +227,7 @@ def start(args, main_bot=True):
         bc.markov = Markov()
     # Check config versions
     ok = True
+    ok &= Util.check_version("discord.py", discord.__version__, const.DISCORD_LIB_VERSION)
     ok &= Util.check_version("Config", config.version, const.CONFIG_VERSION)
     ok &= Util.check_version("Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION)
     ok &= Util.check_version("Secret config", secret_config.version, const.SECRET_CONFIG_VERSION)
