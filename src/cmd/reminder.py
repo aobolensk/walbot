@@ -27,10 +27,17 @@ class ReminderCommands(BaseCmd):
     @staticmethod
     async def _addreminder(message, command, silent=False):
         """Print message at particular time
-    Example: !addreminder 2020-01-01 00:00 Happy new year!"""
+    Examples:
+        !addreminder 2020-01-01 00:00 Happy new year!
+        !addreminder today 08:00 Wake up
+"""
         if not await Util.check_args_count(message, command, silent, min=4):
             return
-        time = command[1] + ' ' + command[2]
+        date = command[1]
+        time = command[2]
+        if command[1] == "today":
+            date = datetime.datetime.strftime(datetime.datetime.now(), const.REMINDER_DATE_FORMAT)
+        time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
         except ValueError:

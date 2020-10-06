@@ -30,7 +30,10 @@
     Example: !addreaction emoji regex
 
 **addreminder**: Print message at particular time \
-    Example: !addreminder 2020-01-01 00:00 Happy new year!
+    Examples: \
+        !addreminder 2020-01-01 00:00 Happy new year! \
+        !addreminder today 08:00 Wake up \
+
 
 **addresponse**: Add bot response on message that contains particular regex \
     Example: !addresponse regex;text

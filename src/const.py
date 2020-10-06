@@ -27,6 +27,7 @@ REMINDER_POLLING_INTERVAL = 30
 
 ALNUM_STRING_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9 ]+$')
 FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
+REMINDER_DATE_FORMAT = "%Y-%m-%d"
 REMINDER_TIME_FORMAT = "%Y-%m-%d %H:%M"
 EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
 USER_ID_REGEX = re.compile(r'<@!(\d*)>')
