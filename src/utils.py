@@ -80,10 +80,10 @@ class Util:
             return
 
     @staticmethod
-    def check_version(name, actual, expected, solutions=[]):
+    def check_version(name, actual, expected, solutions=None):
         if (actual != expected):
             log.error(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
-            if len(solutions):
+            if solutions:
                 log.info("Possible solutions:")
                 for solution in solutions:
                     log.info(f" - {solution}")
