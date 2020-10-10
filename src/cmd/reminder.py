@@ -45,10 +45,10 @@ class ReminderCommands(BaseCmd):
                                 "More information about format: <https://strftime.org/>", silent)
             return
         text = ' '.join(command[3:])
-        id = bc.config.ids["reminder"]
-        bc.config.reminders[id] = Reminder(str(time), text, message.channel.id)
+        id_ = bc.config.ids["reminder"]
+        bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
         bc.config.ids["reminder"] += 1
-        await Util.response(message, f"Reminder '{text}' with id {id} added at {time}", silent)
+        await Util.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
 
     @staticmethod
     async def _updreminder(message, command, silent=False):

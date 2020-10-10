@@ -195,8 +195,8 @@ class Response:
 
 
 class GuildSettings:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id = id_
         self.is_whitelisted = False
         self.whitelist = set()
         self.markov_logging_whitelist = set()
@@ -207,8 +207,8 @@ class GuildSettings:
 
 
 class User:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id = id_
         self.permission_level = const.Permission.USER.value
 
 

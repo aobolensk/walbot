@@ -46,8 +46,8 @@ class WalBot(discord.Client):
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
 
-    async def change_status(self, string, type):
-        await self.change_presence(activity=discord.Activity(name=string, type=type))
+    async def change_status(self, string, type_):
+        await self.change_presence(activity=discord.Activity(name=string, type=type_))
 
     async def config_autosave(self):
         await self.wait_until_ready()
