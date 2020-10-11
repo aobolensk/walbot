@@ -37,8 +37,8 @@ class QuoteCommands(BaseCmd):
             if index is None:
                 return
         else:
-            index = random.randint(0, len(bc.config.quotes) - 1)
-        if 0 <= index < len(bc.config.quotes):
+            index = random.choice(list(bc.config.quotes.keys()))
+        if index in bc.config.quotes.keys():
             await Util.response(message, f"Quote {index}: {bc.config.quotes[index].full_quote()}", silent)
         else:
             await Util.response(message, "Invalid index of quote!", silent)
@@ -50,10 +50,12 @@ class QuoteCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         quote = ' '.join(command[1:])
-        bc.config.quotes.append(Quote(quote, str(message.author)))
+        index = bc.config.ids["quote"]
+        bc.config.quotes[index] = Quote(quote, str(message.author))
+        bc.config.ids["quote"] += 1
         await Util.response(
             message,
-            f"Quote '{quote}' was successfully added to quotes database with index {len(bc.config.quotes) - 1}",
+            f"Quote '{quote}' was successfully added to quotes database with index {index}",
             silent)
 
     @staticmethod
@@ -63,7 +65,7 @@ class QuoteCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
-        for index, quote in enumerate(bc.config.quotes):
+        for index, quote in bc.config.quotes.items():
             result += f"{index} -> {quote.quote()}\n"
         if result:
             await Util.response(message, result, silent)
@@ -81,7 +83,7 @@ class QuoteCommands(BaseCmd):
             message, command[1], f"Second parameter for '{command[0]}' should be an index of quote", silent)
         if index is None:
             return
-        if 0 <= index < len(bc.config.quotes):
+        if index in bc.config.quotes.keys():
             bc.config.quotes.pop(index)
             await Util.response(message, "Successfully deleted quote!", silent)
         else:
@@ -97,7 +99,7 @@ class QuoteCommands(BaseCmd):
             message, command[1], f"Second parameter for '{command[0]}' should be an index of quote", silent)
         if index is None:
             return
-        if 0 <= index < len(bc.config.quotes):
+        if index in bc.config.quotes.keys():
             author = ' '.join(command[2:])
             bc.config.quotes[index].author = author
             await Util.response(

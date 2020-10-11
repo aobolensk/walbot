@@ -223,7 +223,7 @@ class Config:
         self.users = dict()
         self.reminders = dict()
         self.responses = dict()
-        self.quotes = []
+        self.quotes = dict()
         self.commands_prefix = "!"
         self.ids = {
             "reminder": 1,

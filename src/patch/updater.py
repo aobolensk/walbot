@@ -115,6 +115,14 @@ class Updater:
                 reminder.__dict__["repeat_after"] = 0
             self._bump_version(config, "0.0.17")
         if config.version == "0.0.17":
+            config.ids["quote"] = 1
+            quotes = config.quotes
+            config.quotes = {}
+            for quote in quotes:
+                config.quotes[config.ids["quote"]] = quote
+                config.ids["quote"] += 1
+            self._bump_version(config, "0.0.18")
+        if config.version == "0.0.18":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
