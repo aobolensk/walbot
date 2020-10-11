@@ -128,6 +128,10 @@ class Updater:
             config.__dict__["chains_generated"] = 0
             self._bump_version(config, "0.0.3")
         if config.version == "0.0.3":
+            config.__dict__["max_chars"] = 2000
+            config.__dict__["max_words"] = 500
+            self._bump_version(config, "0.0.4")
+        if config.version == "0.0.4":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

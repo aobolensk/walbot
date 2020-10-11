@@ -46,13 +46,15 @@ class Markov:
         self.version = const.MARKOV_CONFIG_VERSION
         self.min_chars = 10
         self.min_words = 2
+        self.max_chars = 2000
+        self.max_words = 500
         self.chains_generated = 0
 
     def add_string(self, text):
-        if len(text) < self.min_chars:
+        if len(text) < self.min_chars or len(text) > self.max_chars:
             return
         words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
-        if len(words) < self.min_words:
+        if len(words) < self.min_words or len(words) > self.max_words:
             return
         current_node = self.model[""]
         for word in words:
