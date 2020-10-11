@@ -37,6 +37,9 @@ class ReminderCommands(BaseCmd):
         time = command[2]
         if command[1] == "today":
             date = datetime.datetime.strftime(datetime.datetime.now(), const.REMINDER_DATE_FORMAT)
+        if command[1] == "tomorrow":
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
