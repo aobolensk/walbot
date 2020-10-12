@@ -1,3 +1,5 @@
+import asyncio
+import os
 import re
 
 from .. import const
@@ -112,10 +114,19 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         pairs_count = sum(word.total_next for word in bc.markov.model.values())
+        markov_db_size = os.path.getsize(const.MARKOV_PATH)
+        while markov_db_size == 0:
+            markov_db_size = os.path.getsize(const.MARKOV_PATH)
+            await asyncio.sleep(1)
+        if markov_db_size > 1024 * 1024:
+            markov_db_size = f"{(markov_db_size / (1024 * 1024)):.2f} MB"
+        else:
+            markov_db_size = f"{markov_db_size / 1024:.2f} KB"
         result = (f"Markov module stats:\n"
                   f"Markov chains generated: {bc.markov.chains_generated}\n"
                   f"Words count: {len(bc.markov.model)}\n"
-                  f"Pairs (word -> word) count: {pairs_count}\n")
+                  f"Pairs (word -> word) count: {pairs_count}\n"
+                  f"Markov database size: {markov_db_size}\n")
         await Util.response(message, result, silent)
 
     @staticmethod
