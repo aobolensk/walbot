@@ -79,12 +79,18 @@ class Command:
         return string
 
     async def process_subcommands(self, content, message, user, safe=False):
+        command_indicators = {
+            ')': '(',
+            ']': '[',
+            '`': '`',
+            '}': '{',
+        }
         while True:
             updated = False
             for i in range(len(content)):
-                if content[i] == ')':
+                if content[i] in command_indicators.keys():
                     for j in range(i-1, 0, -1):
-                        if content[j] == '(' and content[j-1] == '$':
+                        if content[j] == command_indicators[content[i]] and content[j-1] == '$':
                             updated = True
                             message.content = content[j+1:i]
                             command = message.content.split()
