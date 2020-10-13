@@ -30,7 +30,7 @@ class Log:
         # HANDLERS
         # Console handler
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(const.LogLevel.DEBUG3)
+        console_handler.setLevel(const.LogLevel.DEBUG)
         console_handler.setFormatter(formatter)
         self.log.addHandler(console_handler)
         # Create logs folder
