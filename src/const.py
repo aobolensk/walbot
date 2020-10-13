@@ -54,4 +54,5 @@ class LogLevel(enum.IntEnum):
     INFO = 20
     DEBUG = 10
     DEBUG2 = 9
+    DEBUG3 = 8
     NOTSET = 0

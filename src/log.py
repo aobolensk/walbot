@@ -10,22 +10,27 @@ class Log:
         """Log with severity 'DEBUG2'."""
         self.log.log(const.LogLevel.DEBUG2, msg, *args, **kwargs)
 
+    def debug3(self, msg, *args, **kwargs):
+        """Log with severity 'DEBUG3'."""
+        self.log.log(const.LogLevel.DEBUG3, msg, *args, **kwargs)
+
     def __init__(self):
         logging.config.dictConfig({
             'version': 1,
             'disable_existing_loggers': True,
         })
         # Add new logging levels
-        logging.addLevelName(9, "DEBUG2")
+        logging.addLevelName(const.LogLevel.DEBUG2, "DEBUG2")
+        logging.addLevelName(const.LogLevel.DEBUG3, "DEBUG3")
         # LOGGERS
         self.log = logging.getLogger("WalBot")
-        self.log.setLevel(const.LogLevel.DEBUG2)
+        self.log.setLevel(const.LogLevel.DEBUG3)
         # FORMATTERS
         formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
         # HANDLERS
         # Console handler
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(const.LogLevel.DEBUG)
+        console_handler.setLevel(const.LogLevel.DEBUG3)
         console_handler.setFormatter(formatter)
         self.log.addHandler(console_handler)
         # Create logs folder
