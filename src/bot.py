@@ -62,6 +62,7 @@ class WalBot(discord.Client):
     async def process_reminders(self):
         await self.wait_until_ready()
         while not self.is_closed():
+            log.debug3("Reminder processing iteration has started")
             now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_TIME_FORMAT)
             to_remove = []
             to_append = []
@@ -78,8 +79,10 @@ class WalBot(discord.Client):
                         new_time = new_time.strftime(const.REMINDER_TIME_FORMAT)
                         to_append.append(Reminder(str(new_time), rem.message, rem.channel_id))
                         to_append[-1].repeat_after = rem.repeat_after
+                        log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                     to_remove.append(key)
                 elif rem < now:
+                    log.debug2(f"Scheduled reminder with id {key} removal")
                     to_remove.append(key)
             for key in to_remove:
                 self.config.reminders.pop(key)
@@ -87,6 +90,7 @@ class WalBot(discord.Client):
                 key = self.config.ids["reminder"]
                 self.config.reminders[key] = item
                 self.config.ids["reminder"] += 1
+            log.debug3("Reminder processing iteration has finished")
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self):
