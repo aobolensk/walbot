@@ -26,7 +26,7 @@ class Log:
         self.log = logging.getLogger("WalBot")
         self.log.setLevel(const.LogLevel.DEBUG3)
         # FORMATTERS
-        formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
+        formatter = logging.Formatter(const.LOGGING_FORMAT)
         # HANDLERS
         # Console handler
         console_handler = logging.StreamHandler()
