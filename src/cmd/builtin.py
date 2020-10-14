@@ -1314,7 +1314,7 @@ class BuiltinCommands(BaseCmd):
                         "User-Agent": "Mozilla/5.0"
                     }
                     rq = urllib.request.Request(
-                        "https://cdn.discordapp.com/emojis/766009158566281226.png", headers=hdr)
+                        f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", headers=hdr)
                     temp_image_file = tempfile.NamedTemporaryFile()
                     try:
                         with urllib.request.urlopen(rq) as response:
