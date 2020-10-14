@@ -86,12 +86,12 @@ class Markov:
         result = word + ' '
         while current_node != self.end_node:
             index = random.randint(0, max(0, current_node.total_next - 1))
-            s = 0
-            for k, v in current_node.next.items():
-                s += v
-                if s > index:
-                    result += (k if k is not None else "") + ' '
-                    next_node = current_node.get_next(k)
+            count = 0
+            for word, next_count in current_node.next.items():
+                count += next_count
+                if count > index:
+                    result += (word if word is not None else "") + ' '
+                    next_node = current_node.get_next(word)
                     if current_node == self.model[""] and next_node == self.end_node:
                         continue
                     current_node = next_node
@@ -106,14 +106,14 @@ class Markov:
         self.chains_generated += 1
         return result
 
-    def gc(self, node=None):
+    def collect_garbage(self, node=None):
         if not node:
             node = self.model[""]
         was = {node}
         for key in node.next.keys():
             next_node = node.get_next(key)
             if next_node not in was:
-                was |= self.gc(next_node)
+                was |= self.collect_garbage(next_node)
         if node == self.model[""]:
             result = []
             for node in set(list(self.model.values())).difference(was):
@@ -124,8 +124,8 @@ class Markov:
         return was
 
     def serialize(self, filename, dumper=yaml.Dumper):
-        with open(filename, 'wb') as f:
-            f.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))
+        with open(filename, 'wb') as markov_file:
+            markov_file.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))
         log.info("Saving of Markov module data is finished")
 
     def check(self):

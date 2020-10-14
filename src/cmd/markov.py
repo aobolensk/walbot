@@ -55,7 +55,7 @@ class MarkovCommands(BaseCmd):
     Example: !markovgc"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = bc.markov.gc()
+        result = bc.markov.collect_garbage()
         result = f"Garbage collected {len(result)} items: {', '.join(result)}"
         await Util.response(message, result, silent)
         return result
