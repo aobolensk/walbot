@@ -27,6 +27,7 @@ from .utils import Util
 class WalBot(discord.Client):
     def __init__(self, config, secret_config):
         super().__init__()
+        self.repl = None
         self.config = config
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
