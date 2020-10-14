@@ -4,6 +4,7 @@ import imghdr
 import os
 import random
 import re
+import tempfile
 import urllib.request
 
 import discord
@@ -1304,6 +1305,28 @@ class BuiltinCommands(BaseCmd):
                             await Util.response(
                                 message, f"Failed to change bot avatar.\nError: {e}", silent)
                         return
+                else:
+                    r = const.EMOJI_REGEX.match(command[1])
+                    if r is None:
+                        break
+                    log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")
+                    hdr = {
+                        "User-Agent": "Mozilla/5.0"
+                    }
+                    rq = urllib.request.Request(
+                        "https://cdn.discordapp.com/emojis/766009158566281226.png", headers=hdr)
+                    temp_image_file = tempfile.NamedTemporaryFile()
+                    try:
+                        with urllib.request.urlopen(rq) as response:
+                            temp_image_file.write(response.read())
+                        with open(temp_image_file.name, "rb") as temp_image_file:
+                            await bc.bot_user.edit(avatar=temp_image_file.read())
+                    except Exception:
+                        await Util.response(message, "Image downloading failed!", silent)
+                        log.error("Image downloading failed!", exc_info=True)
+                        return
+                    await Util.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
+                    return
         await Util.response(message, f"Image {command[1]} is not found!", silent)
 
     @staticmethod
