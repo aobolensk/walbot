@@ -313,16 +313,10 @@ class BuiltinCommands(BaseCmd):
             info = message.author
         elif len(command) == 2:
             info = message.guild.get_member(message.mentions[0].id)
-        status = ', '.join([
-            platform for (platform, status) in zip(
-                ["desktop", "mobile", "browser"],
-                [str(info.desktop_status), str(info.mobile_status), str(info.web_status)])
-            if status != "offline"])
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
         result = (f"{message.author.mention}\n"
                   f"User: {info}\n"
                   f"Avatar: <{info.avatar_url}>\n"
-                  f"Status: {info.status} ({status})\n"
                   f"Created at: {info.created_at}\n"
                   f"Roles: {roles}\n")
         await Util.response(message, result, silent)
