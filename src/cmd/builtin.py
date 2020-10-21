@@ -1357,15 +1357,6 @@ class BuiltinCommands(BaseCmd):
                   f"created: {g.created_at.replace(microsecond=0)}\n")
         icon_url = f"<{g.icon_url}>" if g.icon_url else "<no icon>"
         result += f"**Icon**: {icon_url}\n"
-        if g.member_count <= 16:
-            result += "**Members**:\n"
-            members = []
-            async for member in g.fetch_members(limit=16):
-                roles = (("owner, " if member.id == g.owner_id else "") +
-                         str(message.guild.get_member(member.id).status))
-                members.append(f"*{str(member)} ({roles}):*\n"
-                               f"{', '.join(filter(lambda x: x != const.ROLE_EVERYONE, map(str, member.roles)))}")
-            result += '\n'.join(sorted(members, key=lambda s: s.lower()))
         await Util.response(message, result, silent)
 
     @staticmethod
