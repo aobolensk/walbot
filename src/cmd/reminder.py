@@ -23,6 +23,8 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "repeatreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "skipreminder",
+                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _addreminder(message, command, silent=False):
@@ -54,7 +56,8 @@ class ReminderCommands(BaseCmd):
         if command[1].endswith("w"):
             weeks_amount = command[1][:-1]
             weeks_amount = await Util.parse_int(
-                message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks", silent)
+                message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks",
+                silent)
             if weeks_amount is None:
                 return
             date = datetime.datetime.strftime(
@@ -192,3 +195,33 @@ class ReminderCommands(BaseCmd):
             return
         bc.config.reminders[index].repeat_after = duration
         await Util.response(message, f"Reminder {index} will be repeated every {duration} minutes!", silent)
+
+    @staticmethod
+    async def _skipreminder(message, command, silent=False):
+        """Skip next instance of recurring (repeating) reminder
+    Example: !skipreminder 1
+    Note: only recurring (repeating) reminders are affected by this command"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            await Util.response(message, "Invalid index of reminder!", silent)
+            return
+        if bc.config.reminders[index].repeat_after == 0:
+            await Util.response(message, "This reminder is not recurring!", silent)
+            return
+        rem = bc.config.reminders[index]
+        new_time = datetime.datetime.strftime(
+            datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) +
+            datetime.timedelta(minutes=rem.repeat_after), const.REMINDER_TIME_FORMAT)
+        id_ = bc.config.ids["reminder"]
+        bc.config.reminders[id_] = Reminder(str(new_time), rem.message, message.channel.id)
+        bc.config.reminders[id_].repeat_after = rem.repeat_after
+        bc.config.ids["reminder"] += 1
+        bc.config.reminders.pop(index)
+        await Util.response(
+            message, f"Skipped reminder {index} at {rem.time}, "
+                     f"next reminder {id_} will be at {bc.config.reminders[id_].time}", silent)

@@ -256,6 +256,10 @@
 **silent**: Make the following command silent (without any output to the chat) \
     Example: !silent ping
 
+**skipreminder**: Skip next instance of recurring (repeating) reminder \
+    Example: !skipreminder 1 \
+    Note: only recurring (repeating) reminders are affected by this command
+
 **slowmode**: Edit slowmode \
     Example: !slowmode 0
 
