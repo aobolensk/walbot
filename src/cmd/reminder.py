@@ -30,6 +30,8 @@ class ReminderCommands(BaseCmd):
     Examples:
         !addreminder 2020-01-01 00:00 Happy new year!
         !addreminder today 08:00 Wake up
+        !addreminder tomorrow 08:00 Wake up
+        !addreminder 2d 08:00 Wake up
 """
         if not await Util.check_args_count(message, command, silent, min=4):
             return
@@ -40,6 +42,14 @@ class ReminderCommands(BaseCmd):
         if command[1] == "tomorrow":
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
+        if command[1].endswith("d"):
+            days_amount = command[1][:-1]
+            days_amount = await Util.parse_int(
+                message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
+            if days_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)

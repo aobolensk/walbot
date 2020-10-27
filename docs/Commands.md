@@ -33,6 +33,8 @@
     Examples: \
         !addreminder 2020-01-01 00:00 Happy new year! \
         !addreminder today 08:00 Wake up \
+        !addreminder tomorrow 08:00 Wake up \
+        !addreminder 2d 08:00 Wake up \
 
 
 **addresponse**: Add bot response on message that contains particular regex \
