@@ -140,6 +140,9 @@ class Updater:
             config.__dict__["max_words"] = 500
             self._bump_version(config, "0.0.4")
         if config.version == "0.0.4":
+            config.model[""].__dict__["word"] = None
+            self._bump_version(config, "0.0.5")
+        if config.version == "0.0.5":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

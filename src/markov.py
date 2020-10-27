@@ -10,8 +10,7 @@ from .config import bc
 class MarkovNode:
     def __init__(self, node_type, word=None):
         self.type = node_type
-        if self.type == Markov.NodeType.word:
-            self.word = word
+        self.word = word
         self.next = {None: 0}
         self.total_next = 0
 
