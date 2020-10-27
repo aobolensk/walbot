@@ -31,7 +31,8 @@ class ReminderCommands(BaseCmd):
         !addreminder 2020-01-01 00:00 Happy new year!
         !addreminder today 08:00 Wake up
         !addreminder tomorrow 08:00 Wake up
-        !addreminder 2d 08:00 Wake up
+        !addreminder 2d 08:00 Wake up <- 2 days
+        !addreminder 1w 08:00 Wake up <- 1 week
 """
         if not await Util.check_args_count(message, command, silent, min=4):
             return
@@ -50,6 +51,14 @@ class ReminderCommands(BaseCmd):
                 return
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
+        if command[1].endswith("w"):
+            weeks_amount = command[1][:-1]
+            weeks_amount = await Util.parse_int(
+                message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks", silent)
+            if weeks_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
