@@ -88,7 +88,9 @@ class ReminderCommands(BaseCmd):
         for index, reminder in bc.config.reminders.items():
             reminder_list.append(
                 (reminder.time,
-                 f"{index} - {reminder.time} in <#{reminder.channel_id}> -> {reminder.message}"
+                 f"{index} - {reminder.time}"
+                 f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
+                 f" -> {reminder.message}"
                  f"{f' (repeats every {reminder.repeat_after} minutes)' if reminder.repeat_after else ''}"))
         reminder_list.sort()
         result = '\n'.join([x[1] for x in reminder_list])
