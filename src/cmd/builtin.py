@@ -347,7 +347,7 @@ class BuiltinCommands(BaseCmd):
                           (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">\n")
                 for cmd in commands:
                     result += f"**{cmd[0]}**: {cmd[1]}\n"
-                await Util.response(message, result, silent)
+                await Util.response(message, result, silent, suppress_embeds=True)
             else:
                 # Embed help
                 commands.insert(
