@@ -42,10 +42,10 @@ class ReminderCommands(BaseCmd):
         time = command[2]
         if command[1] == "today":
             date = datetime.datetime.strftime(datetime.datetime.now(), const.REMINDER_DATE_FORMAT)
-        if command[1] == "tomorrow":
+        elif command[1] == "tomorrow":
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
-        if command[1].endswith("d"):
+        elif command[1].endswith("d"):
             days_amount = command[1][:-1]
             days_amount = await Util.parse_int(
                 message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
@@ -53,7 +53,7 @@ class ReminderCommands(BaseCmd):
                 return
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
-        if command[1].endswith("w"):
+        elif command[1].endswith("w"):
             weeks_amount = command[1][:-1]
             weeks_amount = await Util.parse_int(
                 message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks",
