@@ -296,12 +296,10 @@ def stop(_):
         return
     if psutil.pid_exists(pid):
         os.kill(pid, signal.SIGINT)
-        while True:
-            is_running = psutil.pid_exists(pid)
-            if not is_running:
-                break
+        while psutil.pid_exists(pid):
             log.debug("Bot is still running. Please, wait...")
             time.sleep(0.5)
         log.info("Bot is stopped!")
     else:
         log.error("Could not stop the bot (bot is not running)")
+        os.remove(const.BOT_CACHE_FILE_PATH)
