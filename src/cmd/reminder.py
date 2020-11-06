@@ -194,7 +194,6 @@ class ReminderCommands(BaseCmd):
             duration = await Util.parse_int(
                 message, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
             if duration is None:
-                await Util.response(message, f"Value '{command[2][:-1]}' is not a valid integer", silent)
                 return
             duration *= 60
         elif command[2].endswith("d"):
@@ -202,7 +201,6 @@ class ReminderCommands(BaseCmd):
             duration = await Util.parse_int(
                 message, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
             if duration is None:
-                await Util.response(message, f"Value '{command[2][:-1]}' is not a valid integer", silent)
                 return
             duration *= 1440
         elif command[2].endswith("w"):
@@ -210,7 +208,6 @@ class ReminderCommands(BaseCmd):
             duration = await Util.parse_int(
                 message, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
             if duration is None:
-                await Util.response(message, f"Value '{command[2][:-1]}' is not a valid integer", silent)
                 return
             duration *= 10080
         else:
@@ -218,7 +215,6 @@ class ReminderCommands(BaseCmd):
                 message, command[2],
                 f"Third parameter for '{command[0]}' should be duration of period between reminders", silent)
             if duration is None:
-                await Util.response(message, f"Value '{command[2][:-1]}' is not a valid integer", silent)
                 return
         if duration < 0:
             await Util.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
