@@ -238,8 +238,12 @@
     Example: !remindwme 1
 
 **repeatreminder**: Make reminder repeating with particular period \
-    Example: !repeatreminder 1 1440 \
-    Note: specify number of minutes
+    Examples: \
+        !repeatreminder 1 1 \
+        !repeatreminder 1 1h \
+        !repeatreminder 1 1d \
+        !repeatreminder 1 1w \
+    Note: number without postfix is translated to minutes
 
 **restart**: Restart the bot \
     Example: !restart
