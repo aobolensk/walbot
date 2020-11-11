@@ -1164,7 +1164,10 @@ class BuiltinCommands(BaseCmd):
         image_path = os.path.join("images", name + '.' + ext)
         with open(image_path, 'wb') as f:
             try:
-                rq = urllib.request.Request(url)
+                hdr = {
+                    "User-Agent": "Mozilla/5.0"
+                }
+                rq = urllib.request.Request(url, headers=hdr)
                 with urllib.request.urlopen(rq) as response:
                     f.write(response.read())
             except ValueError:
