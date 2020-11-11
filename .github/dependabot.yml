@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+    labels:
+      - "dependencies"
+    assignees:
+      - "aobolensk"
+    reviewers:
+      - "aobolensk"
+    open-pull-requests-limit: 4
