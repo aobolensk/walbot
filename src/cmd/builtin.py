@@ -1173,8 +1173,8 @@ class BuiltinCommands(BaseCmd):
             except ValueError:
                 await Util.response(message, "Incorrect image URL format!", silent)
                 return
-            except Exception:
-                await Util.response(message, "Image downloading failed!", silent)
+            except Exception as e:
+                await Util.response(message, f"Image downloading failed: {e}", silent)
                 os.remove(image_path)
                 log.error("Image downloading failed!", exc_info=True)
                 return
@@ -1324,8 +1324,8 @@ class BuiltinCommands(BaseCmd):
                             temp_image_file.write(response.read())
                         with open(temp_image_file.name, "rb") as temp_image_file:
                             await bc.bot_user.edit(avatar=temp_image_file.read())
-                    except Exception:
-                        await Util.response(message, "Image downloading failed!", silent)
+                    except Exception as e:
+                        await Util.response(message, f"Image downloading failed: {e}", silent)
                         log.error("Image downloading failed!", exc_info=True)
                         return
                     await Util.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
