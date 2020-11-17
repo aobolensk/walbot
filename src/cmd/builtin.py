@@ -1350,11 +1350,12 @@ class BuiltinCommands(BaseCmd):
                 message, f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
                 silent)
             return
-        result = bc.message_buffer.get(message.channel.id, number+1)
+        result = bc.message_buffer.get(message.channel.id, number)
         if result is not None:
             result = result.content
         else:
             result = await message.channel.history(limit=number+1).flatten()
+            bc.message_buffer.data[message.channel.id] = result
             result = result[-1].content
         await Util.response(message, result, silent)
         return result
