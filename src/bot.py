@@ -126,8 +126,18 @@ class WalBot(discord.Client):
                 await self.process_command(message)
             else:
                 await self.process_regular_message(message)
+                await self.process_repetitions(message)
         except Exception:
             log.error("on_message failed", exc_info=True)
+
+    async def process_repetitions(self, message):
+        m1, m2, m3 = (bc.message_buffer.get(message.channel.id, i) for i in range(1, 4))
+        if (m1 and m2 and m3 and
+            m1.content == m2.content == m3.content and
+            (m1.author.id != self.user.id and
+             m2.author.id != self.user.id and
+             m3.author.id != self.user.id)):
+            await message.channel.send(m1.content)
 
     async def process_regular_message(self, message):
         if (self.user.mentioned_in(message) or self.user.id in [
