@@ -22,6 +22,7 @@ from .markov import Markov
 from .reminder import Reminder
 from .repl import Repl
 from .utils import Util
+from .message_buffer import MessageBuffer
 
 
 class WalBot(discord.Client):
@@ -41,6 +42,7 @@ class WalBot(discord.Client):
         bc.get_channel = self.get_channel
         bc.close = self.close
         bc.secret_config = self.secret_config
+        bc.message_buffer = MessageBuffer()
         if not bc.args.fast_start:
             if bc.markov.check():
                 log.info("Markov model has passed all checks")
@@ -105,6 +107,7 @@ class WalBot(discord.Client):
 
     async def on_message(self, message):
         try:
+            bc.message_buffer.push(message)
             log.info(f"<{message.id}> {message.author} -> {message.content}")
             if message.author.id == self.user.id:
                 return
