@@ -131,7 +131,7 @@ class WalBot(discord.Client):
             log.error("on_message failed", exc_info=True)
 
     async def process_repetitions(self, message):
-        m1, m2, m3 = (bc.message_buffer.get(message.channel.id, i) for i in range(1, 4))
+        m1, m2, m3 = (bc.message_buffer.get(message.channel.id, i) for i in range(3))
         if (m1 and m2 and m3 and
             m1.content == m2.content == m3.content and
             (m1.author.id != self.user.id and
