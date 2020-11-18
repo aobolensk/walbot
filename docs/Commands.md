@@ -36,6 +36,9 @@
         !addreminder tomorrow 08:00 Wake up \
         !addreminder 2d 08:00 Wake up &lt;- 2 days \
         !addreminder 1w 08:00 Wake up &lt;- 1 week \
+        !addreminder in 1w5d10h5m Test reminder \
+        !addreminder in 1w Test reminder 2 \
+        !addreminder in 5h10m Test reminder 3 \
 
 
 **addresponse**: Add bot response on message that contains particular regex \

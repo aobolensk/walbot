@@ -35,9 +35,35 @@ class ReminderCommands(BaseCmd):
         !addreminder tomorrow 08:00 Wake up
         !addreminder 2d 08:00 Wake up <- 2 days
         !addreminder 1w 08:00 Wake up <- 1 week
+        !addreminder in 1w5d10h5m Test reminder
+        !addreminder in 1w Test reminder 2
+        !addreminder in 5h10m Test reminder 3
 """
         if not await Util.check_args_count(message, command, silent, min=4):
             return
+
+        # !listreminder in <weeks>w<days>d<hours>h<minutes>m
+        if command[1] == "in":
+            time = command[2]
+            text = ' '.join(command[3:])
+            r = const.REMINDER_IN_REGEX.match(time)
+            if r is None:
+                await Util.response(
+                    message, ("Provide relative time in the following format: "
+                              "<weeks>w<days>d<hours>h<minutes>m. "
+                              "All parts except one are optional"), silent)
+            weeks = int(r.group(2)) if r.group(2) is not None else 0
+            days = int(r.group(4)) if r.group(4) is not None else 0
+            hours = int(r.group(6)) if r.group(6) is not None else 0
+            minutes = int(r.group(8)) if r.group(8) is not None else 0
+            time = (datetime.datetime.now() + datetime.timedelta(
+                weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_TIME_FORMAT)
+            id_ = bc.config.ids["reminder"]
+            bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
+            bc.config.ids["reminder"] += 1
+            await Util.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
+            return
+
         date = command[1]
         time = command[2]
         if command[1] == "today":

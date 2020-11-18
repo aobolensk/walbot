@@ -35,6 +35,7 @@ USER_ID_REGEX = re.compile(r'<@!(\d*)>')
 ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
 INTEGER_NUMBER = re.compile(r'[-+]?\d+')
 ARGS_REGEX = re.compile(r'@args(\d*)-(\d*)@')
+REMINDER_IN_REGEX = re.compile(r'(([0-9]*)w)?(([0-9]*)d)?(([0-9])*h)?(([0-9])*m)?')
 
 ROLE_EVERYONE = "@everyone"
 ROLE_HERE = "@here"
