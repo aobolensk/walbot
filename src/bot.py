@@ -23,6 +23,7 @@ from .reminder import Reminder
 from .repl import Repl
 from .utils import Util
 from .message_buffer import MessageBuffer
+from .algorithms import levenshtein_distance
 
 
 class WalBot(discord.Client):
@@ -172,9 +173,26 @@ class WalBot(discord.Client):
             if command[0] in self.config.commands.aliases.keys():
                 command[0] = self.config.commands.aliases[command[0]]
             else:
-                await message.channel.send(f"Unknown command '{command[0]}'")
+                await message.channel.send(
+                    f"Unknown command '{command[0]}', "
+                    f"probably you meant '{self.suggest_similar_command(command[0])}'")
                 return
         await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
+
+    def suggest_similar_command(self, unknown_command):
+        min_dist = 100000
+        suggestion = ""
+        for command in self.config.commands.data.keys():
+            dist = levenshtein_distance(unknown_command, command)
+            if dist < min_dist:
+                suggestion = command
+                min_dist = dist
+        for command in self.config.commands.aliases.keys():
+            dist = levenshtein_distance(unknown_command, command)
+            if dist < min_dist:
+                suggestion = command
+                min_dist = dist
+        return suggestion
 
     async def on_raw_message_edit(self, payload):
         try:
