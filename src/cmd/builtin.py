@@ -312,7 +312,13 @@ class BuiltinCommands(BaseCmd):
         if len(command) == 1:
             info = message.author
         elif len(command) == 2:
+            if not message.mentions:
+                await Util.response(message, "You need to mention the user you want to get profile of", silent)
+                return
             info = message.guild.get_member(message.mentions[0].id)
+        if info is None:
+            await Util.response(message, "Could not get information about this user", silent)
+            return
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
         result = (f"{message.author.mention}\n"
                   f"User: {info}\n"
