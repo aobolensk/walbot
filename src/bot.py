@@ -34,6 +34,7 @@ class WalBot(discord.Client):
         self.secret_config = secret_config
         self.loop.create_task(self.config_autosave())
         self.loop.create_task(self.process_reminders())
+        self.loop.create_task(self._precompile())
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -49,6 +50,11 @@ class WalBot(discord.Client):
                 log.info("Markov model has passed all checks")
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
+
+    async def _precompile(self):
+        log.debug("Started precompiling functions...")
+        levenshtein_distance("", "")
+        log.debug("Finished precompiling functions")
 
     async def change_status(self, string, type_):
         await self.change_presence(activity=discord.Activity(name=string, type=type_))
