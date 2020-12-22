@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 
-@numba.njit(parallel=True, fastmath=True)
+@numba.njit(fastmath=True)
 def levenshtein_distance(a: str, b: str):
     """
     Calculates Levenshtein distance between two strings using dynamic programming.
