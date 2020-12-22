@@ -78,6 +78,11 @@ class Markov:
     def find_words(self, regex):
         return [self.model[word].word for word in self.model if re.search(regex, word)]
 
+    def get_next_words_list(self, word):
+        if word not in self.model.keys():
+            return []
+        return sorted(list(self.model[word].next.items()), key=lambda x: -x[1])
+
     def generate(self, word=""):
         if word not in self.model.keys():
             return "<Empty message was generated>"

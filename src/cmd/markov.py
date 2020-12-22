@@ -22,6 +22,8 @@ class MarkovCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "inspectmarkov",
+                                     permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "listmarkovfilter",
@@ -127,6 +129,20 @@ class MarkovCommands(BaseCmd):
                   f"Words count: {len(bc.markov.model)}\n"
                   f"Pairs (word -> word) count: {pairs_count}\n"
                   f"Markov database size: {markov_db_size}\n")
+        await Util.response(message, result, silent)
+
+    @staticmethod
+    async def _inspectmarkov(message, command, silent=False):
+        """Inspect next words in Markov model for current one
+    Example: !inspectmarkov hello"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        words = bc.markov.get_next_words_list(command[1])
+        skipped_words = max(0, len(words) - 100)
+        result = f"Next for '{command[1]}':\n"
+        result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
+        if skipped_words > 0:
+            result += f"... and {skipped_words} more words"
         await Util.response(message, result, silent)
 
     @staticmethod

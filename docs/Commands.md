@@ -148,6 +148,9 @@
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;
 
+**inspectmarkov**: Inspect next words in Markov model for current one \
+    Example: !inspectmarkov hello
+
 **listalias**: Print list of aliases \
     Example: !listalias \
     *This command can be used as subcommand*
