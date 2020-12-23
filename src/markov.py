@@ -2,9 +2,9 @@ import random
 import re
 import yaml
 
-from . import const
-from .log import log
-from .config import bc
+from src import const
+from src.log import log
+from src.config import bc
 
 
 class MarkovNode:

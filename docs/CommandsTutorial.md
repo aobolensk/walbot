@@ -23,8 +23,8 @@
 1. Create class that is inherited from `BaseCmd` using the following example:
 
 ```py
-from ..commands import BaseCmd
-from ..config import bc
+from src.commands import BaseCmd
+from src.config import bc
 
 
 class NewTestCommands(BaseCmd):

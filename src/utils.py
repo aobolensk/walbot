@@ -3,8 +3,8 @@ import subprocess
 
 import yaml
 
-from . import const
-from .log import log
+from src import const
+from src.log import log
 
 
 class Util:

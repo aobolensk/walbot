@@ -11,19 +11,19 @@ import time
 import discord
 import psutil
 
-from . import const
-from .config import Config
-from .config import GuildSettings
-from .config import SecretConfig
-from .config import User
-from .config import bc
-from .log import log
-from .markov import Markov
-from .reminder import Reminder
-from .repl import Repl
-from .utils import Util
-from .message_buffer import MessageBuffer
-from .algorithms import levenshtein_distance
+from src import const
+from src.config import Config
+from src.config import GuildSettings
+from src.config import SecretConfig
+from src.config import User
+from src.config import bc
+from src.log import log
+from src.markov import Markov
+from src.reminder import Reminder
+from src.repl import Repl
+from src.utils import Util
+from src.message_buffer import MessageBuffer
+from src.algorithms import levenshtein_distance
 
 
 class WalBot(discord.Client):

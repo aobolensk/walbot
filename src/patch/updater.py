@@ -1,6 +1,6 @@
 import os
 
-from ..log import log
+from src.log import log
 
 
 class Updater:

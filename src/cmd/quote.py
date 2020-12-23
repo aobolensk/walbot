@@ -1,10 +1,10 @@
 import random
 
-from .. import const
-from ..commands import BaseCmd
-from ..config import bc
-from ..quote import Quote
-from ..utils import Util
+from src import const
+from src.commands import BaseCmd
+from src.config import bc
+from src.quote import Quote
+from src.utils import Util
 
 
 class QuoteCommands(BaseCmd):

@@ -2,10 +2,10 @@ import importlib
 import inspect
 import os
 
-from . import const
-from .config import Command
-from .config import bc
-from .config import log
+from src import const
+from src.config import Command
+from src.config import bc
+from src.config import log
 
 
 class BaseCmd:

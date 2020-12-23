@@ -1,10 +1,10 @@
 import datetime
 
-from .. import const
-from ..commands import BaseCmd
-from ..config import bc
-from ..reminder import Reminder
-from ..utils import Util
+from src import const
+from src.commands import BaseCmd
+from src.config import bc
+from src.reminder import Reminder
+from src.utils import Util
 
 
 class ReminderCommands(BaseCmd):

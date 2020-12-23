@@ -8,9 +8,9 @@ import zipfile
 
 import yaml
 
-from . import const
-from .log import log
-from .utils import Util
+from src import const
+from src.log import log
+from src.utils import Util
 
 
 class BotController:

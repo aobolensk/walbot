@@ -3,8 +3,8 @@ import itertools
 import threading
 import socket
 
-from .config import bc
-from .log import log
+from src.config import bc
+from src.log import log
 
 REPL_HOST = ''
 

@@ -9,14 +9,14 @@ import urllib.request
 
 import discord
 
-from .. import const
-from .. import emoji
-from ..commands import BaseCmd
-from ..config import BackgroundEvent
-from ..config import Command
-from ..config import bc
-from ..config import log
-from ..utils import Util
+from src import const
+from src import emoji
+from src.commands import BaseCmd
+from src.config import BackgroundEvent
+from src.config import Command
+from src.config import bc
+from src.config import log
+from src.utils import Util
 
 
 class BuiltinCommands(BaseCmd):

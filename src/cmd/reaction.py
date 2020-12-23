@@ -1,9 +1,9 @@
-from .. import const
-from ..commands import BaseCmd
-from ..config import Reaction
-from ..config import Response
-from ..config import bc
-from ..utils import Util
+from src import const
+from src.commands import BaseCmd
+from src.config import Reaction
+from src.config import Response
+from src.config import bc
+from src.utils import Util
 
 
 class ReactionCommands(BaseCmd):

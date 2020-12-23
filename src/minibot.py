@@ -1,9 +1,9 @@
 import discord
 
-from . import const
-from .config import GuildSettings
-from .config import User
-from .log import log
+from src import const
+from src.config import GuildSettings
+from src.config import User
+from src.log import log
 
 
 class MiniWalBot(discord.Client):

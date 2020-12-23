@@ -2,10 +2,10 @@ import asyncio
 import os
 import re
 
-from .. import const
-from ..commands import BaseCmd
-from ..config import bc
-from ..utils import Util
+from src import const
+from src.commands import BaseCmd
+from src.config import bc
+from src.utils import Util
 
 
 class MarkovCommands(BaseCmd):
