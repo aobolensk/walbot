@@ -13,8 +13,8 @@ class Launcher:
     """This class parses provided command line options and dispatches execution depending on them."""
 
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
-        subparsers = self.parser.add_subparsers(dest="action")
+        self._parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
+        subparsers = self._parser.add_subparsers(dest="action")
         subparsers = {
             cmd: subparsers.add_parser(cmd, help=getattr(self, cmd).__doc__)
             for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
@@ -44,9 +44,9 @@ class Launcher:
         subparsers["patch"].add_argument(
             "file", nargs='?', default="all",
             help='Config file to patch', choices=["all", *self.config_files])
-        self.args = self.parser.parse_args()
+        self.args = self._parser.parse_args()
         if self.args.action is None:
-            self.parser.print_help()
+            self._parser.print_help()
         else:
             getattr(self, self.args.action)()
 
@@ -76,7 +76,7 @@ class Launcher:
 
     def help(self):
         """Print help message"""
-        self.parser.print_help()
+        self._parser.print_help()
 
     def patch(self):
         """Patch config"""
