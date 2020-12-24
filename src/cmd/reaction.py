@@ -1,8 +1,6 @@
 from src import const
 from src.commands import BaseCmd
-from src.config import Reaction
-from src.config import Response
-from src.config import bc
+from src.config import Reaction, Response, bc
 from src.utils import Util
 
 

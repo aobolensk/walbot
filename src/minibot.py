@@ -1,8 +1,7 @@
 import discord
 
 from src import const
-from src.config import GuildSettings
-from src.config import User
+from src.config import GuildSettings, User
 from src.log import log
 
 

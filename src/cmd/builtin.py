@@ -12,13 +12,9 @@ import urllib.request
 import discord
 import requests
 
-from src import const
-from src import emoji
+from src import const, emoji
 from src.commands import BaseCmd
-from src.config import BackgroundEvent
-from src.config import Command
-from src.config import bc
-from src.config import log
+from src.config import BackgroundEvent, Command, bc, log
 from src.utils import Util
 
 

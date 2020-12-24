@@ -3,9 +3,7 @@ import inspect
 import os
 
 from src import const
-from src.config import Command
-from src.config import bc
-from src.config import log
+from src.config import Command, bc, log
 
 
 class BaseCmd:

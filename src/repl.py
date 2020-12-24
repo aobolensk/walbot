@@ -1,7 +1,7 @@
 import inspect
 import itertools
-import threading
 import socket
+import threading
 
 from src.config import bc
 from src.log import log

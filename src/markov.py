@@ -1,10 +1,11 @@
 import random
 import re
+
 import yaml
 
 from src import const
-from src.log import log
 from src.config import bc
+from src.log import log
 
 
 class MarkovNode:
