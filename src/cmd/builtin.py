@@ -1111,9 +1111,10 @@ class BuiltinCommands(BaseCmd):
                         if emoji_match:
                             temp_image_file = tempfile.NamedTemporaryFile()
                             with open(temp_image_file.name, 'wb') as f:
-                                f.write(base64.b64decode(emoji_match[4])) # Twemoji is located under the 4th number
+                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
                             shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Util.response(message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                            await Util.response(
+                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
                             os.unlink(temp_image_file.name + ".png")
                             break
                         await Util.response(message, f"Image {command[i]} is not found!", silent)
@@ -1149,9 +1150,10 @@ class BuiltinCommands(BaseCmd):
                         if emoji_match:
                             temp_image_file = tempfile.NamedTemporaryFile()
                             with open(temp_image_file.name, 'wb') as f:
-                                f.write(base64.b64decode(emoji_match[4])) # Twemoji is located under the 4th number
+                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
                             shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Util.response(message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                            await Util.response(
+                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
                             os.unlink(temp_image_file.name + ".png")
                             break
                         await Util.response(message, f"Image {command[i]} is not found!", silent)
