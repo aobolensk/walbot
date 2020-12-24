@@ -22,6 +22,40 @@ from src.config import log
 from src.utils import Util
 
 
+class _BuiltinInternals:
+    @staticmethod
+    async def get_image(message, command, silent):
+        for i in range(1, len(command)):
+            for root, _, files in os.walk("images"):
+                if root.endswith("images"):
+                    for file in files:
+                        if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
+                            await Util.response(message, None, silent,
+                                                files=[discord.File(os.path.join("images", file))])
+                            break
+                    else:
+                        # Custom emoji
+                        r = const.EMOJI_REGEX.match(command[i])
+                        if r is not None:
+                            await Util.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
+                            break
+                        # Unicode emoji
+                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
+                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
+                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
+                        if emoji_match:
+                            temp_image_file = tempfile.NamedTemporaryFile()
+                            with open(temp_image_file.name, 'wb') as f:
+                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
+                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
+                            await Util.response(
+                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                            os.unlink(temp_image_file.name + ".png")
+                            break
+                        await Util.response(message, f"Image {command[i]} is not found!", silent)
+                    break
+
+
 class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, self.get_classname(), "takechars",
@@ -1078,9 +1112,6 @@ class BuiltinCommands(BaseCmd):
     async def _img(message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
-        if not os.path.isdir("images"):
-            await Util.response(message, "No images found!", silent)
-            return
         if len(command) == 1:
             list_images = os.listdir("images")
             if len(list_images) == 0:
@@ -1090,35 +1121,7 @@ class BuiltinCommands(BaseCmd):
             await Util.response(message, None, silent,
                                 files=[discord.File(os.path.join("images", list_images[result]))])
             return
-        for i in range(1, len(command)):
-            for root, _, files in os.walk("images"):
-                if root.endswith("images"):
-                    for file in files:
-                        if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
-                            await Util.response(message, None, silent,
-                                                files=[discord.File(os.path.join("images", file))])
-                            break
-                    else:
-                        # Custom emoji
-                        r = const.EMOJI_REGEX.match(command[i])
-                        if r is not None:
-                            await Util.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
-                            break
-                        # Unicode emoji
-                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
-                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
-                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
-                        if emoji_match:
-                            temp_image_file = tempfile.NamedTemporaryFile()
-                            with open(temp_image_file.name, 'wb') as f:
-                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
-                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Util.response(
-                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
-                            os.unlink(temp_image_file.name + ".png")
-                            break
-                        await Util.response(message, f"Image {command[i]} is not found!", silent)
-                    break
+        await _BuiltinInternals.get_image(message, command, silent)
 
     @staticmethod
     async def _wmeimg(message, command, silent=False):
@@ -1126,38 +1129,7 @@ class BuiltinCommands(BaseCmd):
     Example: !wmeimg <image_name>"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        if not os.path.isdir("images"):
-            await Util.response(message, "No images found!", silent)
-            return
-        for i in range(1, len(command)):
-            for root, _, files in os.walk("images"):
-                if root.endswith("images"):
-                    for file in files:
-                        if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
-                            await Util.send_direct_message(
-                                message.author, None, silent, files=[discord.File(os.path.join("images", file))])
-                            break
-                    else:
-                        # Custom emoji
-                        r = const.EMOJI_REGEX.match(command[i])
-                        if r is not None:
-                            await Util.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
-                            break
-                        # Unicode emoji
-                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
-                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
-                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
-                        if emoji_match:
-                            temp_image_file = tempfile.NamedTemporaryFile()
-                            with open(temp_image_file.name, 'wb') as f:
-                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
-                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Util.response(
-                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
-                            os.unlink(temp_image_file.name + ".png")
-                            break
-                        await Util.response(message, f"Image {command[i]} is not found!", silent)
-                    break
+        await _BuiltinInternals.get_image(message, command, silent)
 
     @staticmethod
     async def _listimg(message, command, silent=False):
