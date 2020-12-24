@@ -1,13 +1,16 @@
 import asyncio
+import base64
 import datetime
 import imghdr
 import os
 import random
 import re
+import shutil
 import tempfile
 import urllib.request
 
 import discord
+import requests
 
 from src import const
 from src import emoji
@@ -1096,9 +1099,22 @@ class BuiltinCommands(BaseCmd):
                                                 files=[discord.File(os.path.join("images", file))])
                             break
                     else:
+                        # Custom emoji
                         r = const.EMOJI_REGEX.match(command[i])
                         if r is not None:
                             await Util.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
+                            break
+                        # Unicode emoji
+                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
+                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
+                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
+                        if emoji_match:
+                            temp_image_file = tempfile.NamedTemporaryFile()
+                            with open(temp_image_file.name, 'wb') as f:
+                                f.write(base64.b64decode(emoji_match[4])) # Twemoji is located under the 4th number
+                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
+                            await Util.response(message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                            os.unlink(temp_image_file.name + ".png")
                             break
                         await Util.response(message, f"Image {command[i]} is not found!", silent)
                     break
@@ -1121,10 +1137,24 @@ class BuiltinCommands(BaseCmd):
                                 message.author, None, silent, files=[discord.File(os.path.join("images", file))])
                             break
                     else:
+                        # Custom emoji
                         r = const.EMOJI_REGEX.match(command[i])
                         if r is not None:
                             await Util.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
                             break
+                        # Unicode emoji
+                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
+                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
+                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
+                        if emoji_match:
+                            temp_image_file = tempfile.NamedTemporaryFile()
+                            with open(temp_image_file.name, 'wb') as f:
+                                f.write(base64.b64decode(emoji_match[4])) # Twemoji is located under the 4th number
+                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
+                            await Util.response(message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                            os.unlink(temp_image_file.name + ".png")
+                            break
+                        await Util.response(message, f"Image {command[i]} is not found!", silent)
                     break
 
     @staticmethod
