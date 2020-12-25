@@ -23,7 +23,7 @@ class MarkovCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
                                      permission=const.Permission.ADMIN.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "inspectmarkov",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addmarkovfilter",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "listmarkovfilter",
