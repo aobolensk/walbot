@@ -515,14 +515,15 @@ class BuiltinCommands(BaseCmd):
     async def _enablecmd(message, command, silent=False):
         """Enable command in specified scope
     Examples:
+        !enablecmd ping
         !enablecmd ping channel
         !enablecmd ping guild
         !enablecmd ping global"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         command_name = command[1]
         if command_name in bc.commands.data.keys():
-            if command[2] == "channel":
+            if len(command) == 2 or command[2] == "channel":
                 if message.channel.id not in bc.commands.data[command_name].channels:
                     bc.commands.data[command_name].channels.append(message.channel.id)
                 await Util.response(message, f"Command '{command_name}' is enabled in this channel", silent)
@@ -543,14 +544,15 @@ class BuiltinCommands(BaseCmd):
     async def _disablecmd(message, command, silent=False):
         """Disable command in specified scope
     Examples:
+        !disablecmd ping
         !disablecmd ping channel
         !disablecmd ping guild
         !disablecmd ping global"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         command_name = command[1]
         if command_name in bc.commands.data.keys():
-            if command[2] == "channel":
+            if len(command) == 2 or command[2] == "channel":
                 if message.channel.id in bc.commands.data[command_name].channels:
                     bc.commands.data[command_name].channels.remove(message.channel.id)
                 await Util.response(message, f"Command '{command_name}' is disabled in this channel", silent)

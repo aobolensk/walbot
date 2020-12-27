@@ -116,6 +116,7 @@
 
 **disablecmd**: Disable command in specified scope \
     Examples: \
+        !disablecmd ping \
         !disablecmd ping channel \
         !disablecmd ping guild \
         !disablecmd ping global
@@ -129,6 +130,7 @@
 
 **enablecmd**: Enable command in specified scope \
     Examples: \
+        !enablecmd ping \
         !enablecmd ping channel \
         !enablecmd ping guild \
         !enablecmd ping global
