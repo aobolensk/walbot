@@ -72,6 +72,10 @@
     Example: !count some text \
     *This command can be used as subcommand*
 
+**curl**: Perform HTTP request \
+    Usage: !curl &lt;url&gt; \
+    *This command can be used as subcommand*
+
 **delalias**: Delete command alias \
     Usage: !delalias &lt;alias&gt; \
     Example: !delalias pong

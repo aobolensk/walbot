@@ -172,6 +172,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "slowmode",
                                      permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "curl",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1413,3 +1415,15 @@ class BuiltinCommands(BaseCmd):
             await Util.response(message, "Slowmode is disabled for current channel", silent)
         else:
             await Util.response(message, f"Slowmode is set to {duration} seconds", silent)
+
+    @staticmethod
+    async def _curl(message, command, silent=False):
+        """Perform HTTP request
+    Usage: !curl <url>"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        url = command[1]
+        r = requests.get(url)
+        result = r.text
+        await Util.response(message, result, silent)
+        return result
