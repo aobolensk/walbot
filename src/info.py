@@ -13,6 +13,13 @@ class BotInfo:
         return sha
 
     @property
+    def version_time(self):
+        repo = git.Repo(search_parent_directories=True)
+        time = repo.head.object.committed_datetime
+        return time
+
+
+    @property
     def uptime(self):
         days, remainder = divmod(
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)

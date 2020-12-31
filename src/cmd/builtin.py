@@ -893,8 +893,9 @@ class BuiltinCommands(BaseCmd):
         ver = discord.version_info
         result = (f"{bc.bot_user} (WalBot instance)\n"
                   "Source code: <https://github.com/aobolensk/walbot>\n"
-                  f"Version: {bc.info.version} "
-                  f"(discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel})\n"
+                  f"Version: {bc.info.version} (done at {bc.info.version_time})\n"
+                  f"Dependencies:\n"
+                  f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
                   f"Uptime: {bc.info.uptime}\n")
         await Util.response(message, result, silent)
 
