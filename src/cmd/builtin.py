@@ -381,7 +381,7 @@ class BuiltinCommands(BaseCmd):
                     s = (name, f"calls external command `{cmd.cmd_line}`")
                     commands.append(s)
             commands.sort()
-            version = bc.config.get_version()
+            version = bc.info.version
             if len(command) == 2 and command[1] == '-p':
                 # Plain text help
                 result = ("Built-in commands <https://github.com/aobolensk/walbot/blob/" +
@@ -878,7 +878,7 @@ class BuiltinCommands(BaseCmd):
         !version short"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        result = bc.config.get_version()
+        result = bc.info.version
         if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
             result = result[:7]
         await Util.response(message, result, silent)
@@ -888,12 +888,14 @@ class BuiltinCommands(BaseCmd):
     async def _about(message, command, silent=False):
         """Get information about the bot
     Example: !about"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
         ver = discord.version_info
         result = (f"{bc.bot_user} (WalBot instance)\n"
                   "Source code: <https://github.com/aobolensk/walbot>\n"
-                  f"Version: {bc.config.get_version()} "
+                  f"Version: {bc.info.version} "
                   f"(discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel})\n"
-                  f"Uptime: {bc.config.get_uptime()}\n")
+                  f"Uptime: {bc.info.uptime}\n")
         await Util.response(message, result, silent)
 
     @staticmethod
@@ -1021,7 +1023,7 @@ class BuiltinCommands(BaseCmd):
     Example: !uptime"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        result = bc.config.get_uptime()
+        result = bc.info.uptime
         await Util.response(message, result, silent)
         return result
 

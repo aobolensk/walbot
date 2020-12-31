@@ -14,6 +14,7 @@ import psutil
 from src import const
 from src.algorithms import levenshtein_distance
 from src.config import Config, GuildSettings, SecretConfig, User, bc
+from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
 from src.message_buffer import MessageBuffer
@@ -41,6 +42,7 @@ class WalBot(discord.Client):
         bc.close = self.close
         bc.secret_config = self.secret_config
         bc.message_buffer = MessageBuffer()
+        bc.info = BotInfo()
         if not bc.args.fast_start:
             if bc.markov.check():
                 log.info("Markov model has passed all checks")
