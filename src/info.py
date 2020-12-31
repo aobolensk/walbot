@@ -18,7 +18,6 @@ class BotInfo:
         time = repo.head.object.committed_datetime
         return time
 
-
     @property
     def uptime(self):
         days, remainder = divmod(
