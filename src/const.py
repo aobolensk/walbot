@@ -10,6 +10,8 @@ SECRET_CONFIG_VERSION = '0.0.1'
 BOT_CACHE_FILE_PATH = ".bot_cache"
 NOHUP_FILE_PATH = "nohup.out"
 
+GIT_REPO_LINK = "https://github.com/aobolensk/walbot"
+
 CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"

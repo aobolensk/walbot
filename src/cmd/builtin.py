@@ -384,7 +384,7 @@ class BuiltinCommands(BaseCmd):
             version = bc.info.version
             if len(command) == 2 and command[1] == '-p':
                 # Plain text help
-                result = ("Built-in commands <https://github.com/aobolensk/walbot/blob/" +
+                result = (f"Built-in commands <{const.GIT_REPO_LINK}/blob/" +
                           (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">\n")
                 for cmd in commands:
                     result += f"**{cmd[0]}**: {cmd[1]}\n"
@@ -393,7 +393,7 @@ class BuiltinCommands(BaseCmd):
                 # Embed help
                 commands.insert(
                     0, ("Built-in commands", (
-                        "<https://github.com/aobolensk/walbot/blob/" +
+                        f"<{const.GIT_REPO_LINK}/blob/" +
                         (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">")))
                 for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
                     embed = discord.Embed(title="Help", color=0x717171)
@@ -892,7 +892,7 @@ class BuiltinCommands(BaseCmd):
             return
         ver = discord.version_info
         result = (f"{bc.bot_user} (WalBot instance)\n"
-                  "Source code: <https://github.com/aobolensk/walbot>\n"
+                  f"Source code: <{const.GIT_REPO_LINK}>\n"
                   f"Version: {bc.info.version} (done at {bc.info.version_time})\n"
                   f"Dependencies:\n"
                   f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
