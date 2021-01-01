@@ -2,17 +2,17 @@ class MessageBuffer:
     BUFFER_CAPACITY = 1001
 
     def __init__(self) -> None:
-        self.data = dict()
+        self._data = dict()
 
     def push(self, message):
-        if message.channel.id not in self.data.keys():
-            self.data[message.channel.id] = []
-        self.data[message.channel.id].insert(0, message)
-        self.data[message.channel.id] = self.data[message.channel.id][:self.BUFFER_CAPACITY]
+        if message.channel.id not in self._data.keys():
+            self._data[message.channel.id] = []
+        self._data[message.channel.id].insert(0, message)
+        self._data[message.channel.id] = self._data[message.channel.id][:self.BUFFER_CAPACITY]
 
     def get(self, channel_id, index):
-        if channel_id not in self.data.keys():
+        if channel_id not in self._data.keys():
             return
-        if not 0 <= index < len(self.data[channel_id]):
+        if not 0 <= index < len(self._data[channel_id]):
             return
-        return self.data[channel_id][index]
+        return self._data[channel_id][index]
