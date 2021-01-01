@@ -36,6 +36,6 @@ class NewTestCommands(BaseCmd):
     async def _test(message, command, silent=False):
         """Test command"""
         result = "This is the test command!"
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 ```

@@ -1,6 +1,7 @@
 from src import const
 from src.commands import BaseCmd
 from src.config import Reaction, Response, bc
+from src.message import Msg
 from src.utils import Util
 
 
@@ -31,7 +32,7 @@ class ReactionCommands(BaseCmd):
             return
         bc.config.reactions[bc.config.ids["reaction"]] = Reaction(' '.join(command[2:]), command[1])
         bc.config.ids["reaction"] += 1
-        await Util.response(message, f"Reaction '{command[1]}' on '{' '.join(command[2:])}' successfully added", silent)
+        await Msg.response(message, f"Reaction '{command[1]}' on '{' '.join(command[2:])}' successfully added", silent)
 
     @staticmethod
     async def _updreaction(message, command, silent=False):
@@ -45,10 +46,10 @@ class ReactionCommands(BaseCmd):
             return
         if index in bc.config.reactions.keys():
             bc.config.reactions[index] = Reaction(' '.join(command[3:]), command[2])
-            await Util.response(
+            await Msg.response(
                 message, f"Reaction '{command[1]}' on '{' '.join(command[2:])}' successfully updated", silent)
         else:
-            await Util.response(message, "Incorrect index of reaction!", silent)
+            await Msg.response(message, "Incorrect index of reaction!", silent)
 
     @staticmethod
     async def _delreaction(message, command, silent=False):
@@ -63,9 +64,9 @@ class ReactionCommands(BaseCmd):
             return
         if index in bc.config.reactions.keys():
             bc.config.reactions.pop(index)
-            await Util.response(message, "Successfully deleted reaction!", silent)
+            await Msg.response(message, "Successfully deleted reaction!", silent)
         else:
-            await Util.response(message, "Invalid index of reaction!", silent)
+            await Msg.response(message, "Invalid index of reaction!", silent)
 
     @staticmethod
     async def _listreaction(message, command, silent=False):
@@ -77,9 +78,9 @@ class ReactionCommands(BaseCmd):
         for index, reaction in bc.config.reactions.items():
             result += f"{index} - {reaction.emoji}: `{reaction.regex}`\n"
         if result:
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
         else:
-            await Util.response(message, "No reactions found!", silent)
+            await Msg.response(message, "No reactions found!", silent)
         return result
 
     @staticmethod
@@ -90,13 +91,13 @@ class ReactionCommands(BaseCmd):
             return
         parts = ' '.join(command[1:]).split(';', 1)
         if len(parts) < 2:
-            await Util.response(
+            await Msg.response(
                 message, "You need to provide regex and text that are separated by semicolon (;)", silent)
             return
         regex, text = parts
         bc.config.responses[bc.config.ids["response"]] = Response(regex, text)
         bc.config.ids["response"] += 1
-        await Util.response(message, f"Response '{text}' on '{regex}' successfully added", silent)
+        await Msg.response(message, f"Response '{text}' on '{regex}' successfully added", silent)
 
     @staticmethod
     async def _updresponse(message, command, silent=False):
@@ -111,14 +112,14 @@ class ReactionCommands(BaseCmd):
         if index in bc.config.responses.keys():
             parts = ' '.join(command[2:]).split(';', 1)
             if len(parts) < 2:
-                await Util.response(
+                await Msg.response(
                     message, "You need to provide regex and text that are separated by semicolon (;)", silent)
                 return
             regex, text = parts
             bc.config.responses[index] = Response(regex, text)
-            await Util.response(message, f"Response '{text}' on '{regex}' successfully updated", silent)
+            await Msg.response(message, f"Response '{text}' on '{regex}' successfully updated", silent)
         else:
-            await Util.response(message, "Incorrect index of response!", silent)
+            await Msg.response(message, "Incorrect index of response!", silent)
 
     @staticmethod
     async def _delresponse(message, command, silent=False):
@@ -133,9 +134,9 @@ class ReactionCommands(BaseCmd):
             return
         if index in bc.config.responses.keys():
             bc.config.responses.pop(index)
-            await Util.response(message, "Successfully deleted response!", silent)
+            await Msg.response(message, "Successfully deleted response!", silent)
         else:
-            await Util.response(message, "Invalid index of response!", silent)
+            await Msg.response(message, "Invalid index of response!", silent)
 
     @staticmethod
     async def _listresponse(message, command, silent=False):
@@ -147,7 +148,7 @@ class ReactionCommands(BaseCmd):
         for index, response in bc.config.responses.items():
             result += f"{index} - `{response.regex}`: {response.text}\n"
         if result:
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
         else:
-            await Util.response(message, "No responses found!", silent)
+            await Msg.response(message, "No responses found!", silent)
         return result

@@ -17,6 +17,7 @@ from src.config import Config, GuildSettings, SecretConfig, User, bc
 from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
+from src.message import Msg
 from src.message_buffer import MessageBuffer
 from src.reminder import Reminder
 from src.repl import Repl
@@ -79,7 +80,7 @@ class WalBot(discord.Client):
                     channel = self.get_channel(rem.channel_id)
                     await channel.send(f"{' '.join(rem.ping_users)}\nYou asked to remind at {now} -> {rem.message}")
                     for user_id in rem.whisper_users:
-                        await Util.send_direct_message(
+                        await Msg.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                     if rem.repeat_after > 0:
                         new_time = datetime.datetime.now().replace(
@@ -156,7 +157,7 @@ class WalBot(discord.Client):
         if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
             for response in self.config.responses.values():
                 if re.search(response.regex, message.content):
-                    await Util.response(message, response.text, False)
+                    await Msg.response(message, response.text, False)
         if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             for reaction in self.config.reactions.values():
                 if re.search(reaction.regex, message.content):

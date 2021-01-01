@@ -3,6 +3,7 @@ import datetime
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
+from src.message import Msg
 from src.reminder import Reminder
 from src.utils import Util
 
@@ -48,7 +49,7 @@ class ReminderCommands(BaseCmd):
             text = ' '.join(command[3:])
             r = const.REMINDER_IN_REGEX.match(time)
             if r is None:
-                await Util.response(
+                await Msg.response(
                     message, ("Provide relative time in the following format: "
                               "<weeks>w<days>d<hours>h<minutes>m. "
                               "All parts except one are optional"), silent)
@@ -61,7 +62,7 @@ class ReminderCommands(BaseCmd):
             id_ = bc.config.ids["reminder"]
             bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
             bc.config.ids["reminder"] += 1
-            await Util.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
+            await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
             return
 
         date = command[1]
@@ -92,14 +93,14 @@ class ReminderCommands(BaseCmd):
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
         except ValueError:
-            await Util.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
-                                "More information about format: <https://strftime.org/>", silent)
+            await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
+                               "More information about format: <https://strftime.org/>", silent)
             return
         text = ' '.join(command[3:])
         id_ = bc.config.ids["reminder"]
         bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
         bc.config.ids["reminder"] += 1
-        await Util.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
+        await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
 
     @staticmethod
     async def _updreminder(message, command, silent=False):
@@ -116,15 +117,15 @@ class ReminderCommands(BaseCmd):
             try:
                 time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
             except ValueError:
-                await Util.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
-                                    "More information about format: <https://strftime.org/>", silent)
+                await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
+                                   "More information about format: <https://strftime.org/>", silent)
                 return
             text = ' '.join(command[4:])
             bc.config.reminders[index] = Reminder(str(time), text, message.channel.id)
-            await Util.response(
+            await Msg.response(
                 message, f"Successfully updated reminder {index}: '{text}' at {time}", silent)
         else:
-            await Util.response(message, "Invalid index of reminder!", silent)
+            await Msg.response(message, "Invalid index of reminder!", silent)
 
     @staticmethod
     async def _listreminder(message, command, silent=False):
@@ -143,9 +144,9 @@ class ReminderCommands(BaseCmd):
         reminder_list.sort()
         result = '\n'.join([x[1] for x in reminder_list])
         if result:
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
         else:
-            await Util.response(message, "No reminders found!", silent)
+            await Msg.response(message, "No reminders found!", silent)
         return result
 
     @staticmethod
@@ -160,9 +161,9 @@ class ReminderCommands(BaseCmd):
             return
         if index in bc.config.reminders.keys():
             bc.config.reminders.pop(index)
-            await Util.response(message, "Successfully deleted reminder!", silent)
+            await Msg.response(message, "Successfully deleted reminder!", silent)
         else:
-            await Util.response(message, "Invalid index of reminder!", silent)
+            await Msg.response(message, "Invalid index of reminder!", silent)
 
     @staticmethod
     async def _remindme(message, command, silent=False):
@@ -176,9 +177,9 @@ class ReminderCommands(BaseCmd):
             return
         if index in bc.config.reminders.keys():
             bc.config.reminders[index].ping_users.append(message.author.mention)
-            await Util.response(message, f"You will be mentioned when reminder {index} is sent", silent)
+            await Msg.response(message, f"You will be mentioned when reminder {index} is sent", silent)
         else:
-            await Util.response(message, "Invalid index of reminder!", silent)
+            await Msg.response(message, "Invalid index of reminder!", silent)
 
     @staticmethod
     async def _remindwme(message, command, silent=False):
@@ -192,10 +193,10 @@ class ReminderCommands(BaseCmd):
             return
         if index in bc.config.reminders.keys():
             bc.config.reminders[index].whisper_users.append(message.author.id)
-            await Util.response(
+            await Msg.response(
                 message, f"You will be notified in direct messages when reminder {index} is sent", silent)
         else:
-            await Util.response(message, "Invalid index of reminder!", silent)
+            await Msg.response(message, "Invalid index of reminder!", silent)
 
     @staticmethod
     async def _repeatreminder(message, command, silent=False):
@@ -213,7 +214,7 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index not in bc.config.reminders.keys():
-            await Util.response(message, "Invalid index of reminder!", silent)
+            await Msg.response(message, "Invalid index of reminder!", silent)
             return
         if command[2].endswith("h"):
             duration = command[2][:-1]
@@ -243,10 +244,10 @@ class ReminderCommands(BaseCmd):
             if duration is None:
                 return
         if duration < 0:
-            await Util.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
+            await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
             return
         bc.config.reminders[index].repeat_after = duration
-        await Util.response(message, f"Reminder {index} will be repeated every {duration} minutes!", silent)
+        await Msg.response(message, f"Reminder {index} will be repeated every {duration} minutes!", silent)
 
     @staticmethod
     async def _skipreminder(message, command, silent=False):
@@ -260,10 +261,10 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index not in bc.config.reminders.keys():
-            await Util.response(message, "Invalid index of reminder!", silent)
+            await Msg.response(message, "Invalid index of reminder!", silent)
             return
         if bc.config.reminders[index].repeat_after == 0:
-            await Util.response(message, "This reminder is not recurring!", silent)
+            await Msg.response(message, "This reminder is not recurring!", silent)
             return
         rem = bc.config.reminders[index]
         new_time = datetime.datetime.strftime(
@@ -274,6 +275,6 @@ class ReminderCommands(BaseCmd):
         bc.config.reminders[id_].repeat_after = rem.repeat_after
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
-        await Util.response(
+        await Msg.response(
             message, f"Skipped reminder {index} at {rem.time}, "
                      f"next reminder {id_} will be at {bc.config.reminders[id_].time}", silent)

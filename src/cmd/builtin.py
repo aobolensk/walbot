@@ -15,6 +15,7 @@ import requests
 from src import const, emoji
 from src.commands import BaseCmd
 from src.config import BackgroundEvent, Command, bc, log
+from src.message import Msg
 from src.utils import Util
 
 
@@ -26,14 +27,14 @@ class _BuiltinInternals:
                 if root.endswith("images"):
                     for file in files:
                         if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
-                            await Util.response(message, None, silent,
-                                                files=[discord.File(os.path.join("images", file))])
+                            await Msg.response(message, None, silent,
+                                               files=[discord.File(os.path.join("images", file))])
                             break
                     else:
                         # Custom emoji
                         r = const.EMOJI_REGEX.match(command[i])
                         if r is not None:
-                            await Util.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
+                            await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
                             break
                         # Unicode emoji
                         emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
@@ -44,11 +45,11 @@ class _BuiltinInternals:
                             with open(temp_image_file.name, 'wb') as f:
                                 f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
                             shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Util.response(
+                            await Msg.response(
                                 message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
                             os.unlink(temp_image_file.name + ".png")
                             break
-                        await Util.response(message, f"Image {command[i]} is not found!", silent)
+                        await Msg.response(message, f"Image {command[i]} is not found!", silent)
                     break
 
 
@@ -200,7 +201,7 @@ class BuiltinCommands(BaseCmd):
             result = result[len(result)+num:]
         else:
             result = result[:num]
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -208,7 +209,7 @@ class BuiltinCommands(BaseCmd):
         """Calculate length of the message
     Example: !countchars some text"""
         result = str(len(' '.join(command[1:])))
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -230,7 +231,7 @@ class BuiltinCommands(BaseCmd):
             result = ' '.join(result[len(result)+num:])
         else:
             result = ' '.join(result[:num])
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -238,7 +239,7 @@ class BuiltinCommands(BaseCmd):
         """Count amount of words
     Example: !count some text"""
         result = str(len(' '.join(command).split()) - 1)
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -266,7 +267,7 @@ class BuiltinCommands(BaseCmd):
             result = '\n'.join(result[len(result)+num:])
         else:
             result = '\n'.join(result[:num])
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -274,7 +275,7 @@ class BuiltinCommands(BaseCmd):
         """Count amount of lines
     Example: !count some text"""
         result = str(len(' '.join(command).split('\n')))
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -282,7 +283,7 @@ class BuiltinCommands(BaseCmd):
         """Convert text to lower case
     Example: !tolower SoMe TeXt"""
         result = ' '.join(command[1:]).lower()
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -290,7 +291,7 @@ class BuiltinCommands(BaseCmd):
         """Convert text to upper case
     Example: !toupper SoMe TeXt"""
         result = ' '.join(command[1:]).upper()
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -324,7 +325,7 @@ class BuiltinCommands(BaseCmd):
             result += str(number) + ' '
         else:
             result = result[:-1]
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -333,7 +334,7 @@ class BuiltinCommands(BaseCmd):
     Example: !ping"""
         result = f":ping_pong: Pong! {message.author.mention} :ping_pong:\n"
         result += f"Latency: {round(bc.latency() * 1000)} ms"
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _profile(message, command, silent=False):
@@ -348,11 +349,11 @@ class BuiltinCommands(BaseCmd):
             info = message.author
         elif len(command) == 2:
             if not message.mentions:
-                await Util.response(message, "You need to mention the user you want to get profile of", silent)
+                await Msg.response(message, "You need to mention the user you want to get profile of", silent)
                 return
             info = message.guild.get_member(message.mentions[0].id)
         if info is None:
-            await Util.response(message, "Could not get information about this user", silent)
+            await Msg.response(message, "Could not get information about this user", silent)
             return
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
         result = (f"{message.author.mention}\n"
@@ -360,7 +361,7 @@ class BuiltinCommands(BaseCmd):
                   f"Avatar: <{info.avatar_url}>\n"
                   f"Created at: {info.created_at}\n"
                   f"Roles: {roles}\n")
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _help(message, command, silent=False):
@@ -388,14 +389,14 @@ class BuiltinCommands(BaseCmd):
                           (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">\n")
                 for cmd in commands:
                     result += f"**{cmd[0]}**: {cmd[1]}\n"
-                await Util.response(message, result, silent, suppress_embeds=True)
+                await Msg.response(message, result, silent, suppress_embeds=True)
             else:
                 # Embed help
                 commands.insert(
                     0, ("Built-in commands", (
                         f"<{const.GIT_REPO_LINK}/blob/" +
                         (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">")))
-                for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+                for chunk in Msg.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
                     embed = discord.Embed(title="Help", color=0x717171)
                     for cmd in chunk:
                         cmd_name = cmd[0]
@@ -403,7 +404,7 @@ class BuiltinCommands(BaseCmd):
                         if len(description) > 1024:
                             description = description[:1021] + "..."
                         embed.add_field(name=cmd_name, value=description, inline=False)
-                    await Util.response(message, None, silent, embed=embed)
+                    await Msg.response(message, None, silent, embed=embed)
         elif len(command) == 2:
             name = command[1]
             if command[1] in bc.commands.data:
@@ -411,7 +412,7 @@ class BuiltinCommands(BaseCmd):
             elif command[1] in bc.commands.aliases.keys():
                 command = bc.commands.data[bc.commands.aliases[command[1]]]
             else:
-                await Util.response(message, f"Unknown command '{command[1]}'", silent)
+                await Msg.response(message, f"Unknown command '{command[1]}'", silent)
                 return
             result = name + ": "
             if command.perform is not None:
@@ -426,7 +427,7 @@ class BuiltinCommands(BaseCmd):
             result += f"    Required permission level: {command.permission}\n"
             if command.subcommand:
                 result += "    This command can be used as subcommand\n"
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
 
     @staticmethod
     async def _addcmd(message, command, silent=False):
@@ -436,11 +437,11 @@ class BuiltinCommands(BaseCmd):
             return
         command_name = command[1]
         if command_name in bc.commands.data.keys():
-            await Util.response(message, f"Command {command_name} already exists", silent)
+            await Msg.response(message, f"Command {command_name} already exists", silent)
             return
         bc.commands.data[command_name] = Command(command_name, message=' '.join(command[2:]))
         bc.commands.data[command_name].channels.append(message.channel.id)
-        await Util.response(
+        await Msg.response(
             message, f"Command '{command_name}' -> '{bc.commands.data[command_name].message}' successfully added",
             silent)
 
@@ -453,11 +454,11 @@ class BuiltinCommands(BaseCmd):
             return
         command_name = command[1]
         if command_name in bc.commands.data.keys():
-            await Util.response(message, f"Command {command_name} already exists", silent)
+            await Msg.response(message, f"Command {command_name} already exists", silent)
             return
         bc.commands.data[command_name] = Command(command_name, cmd_line=' '.join(command[2:]))
         bc.commands.data[command_name].channels.append(message.channel.id)
-        await Util.response(
+        await Msg.response(
             message, f"Command '{command_name}' that calls external command "
                      f"`{bc.commands.data[command_name].cmd_line}` is successfully added", silent)
 
@@ -470,14 +471,14 @@ class BuiltinCommands(BaseCmd):
         command_name = command[1]
         if command_name in bc.commands.data.keys():
             if bc.commands.data[command_name].message is None:
-                await Util.response(message, f"Command '{command_name}' is not editable", silent)
+                await Msg.response(message, f"Command '{command_name}' is not editable", silent)
                 return
             bc.commands.data[command_name].message = ' '.join(command[2:])
-            await Util.response(
+            await Msg.response(
                 message, f"Command '{command_name}' -> "
                          f"'{bc.commands.data[command_name].message}' successfully updated", silent)
             return
-        await Util.response(message, f"Command '{command_name}' does not exist", silent)
+        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
     async def _updextcmd(message, command, silent=False):
@@ -489,14 +490,14 @@ class BuiltinCommands(BaseCmd):
         command_name = command[1]
         if command_name in bc.commands.data.keys():
             if bc.commands.data[command_name].cmd_line is None:
-                await Util.response(message, f"Command '{command_name}' is not editable", silent)
+                await Msg.response(message, f"Command '{command_name}' is not editable", silent)
                 return
             bc.commands.data[command_name].cmd_line = ' '.join(command[2:])
-            await Util.response(
+            await Msg.response(
                 message, f"Command '{command_name}' that calls external command "
                          f"`{bc.commands.data[command_name].cmd_line}` is successfully updated", silent)
             return
-        await Util.response(message, f"Command '{command_name}' does not exist", silent)
+        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
     async def _delcmd(message, command, silent=False):
@@ -507,9 +508,9 @@ class BuiltinCommands(BaseCmd):
         command_name = command[1]
         if command_name in bc.commands.data.keys():
             bc.commands.data.pop(command_name, None)
-            await Util.response(message, f"Command '{command_name}' successfully deleted", silent)
+            await Msg.response(message, f"Command '{command_name}' successfully deleted", silent)
             return
-        await Util.response(message, f"Command '{command_name}' does not exist", silent)
+        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
     async def _enablecmd(message, command, silent=False):
@@ -526,19 +527,19 @@ class BuiltinCommands(BaseCmd):
             if len(command) == 2 or command[2] == "channel":
                 if message.channel.id not in bc.commands.data[command_name].channels:
                     bc.commands.data[command_name].channels.append(message.channel.id)
-                await Util.response(message, f"Command '{command_name}' is enabled in this channel", silent)
+                await Msg.response(message, f"Command '{command_name}' is enabled in this channel", silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
                     if channel.id not in bc.commands.data[command_name].channels:
                         bc.commands.data[command_name].channels.append(channel.id)
-                await Util.response(message, f"Command '{command_name}' is enabled in this guild", silent)
+                await Msg.response(message, f"Command '{command_name}' is enabled in this guild", silent)
             elif command[2] == "global":
                 bc.commands.data[command_name].is_global = True
-                await Util.response(message, f"Command '{command_name}' is enabled in global scope", silent)
+                await Msg.response(message, f"Command '{command_name}' is enabled in global scope", silent)
             else:
-                await Util.response(message, f"Unknown scope '{command[2]}'", silent)
+                await Msg.response(message, f"Unknown scope '{command[2]}'", silent)
             return
-        await Util.response(message, f"Command '{command_name}' does not exist", silent)
+        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
     async def _disablecmd(message, command, silent=False):
@@ -555,19 +556,19 @@ class BuiltinCommands(BaseCmd):
             if len(command) == 2 or command[2] == "channel":
                 if message.channel.id in bc.commands.data[command_name].channels:
                     bc.commands.data[command_name].channels.remove(message.channel.id)
-                await Util.response(message, f"Command '{command_name}' is disabled in this channel", silent)
+                await Msg.response(message, f"Command '{command_name}' is disabled in this channel", silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
                     if channel.id in bc.commands.data[command_name].channels:
                         bc.commands.data[command_name].channels.remove(channel.id)
-                await Util.response(message, f"Command '{command_name}' is disabled in this guild", silent)
+                await Msg.response(message, f"Command '{command_name}' is disabled in this guild", silent)
             elif command[2] == "global":
                 bc.commands.data[command_name].is_global = False
-                await Util.response(message, f"Command '{command_name}' is disabled in global scope", silent)
+                await Msg.response(message, f"Command '{command_name}' is disabled in global scope", silent)
             else:
-                await Util.response(message, f"Unknown scope '{command[2]}'", silent)
+                await Msg.response(message, f"Unknown scope '{command[2]}'", silent)
             return
-        await Util.response(message, f"Command '{command_name}' does not exist", silent)
+        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
     async def _permcmd(message, command, silent=False):
@@ -582,9 +583,9 @@ class BuiltinCommands(BaseCmd):
             return
         if command_name in bc.commands.data.keys():
             bc.commands.data[command_name].permission = perm
-            await Util.response(message, f"Set permission level {command[2]} for command '{command_name}'", silent)
+            await Msg.response(message, f"Set permission level {command[2]} for command '{command_name}'", silent)
             return
-        await Util.response(message, f"Command '{command_name}' does not exist", silent)
+        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
     async def _timescmd(message, command, silent=False):
@@ -597,7 +598,7 @@ class BuiltinCommands(BaseCmd):
         if command[1] in bc.config.commands.aliases.keys():
             command[1] = bc.config.commands.aliases[command[1]]
         if command[1] not in bc.commands.data.keys():
-            await Util.response(message, f"Unknown command '{command[1]}'", silent)
+            await Msg.response(message, f"Unknown command '{command[1]}'", silent)
             return
         com = bc.commands.data[command[1]]
         times = com.times_called
@@ -605,7 +606,7 @@ class BuiltinCommands(BaseCmd):
             result = f"{times}"
         else:
             result = f"Command '{command[1]}' was invoked {times} times"
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -620,16 +621,16 @@ class BuiltinCommands(BaseCmd):
             return
         r = const.USER_ID_REGEX.search(command[1])
         if r is None:
-            await Util.response(
+            await Msg.response(
                 message, f"Second argument of command '{command[0]}' should be user ping", silent)
             return
         user_id = int(r.group(1))
         for user in bc.config.users.keys():
             if bc.config.users[user].id == user_id:
                 bc.config.users[user].permission_level = perm
-                await Util.response(message, f"User permissions are set to {command[2]}", silent)
+                await Msg.response(message, f"User permissions are set to {command[2]}", silent)
                 return
-        await Util.response(message, f"User '{command[1]}' is not found", silent)
+        await Msg.response(message, f"User '{command[1]}' is not found", silent)
 
     @staticmethod
     async def _extexec(message, command, silent=False):
@@ -651,18 +652,18 @@ class BuiltinCommands(BaseCmd):
             return
         if command[1] == "enable":
             bc.config.guilds[message.channel.guild.id].is_whitelisted = True
-            await Util.response(message, "This guild is whitelisted for bot", silent)
+            await Msg.response(message, "This guild is whitelisted for bot", silent)
         elif command[1] == "disable":
             bc.config.guilds[message.channel.guild.id].is_whitelisted = False
-            await Util.response(message, "This guild is not whitelisted for bot", silent)
+            await Msg.response(message, "This guild is not whitelisted for bot", silent)
         elif command[1] == "add":
             bc.config.guilds[message.channel.guild.id].whitelist.add(message.channel.id)
-            await Util.response(message, "This channel is added to bot's whitelist", silent)
+            await Msg.response(message, "This channel is added to bot's whitelist", silent)
         elif command[1] == "remove":
             bc.config.guilds[message.channel.guild.id].whitelist.discard(message.channel.id)
-            await Util.response(message, "This channel is removed from bot's whitelist", silent)
+            await Msg.response(message, "This channel is removed from bot's whitelist", silent)
         else:
-            await Util.response(message, f"Unknown argument '{command[1]}'", silent)
+            await Msg.response(message, f"Unknown argument '{command[1]}'", silent)
 
     @staticmethod
     async def _config(message, command, silent=False):
@@ -693,111 +694,111 @@ class BuiltinCommands(BaseCmd):
             result += "Markov pings (markovpings): " + (
                 'enabled' if bc.config.guilds[message.channel.guild.id].markov_pings
                 else 'disabled') + "\n"
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
                 if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding reactions is already enabled for this channel", silent)
                     else:
                         bc.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding reactions is successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
                         bc.config.guilds[message.channel.guild.id].reactions_whitelist.discard(
                             message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding reactions is successfully disabled for this channel", silent)
                     else:
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding reactions is already disabled for this channel", silent)
                 else:
-                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+                    await Msg.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovlog":
                 if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist:
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding messages to Markov model is already enabled for this channel", silent)
                     else:
                         bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.add(message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding messages to Markov model is successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist:
                         bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.discard(message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding messages to Markov model is successfully disabled for this channel",
                             silent)
                     else:
-                        await Util.response(
+                        await Msg.response(
                             message, "Adding messages to Markov model is already disabled for this channel", silent)
             elif command[1] == "responses":
                 if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses are already enabled for this channel", silent)
                     else:
                         bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses are successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                         bc.config.guilds[message.channel.guild.id].responses_whitelist.discard(
                             message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses are successfully disabled for this channel",
                             silent)
                     else:
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses are already disabled for this channel", silent)
                 else:
-                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+                    await Msg.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovresponses":
                 if command[2] in ("enable", "true", "on"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses on mentioning are already enabled for this channel", silent)
                     else:
                         bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.add(message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses on mentioning are successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
                     if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:
                         bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.discard(
                             message.channel.id)
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses on mentioning are successfully disabled for this channel",
                             silent)
                     else:
-                        await Util.response(
+                        await Msg.response(
                             message, "Bot responses on mentioning are already disabled for this channel", silent)
                 else:
-                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+                    await Msg.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             elif command[1] == "markovpings":
                 if command[2] in ("enable", "true", "on"):
                     if bc.config.guilds[message.channel.guild.id].markov_pings:
-                        await Util.response(
+                        await Msg.response(
                             message, "Markov pings are already enabled for this channel", silent)
                     else:
                         bc.config.guilds[message.channel.guild.id].markov_pings = True
-                        await Util.response(
+                        await Msg.response(
                             message, "Markov pings are successfully enabled for this channel", silent)
                 elif command[2] in ("disable", "false", "off"):
                     if bc.config.guilds[message.channel.guild.id].markov_pings:
                         bc.config.guilds[message.channel.guild.id].markov_pings = False
-                        await Util.response(
+                        await Msg.response(
                             message, "Markov pings are successfully disabled for this channel", silent)
                     else:
-                        await Util.response(
+                        await Msg.response(
                             message, "Markov pings are already disabled for this channel", silent)
                 else:
-                    await Util.response(message, "The third argument should be either 'enable' or 'disable'", silent)
+                    await Msg.response(message, "The third argument should be either 'enable' or 'disable'", silent)
             else:
-                await Util.response(message, f"Incorrect argument for command '{command[0]}'", silent)
+                await Msg.response(message, f"Incorrect argument for command '{command[0]}'", silent)
         else:
-            await Util.response(message, f"Incorrect usage of command '{command[0]}'", silent)
+            await Msg.response(message, f"Incorrect usage of command '{command[0]}'", silent)
 
     @staticmethod
     async def _wme(message, command, silent=False):
@@ -809,7 +810,7 @@ class BuiltinCommands(BaseCmd):
         if not result:
             return
         result = "You asked me to send you this: " + result
-        await Util.send_direct_message(message.author, result, silent)
+        await Msg.send_direct_message(message.author, result, silent)
 
     @staticmethod
     async def _poll(message, command, silent=False):
@@ -826,13 +827,13 @@ class BuiltinCommands(BaseCmd):
         options = ' '.join(command[2:])
         options = options.split(';')
         if len(options) > const.MAX_POLL_OPTIONS:
-            await Util.response(
+            await Msg.response(
                 message, f"Too many options for poll (got: {len(options)}, max: {const.MAX_POLL_OPTIONS})", silent)
             return
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
         for i in range(len(options)):
             poll_message += emoji.alphabet[i] + " -> " + options[i] + '\n'
-        poll_message = await Util.response(message, poll_message, silent)
+        poll_message = await Msg.response(message, poll_message, silent)
         for i in range(len(options)):
             try:
                 await poll_message.add_reaction(emoji.alphabet[i])
@@ -849,7 +850,7 @@ class BuiltinCommands(BaseCmd):
             await asyncio.sleep(timestamp)
             remaining -= timestamp
             if remaining > 0:
-                await Util.response(message, f"Poll is still going! {remaining} seconds left", silent)
+                await Msg.response(message, f"Poll is still going! {remaining} seconds left", silent)
             else:
                 poll_message = poll_message.id
                 poll_message = await message.channel.fetch_message(poll_message)
@@ -862,7 +863,7 @@ class BuiltinCommands(BaseCmd):
                 result_message = "Time is up! Results:\n"
                 for result in results:
                     result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
-                await Util.response(message, result_message, silent)
+                await Msg.response(message, result_message, silent)
                 for i in range(len(options)):
                     try:
                         await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
@@ -881,7 +882,7 @@ class BuiltinCommands(BaseCmd):
         result = bc.info.version
         if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
             result = result[:7]
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -897,7 +898,7 @@ class BuiltinCommands(BaseCmd):
                   f"Dependencies:\n"
                   f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
                   f"Uptime: {bc.info.uptime}\n")
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _addbgevent(message, command, silent=False):
@@ -911,7 +912,7 @@ class BuiltinCommands(BaseCmd):
             return
         message.content = bc.config.commands_prefix + ' '.join(command[2:])
         bc.background_events.append(BackgroundEvent(bc.config, message.channel, message, duration))
-        await Util.response(
+        await Msg.response(
             message, f"Successfully added background event '{message.content}' with period {duration}", silent)
 
     @staticmethod
@@ -925,9 +926,9 @@ class BuiltinCommands(BaseCmd):
             result += (f"{index}: '{event.message.content}' every {event.period} seconds,"
                        f"channel: <#{event.channel.id}>\n")
         if result:
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
         else:
-            await Util.response(message, "No background events found!", silent)
+            await Msg.response(message, "No background events found!", silent)
         return result
 
     @staticmethod
@@ -943,9 +944,9 @@ class BuiltinCommands(BaseCmd):
         if 0 <= index < len(bc.background_events):
             bc.background_events[index].cancel()
             del bc.background_events[index]
-            await Util.response(message, "Successfully deleted background task!", silent)
+            await Msg.response(message, "Successfully deleted background task!", silent)
         else:
-            await Util.response(message, "Invalid index of background task!", silent)
+            await Msg.response(message, "Invalid index of background task!", silent)
 
     @staticmethod
     async def _random(message, command, silent=False):
@@ -962,13 +963,13 @@ class BuiltinCommands(BaseCmd):
         if right is None:
             return
         if left > right:
-            await Util.response(message, "Left border should be less or equal than right", silent)
+            await Msg.response(message, "Left border should be less or equal than right", silent)
             return
         if const.INTEGER_NUMBER.fullmatch(command[1]) and const.INTEGER_NUMBER.fullmatch(command[2]):
             result = str(random.randint(int(left), int(right)))  # integer random
         else:
             result = str(random.uniform(left, right))  # float random
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -979,7 +980,7 @@ class BuiltinCommands(BaseCmd):
             return
         index = random.randint(1, len(command) - 1)
         result = command[index]
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -991,7 +992,7 @@ class BuiltinCommands(BaseCmd):
         options = ' '.join(command[1:]).split(';')
         index = random.randint(0, len(options) - 1)
         result = options[index]
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1002,7 +1003,7 @@ class BuiltinCommands(BaseCmd):
             return
         command = command[1:]
         if command[0] not in bc.commands.data.keys():
-            await Util.response(message, f"Unknown command '{command[0]}'", silent)
+            await Msg.response(message, f"Unknown command '{command[0]}'", silent)
         else:
             cmd = bc.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
@@ -1015,7 +1016,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = str(datetime.datetime.now()).split('.')[0]
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1025,7 +1026,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = bc.info.uptime
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1055,7 +1056,7 @@ class BuiltinCommands(BaseCmd):
         elif command[1] == "invisible":
             await bc.change_presence(status=discord.Status.invisible)
         else:
-            await Util.response(message, "Unknown type of activity", silent)
+            await Msg.response(message, "Unknown type of activity", silent)
 
     @staticmethod
     async def _channelid(message, command, silent=False):
@@ -1064,7 +1065,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = str(message.channel.id)
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1075,16 +1076,16 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         if command[1] not in bc.commands.data.keys():
-            await Util.response(message, f"Unknown command '{command[1]}'", silent)
+            await Msg.response(message, f"Unknown command '{command[1]}'", silent)
             return
         if command[2] in bc.commands.data.keys():
-            await Util.response(message, f"Command '{command[2]}' already exists", silent)
+            await Msg.response(message, f"Command '{command[2]}' already exists", silent)
             return
         if command[2] in bc.commands.aliases.keys():
-            await Util.response(message, f"Alias '{command[2]}' already exists", silent)
+            await Msg.response(message, f"Alias '{command[2]}' already exists", silent)
             return
         bc.commands.aliases[command[2]] = command[1]
-        await Util.response(message, f"Alias '{command[2]}' for '{command[1]}' was successfully created", silent)
+        await Msg.response(message, f"Alias '{command[2]}' for '{command[1]}' was successfully created", silent)
 
     @staticmethod
     async def _delalias(message, command, silent=False):
@@ -1094,10 +1095,10 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] not in bc.commands.aliases.keys():
-            await Util.response(message, f"Alias '{command[1]}' does not exist", silent)
+            await Msg.response(message, f"Alias '{command[1]}' does not exist", silent)
             return
         bc.commands.aliases.pop(command[1])
-        await Util.response(message, f"Alias '{command[1]}' was successfully deleted", silent)
+        await Msg.response(message, f"Alias '{command[1]}' was successfully deleted", silent)
 
     @staticmethod
     async def _listalias(message, command, silent=False):
@@ -1108,7 +1109,7 @@ class BuiltinCommands(BaseCmd):
         result = ""
         for alias, command in bc.commands.aliases.items():
             result += alias + " -> " + command + '\n'
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1118,11 +1119,11 @@ class BuiltinCommands(BaseCmd):
         if len(command) == 1:
             list_images = os.listdir("images")
             if len(list_images) == 0:
-                await Util.response(message, "No images found!", silent)
+                await Msg.response(message, "No images found!", silent)
                 return
             result = random.randint(0, len(list_images)-1)  # integer random
-            await Util.response(message, None, silent,
-                                files=[discord.File(os.path.join("images", list_images[result]))])
+            await Msg.response(message, None, silent,
+                               files=[discord.File(os.path.join("images", list_images[result]))])
             return
         await _BuiltinInternals.get_image(message, command, silent)
 
@@ -1147,9 +1148,9 @@ class BuiltinCommands(BaseCmd):
                     result.append(os.path.splitext(os.path.basename(file))[0])
         result.sort()
         if result:
-            await Util.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
+            await Msg.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
         else:
-            await Util.response(message, "No available images found!", silent)
+            await Msg.response(message, "No available images found!", silent)
 
     @staticmethod
     async def _addimg(message, command, silent=False):
@@ -1159,18 +1160,18 @@ class BuiltinCommands(BaseCmd):
             return
         name = command[1]
         if not re.match(const.FILENAME_REGEX, name):
-            await Util.response(message, f"Incorrect name '{name}'", silent)
+            await Msg.response(message, f"Incorrect name '{name}'", silent)
             return
         url = command[2]
         ext = url.split('.')[-1]
         if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
-            await Util.response(message, "Please, provide direct link to image", silent)
+            await Msg.response(message, "Please, provide direct link to image", silent)
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
                 for file in files:
                     if name == os.path.splitext(os.path.basename(file))[0]:
-                        await Util.response(message, f"Image '{name}' already exists", silent)
+                        await Msg.response(message, f"Image '{name}' already exists", silent)
                         return
         if not os.path.exists("images"):
             os.makedirs("images")
@@ -1184,20 +1185,20 @@ class BuiltinCommands(BaseCmd):
                 with urllib.request.urlopen(rq) as response:
                     f.write(response.read())
             except ValueError:
-                await Util.response(message, "Incorrect image URL format!", silent)
+                await Msg.response(message, "Incorrect image URL format!", silent)
                 return
             except Exception as e:
-                await Util.response(message, f"Image downloading failed: {e}", silent)
+                await Msg.response(message, f"Image downloading failed: {e}", silent)
                 os.remove(image_path)
                 log.error("Image downloading failed!", exc_info=True)
                 return
         if imghdr.what(image_path) is None:
-            await Util.response(message, "Received file is not an image", silent)
+            await Msg.response(message, "Received file is not an image", silent)
             log.error("Received file is not an image!")
             os.remove(image_path)
             log.info(f"Removed file {image_path}")
             return
-        await Util.response(message, f"Image '{name}' successfully added!", silent)
+        await Msg.response(message, f"Image '{name}' successfully added!", silent)
 
     @staticmethod
     async def _delimg(message, command, silent=False):
@@ -1207,16 +1208,16 @@ class BuiltinCommands(BaseCmd):
             return
         name = command[1]
         if not re.match(const.FILENAME_REGEX, name):
-            await Util.response(message, f"Incorrect name '{name}'", silent)
+            await Msg.response(message, f"Incorrect name '{name}'", silent)
             return
         for root, _, files in os.walk("images"):
             if root.endswith("images"):
                 for file in files:
                     if name == os.path.splitext(os.path.basename(file))[0]:
                         os.remove(os.path.join("images", file))
-                        await Util.response(message, f"Successfully removed image '{name}'", silent)
+                        await Msg.response(message, f"Successfully removed image '{name}'", silent)
                         return
-        await Util.response(message, f"Image '{name}' not found!", silent)
+        await Msg.response(message, f"Image '{name}' not found!", silent)
 
     @staticmethod
     async def _tts(message, command, silent=False):
@@ -1225,7 +1226,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         text = ' '.join(command[1:])
-        await Util.response(message, text, silent, tts=True)
+        await Msg.response(message, text, silent, tts=True)
         log.debug(f"Sent TTS message: {text}")
 
     @staticmethod
@@ -1236,7 +1237,7 @@ class BuiltinCommands(BaseCmd):
             return
         result = ' '.join(command[1:])
         result = urllib.request.quote(result.encode("cp1251"))
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1258,7 +1259,7 @@ class BuiltinCommands(BaseCmd):
                 is_emoji = False
                 result += text[i]
         result = result.strip()
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1279,7 +1280,7 @@ class BuiltinCommands(BaseCmd):
                 result += text[i]
             i += 1
         result = result.strip()
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1315,10 +1316,10 @@ class BuiltinCommands(BaseCmd):
                         try:
                             with open(os.path.join("images", file), "rb") as f:
                                 await bc.bot_user.edit(avatar=f.read())
-                            await Util.response(
+                            await Msg.response(
                                 message, f"Successfully changed bot avatar to {command[1]}", silent)
                         except discord.HTTPException as e:
-                            await Util.response(
+                            await Msg.response(
                                 message, f"Failed to change bot avatar.\nError: {e}", silent)
                         return
                 else:
@@ -1338,12 +1339,12 @@ class BuiltinCommands(BaseCmd):
                         with open(temp_image_file.name, "rb") as temp_image_file:
                             await bc.bot_user.edit(avatar=temp_image_file.read())
                     except Exception as e:
-                        await Util.response(message, f"Image downloading failed: {e}", silent)
+                        await Msg.response(message, f"Image downloading failed: {e}", silent)
                         log.error("Image downloading failed!", exc_info=True)
                         return
-                    await Util.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
+                    await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
                     return
-        await Util.response(message, f"Image {command[1]} is not found!", silent)
+        await Msg.response(message, f"Image {command[1]} is not found!", silent)
 
     @staticmethod
     async def _message(message, command, silent=False):
@@ -1356,10 +1357,10 @@ class BuiltinCommands(BaseCmd):
         if number is None:
             return
         if number <= 0:
-            await Util.response(message, "Invalid message number", silent)
+            await Msg.response(message, "Invalid message number", silent)
             return
         if number > const.MAX_MESSAGE_HISTORY_DEPTH:
-            await Util.response(
+            await Msg.response(
                 message, f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
                 silent)
             return
@@ -1370,7 +1371,7 @@ class BuiltinCommands(BaseCmd):
             result = await message.channel.history(limit=number+1).flatten()
             bc.message_buffer.data[message.channel.id] = result
             result = result[-1].content
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1384,7 +1385,7 @@ class BuiltinCommands(BaseCmd):
                   f"created: {g.created_at.replace(microsecond=0)}\n")
         icon_url = f"<{g.icon_url}>" if g.icon_url else "<no icon>"
         result += f"**Icon**: {icon_url}\n"
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _pin(message, command, silent=False):
@@ -1401,8 +1402,8 @@ class BuiltinCommands(BaseCmd):
         if 0 <= index < len(pins):
             result = pins[index].content + '\nBy ' + str(message.author)
         else:
-            Util.response(message, "Invalid index of pinned message!", silent)
-        await Util.response(message, result, silent)
+            Msg.response(message, "Invalid index of pinned message!", silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -1417,9 +1418,9 @@ class BuiltinCommands(BaseCmd):
             return
         await message.channel.edit(slowmode_delay=duration)
         if duration == 0:
-            await Util.response(message, "Slowmode is disabled for current channel", silent)
+            await Msg.response(message, "Slowmode is disabled for current channel", silent)
         else:
-            await Util.response(message, f"Slowmode is set to {duration} seconds", silent)
+            await Msg.response(message, f"Slowmode is set to {duration} seconds", silent)
 
     @staticmethod
     async def _curl(message, command, silent=False):
@@ -1430,5 +1431,5 @@ class BuiltinCommands(BaseCmd):
         url = command[1]
         r = requests.get(url)
         result = r.text
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result

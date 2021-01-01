@@ -10,6 +10,7 @@ import yaml
 
 from src import const
 from src.log import log
+from src.message import Msg
 from src.utils import Util
 
 
@@ -146,7 +147,7 @@ class Command:
             log.debug2(f"Command (after processing subcommands): {response}")
             if response:
                 if not silent:
-                    for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
+                    for chunk in Msg.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
                         await message.channel.send(chunk)
                 return response
         elif self.cmd_line is not None:

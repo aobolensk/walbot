@@ -5,6 +5,7 @@ import re
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
+from src.message import Msg
 from src.utils import Util
 
 
@@ -48,7 +49,7 @@ class MarkovCommands(BaseCmd):
         else:
             result = bc.markov.generate()
         result = await bc.config.disable_pings_in_response(message, result)
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -59,7 +60,7 @@ class MarkovCommands(BaseCmd):
             return
         result = bc.markov.collect_garbage()
         result = f"Garbage collected {len(result)} items: {', '.join(result)}"
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
         return result
 
     @staticmethod
@@ -72,9 +73,9 @@ class MarkovCommands(BaseCmd):
         try:
             removed = bc.markov.del_words(regex)
         except re.error as e:
-            await Util.response(message, f"Invalid regular expression: {e}", silent)
+            await Msg.response(message, f"Invalid regular expression: {e}", silent)
             return
-        await Util.response(
+        await Msg.response(
             message, f"Deleted {len(removed)} words from model: {removed}", silent, suppress_embeds=True)
 
     @staticmethod
@@ -89,13 +90,13 @@ class MarkovCommands(BaseCmd):
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            await Util.response(message, f"Invalid regular expression: {e}", silent)
+            await Msg.response(message, f"Invalid regular expression: {e}", silent)
             return
         amount = len(found)
         if not (len(command) > 2 and command[2] == '-f' and
                 bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
             found = found[:100]
-        await Util.response(
+        await Msg.response(
             message, f"Found {amount} words in model: {found}"
                      f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
             silent, suppress_embeds=True)
@@ -107,7 +108,7 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         bc.markov.__init__()
-        await Util.response(message, "Markov database has been dropped!", silent)
+        await Msg.response(message, "Markov database has been dropped!", silent)
 
     @staticmethod
     async def _statmarkov(message, command, silent=False):
@@ -129,7 +130,7 @@ class MarkovCommands(BaseCmd):
                   f"Words count: {len(bc.markov.model)}\n"
                   f"Pairs (word -> word) count: {pairs_count}\n"
                   f"Markov database size: {markov_db_size}\n")
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _inspectmarkov(message, command, silent=False):
@@ -143,7 +144,7 @@ class MarkovCommands(BaseCmd):
         result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
-        await Util.response(message, result, silent)
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _addmarkovfilter(message, command, silent=False):
@@ -152,7 +153,7 @@ class MarkovCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         bc.markov.filters.append(re.compile(command[1]))
-        await Util.response(message, f"Filter '{command[1]}' was successfully added for Markov model", silent)
+        await Msg.response(message, f"Filter '{command[1]}' was successfully added for Markov model", silent)
 
     @staticmethod
     async def _listmarkovfilter(message, command, silent=False):
@@ -164,9 +165,9 @@ class MarkovCommands(BaseCmd):
         for index, regex in enumerate(bc.markov.filters):
             result += f"{index} -> `{regex.pattern}`\n"
         if result:
-            await Util.response(message, result, silent)
+            await Msg.response(message, result, silent)
         else:
-            await Util.response(message, "No filters for Markov model found!", silent)
+            await Msg.response(message, "No filters for Markov model found!", silent)
         return result
 
     @staticmethod
@@ -181,6 +182,6 @@ class MarkovCommands(BaseCmd):
             return
         if 0 <= index < len(bc.markov.filters):
             bc.markov.filters.pop(index)
-            await Util.response(message, "Successfully deleted filter!", silent)
+            await Msg.response(message, "Successfully deleted filter!", silent)
         else:
-            await Util.response(message, "Invalid index of filter!", silent)
+            await Msg.response(message, "Invalid index of filter!", silent)
