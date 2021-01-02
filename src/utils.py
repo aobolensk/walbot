@@ -61,7 +61,7 @@ class Util:
 
     @staticmethod
     def read_config_file(path):
-        yaml_loader = Util.YAML.get_loader()
+        yaml_loader, _ = Util.get_yaml()
         if os.path.isfile(path):
             with open(path, 'r') as f:
                 try:
@@ -70,27 +70,22 @@ class Util:
                     log.error(f"File '{path}' can not be read!", exc_info=True)
         return None
 
-    class YAML:
-        @staticmethod
-        def get_loader(verbose=False):
-            try:
-                loader = yaml.CLoader
-                if verbose:
-                    log.debug("Using fast YAML Loader")
-            except AttributeError:
-                loader = yaml.Loader
-                if verbose:
-                    log.debug("Using slow YAML Loader")
-            return loader
-
-        @staticmethod
-        def get_dumper(verbose=False):
-            try:
-                dumper = yaml.CDumper
-                if verbose:
-                    log.debug("Using fast YAML Dumper")
-            except AttributeError:
-                dumper = yaml.Dumper
-                if verbose:
-                    log.debug("Using slow YAML Dumper")
-            return dumper
+    @staticmethod
+    def get_yaml(verbose=False):
+        try:
+            loader = yaml.CLoader
+            if verbose:
+                log.debug("Using fast YAML Loader")
+        except AttributeError:
+            loader = yaml.Loader
+            if verbose:
+                log.debug("Using slow YAML Loader")
+        try:
+            dumper = yaml.CDumper
+            if verbose:
+                log.debug("Using fast YAML Dumper")
+        except AttributeError:
+            dumper = yaml.Dumper
+            if verbose:
+                log.debug("Using slow YAML Dumper")
+        return loader, dumper
