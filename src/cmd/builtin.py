@@ -891,6 +891,9 @@ class BuiltinCommands(BaseCmd):
     Example: !about"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
+        if not hasattr(bc, "bot_user"):
+            await Msg.response(message, "Bot is not loaded yet!", silent)
+            return
         ver = discord.version_info
         result = (f"{bc.bot_user} (WalBot instance)\n"
                   f"Source code: <{const.GIT_REPO_LINK}>\n"
