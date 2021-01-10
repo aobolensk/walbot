@@ -70,6 +70,10 @@ class Launcher:
         bot.stop(self.args)
         bot.start(self.args, main_bot=False)
 
+    def test(self):
+        """Launch tests"""
+        importlib.import_module("src.test").start_testing()
+
     def docs(self):
         """Generate command docs"""
         importlib.import_module("tools.docs").main(self.args)
