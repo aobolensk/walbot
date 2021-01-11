@@ -12,3 +12,15 @@ updates:
     reviewers:
       - "aobolensk"
     open-pull-requests-limit: 4
+  - package-ecosystem: "pip"
+    directory: "tests"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+    labels:
+      - "dependencies"
+    assignees:
+      - "aobolensk"
+    reviewers:
+      - "aobolensk"
+    open-pull-requests-limit: 4
