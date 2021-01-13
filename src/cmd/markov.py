@@ -152,7 +152,7 @@ class MarkovCommands(BaseCmd):
     Example: !addmarkovfilter regex"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        bc.markov.filters.append(re.compile(command[1]))
+        bc.markov.filters.append(re.compile(command[1], re.DOTALL))
         await Msg.response(message, f"Filter '{command[1]}' was successfully added for Markov model", silent)
 
     @staticmethod
