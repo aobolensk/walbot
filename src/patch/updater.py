@@ -1,4 +1,5 @@
 import os
+import re
 
 from src.log import log
 
@@ -143,6 +144,10 @@ class Updater:
             config.model[""].__dict__["word"] = None
             self._bump_version(config, "0.0.5")
         if config.version == "0.0.5":
+            for i in range(len(config.filters)):
+                config.__dict__["filters"][i] = re.compile(config.filters[i].pattern, re.DOTALL)
+            self._bump_version(config, "0.0.6")
+        if config.version == "0.0.6":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
