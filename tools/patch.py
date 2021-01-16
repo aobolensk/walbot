@@ -31,6 +31,6 @@ def main(args, files):
         if Updater(file, config).result():
             if not os.path.exists("backup"):
                 os.makedirs("backup")
-            shutil.copyfile(file, "backup/" + file + ".bak." + version)
+            shutil.copyfile(file, "backup/" + file + "." + version + ".bak")
             save_file(file, config)
             log.info(f"Successfully saved file: {config.version}")
