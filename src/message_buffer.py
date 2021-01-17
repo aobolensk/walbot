@@ -16,3 +16,6 @@ class MessageBuffer:
         if not 0 <= index < len(self._data[channel_id]):
             return
         return self._data[channel_id][index]
+
+    def reset(self, channel_id, new_data):
+        self._data[channel_id] = new_data

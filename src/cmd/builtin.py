@@ -1372,7 +1372,7 @@ class BuiltinCommands(BaseCmd):
             result = result.content
         else:
             result = await message.channel.history(limit=number+1).flatten()
-            bc.message_buffer.data[message.channel.id] = result
+            bc.message_buffer.reset(message.channel.id, result)
             result = result[-1].content
         await Msg.response(message, result, silent)
         return result
