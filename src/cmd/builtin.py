@@ -1405,7 +1405,7 @@ class BuiltinCommands(BaseCmd):
         if 0 <= index < len(pins):
             result = pins[index].content + '\nBy ' + str(message.author)
         else:
-            Msg.response(message, "Invalid index of pinned message!", silent)
+            await Msg.response(message, "Invalid index of pinned message!", silent)
         await Msg.response(message, result, silent)
         return result
 
