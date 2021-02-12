@@ -243,6 +243,9 @@ class ReminderCommands(BaseCmd):
                 f"Third parameter for '{command[0]}' should be duration of period between reminders", silent)
             if duration is None:
                 return
+        if duration == 0:
+            await Msg.response(message, f"Repetition is disabled for reminder {index}", silent)
+            return
         if duration < 0:
             await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
             return
