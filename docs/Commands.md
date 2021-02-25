@@ -198,6 +198,9 @@
     Example: !message \
     *This command can be used as subcommand*
 
+**nick**: Change nickname \
+    Usage: !nick walbot
+
 **permcmd**: Set commands permission \
     Example: !permcmd ping 0
 

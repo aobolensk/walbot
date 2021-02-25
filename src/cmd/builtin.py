@@ -175,6 +175,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "curl",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "nick",
+                                     permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1436,3 +1438,12 @@ class BuiltinCommands(BaseCmd):
         result = r.text
         await Msg.response(message, result, silent)
         return result
+
+    @staticmethod
+    async def _nick(message, command, silent=False):
+        """Change nickname
+    Usage: !nick walbot"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        await message.guild.me.edit(nick=command[1])
+        await Msg.response(message, f"Bot nickname was changed to '{command[1]}'", silent)
