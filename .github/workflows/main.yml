@@ -45,7 +45,7 @@ jobs:
     - name: pylint version
       run: pylint --version
     - name: Run pylint
-      run: pylint src/ tools/ walbot.py --max-line-length=120 --exit-zero --disable=W1201,W1203
+      run: pylint src/ tools/ tests/ walbot.py --max-line-length=120 --exit-zero --disable=W1201,W1203
   tests:
     runs-on: ubuntu-latest
     steps:
