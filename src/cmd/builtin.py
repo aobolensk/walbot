@@ -1443,7 +1443,7 @@ class BuiltinCommands(BaseCmd):
     async def _nick(message, command, silent=False):
         """Change nickname
     Usage: !nick walbot"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         await message.guild.me.edit(nick=' '.join(command[1]))
         await Msg.response(message, f"Bot nickname was changed to '{command[1]}'", silent)
