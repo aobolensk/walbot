@@ -1445,5 +1445,6 @@ class BuiltinCommands(BaseCmd):
     Usage: !nick walbot"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        await message.guild.me.edit(nick=' '.join(command[1]))
-        await Msg.response(message, f"Bot nickname was changed to '{command[1]}'", silent)
+        new_nick = ' '.join(command[1:])
+        await message.guild.me.edit(nick=new_nick)
+        await Msg.response(message, f"Bot nickname was changed to '{new_nick}'", silent)
