@@ -87,3 +87,7 @@ class Launcher:
     def patch(self):
         """Patch config"""
         importlib.import_module("tools.patch").main(self.args, self.config_files)
+
+    def autoupdate(self):
+        """Start autoupdate process for bot"""
+        importlib.import_module("src.autoupdate").start(self.args)
