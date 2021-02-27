@@ -31,6 +31,9 @@ def start(args):
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
         os.system(f"{sys.executable} walbot.py start --nohup &")
-    while True:
-        check_updates(repo)
-        time.sleep(const.AUTOUPDATE_CHECK_INTERVAL)
+    try:
+        while True:
+            check_updates(repo)
+            time.sleep(const.AUTOUPDATE_CHECK_INTERVAL)
+    except KeyboardInterrupt:
+        os.system(f"{sys.executable} walbot.py stop")
