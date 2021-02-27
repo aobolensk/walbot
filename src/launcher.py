@@ -20,6 +20,9 @@ class Launcher:
                 cmd, help=getattr(self, cmd).__doc__, formatter_class=argparse.RawTextHelpFormatter)
             for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
         }
+        subparsers["start"].add_argument(
+                "--autoupdate", action="store_true",
+                help="Start autoupdate process for bot")
         # Start & suspend
         for option in ("start", "restart", "suspend"):
             subparsers[option].add_argument(
@@ -54,6 +57,8 @@ class Launcher:
 
     def start(self):
         """Start the bot"""
+        if self.args.autoupdate:
+            return self.autoupdate()
         importlib.import_module("src.bot").start(self.args)
 
     def stop(self):

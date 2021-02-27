@@ -20,7 +20,11 @@ $ python walbot.py restart        # Restart the bot
 $ python walbot.py suspend        # Start dummy bot (useful for maintenance)
 $ python walbot.py docs           # Generate commands documentation
 $ python walbot.py patch          # Patch config files
-$ python walbot.py autoupdate     # Start the bot and enable automatic update
+
+# Start the bot and enable automatic update (requires starting from git repo)
+$ python walbot.py autoupdate
+$ python walbot.py start --autoupdate
+
 $ python walbot.py help           # Get help
 ```
 
