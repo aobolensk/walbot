@@ -6,15 +6,25 @@ from src.config import bc
 
 
 class BotInfo:
+    def _get_repo(self):
+        try:
+            return git.Repo(search_parent_directories=True)
+        except git.exc.InvalidGitRepositoryError:
+            return
+
     @property
     def version(self):
-        repo = git.Repo(search_parent_directories=True)
+        repo = self._get_repo()
+        if repo is None:
+            return "<unknown>"
         sha = repo.head.object.hexsha
         return sha
 
     @property
     def version_time(self):
-        repo = git.Repo(search_parent_directories=True)
+        repo = self._get_repo()
+        if repo is None:
+            return "<unknown>"
         time = repo.head.object.committed_datetime
         return time
 
