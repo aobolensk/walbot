@@ -8,8 +8,7 @@ from src import const
 from src.log import log
 
 
-def check_updates():
-    repo = git.Repo(search_parent_directories=True)
+def check_updates(repo):
     old_sha = repo.head.object.hexsha
     g = git.cmd.Git(os.getcwd())
     g.pull()
@@ -24,9 +23,14 @@ def check_updates():
 
 
 def start(args):
+    try:
+        repo = git.Repo(search_parent_directories=True)
+    except git.exc.InvalidGitRepositoryError:
+        log.error("Failed to find walbot git repo. Autoupdate function is available only for git repository")
+        return
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
         os.system(f"{sys.executable} walbot.py start --nohup &")
     while True:
-        check_updates()
+        check_updates(repo)
         time.sleep(const.AUTOUPDATE_CHECK_INTERVAL)
