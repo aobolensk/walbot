@@ -67,7 +67,7 @@ def start(args):
         os.system(f"{sys.executable} walbot.py start --nohup &")
     try:
         while True:
-            check_updates(context)
             time.sleep(const.AUTOUPDATE_CHECK_INTERVAL)
+            check_updates(context)
     except KeyboardInterrupt:
         os.system(f"{sys.executable} walbot.py stop")
