@@ -19,13 +19,11 @@ class AutoUpdateContext:
     repo: Optional[git.Repo] = None
 
     def __init__(self) -> None:
-        from src import const
         self.config_version = const.CONFIG_VERSION
         self.markov_version = const.MARKOV_CONFIG_VERSION
         self.secret_version = const.SECRET_CONFIG_VERSION
 
     def check_versions(self) -> bool:
-        from src import const
         importlib.reload(const)
         updated = False
         if self.config_version != const.CONFIG_VERSION:
