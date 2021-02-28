@@ -284,7 +284,7 @@ def start(args, main_bot=True):
                                  "remove secret.yaml (your Discord authentication token will be lost!)",
                              ])
     if not ok:
-        sys.exit(1)
+        sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
     # Constructing bot instance
     if main_bot:
         walbot = WalBot(config, secret_config)
@@ -313,7 +313,7 @@ def start(args, main_bot=True):
                 os.system(cmd)
             elif fork > 0:
                 log.info("Stopping current instance of the bot")
-                sys.exit(0)
+                sys.exit(const.ExitStatus.NO_ERROR)
         else:
             os.system(cmd)
 

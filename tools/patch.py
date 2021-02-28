@@ -4,6 +4,7 @@ import sys
 
 import yaml
 
+from src.const import ExitStatus
 from src.log import log
 from src.patch.updater import Updater
 from src.utils import Util
@@ -22,10 +23,10 @@ def main(args, files):
         config = Util.read_config_file(file)
         if config is None:
             log.error(f"File '{file}' does not exist")
-            sys.exit(1)
+            sys.exit(ExitStatus.CONFIG_FILE_ERROR)
         if not hasattr(config, "version"):
             log.error(f"{file} does not have 'version' field")
-            sys.exit(1)
+            sys.exit(ExitStatus.CONFIG_FILE_ERROR)
         version = config.version
         log.info(f"WalBot config patch tool: {file}@{version}")
         if Updater(file, config).result():
