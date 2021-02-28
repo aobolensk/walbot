@@ -10,6 +10,8 @@ from src.utils import Util
 
 class ReminderCommands(BaseCmd):
     def bind(self):
+        bc.commands.register_command(__name__, self.get_classname(), "reminder",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "addreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "updreminder",
@@ -26,6 +28,29 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "skipreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
+
+    @staticmethod
+    async def _reminder(message, command, silent=False):
+        """Print information about reminder
+    Example:
+        !reminder 1"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            await Msg.response(message, "Invalid index of reminder!", silent)
+            return
+        reminder = bc.config.reminders[index]
+        result = (f"{index} - {reminder.time}"
+                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
+                  f" -> {reminder.message}"
+                  f"{f' (repeats every {reminder.repeat_after} minutes)' if reminder.repeat_after else ''}\n"
+                  f"Author: {reminder.author}")
+        await Msg.response(message, result, silent)
+        return result
 
     @staticmethod
     async def _addreminder(message, command, silent=False):
