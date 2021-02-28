@@ -3,7 +3,7 @@ import re
 
 DISCORD_LIB_VERSION = '1.6.0'
 
-CONFIG_VERSION = '0.0.18'
+CONFIG_VERSION = '0.0.20'
 MARKOV_CONFIG_VERSION = '0.0.6'
 SECRET_CONFIG_VERSION = '0.0.1'
 
@@ -50,6 +50,13 @@ class Permission(enum.IntEnum):
     USER = 0
     MOD = 1
     ADMIN = 2
+
+
+@enum.unique
+class ExitStatus(enum.IntEnum):
+    NO_ERROR = 0
+    GENERAL_ERROR = 1
+    CONFIG_FILE_ERROR = 2
 
 
 class LogLevel(enum.IntEnum):

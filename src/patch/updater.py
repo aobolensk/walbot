@@ -1,6 +1,8 @@
+import datetime
 import os
 import re
 
+from src import const
 from src.log import log
 
 
@@ -124,6 +126,15 @@ class Updater:
                 config.ids["quote"] += 1
             self._bump_version(config, "0.0.18")
         if config.version == "0.0.18":
+            for index in config.reminders.keys():
+                config.reminders[index].__dict__["author"] = "<unknown>"
+            self._bump_version(config, "0.0.19")
+        if config.version == "0.0.19":
+            for index in config.reminders.keys():
+                config.reminders[index].__dict__["time_created"] = (
+                    datetime.datetime(1970, 1, 1).strftime(const.REMINDER_TIME_FORMAT))
+            self._bump_version(config, "0.0.20")
+        if config.version == "0.0.19":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

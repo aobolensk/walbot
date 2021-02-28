@@ -86,7 +86,8 @@ class WalBot(discord.Client):
                         new_time = datetime.datetime.now().replace(
                             second=0, microsecond=0) + datetime.timedelta(minutes=rem.repeat_after)
                         new_time = new_time.strftime(const.REMINDER_TIME_FORMAT)
-                        to_append.append(Reminder(str(new_time), rem.message, rem.channel_id))
+                        to_append.append(
+                            Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
                         to_append[-1].repeat_after = rem.repeat_after
                         log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                     to_remove.append(key)
@@ -284,7 +285,7 @@ def start(args, main_bot=True):
                                  "remove secret.yaml (your Discord authentication token will be lost!)",
                              ])
     if not ok:
-        sys.exit(1)
+        sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
     # Constructing bot instance
     if main_bot:
         walbot = WalBot(config, secret_config)
@@ -313,7 +314,7 @@ def start(args, main_bot=True):
                 os.system(cmd)
             elif fork > 0:
                 log.info("Stopping current instance of the bot")
-                sys.exit(0)
+                sys.exit(const.ExitStatus.NO_ERROR)
         else:
             os.system(cmd)
 

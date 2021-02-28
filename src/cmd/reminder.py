@@ -10,6 +10,8 @@ from src.utils import Util
 
 class ReminderCommands(BaseCmd):
     def bind(self):
+        bc.commands.register_command(__name__, self.get_classname(), "reminder",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "addreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "updreminder",
@@ -26,6 +28,30 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "skipreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
+
+    @staticmethod
+    async def _reminder(message, command, silent=False):
+        """Print information about reminder
+    Example:
+        !reminder 1"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            await Msg.response(message, "Invalid index of reminder!", silent)
+            return
+        reminder = bc.config.reminders[index]
+        result = (f"{index} - {reminder.time}"
+                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
+                  f" -> {reminder.message}"
+                  f"{f' (repeats every {reminder.repeat_after} minutes)' if reminder.repeat_after else ''}\n"
+                  f"Author: {reminder.author}\n"
+                  f"Created: {reminder.time_created}")
+        await Msg.response(message, result, silent)
+        return result
 
     @staticmethod
     async def _addreminder(message, command, silent=False):
@@ -60,7 +86,9 @@ class ReminderCommands(BaseCmd):
             time = (datetime.datetime.now() + datetime.timedelta(
                 weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_TIME_FORMAT)
             id_ = bc.config.ids["reminder"]
-            bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
+            bc.config.reminders[id_] = Reminder(
+                str(time), text, message.channel.id, message.author.name,
+                datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
             bc.config.ids["reminder"] += 1
             await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
             return
@@ -98,7 +126,9 @@ class ReminderCommands(BaseCmd):
             return
         text = ' '.join(command[3:])
         id_ = bc.config.ids["reminder"]
-        bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
+        bc.config.reminders[id_] = Reminder(
+            str(time), text, message.channel.id, message.author.name,
+            datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
         bc.config.ids["reminder"] += 1
         await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
 
@@ -121,7 +151,9 @@ class ReminderCommands(BaseCmd):
                                    "More information about format: <https://strftime.org/>", silent)
                 return
             text = ' '.join(command[4:])
-            bc.config.reminders[index] = Reminder(str(time), text, message.channel.id)
+            bc.config.reminders[index] = Reminder(
+                str(time), text, message.channel.id, bc.config.reminders[index].author,
+                datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
             await Msg.response(
                 message, f"Successfully updated reminder {index}: '{text}' at {time}", silent)
         else:
@@ -274,7 +306,9 @@ class ReminderCommands(BaseCmd):
             datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) +
             datetime.timedelta(minutes=rem.repeat_after), const.REMINDER_TIME_FORMAT)
         id_ = bc.config.ids["reminder"]
-        bc.config.reminders[id_] = Reminder(str(new_time), rem.message, message.channel.id)
+        bc.config.reminders[id_] = Reminder(
+            str(new_time), rem.message, message.channel.id, bc.config.reminders[id_].author,
+            datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
         bc.config.reminders[id_].repeat_after = rem.repeat_after
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
