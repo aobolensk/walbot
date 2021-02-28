@@ -171,8 +171,7 @@ class WalBot(discord.Client):
         command = list(filter(None, command))
         command[0] = command[0][1:]
         if not command[0]:
-            log.debug("Ignoring empty command")
-            return
+            return log.debug("Ignoring empty command")
         if command[0] not in self.config.commands.data.keys():
             if command[0] in self.config.commands.aliases.keys():
                 command[0] = self.config.commands.aliases[command[0]]
@@ -228,8 +227,7 @@ def start(args, main_bot=True):
     # Check whether bot is already running
     pid = parse_bot_cache()
     if pid is not None and psutil.pid_exists(pid):
-        log.error("Bot is already running!")
-        return
+        return log.error("Bot is already running!")
     # Some variable initializations
     config = None
     secret_config = None
@@ -322,12 +320,10 @@ def start(args, main_bot=True):
 
 def stop(_):
     if not os.path.exists(const.BOT_CACHE_FILE_PATH):
-        log.error("Could not stop the bot (cache file does not exist)")
-        return
+        return log.error("Could not stop the bot (cache file does not exist)")
     pid = parse_bot_cache()
     if pid is None:
-        log.error("Could not stop the bot (cache file does not contain pid)")
-        return
+        return log.error("Could not stop the bot (cache file does not contain pid)")
     if psutil.pid_exists(pid):
         os.kill(pid, signal.SIGINT)
         while psutil.pid_exists(pid):

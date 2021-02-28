@@ -72,8 +72,7 @@ class Commands:
 
     def register_command(self, module_name, class_name, command_name, **kwargs):
         if command_name in self.data.keys():
-            log.debug2(f"Command {module_name} {class_name} {command_name} is already registered")
-            return
+            return log.debug2(f"Command {module_name} {class_name} {command_name} is already registered")
         log.debug2(f"Registering command: {module_name} {class_name} {command_name}")
         if kwargs.get("message", None):
             self.data[command_name] = Command(module_name, class_name, **kwargs)

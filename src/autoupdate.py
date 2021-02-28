@@ -15,8 +15,7 @@ def check_updates(repo):
     new_sha = repo.head.object.hexsha
     log.debug(f"{old_sha} {new_sha}")
     if (old_sha == new_sha):
-        log.debug("No new updates")
-        return
+        return log.debug("No new updates")
     os.system(f"{sys.executable} -m pip install -r requirements.txt")
     os.system(f"{sys.executable} walbot.py stop")
     os.system(f"{sys.executable} walbot.py start --nohup &")
@@ -26,8 +25,7 @@ def start(args):
     try:
         repo = git.Repo(search_parent_directories=True)
     except git.exc.InvalidGitRepositoryError:
-        log.error("Failed to find walbot git repo. Autoupdate function is available only for git repository")
-        return
+        return log.error("Failed to find walbot git repo. Autoupdate function is available only for git repository")
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
         os.system(f"{sys.executable} walbot.py start --nohup &")
