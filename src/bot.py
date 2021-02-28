@@ -86,7 +86,7 @@ class WalBot(discord.Client):
                         new_time = datetime.datetime.now().replace(
                             second=0, microsecond=0) + datetime.timedelta(minutes=rem.repeat_after)
                         new_time = new_time.strftime(const.REMINDER_TIME_FORMAT)
-                        to_append.append(Reminder(str(new_time), rem.message, rem.channel_id))
+                        to_append.append(Reminder(str(new_time), rem.message, rem.channel_id, rem.author))
                         to_append[-1].repeat_after = rem.repeat_after
                         log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                     to_remove.append(key)

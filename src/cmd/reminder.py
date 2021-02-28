@@ -60,7 +60,7 @@ class ReminderCommands(BaseCmd):
             time = (datetime.datetime.now() + datetime.timedelta(
                 weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_TIME_FORMAT)
             id_ = bc.config.ids["reminder"]
-            bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
+            bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id, message.author.name)
             bc.config.ids["reminder"] += 1
             await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
             return
@@ -98,7 +98,7 @@ class ReminderCommands(BaseCmd):
             return
         text = ' '.join(command[3:])
         id_ = bc.config.ids["reminder"]
-        bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id)
+        bc.config.reminders[id_] = Reminder(str(time), text, message.channel.id, message.author.name)
         bc.config.ids["reminder"] += 1
         await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
 
@@ -121,7 +121,7 @@ class ReminderCommands(BaseCmd):
                                    "More information about format: <https://strftime.org/>", silent)
                 return
             text = ' '.join(command[4:])
-            bc.config.reminders[index] = Reminder(str(time), text, message.channel.id)
+            bc.config.reminders[index] = Reminder(str(time), text, message.channel.id, bc.config.reminders[index].author)
             await Msg.response(
                 message, f"Successfully updated reminder {index}: '{text}' at {time}", silent)
         else:
@@ -274,7 +274,7 @@ class ReminderCommands(BaseCmd):
             datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) +
             datetime.timedelta(minutes=rem.repeat_after), const.REMINDER_TIME_FORMAT)
         id_ = bc.config.ids["reminder"]
-        bc.config.reminders[id_] = Reminder(str(new_time), rem.message, message.channel.id)
+        bc.config.reminders[id_] = Reminder(str(new_time), rem.message, message.channel.id, bc.config.reminders[id_].author)
         bc.config.reminders[id_].repeat_after = rem.repeat_after
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
