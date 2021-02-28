@@ -52,6 +52,13 @@ class Permission(enum.IntEnum):
     ADMIN = 2
 
 
+@enum.unique
+class ExitStatus(enum.IntEnum):
+    NO_ERROR = 0
+    GENERAL_ERROR = 1
+    CONFIG_FILE_ERROR = 2
+
+
 class LogLevel(enum.IntEnum):
     # Logging levels: https://docs.python.org/3/library/logging.html#logging-levels
     CRITICAL = 50
