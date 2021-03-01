@@ -69,7 +69,7 @@ class ReminderCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=4):
             return
 
-        # !listreminder in <weeks>w<days>d<hours>h<minutes>m
+        # !addreminder in <weeks>w<days>d<hours>h<minutes>m
         if command[1] == "in":
             time = command[2]
             text = ' '.join(command[3:])
