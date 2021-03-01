@@ -93,6 +93,9 @@ class ReminderCommands(BaseCmd):
             await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
             return
 
+        WEEK_DAYS_FULL = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+        WEEK_DAYS_ABBREV = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+
         date = command[1]
         time = command[2]
         if command[1] == "today":
@@ -100,6 +103,19 @@ class ReminderCommands(BaseCmd):
         elif command[1] == "tomorrow":
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
+        elif command[1].lower() in WEEK_DAYS_FULL or command[1] in WEEK_DAYS_ABBREV:
+            if command[1].lower() in WEEK_DAYS_FULL:
+                weekday = WEEK_DAYS_FULL.index(command[1].lower())
+            elif command[1] in WEEK_DAYS_ABBREV:
+                weekday = WEEK_DAYS_ABBREV.index(command[1].lower())
+            else:
+                Msg.response(message, "Unexpected error during day of week processing!", silent)
+                return
+            days_delta = (weekday - datetime.datetime.today().weekday() + 7) % 7
+            if days_delta == 0:
+                days_delta = 7
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
         elif command[1].endswith("d"):
             days_amount = command[1][:-1]
             days_amount = await Util.parse_int(
