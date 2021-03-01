@@ -60,6 +60,8 @@ class ReminderCommands(BaseCmd):
         !addreminder 2020-01-01 00:00 Happy new year!
         !addreminder today 08:00 Wake up
         !addreminder tomorrow 08:00 Wake up
+        !addreminder monday 09:00 Time to work
+        !addreminder saturday 11:00 Time to chill
         !addreminder 2d 08:00 Wake up <- 2 days
         !addreminder 1w 08:00 Wake up <- 1 week
         !addreminder in 1w5d10h5m Test reminder
