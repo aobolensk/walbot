@@ -35,7 +35,7 @@
         !addreminder today 08:00 Wake up \
         !addreminder tomorrow 08:00 Wake up \
         !addreminder monday 09:00 Time to work \
-        !addreminder saturday 11:00 Time to chill \
+        !addreminder sat 11:00 Time to chill \
         !addreminder 2d 08:00 Wake up &lt;- 2 days \
         !addreminder 1w 08:00 Wake up &lt;- 1 week \
         !addreminder in 1w5d10h5m Test reminder \
@@ -361,7 +361,18 @@
     Example: !updreaction index emoji regex
 
 **updreminder**: Update reminder by index \
-    Example: !updreminder 0 2020-01-01 00:00 Happy new year!
+    Example: !updreminder 0 2020-01-01 00:00 Happy new year! \
+        !updreminder 0 2020-01-01 00:00 Happy new year! \
+        !updreminder 0 today 08:00 Wake up \
+        !updreminder 0 tomorrow 08:00 Wake up \
+        !updreminder 0 monday 09:00 Time to work \
+        !updreminder 0 sat 11:00 Time to chill \
+        !updreminder 0 2d 08:00 Wake up &lt;- 2 days \
+        !updreminder 0 1w 08:00 Wake up &lt;- 1 week \
+        !updreminder 0 in 1w5d10h5m Test reminder \
+        !updreminder 0 in 1w Test reminder 2 \
+        !updreminder 0 in 5h10m Test reminder 3 \
+
 
 **updresponse**: Update bot response \
     Example: !updresponse index regex;text

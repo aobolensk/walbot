@@ -8,6 +8,75 @@ from src.reminder import Reminder
 from src.utils import Util
 
 
+class _ReminderInternals:
+    @staticmethod
+    async def parse_reminder_args(message, date, time, silent):
+        print(date, time)
+        WEEK_DAYS_FULL = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+        WEEK_DAYS_ABBREV = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+
+        if date == "today":
+            date = datetime.datetime.strftime(datetime.datetime.now(), const.REMINDER_DATE_FORMAT)
+        elif date == "tomorrow":
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
+        elif date.lower() in WEEK_DAYS_FULL or date in WEEK_DAYS_ABBREV:
+            if date.lower() in WEEK_DAYS_FULL:
+                weekday = WEEK_DAYS_FULL.index(date.lower())
+            elif date in WEEK_DAYS_ABBREV:
+                weekday = WEEK_DAYS_ABBREV.index(date.lower())
+            else:
+                Msg.response(message, "Unexpected error during day of week processing!", silent)
+                return
+            days_delta = (weekday - datetime.datetime.today().weekday() + 7) % 7
+            if days_delta == 0:
+                days_delta = 7
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
+        elif date.endswith("d"):
+            days_amount = date[:-1]
+            days_amount = await Util.parse_int(
+                message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
+            if days_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
+        elif date.endswith("w"):
+            weeks_amount = date[:-1]
+            weeks_amount = await Util.parse_int(
+                message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks",
+                silent)
+            if weeks_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
+        time = date + ' ' + time
+        try:
+            time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
+        except ValueError:
+            await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
+                            "More information about format: <https://strftime.org/>", silent)
+            return
+        return time
+
+    @staticmethod
+    async def parse_reminder_args_in(message, time, silent):
+        r = const.REMINDER_IN_REGEX.match(time)
+        if r is None:
+            await Msg.response(
+                message, ("Provide relative time in the following format: "
+                          "<weeks>w<days>d<hours>h<minutes>m. "
+                          "All parts except one are optional"), silent)
+            return
+        weeks = int(r.group(2)) if r.group(2) is not None else 0
+        days = int(r.group(4)) if r.group(4) is not None else 0
+        hours = int(r.group(6)) if r.group(6) is not None else 0
+        minutes = int(r.group(8)) if r.group(8) is not None else 0
+        time = (datetime.datetime.now() + datetime.timedelta(
+            weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_TIME_FORMAT)
+        return time
+
+
 class ReminderCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, self.get_classname(), "reminder",
@@ -61,7 +130,7 @@ class ReminderCommands(BaseCmd):
         !addreminder today 08:00 Wake up
         !addreminder tomorrow 08:00 Wake up
         !addreminder monday 09:00 Time to work
-        !addreminder saturday 11:00 Time to chill
+        !addreminder sat 11:00 Time to chill
         !addreminder 2d 08:00 Wake up <- 2 days
         !addreminder 1w 08:00 Wake up <- 1 week
         !addreminder in 1w5d10h5m Test reminder
@@ -70,79 +139,13 @@ class ReminderCommands(BaseCmd):
 """
         if not await Util.check_args_count(message, command, silent, min=4):
             return
-
-        # !addreminder in <weeks>w<days>d<hours>h<minutes>m
-        if command[1] == "in":
-            time = command[2]
-            text = ' '.join(command[3:])
-            r = const.REMINDER_IN_REGEX.match(time)
-            if r is None:
-                await Msg.response(
-                    message, ("Provide relative time in the following format: "
-                              "<weeks>w<days>d<hours>h<minutes>m. "
-                              "All parts except one are optional"), silent)
-            weeks = int(r.group(2)) if r.group(2) is not None else 0
-            days = int(r.group(4)) if r.group(4) is not None else 0
-            hours = int(r.group(6)) if r.group(6) is not None else 0
-            minutes = int(r.group(8)) if r.group(8) is not None else 0
-            time = (datetime.datetime.now() + datetime.timedelta(
-                weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_TIME_FORMAT)
-            id_ = bc.config.ids["reminder"]
-            bc.config.reminders[id_] = Reminder(
-                str(time), text, message.channel.id, message.author.name,
-                datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
-            bc.config.ids["reminder"] += 1
-            await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
-            return
-
-        WEEK_DAYS_FULL = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
-        WEEK_DAYS_ABBREV = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
-
-        date = command[1]
-        time = command[2]
-        if command[1] == "today":
-            date = datetime.datetime.strftime(datetime.datetime.now(), const.REMINDER_DATE_FORMAT)
-        elif command[1] == "tomorrow":
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
-        elif command[1].lower() in WEEK_DAYS_FULL or command[1] in WEEK_DAYS_ABBREV:
-            if command[1].lower() in WEEK_DAYS_FULL:
-                weekday = WEEK_DAYS_FULL.index(command[1].lower())
-            elif command[1] in WEEK_DAYS_ABBREV:
-                weekday = WEEK_DAYS_ABBREV.index(command[1].lower())
-            else:
-                Msg.response(message, "Unexpected error during day of week processing!", silent)
-                return
-            days_delta = (weekday - datetime.datetime.today().weekday() + 7) % 7
-            if days_delta == 0:
-                days_delta = 7
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
-        elif command[1].endswith("d"):
-            days_amount = command[1][:-1]
-            days_amount = await Util.parse_int(
-                message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
-            if days_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
-        elif command[1].endswith("w"):
-            weeks_amount = command[1][:-1]
-            weeks_amount = await Util.parse_int(
-                message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks",
-                silent)
-            if weeks_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
-        time = date + ' ' + time
-        try:
-            time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
-        except ValueError:
-            await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
-                               "More information about format: <https://strftime.org/>", silent)
-            return
         text = ' '.join(command[3:])
+        if command[1] == "in":
+            time = await _ReminderInternals.parse_reminder_args_in(command[2])
+        else:
+            time = await _ReminderInternals.parse_reminder_args(message, command[1], command[2], silent)
+        if time is None:
+            return
         id_ = bc.config.ids["reminder"]
         bc.config.reminders[id_] = Reminder(
             str(time), text, message.channel.id, message.author.name,
@@ -153,7 +156,18 @@ class ReminderCommands(BaseCmd):
     @staticmethod
     async def _updreminder(message, command, silent=False):
         """Update reminder by index
-    Example: !updreminder 0 2020-01-01 00:00 Happy new year!"""
+    Example: !updreminder 0 2020-01-01 00:00 Happy new year!
+        !updreminder 0 2020-01-01 00:00 Happy new year!
+        !updreminder 0 today 08:00 Wake up
+        !updreminder 0 tomorrow 08:00 Wake up
+        !updreminder 0 monday 09:00 Time to work
+        !updreminder 0 sat 11:00 Time to chill
+        !updreminder 0 2d 08:00 Wake up <- 2 days
+        !updreminder 0 1w 08:00 Wake up <- 1 week
+        !updreminder 0 in 1w5d10h5m Test reminder
+        !updreminder 0 in 1w Test reminder 2
+        !updreminder 0 in 5h10m Test reminder 3
+"""
         if not await Util.check_args_count(message, command, silent, min=5):
             return
         index = await Util.parse_int(
@@ -161,14 +175,13 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index in bc.config.reminders.keys():
-            time = command[2] + ' ' + command[3]
-            try:
-                time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
-            except ValueError:
-                await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
-                                   "More information about format: <https://strftime.org/>", silent)
-                return
             text = ' '.join(command[4:])
+            if command[2] == "in":
+                time = await _ReminderInternals.parse_reminder_args_in(command[3])
+            else:
+                time = await _ReminderInternals.parse_reminder_args(message, command[2], command[3], silent)
+            if time is None:
+                return
             bc.config.reminders[index] = Reminder(
                 str(time), text, message.channel.id, bc.config.reminders[index].author,
                 datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
