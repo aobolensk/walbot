@@ -26,7 +26,7 @@ class _ReminderInternals:
             elif date in WEEK_DAYS_ABBREV:
                 weekday = WEEK_DAYS_ABBREV.index(date.lower())
             else:
-                Msg.response(message, "Unexpected error during day of week processing!", silent)
+                await Msg.response(message, "Unexpected error during day of week processing!", silent)
                 return
             days_delta = (weekday - datetime.datetime.today().weekday() + 7) % 7
             if days_delta == 0:
