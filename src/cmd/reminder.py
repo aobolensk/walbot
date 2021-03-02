@@ -55,7 +55,7 @@ class _ReminderInternals:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
         except ValueError:
             await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
-                            "More information about format: <https://strftime.org/>", silent)
+                                        "More information about format: <https://strftime.org/>", silent)
             return
         return time
 
