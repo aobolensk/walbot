@@ -156,7 +156,8 @@ class ReminderCommands(BaseCmd):
     @staticmethod
     async def _updreminder(message, command, silent=False):
         """Update reminder by index
-    Example: !updreminder 0 2020-01-01 00:00 Happy new year!
+    Examples:
+        !updreminder 0 2020-01-01 00:00 Happy new year!
         !updreminder 0 2020-01-01 00:00 Happy new year!
         !updreminder 0 today 08:00 Wake up
         !updreminder 0 tomorrow 08:00 Wake up
@@ -269,7 +270,8 @@ class ReminderCommands(BaseCmd):
         !repeatreminder 1 1h
         !repeatreminder 1 1d
         !repeatreminder 1 1w
-    Note: number without postfix is translated to minutes"""
+        !repeatreminder 1 0
+    Note: number without postfix is translated to minutes. 0 means disabling repetition"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         index = await Util.parse_int(
