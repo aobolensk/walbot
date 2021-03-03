@@ -24,16 +24,17 @@ class AutoUpdateContext:
         self.secret_version = const.SECRET_CONFIG_VERSION
 
     def check_versions(self) -> bool:
-        importlib.reload(const)
+        import src.version as ver
+        importlib.reload(ver)
         updated = False
-        if self.config_version != const.CONFIG_VERSION:
-            self.config_version = const.CONFIG_VERSION
+        if self.config_version != ver.CONFIG_VERSION:
+            self.config_version = ver.CONFIG_VERSION
             updated = True
-        if self.markov_version != const.MARKOV_CONFIG_VERSION:
-            self.markov_version = const.MARKOV_CONFIG_VERSION
+        if self.markov_version != ver.MARKOV_CONFIG_VERSION:
+            self.markov_version = ver.MARKOV_CONFIG_VERSION
             updated = True
-        if self.secret_version != const.SECRET_CONFIG_VERSION:
-            self.secret_version = const.SECRET_CONFIG_VERSION
+        if self.secret_version != ver.SECRET_CONFIG_VERSION:
+            self.secret_version = ver.SECRET_CONFIG_VERSION
             updated = True
         log.debug(f"Config versions were{'' if updated else ' not'} updated")
         return updated
