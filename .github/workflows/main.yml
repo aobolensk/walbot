@@ -48,22 +48,3 @@ jobs:
       run: pylint --version
     - name: Run pylint
       run: pylint src/ tools/ tests/ walbot.py --max-line-length=120 --exit-zero --disable=W1201,W1203
-  tests:
-    strategy:
-      matrix:
-        python-version:
-        - '3.7'
-        - '3.8'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install -r tests/requirements.txt
-    - name: Run tests
-      run: python walbot.py test
