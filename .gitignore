@@ -14,7 +14,7 @@ backup/
 images/
 
 # Private user commands file
-src/cmd/private
+src/cmd/private/**
 
 # Bot cache
 .bot_cache
@@ -22,3 +22,6 @@ src/cmd/private
 # Bot logs
 logs/
 nohup.out
+
+# Do not ignore .gitkeep
+!/**/.gitkeep
