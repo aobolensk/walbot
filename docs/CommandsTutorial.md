@@ -39,3 +39,5 @@ class NewTestCommands(BaseCmd):
         await Msg.response(message, result, silent)
         return result
 ```
+
+Note: if you want to create private command module you need to create in in `src/cmd/private`. Private commands are fully functional but they are separated from public ones and automatically gitignored.
