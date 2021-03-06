@@ -340,6 +340,10 @@
         !timescmd echo -s \
     *This command can be used as subcommand*
 
+**timeuntilreminder**: Show time until particular reminder \
+    Example: !timeuntilreminder 1 \
+    *This command can be used as subcommand*
+
 **tolower**: Convert text to lower case \
     Example: !tolower SoMe TeXt \
     *This command can be used as subcommand*

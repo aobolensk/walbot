@@ -97,6 +97,8 @@ class ReminderCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "skipreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "timeuntilreminder",
+                                     permission=const.Permission.USER.value, subcommand=True)
 
     @staticmethod
     async def _reminder(message, command, silent=False):
@@ -348,3 +350,20 @@ class ReminderCommands(BaseCmd):
         await Msg.response(
             message, f"Skipped reminder {index} at {rem.time}, "
                      f"next reminder {id_} will be at {bc.config.reminders[id_].time}", silent)
+
+    @staticmethod
+    async def _timeuntilreminder(message, command, silent=False):
+        """Show time until particular reminder
+    Example: !timeuntilreminder 1"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            await Msg.response(message, "Invalid index of reminder!", silent)
+            return
+        rem = bc.config.reminders[index]
+        rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) - datetime.datetime.now()
+        await Msg.response(message, f"Time until reminder {index} ('{rem.message}') is {rem_time}", silent)
