@@ -63,7 +63,7 @@ class Commands:
                     s = "**" + name + "**: "
                     try:
                         s += " \\\n".join(command.get_actor().__doc__.split('\n'))
-                    except AttributeError:
+                    except (AttributeError, KeyError):
                         del self.data[name]
                         log.warning(f"Command '{name}' is not found and removed from config and documentation")
                         repeat = True
