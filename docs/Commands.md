@@ -248,6 +248,9 @@
         !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
     *This command can be used as subcommand*
 
+**reloadbotcommands**: Reload bot commands \
+    Usage: !reloadbotcommands
+
 **reminder**: Print information about reminder \
     Example: \
         !reminder 1 \
