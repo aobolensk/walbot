@@ -177,6 +177,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "nick",
                                      permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "reloadbotcommands",
+                                     permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1448,3 +1450,13 @@ class BuiltinCommands(BaseCmd):
         new_nick = ' '.join(command[1:])
         await message.guild.me.edit(nick=new_nick)
         await Msg.response(message, f"Bot nickname was changed to '{new_nick}'", silent)
+
+    @staticmethod
+    async def _reloadbotcommands(message, command, silent=False):
+        """Reload bot commands
+    Usage: !reloadbotcommands"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        await Msg.response(message, "Bot commands reloading is started...", silent)
+        bc.commands.update(reload=True)
+        await Msg.response(message, "Bot commands reloading is finished", silent)

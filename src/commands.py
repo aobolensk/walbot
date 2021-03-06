@@ -22,7 +22,7 @@ class Commands:
         if not hasattr(self, "aliases"):
             self.aliases = dict()
 
-    def update(self):
+    def update(self, reload=False):
         bc.commands = self
         cmd_directory = os.path.join(os.path.dirname(__file__), "cmd")
         cmd_modules = ['src.cmd.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
@@ -33,6 +33,8 @@ class Commands:
         for module in cmd_modules:
             log.debug2(f"Processing commands from module: {module}")
             commands_file = importlib.import_module(module)
+            if reload:
+                importlib.reload(commands_file)
             commands = [obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
                         if (obj[1].__module__ == module) and issubclass(obj[1], BaseCmd)]
             if len(commands) == 1:
