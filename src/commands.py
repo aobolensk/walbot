@@ -48,7 +48,8 @@ class Commands:
                 log.error(f"Module '{module}' have more than 1 class in it")
             else:
                 log.error(f"Module '{module}' have no classes in it")
-        self.export_help(const.COMMANDS_DOC_PATH)
+        if not reload:
+            self.export_help(const.COMMANDS_DOC_PATH)
 
     def export_help(self, file_path):
         with open(file_path, "w", encoding="utf-8", newline='\n') as f:
