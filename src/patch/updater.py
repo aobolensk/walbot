@@ -135,6 +135,11 @@ class Updater:
                     datetime.datetime(1970, 1, 1).strftime(const.REMINDER_TIME_FORMAT))
             self._bump_version(config, "0.0.20")
         if config.version == "0.0.20":
+            for key in config.commands.data.keys():
+                if not hasattr(config.commands.data[key], "is_private"):
+                    config.commands.data[key].is_private = False
+            self._bump_version(config, "0.0.21")
+        if config.version == "0.0.21":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

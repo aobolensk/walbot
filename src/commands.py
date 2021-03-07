@@ -59,7 +59,7 @@ class Commands:
             while repeat:
                 repeat = False
                 for name, command in self.data.items():
-                    if command.perform is None:
+                    if command.perform is None or command.is_private:
                         continue
                     s = "**" + name + "**: "
                     try:
@@ -85,3 +85,4 @@ class Commands:
         else:
             self.data[command_name] = Command(module_name, class_name, '_' + command_name, **kwargs)
         self.data[command_name].is_global = True
+        self.data[command_name].is_private = ".private." in module_name
