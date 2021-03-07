@@ -18,4 +18,4 @@ class Quote:
         return f"{self.message} {self.get_author()}"
 
     def full_quote(self):
-        return f"{self.message} {self.get_author()}\nAdded by: {self.added_by} at {self.timestamp}"
+        return f"{self.message} {self.get_author()}\nAdded by: {self.added_by[:-5]} at {self.timestamp}"
