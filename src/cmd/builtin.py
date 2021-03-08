@@ -682,20 +682,20 @@ class BuiltinCommands(BaseCmd):
             return
         if len(command) == 1:
             result = "Config:\n"
-            result += "Reactions (reactions): " + (
+            result += "Emoji reactions on messages (reactions): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov logging (markovlog): " + (
+            result += "Logging the messages to Markov model (markovlog): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist)
                 else 'disabled') + "\n"
-            result += "Bot responses (responses): " + (
+            result += "Text message responses on messages (responses): " + (
                 'enabled' if (message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov responses (markovresponses): " + (
+            result += "Responses with random generated message using Markov model on mention (markovresponses): " + (
                 'enabled' if (message.channel.id in
                               bc.config.guilds[message.channel.guild.id].markov_responses_whitelist)
                 else 'disabled') + "\n"
-            result += "Markov pings (markovpings): " + (
+            result += "Users pings in random generated messages using Markov model (markovpings): " + (
                 'enabled' if bc.config.guilds[message.channel.guild.id].markov_pings
                 else 'disabled') + "\n"
             await Msg.response(message, result, silent)
