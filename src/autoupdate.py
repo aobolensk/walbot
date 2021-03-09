@@ -42,8 +42,14 @@ class AutoUpdateContext:
 
 def check_updates(context: AutoUpdateContext):
     old_sha = context.repo.head.object.hexsha
-    g = git.cmd.Git(os.getcwd())
-    g.pull()
+    try:
+        g = git.cmd.Git(os.getcwd())
+        g.pull()
+    except git.exc.GitCommandError as e:
+        if "Connection timed out" in e.stderr:
+            log.warning(f"{e.command}: {e.stderr}")
+        else:
+            raise e
     new_sha = context.repo.head.object.hexsha
     log.debug(f"{old_sha} {new_sha}")
     if (old_sha == new_sha):
