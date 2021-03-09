@@ -24,33 +24,34 @@ class _BuiltinInternals:
     async def get_image(message, command, silent):
         for i in range(1, len(command)):
             for root, _, files in os.walk("images"):
-                if root.endswith("images"):
-                    for file in files:
-                        if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
-                            await Msg.response(message, None, silent,
-                                               files=[discord.File(os.path.join("images", file))])
-                            break
-                    else:
-                        # Custom emoji
-                        r = const.EMOJI_REGEX.match(command[i])
-                        if r is not None:
-                            await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
-                            break
-                        # Unicode emoji
-                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
-                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
-                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
-                        if emoji_match:
-                            temp_image_file = tempfile.NamedTemporaryFile()
-                            with open(temp_image_file.name, 'wb') as f:
-                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
-                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Msg.response(
-                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
-                            os.unlink(temp_image_file.name + ".png")
-                            break
-                        await Msg.response(message, f"Image {command[i]} is not found!", silent)
-                    break
+                if not root.endswith("images"):
+                    continue
+                for file in files:
+                    if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
+                        await Msg.response(message, None, silent,
+                                            files=[discord.File(os.path.join("images", file))])
+                        break
+                else:
+                    # Custom emoji
+                    r = const.EMOJI_REGEX.match(command[i])
+                    if r is not None:
+                        await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
+                        break
+                    # Unicode emoji
+                    emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
+                    emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
+                    emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
+                    if emoji_match:
+                        temp_image_file = tempfile.NamedTemporaryFile()
+                        with open(temp_image_file.name, 'wb') as f:
+                            f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
+                        shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
+                        await Msg.response(
+                            message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                        os.unlink(temp_image_file.name + ".png")
+                        break
+                    await Msg.response(message, f"Image {command[i]} is not found!", silent)
+                break
 
 
 class BuiltinCommands(BaseCmd):
@@ -1150,9 +1151,10 @@ class BuiltinCommands(BaseCmd):
             return
         result = []
         for root, _, files in os.walk("images"):
-            if root.endswith("images"):
-                for file in files:
-                    result.append(os.path.splitext(os.path.basename(file))[0])
+            if not root.endswith("images"):
+                continue
+            for file in files:
+                result.append(os.path.splitext(os.path.basename(file))[0])
         result.sort()
         if result:
             await Msg.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
@@ -1175,11 +1177,12 @@ class BuiltinCommands(BaseCmd):
             await Msg.response(message, "Please, provide direct link to image", silent)
             return
         for root, _, files in os.walk("images"):
-            if root.endswith("images"):
-                for file in files:
-                    if name == os.path.splitext(os.path.basename(file))[0]:
-                        await Msg.response(message, f"Image '{name}' already exists", silent)
-                        return
+            if not root.endswith("images"):
+                continue
+            for file in files:
+                if name == os.path.splitext(os.path.basename(file))[0]:
+                    await Msg.response(message, f"Image '{name}' already exists", silent)
+                    return
         if not os.path.exists("images"):
             os.makedirs("images")
         image_path = os.path.join("images", name + '.' + ext)
@@ -1218,12 +1221,13 @@ class BuiltinCommands(BaseCmd):
             await Msg.response(message, f"Incorrect name '{name}'", silent)
             return
         for root, _, files in os.walk("images"):
-            if root.endswith("images"):
-                for file in files:
-                    if name == os.path.splitext(os.path.basename(file))[0]:
-                        os.remove(os.path.join("images", file))
-                        await Msg.response(message, f"Successfully removed image '{name}'", silent)
-                        return
+            if not root.endswith("images"):
+                continue
+            for file in files:
+                if name == os.path.splitext(os.path.basename(file))[0]:
+                    os.remove(os.path.join("images", file))
+                    await Msg.response(message, f"Successfully removed image '{name}'", silent)
+                    return
         await Msg.response(message, f"Image '{name}' not found!", silent)
 
     @staticmethod
@@ -1317,40 +1321,41 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         for root, _, files in os.walk("images"):
-            if root.endswith("images"):
-                for file in files:
-                    if os.path.splitext(os.path.basename(file))[0] == command[1]:
-                        try:
-                            with open(os.path.join("images", file), "rb") as f:
-                                await bc.bot_user.edit(avatar=f.read())
-                            await Msg.response(
-                                message, f"Successfully changed bot avatar to {command[1]}", silent)
-                        except discord.HTTPException as e:
-                            await Msg.response(
-                                message, f"Failed to change bot avatar.\nError: {e}", silent)
-                        return
-                else:
-                    r = const.EMOJI_REGEX.match(command[1])
-                    if r is None:
-                        break
-                    log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")
-                    hdr = {
-                        "User-Agent": "Mozilla/5.0"
-                    }
-                    rq = urllib.request.Request(
-                        f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", headers=hdr)
-                    temp_image_file = tempfile.NamedTemporaryFile()
+            if not root.endswith("images"):
+                continue
+            for file in files:
+                if os.path.splitext(os.path.basename(file))[0] == command[1]:
                     try:
-                        with urllib.request.urlopen(rq) as response:
-                            temp_image_file.write(response.read())
-                        with open(temp_image_file.name, "rb") as temp_image_file:
-                            await bc.bot_user.edit(avatar=temp_image_file.read())
-                    except Exception as e:
-                        await Msg.response(message, f"Image downloading failed: {e}", silent)
-                        log.error("Image downloading failed!", exc_info=True)
-                        return
-                    await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
+                        with open(os.path.join("images", file), "rb") as f:
+                            await bc.bot_user.edit(avatar=f.read())
+                        await Msg.response(
+                            message, f"Successfully changed bot avatar to {command[1]}", silent)
+                    except discord.HTTPException as e:
+                        await Msg.response(
+                            message, f"Failed to change bot avatar.\nError: {e}", silent)
                     return
+            else:
+                r = const.EMOJI_REGEX.match(command[1])
+                if r is None:
+                    break
+                log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")
+                hdr = {
+                    "User-Agent": "Mozilla/5.0"
+                }
+                rq = urllib.request.Request(
+                    f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", headers=hdr)
+                temp_image_file = tempfile.NamedTemporaryFile()
+                try:
+                    with urllib.request.urlopen(rq) as response:
+                        temp_image_file.write(response.read())
+                    with open(temp_image_file.name, "rb") as temp_image_file:
+                        await bc.bot_user.edit(avatar=temp_image_file.read())
+                except Exception as e:
+                    await Msg.response(message, f"Image downloading failed: {e}", silent)
+                    log.error("Image downloading failed!", exc_info=True)
+                    return
+                await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
+                return
         await Msg.response(message, f"Image {command[1]} is not found!", silent)
 
     @staticmethod
