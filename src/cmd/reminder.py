@@ -342,7 +342,7 @@ class ReminderCommands(BaseCmd):
             datetime.timedelta(minutes=rem.repeat_after), const.REMINDER_TIME_FORMAT)
         id_ = bc.config.ids["reminder"]
         bc.config.reminders[id_] = Reminder(
-            str(new_time), rem.message, message.channel.id, bc.config.reminders[id_].author,
+            str(new_time), rem.message, message.channel.id, bc.config.reminders[index].author,
             datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
         bc.config.reminders[id_].repeat_after = rem.repeat_after
         bc.config.ids["reminder"] += 1
