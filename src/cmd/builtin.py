@@ -29,7 +29,7 @@ class _BuiltinInternals:
                 for file in files:
                     if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
                         await Msg.response(message, None, silent,
-                                            files=[discord.File(os.path.join("images", file))])
+                                           files=[discord.File(os.path.join("images", file))])
                         break
                 else:
                     # Custom emoji
