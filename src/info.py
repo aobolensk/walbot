@@ -21,6 +21,13 @@ class BotInfo:
         return sha
 
     @property
+    def is_version_dirty(self) -> bool:
+        repo = self._get_repo()
+        if repo is None:
+            return False
+        return repo.is_dirty()
+
+    @property
     def version_time(self):
         repo = self._get_repo()
         if repo is None:

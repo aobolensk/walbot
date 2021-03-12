@@ -902,7 +902,7 @@ class BuiltinCommands(BaseCmd):
         ver = discord.version_info
         result = (f"{bc.bot_user} (WalBot instance)\n"
                   f"Source code: <{const.GIT_REPO_LINK}>\n"
-                  f"Version: {bc.info.version} (done at {bc.info.version_time})\n"
+                  f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} (done at {bc.info.version_time})\n"
                   f"Dependencies:\n"
                   f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
                   f"Uptime: {bc.info.uptime}\n")
