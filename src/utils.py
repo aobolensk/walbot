@@ -35,14 +35,17 @@ class Util:
             return
 
     @staticmethod
-    def check_version(name, actual, expected, solutions=None):
+    def check_version(name, actual, expected, solutions=None, fatal=True):
         if (actual != expected):
-            log.error(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
+            if not fatal:
+                log.warning(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
+            else:
+                log.error(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
             if solutions:
                 log.info("Possible solutions:")
                 for solution in solutions:
                     log.info(f" - {solution}")
-            return False
+            return not fatal
         return True
 
     @staticmethod
