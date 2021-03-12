@@ -3,7 +3,16 @@ import re
 
 import src.version as ver
 
-DISCORD_LIB_VERSION = '1.6.0'
+
+def _extract_discord_lib_version_from_requirements_txt():
+    with open("requirements.txt", "r") as f:
+        for line in f:
+            if line.startswith("discord.py=="):
+                return line.split('==')[1].strip()
+    return "<unknown>"
+
+
+DISCORD_LIB_VERSION = _extract_discord_lib_version_from_requirements_txt()
 
 CONFIG_VERSION = ver.CONFIG_VERSION
 MARKOV_CONFIG_VERSION = ver.MARKOV_CONFIG_VERSION
