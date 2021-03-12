@@ -141,7 +141,8 @@ class Updater:
             self._bump_version(config, "0.0.21")
         if config.version == "0.0.21":
             for key in config.commands.data.keys():
-                if hasattr(config.commands.data[key], "module_name") and not config.commands.data[key].module_name.startswith("src."):
+                if (hasattr(config.commands.data[key], "module_name") and
+                        not config.commands.data[key].module_name.startswith("src.")):
                     del config.commands.data[key].__dict__["module_name"]
             self._bump_version(config, "0.0.22")
         if config.version == "0.0.22":
