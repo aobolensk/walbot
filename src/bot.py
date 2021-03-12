@@ -268,7 +268,8 @@ def start(args, main_bot=True):
     ok &= Util.check_version("discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
                              solutions=[
                                  "execute: python -m pip install -r requirements.txt",
-                             ])
+                             ],
+                             fatal=False)
     ok &= Util.check_version("Config", config.version, const.CONFIG_VERSION,
                              solutions=[
                                  "run patch tool",
