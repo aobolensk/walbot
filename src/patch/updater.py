@@ -140,6 +140,11 @@ class Updater:
                     config.commands.data[key].is_private = False
             self._bump_version(config, "0.0.21")
         if config.version == "0.0.21":
+            for key in config.commands.data.keys():
+                if hasattr(config.commands.data[key], "module_name") and not config.commands.data[key].module_name.startswith("src."):
+                    del config.commands.data[key].__dict__["module_name"]
+            self._bump_version(config, "0.0.22")
+        if config.version == "0.0.22":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
