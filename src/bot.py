@@ -298,7 +298,8 @@ def start(args, main_bot=True):
     # Starting the bot
     walbot.run(secret_config.token)
     # After stopping the bot
-    walbot.repl.stop()
+    if walbot.repl is not None:
+        walbot.repl.stop()
     for event in bc.background_events:
         event.cancel()
     bc.background_loop = None
