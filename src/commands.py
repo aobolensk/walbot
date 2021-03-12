@@ -77,7 +77,7 @@ class Commands:
             f.write('\n'.join(sorted(result)))
 
     def register_command(self, module_name, class_name, command_name, **kwargs):
-        if command_name in self.data.keys():
+        if command_name in self.data.keys() and self.data[command_name].module_name == module_name:
             return log.debug2(f"Command {module_name} {class_name} {command_name} is already registered")
         log.debug2(f"Registering command: {module_name} {class_name} {command_name}")
         if kwargs.get("message", None):
