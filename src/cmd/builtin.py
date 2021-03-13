@@ -1369,7 +1369,18 @@ class BuiltinCommands(BaseCmd):
                     return
                 await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent)
                 return
-        await Msg.response(message, f"Image {command[1]} is not found!", silent)
+        min_dist = 100000
+        suggestion = ""
+        for file in (os.path.splitext(os.path.basename(file))[0].lower() for file in files):
+            dist = levenshtein_distance(command[1], file)
+            if dist < min_dist:
+                suggestion = file
+                min_dist = dist
+        await Msg.response(
+            message,
+            f"Image '{command[1]}' is not found! "
+            f"Probably you meant '{suggestion}'",
+            silent)
 
     @staticmethod
     async def _message(message, command, silent=False):
