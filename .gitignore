@@ -13,7 +13,7 @@ secret.yaml
 backup/
 images/
 
-# Private user commands file
+# Private user commands files
 src/cmd/private/**
 
 # Bot cache
