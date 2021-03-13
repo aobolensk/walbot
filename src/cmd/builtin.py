@@ -24,13 +24,13 @@ class _BuiltinInternals:
     @staticmethod
     async def get_image(message, command, silent):
         for i in range(1, len(command)):
-            for root, _, files in os.walk("images"):
-                if not root.endswith("images"):
+            for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+                if not root.endswith(const.IMAGES_DIRECTORY):
                     continue
                 for file in files:
                     if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
                         await Msg.response(message, None, silent,
-                                           files=[discord.File(os.path.join("images", file))])
+                                           files=[discord.File(os.path.join(const.IMAGES_DIRECTORY, file))])
                         break
                 else:
                     # Custom emoji
@@ -1138,13 +1138,13 @@ class BuiltinCommands(BaseCmd):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
         if len(command) == 1:
-            list_images = os.listdir("images")
+            list_images = os.listdir(const.IMAGES_DIRECTORY)
             if len(list_images) == 0:
                 await Msg.response(message, "No images found!", silent)
                 return
             result = random.randint(0, len(list_images)-1)  # integer random
             await Msg.response(message, None, silent,
-                               files=[discord.File(os.path.join("images", list_images[result]))])
+                               files=[discord.File(os.path.join(const.IMAGES_DIRECTORY, list_images[result]))])
             return
         await _BuiltinInternals.get_image(message, command, silent)
 
@@ -1163,8 +1163,8 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = []
-        for root, _, files in os.walk("images"):
-            if not root.endswith("images"):
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
                 continue
             for file in files:
                 result.append(os.path.splitext(os.path.basename(file))[0])
@@ -1189,16 +1189,16 @@ class BuiltinCommands(BaseCmd):
         if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
             await Msg.response(message, "Please, provide direct link to image", silent)
             return
-        for root, _, files in os.walk("images"):
-            if not root.endswith("images"):
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
                 continue
             for file in files:
                 if name == os.path.splitext(os.path.basename(file))[0]:
                     await Msg.response(message, f"Image '{name}' already exists", silent)
                     return
-        if not os.path.exists("images"):
-            os.makedirs("images")
-        image_path = os.path.join("images", name + '.' + ext)
+        if not os.path.exists(const.IMAGES_DIRECTORY):
+            os.makedirs(const.IMAGES_DIRECTORY)
+        image_path = os.path.join(const.IMAGES_DIRECTORY, name + '.' + ext)
         with open(image_path, 'wb') as f:
             try:
                 hdr = {
@@ -1233,12 +1233,12 @@ class BuiltinCommands(BaseCmd):
         if not re.match(const.FILENAME_REGEX, name):
             await Msg.response(message, f"Incorrect name '{name}'", silent)
             return
-        for root, _, files in os.walk("images"):
-            if not root.endswith("images"):
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
                 continue
             for file in files:
                 if name == os.path.splitext(os.path.basename(file))[0]:
-                    os.remove(os.path.join("images", file))
+                    os.remove(os.path.join(const.IMAGES_DIRECTORY, file))
                     await Msg.response(message, f"Successfully removed image '{name}'", silent)
                     return
         await Msg.response(message, f"Image '{name}' not found!", silent)
@@ -1333,13 +1333,13 @@ class BuiltinCommands(BaseCmd):
     Hint: Use !listimg for list of available images"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        for root, _, files in os.walk("images"):
-            if not root.endswith("images"):
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
                 continue
             for file in files:
                 if os.path.splitext(os.path.basename(file))[0] == command[1]:
                     try:
-                        with open(os.path.join("images", file), "rb") as f:
+                        with open(os.path.join(const.IMAGES_DIRECTORY, file), "rb") as f:
                             await bc.bot_user.edit(avatar=f.read())
                         await Msg.response(
                             message, f"Successfully changed bot avatar to {command[1]}", silent)

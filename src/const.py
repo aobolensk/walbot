@@ -28,6 +28,7 @@ MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"
 COMMANDS_DOC_PATH = "docs/Commands.md"
 LOGS_DIRECTORY = "logs"
+IMAGES_DIRECTORY = "images"
 
 MAX_POLL_OPTIONS = 20
 MAX_RANGE_ITERATIONS = 500
