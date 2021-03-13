@@ -5,7 +5,7 @@
 Discord bot in Python
 
 ### Requirements:
-- Python 3.7-3.8
+- Python 3.7-3.9
 
 ### Quick start:
 ```shell
