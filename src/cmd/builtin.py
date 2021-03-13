@@ -13,6 +13,7 @@ import discord
 import requests
 
 from src import const, emoji
+from src.algorithms import levenshtein_distance
 from src.commands import BaseCmd
 from src.config import BackgroundEvent, Command, bc, log
 from src.message import Msg
@@ -50,7 +51,18 @@ class _BuiltinInternals:
                             message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
                         os.unlink(temp_image_file.name + ".png")
                         break
-                    await Msg.response(message, f"Image {command[i]} is not found!", silent)
+                    min_dist = 100000
+                    suggestion = ""
+                    for file in (os.path.splitext(os.path.basename(file))[0].lower() for file in files):
+                        dist = levenshtein_distance(command[i], file)
+                        if dist < min_dist:
+                            suggestion = file
+                            min_dist = dist
+                    await Msg.response(
+                        message,
+                        f"Image '{command[i]}' is not found! "
+                        f"Probably you meant '{suggestion}'",
+                        silent)
                 break
 
 
