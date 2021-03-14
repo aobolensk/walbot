@@ -96,3 +96,7 @@ class Launcher:
     def autoupdate(self):
         """Start autoupdate process for bot"""
         importlib.import_module("src.autoupdate").start(self.args)
+
+    def mexplorer(self):
+        """Markov model explorer"""
+        importlib.import_module("tools.mexplorer").main(self.args)
