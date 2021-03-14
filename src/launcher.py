@@ -21,8 +21,8 @@ class Launcher:
             for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
         }
         subparsers["start"].add_argument(
-                "--autoupdate", action="store_true",
-                help="Start autoupdate process for bot")
+            "--autoupdate", action="store_true",
+            help="Start autoupdate process for bot")
         # Start & suspend
         for option in ("start", "restart", "suspend"):
             subparsers[option].add_argument(

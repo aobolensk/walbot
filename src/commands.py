@@ -36,10 +36,10 @@ class Commands:
                        if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
         private_cmd_directory = os.path.join(os.path.dirname(__file__), "cmd", "private")
         cmd_modules += [self._path_to_module(
-                            f"src.cmd.private.{os.path.relpath(path, private_cmd_directory)}."
-                            f"{os.path.splitext(file)[0]}")
-                        for path, _, files in os.walk(private_cmd_directory) for file in files
-                        if os.path.isfile(os.path.join(private_cmd_directory, path, file)) and file.endswith(".py")]
+            f"src.cmd.private.{os.path.relpath(path, private_cmd_directory)}."
+            f"{os.path.splitext(file)[0]}")
+            for path, _, files in os.walk(private_cmd_directory) for file in files
+            if os.path.isfile(os.path.join(private_cmd_directory, path, file)) and file.endswith(".py")]
         for module in cmd_modules:
             log.debug2(f"Processing commands from module: {module}")
             commands_file = importlib.import_module(module)
