@@ -256,7 +256,6 @@ def start(args, main_bot=True):
     config = Util.read_config_file(const.CONFIG_PATH)
     if config is None:
         config = Config()
-    config.commands.update()
     secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
     if secret_config is None:
         secret_config = SecretConfig()
@@ -287,6 +286,7 @@ def start(args, main_bot=True):
                              ])
     if not ok:
         sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+    config.commands.update()
     # Constructing bot instance
     if main_bot:
         walbot = WalBot(config, secret_config)
