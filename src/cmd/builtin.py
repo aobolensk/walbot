@@ -215,7 +215,7 @@ class BuiltinCommands(BaseCmd):
         if num is None:
             return
         if num < 0:
-            result = result[len(result)+num:]
+            result = result[len(result) + num:]
         else:
             result = result[:num]
         await Msg.response(message, result, silent)
@@ -245,7 +245,7 @@ class BuiltinCommands(BaseCmd):
         if num is None:
             return
         if num < 0:
-            result = ' '.join(result[len(result)+num:])
+            result = ' '.join(result[len(result) + num:])
         else:
             result = ' '.join(result[:num])
         await Msg.response(message, result, silent)
@@ -281,7 +281,7 @@ class BuiltinCommands(BaseCmd):
         if num is None:
             return
         if num < 0:
-            result = '\n'.join(result[len(result)+num:])
+            result = '\n'.join(result[len(result) + num:])
         else:
             result = '\n'.join(result[:num])
         await Msg.response(message, result, silent)
@@ -1142,7 +1142,7 @@ class BuiltinCommands(BaseCmd):
             if len(list_images) == 0:
                 await Msg.response(message, "No images found!", silent)
                 return
-            result = random.randint(0, len(list_images)-1)  # integer random
+            result = random.randint(0, len(list_images) - 1)  # integer random
             await Msg.response(message, None, silent,
                                files=[discord.File(os.path.join(const.IMAGES_DIRECTORY, list_images[result]))])
             return
@@ -1292,7 +1292,7 @@ class BuiltinCommands(BaseCmd):
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return
-        text = message.content[len(command[0])+1:]
+        text = message.content[len(command[0]) + 1:]
         result = ""
         i = 0
         while i < len(text):
@@ -1404,7 +1404,7 @@ class BuiltinCommands(BaseCmd):
         if result is not None:
             result = result.content
         else:
-            result = await message.channel.history(limit=number+1).flatten()
+            result = await message.channel.history(limit=number + 1).flatten()
             bc.message_buffer.reset(message.channel.id, result)
             result = result[-1].content
         await Msg.response(message, result, silent)

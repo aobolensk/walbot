@@ -6,7 +6,7 @@ class Msg:
     @staticmethod
     def split_by_chunks(message, count):
         for i in range(0, len(message), count):
-            yield message[i:i+count]
+            yield message[i:i + count]
 
     @staticmethod
     async def reply(message, content, silent, **kwargs):
