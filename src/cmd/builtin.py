@@ -1348,15 +1348,21 @@ class BuiltinCommands(BaseCmd):
                             message, f"Failed to change bot avatar.\nError: {e}", silent)
                     return
             else:
-                r = const.EMOJI_REGEX.match(command[1])
-                if r is None:
-                    break
-                log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")
                 hdr = {
                     "User-Agent": "Mozilla/5.0"
                 }
-                rq = urllib.request.Request(
-                    f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", headers=hdr)
+                r = const.EMOJI_REGEX.match(command[1])
+                if r is not None:
+                    # Discord emoji
+                    log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")
+                    rq = urllib.request.Request(
+                        f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", headers=hdr)
+                elif command[1].split('.')[-1] in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
+                    # Direct link to an image
+                    rq = urllib.request.Request(command[1], headers=hdr)
+                else:
+                    # Not recognized source
+                    break
                 temp_image_file = tempfile.NamedTemporaryFile()
                 try:
                     with urllib.request.urlopen(rq) as response:
