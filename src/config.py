@@ -66,14 +66,14 @@ class Command:
                 if res.group(1):
                     n1 = int(res.group(1))
                 if res.group(2):
-                    n2 = int(res.group(2))+1
+                    n2 = int(res.group(2)) + 1
                 if not 0 < n1 < len(command) or not 0 < n2 <= len(command) or n1 > n2:
                     it += res.end()
                     continue
                 oldlen = len(string)
                 if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[n1:n2])):
                     string = string.replace(res.group(0), ' '.join(command[n1:n2]), 1)
-                it += res.end()+len(string)-oldlen
+                it += res.end() + len(string) - oldlen
         for i in range(len(command)):
             if not safe or const.ALNUM_STRING_REGEX.match(command[i]):
                 string = string.replace("@arg" + str(i) + "@", command[i])
@@ -90,10 +90,10 @@ class Command:
             updated = False
             for i in range(len(content)):
                 if content[i] in command_indicators.keys():
-                    for j in range(i-1, 0, -1):
-                        if content[j] == command_indicators[content[i]] and content[j-1] == '$':
+                    for j in range(i - 1, 0, -1):
+                        if content[j] == command_indicators[content[i]] and content[j - 1] == '$':
                             updated = True
-                            message.content = content[j+1:i]
+                            message.content = content[j + 1:i]
                             command = message.content.split()
                             if command[0] not in bc.config.commands.data.keys():
                                 if command[0] in bc.config.commands.aliases.keys():
@@ -110,7 +110,7 @@ class Command:
                                         result = ""
                                 else:
                                     await message.channel.send(f"Command '{command[0]}' can not be used as subcommand")
-                            content = content[:j-1] + result + content[i+1:]
+                            content = content[:j - 1] + result + content[i + 1:]
                             log.debug2(f"Command (during processing subcommands): {content}")
                             break
                 if updated:

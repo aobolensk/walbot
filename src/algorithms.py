@@ -17,5 +17,5 @@ def levenshtein_distance(a: str, b: str):
         d[0, j] = j
     for j in range(1, n + 1):
         for i in range(1, m + 1):
-            d[i, j] = min(d[i-1, j] + 1, d[i, j-1] + 1, d[i-1, j-1] + int(a[i-1] != b[j-1]))
+            d[i, j] = min(d[i - 1, j] + 1, d[i, j - 1] + 1, d[i - 1, j - 1] + int(a[i - 1] != b[j - 1]))
     return d[m, n]
