@@ -105,7 +105,10 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
-        self.repl = Repl(self.config.repl["port"])
+        if sys.platform == "win32":
+            log.warning("PERL is disabled on Windows for now")
+        else:
+            self.repl = Repl(self.config.repl["port"])
         bc.guilds = self.guilds
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
