@@ -331,7 +331,18 @@ def stop(_):
     if pid is None:
         return log.error("Could not stop the bot (cache file does not contain pid)")
     if psutil.pid_exists(pid):
-        os.kill(pid, signal.SIGINT)
+        if sys.platform == "win32":
+            # Reference to the original solution:
+            # https://stackoverflow.com/a/64357453
+            import ctypes
+
+            kernel = ctypes.windll.kernel32
+            kernel.FreeConsole()
+            kernel.AttachConsole(pid)
+            kernel.SetConsoleCtrlHandler(None, 1)
+            kernel.GenerateConsoleCtrlEvent(0, 0)
+        else:
+            os.kill(pid, signal.SIGINT)
         while psutil.pid_exists(pid):
             log.debug("Bot is still running. Please, wait...")
             time.sleep(0.5)
