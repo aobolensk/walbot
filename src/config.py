@@ -134,6 +134,8 @@ class Command:
             "addextcmd",
             "updextcmd",
             "addbgevent",
+            "addresponse",
+            "updresponse",
         ]
         if message.content.split(' ')[0][1:] not in postpone_execution:
             log.debug2(f"Command (before processing): {message.content}")
