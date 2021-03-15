@@ -128,7 +128,14 @@ class Command:
             await message.channel.send(f"You don't have permission to call command '{command[0]}'")
             return
         self.times_called += 1
-        if message.content.split(' ')[0][1:] not in ["addcmd", "addextcmd", "updcmd", "addbgevent"]:
+        postpone_execution = [
+            "addcmd",
+            "updcmd",
+            "addextcmd",
+            "updextcmd",
+            "addbgevent",
+        ]
+        if message.content.split(' ')[0][1:] not in postpone_execution:
             log.debug2(f"Command (before processing): {message.content}")
             message.content = await self.process_subcommands(message.content, message, user)
             log.debug2(f"Command (after processing subcommands): {message.content}")
