@@ -146,6 +146,10 @@ class Updater:
                     del config.commands.data[key].__dict__["module_name"]
             self._bump_version(config, "0.0.22")
         if config.version == "0.0.22":
+            for index, reminder in config.reminders.items():
+                reminder.__dict__["repeat_interval_measure"] = "minutes"
+            self._bump_version(config, "0.0.23")
+        if config.version == "0.0.23":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
