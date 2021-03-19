@@ -1,4 +1,5 @@
 import datetime
+import dateutil.relativedelta
 
 from src import const
 from src.commands import BaseCmd
@@ -50,6 +51,22 @@ class _ReminderInternals:
                 return
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
+        elif date.endswith("m"):
+            months_amount = date[:-1]
+            months_amount = await Util.parse_int(
+                message, months_amount, "You need to specify amount of months before 'm'. Example: 3m for 3 months", silent)
+            if months_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + dateutil.relativedelta.relativedelta(months=1), const.REMINDER_DATE_FORMAT)
+        elif date.endswith("y"):
+            years_amount = date[:-1]
+            years_amount = await Util.parse_int(
+                message, years_amount, "You need to specify amount of years before 'y'. Example: 3y for 3 years", silent)
+            if years_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + dateutil.relativedelta.relativedelta(years=1), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
@@ -135,6 +152,8 @@ class ReminderCommands(BaseCmd):
         !addreminder sat 11:00 Time to chill
         !addreminder 2d 08:00 Wake up <- 2 days
         !addreminder 1w 08:00 Wake up <- 1 week
+        !addreminder 1m Monthly event
+        !addreminder 1y Annual event
         !addreminder in 1w5d10h5m Test reminder
         !addreminder in 1w Test reminder 2
         !addreminder in 5h10m Test reminder 3
@@ -167,6 +186,8 @@ class ReminderCommands(BaseCmd):
         !updreminder 0 sat 11:00 Time to chill
         !updreminder 0 2d 08:00 Wake up <- 2 days
         !updreminder 0 1w 08:00 Wake up <- 1 week
+        !addreminder 0 1m Monthly event
+        !addreminder 0 1y Annual event
         !updreminder 0 in 1w5d10h5m Test reminder
         !updreminder 0 in 1w Test reminder 2
         !updreminder 0 in 5h10m Test reminder 3

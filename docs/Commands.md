@@ -38,6 +38,8 @@
         !addreminder sat 11:00 Time to chill \
         !addreminder 2d 08:00 Wake up &lt;- 2 days \
         !addreminder 1w 08:00 Wake up &lt;- 1 week \
+        !addreminder 1m Monthly event \
+        !addreminder 1y Annual event \
         !addreminder in 1w5d10h5m Test reminder \
         !addreminder in 1w Test reminder 2 \
         !addreminder in 5h10m Test reminder 3 \
@@ -378,6 +380,8 @@
         !updreminder 0 sat 11:00 Time to chill \
         !updreminder 0 2d 08:00 Wake up &lt;- 2 days \
         !updreminder 0 1w 08:00 Wake up &lt;- 1 week \
+        !addreminder 0 1m Monthly event \
+        !addreminder 0 1y Annual event \
         !updreminder 0 in 1w5d10h5m Test reminder \
         !updreminder 0 in 1w Test reminder 2 \
         !updreminder 0 in 5h10m Test reminder 3 \
