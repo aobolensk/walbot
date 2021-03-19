@@ -6,6 +6,7 @@ class Reminder:
         self.ping_users = []
         self.whisper_users = []
         self.repeat_after = 0
+        self.repeat_interval_measure = "minutes"
         self.author = author_name
         self.time_created = time_created
 
