@@ -54,19 +54,23 @@ class _ReminderInternals:
         elif date.endswith("m"):
             months_amount = date[:-1]
             months_amount = await Util.parse_int(
-                message, months_amount, "You need to specify amount of months before 'm'. Example: 3m for 3 months", silent)
+                message, months_amount,
+                "You need to specify amount of months before 'm'. Example: 3m for 3 months", silent)
             if months_amount is None:
                 return
             date = datetime.datetime.strftime(
-                datetime.datetime.now() + dateutil.relativedelta.relativedelta(months=months_amount), const.REMINDER_DATE_FORMAT)
+                datetime.datetime.now() +
+                dateutil.relativedelta.relativedelta(months=months_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("y"):
             years_amount = date[:-1]
             years_amount = await Util.parse_int(
-                message, years_amount, "You need to specify amount of years before 'y'. Example: 3y for 3 years", silent)
+                message, years_amount,
+                "You need to specify amount of years before 'y'. Example: 3y for 3 years", silent)
             if years_amount is None:
                 return
             date = datetime.datetime.strftime(
-                datetime.datetime.now() + dateutil.relativedelta.relativedelta(years=years_amount), const.REMINDER_DATE_FORMAT)
+                datetime.datetime.now() +
+                dateutil.relativedelta.relativedelta(years=years_amount), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
@@ -132,10 +136,11 @@ class ReminderCommands(BaseCmd):
             await Msg.response(message, "Invalid index of reminder!", silent)
             return
         reminder = bc.config.reminders[index]
+        rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
         result = (f"{index} - {reminder.time}"
                   f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
                   f" -> {reminder.message}"
-                  f"{f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})' if reminder.repeat_after else ''}\n"
+                  f"{rep if reminder.repeat_after else ''}\n"
                   f"Author: {reminder.author}\n"
                   f"Created: {reminder.time_created}")
         await Msg.response(message, result, silent)
@@ -222,12 +227,13 @@ class ReminderCommands(BaseCmd):
             return
         reminder_list = []
         for index, reminder in bc.config.reminders.items():
+            rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
             reminder_list.append(
                 (reminder.time,
                  f"{index} - {reminder.time}"
                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
                  f" -> {reminder.message}"
-                 f"{f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})' if reminder.repeat_after else ''}"))
+                 f"{rep if reminder.repeat_after else ''}"))
         reminder_list.sort()
         result = '\n'.join([x[1] for x in reminder_list])
         if result:
@@ -352,8 +358,10 @@ class ReminderCommands(BaseCmd):
             await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
             return
         bc.config.reminders[index].repeat_after = duration
-        await Msg.response(message,
-            f"Reminder {index} will be repeated every {duration} {bc.config.reminders[index].repeat_interval_measure}!", silent)
+        await Msg.response(
+            message,
+            f"Reminder {index} will be repeated every {duration} "
+            f"{bc.config.reminders[index].repeat_interval_measure}!", silent)
 
     @staticmethod
     async def _skipreminder(message, command, silent=False):
