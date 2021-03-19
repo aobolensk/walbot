@@ -83,8 +83,7 @@ class WalBot(discord.Client):
                         await Msg.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                     if rem.repeat_after > 0:
-                        new_time = datetime.datetime.now().replace(
-                            second=0, microsecond=0) + rem.get_next_event_delta()
+                        new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                         new_time = new_time.strftime(const.REMINDER_TIME_FORMAT)
                         to_append.append(
                             Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
