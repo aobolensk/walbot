@@ -58,7 +58,7 @@ class _ReminderInternals:
             if months_amount is None:
                 return
             date = datetime.datetime.strftime(
-                datetime.datetime.now() + dateutil.relativedelta.relativedelta(months=1), const.REMINDER_DATE_FORMAT)
+                datetime.datetime.now() + dateutil.relativedelta.relativedelta(months=months_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("y"):
             years_amount = date[:-1]
             years_amount = await Util.parse_int(
@@ -66,7 +66,7 @@ class _ReminderInternals:
             if years_amount is None:
                 return
             date = datetime.datetime.strftime(
-                datetime.datetime.now() + dateutil.relativedelta.relativedelta(years=1), const.REMINDER_DATE_FORMAT)
+                datetime.datetime.now() + dateutil.relativedelta.relativedelta(years=years_amount), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
@@ -135,7 +135,7 @@ class ReminderCommands(BaseCmd):
         result = (f"{index} - {reminder.time}"
                   f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
                   f" -> {reminder.message}"
-                  f"{f' (repeats every {reminder.repeat_after} minutes)' if reminder.repeat_after else ''}\n"
+                  f"{f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})' if reminder.repeat_after else ''}\n"
                   f"Author: {reminder.author}\n"
                   f"Created: {reminder.time_created}")
         await Msg.response(message, result, silent)
@@ -227,7 +227,7 @@ class ReminderCommands(BaseCmd):
                  f"{index} - {reminder.time}"
                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
                  f" -> {reminder.message}"
-                 f"{f' (repeats every {reminder.repeat_after} minutes)' if reminder.repeat_after else ''}"))
+                 f"{f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})' if reminder.repeat_after else ''}"))
         reminder_list.sort()
         result = '\n'.join([x[1] for x in reminder_list])
         if result:
@@ -325,6 +325,20 @@ class ReminderCommands(BaseCmd):
             if duration is None:
                 return
             duration *= 10080
+        elif command[2].endswith("m"):
+            duration = command[2][:-1]
+            duration = await Util.parse_int(
+                message, duration, "You need to specify amount of days before 'm'. Example: 3m for 3 months", silent)
+            if duration is None:
+                return
+            bc.config.reminders[index].repeat_interval_measure = "months"
+        elif command[2].endswith("y"):
+            duration = command[2][:-1]
+            duration = await Util.parse_int(
+                message, duration, "You need to specify amount of days before 'y'. Example: 3y for 3 years", silent)
+            if duration is None:
+                return
+            bc.config.reminders[index].repeat_interval_measure = "years"
         else:
             duration = await Util.parse_int(
                 message, command[2],
@@ -338,7 +352,8 @@ class ReminderCommands(BaseCmd):
             await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
             return
         bc.config.reminders[index].repeat_after = duration
-        await Msg.response(message, f"Reminder {index} will be repeated every {duration} minutes!", silent)
+        await Msg.response(message,
+            f"Reminder {index} will be repeated every {duration} {bc.config.reminders[index].repeat_interval_measure}!", silent)
 
     @staticmethod
     async def _skipreminder(message, command, silent=False):
@@ -360,7 +375,7 @@ class ReminderCommands(BaseCmd):
         rem = bc.config.reminders[index]
         new_time = datetime.datetime.strftime(
             datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) +
-            datetime.timedelta(minutes=rem.repeat_after), const.REMINDER_TIME_FORMAT)
+            rem.get_next_event_delta(), const.REMINDER_TIME_FORMAT)
         id_ = bc.config.ids["reminder"]
         bc.config.reminders[id_] = Reminder(
             str(new_time), rem.message, message.channel.id, bc.config.reminders[index].author,
