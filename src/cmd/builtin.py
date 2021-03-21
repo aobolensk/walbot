@@ -374,9 +374,10 @@ class BuiltinCommands(BaseCmd):
             return
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
         result = (f"{message.author.mention}\n"
-                  f"User: {info}\n"
+                  f"User: {f'{info.nick} ({info})'if info.nick is not None else info}\n"
                   f"Avatar: <{info.avatar_url}>\n"
                   f"Created at: {info.created_at}\n"
+                  f"Joined this server at: {info.joined_at}\n"
                   f"Roles: {roles}\n")
         await Msg.response(message, result, silent)
 
