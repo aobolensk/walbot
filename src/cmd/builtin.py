@@ -1427,6 +1427,10 @@ class BuiltinCommands(BaseCmd):
                   f"created: {g.created_at.replace(microsecond=0)}\n")
         icon_url = f"<{g.icon_url}>" if g.icon_url else "<no icon>"
         result += f"**Icon**: {icon_url}\n"
+        text_channels = (f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels)
+        result += f"**Text channels**: {', '.join(text_channels)}\n"
+        voice_channels = (f"{ch.name}" for ch in g.voice_channels)
+        result += f"**Voice channels**: {', '.join(voice_channels)}\n"
         await Msg.response(message, result, silent)
 
     @staticmethod
