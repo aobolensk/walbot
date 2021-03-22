@@ -70,13 +70,19 @@ class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, self.get_classname(), "takechars",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "dropchars",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "countchars",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "takewords",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "dropwords",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "countwords",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "takelines",
+                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "droplines",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "countlines",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -222,6 +228,28 @@ class BuiltinCommands(BaseCmd):
         return result
 
     @staticmethod
+    async def _dropchars(message, command, silent=False):
+        """Drop n characters of the string
+    Examples:
+        !dropchars 2 hello
+        Result: llo
+        !dropchars -2 hello
+        Result: hel"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        result = ' '.join(command[2:])
+        num = await Util.parse_int(
+            message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
+        if num is None:
+            return
+        if num < 0:
+            result = result[:len(result) + num]
+        else:
+            result = result[num:]
+        await Msg.response(message, result, silent)
+        return result
+
+    @staticmethod
     async def _countchars(message, command, silent=False):
         """Calculate length of the message
     Example: !countchars some text"""
@@ -248,6 +276,28 @@ class BuiltinCommands(BaseCmd):
             result = ' '.join(result[len(result) + num:])
         else:
             result = ' '.join(result[:num])
+        await Msg.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _dropwords(message, command, silent=False):
+        """Drop n words of the string
+    Examples:
+        !dropwords 2 a b c
+        Result: c
+        !dropwords -2 a b c
+        Result: a"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        result = ' '.join(command[2:]).split()
+        num = await Util.parse_int(
+            message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
+        if num is None:
+            return
+        if num < 0:
+            result = ' '.join(result[:len(result) + num])
+        else:
+            result = ' '.join(result[num:])
         await Msg.response(message, result, silent)
         return result
 
@@ -284,6 +334,32 @@ class BuiltinCommands(BaseCmd):
             result = '\n'.join(result[len(result) + num:])
         else:
             result = '\n'.join(result[:num])
+        await Msg.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _droplines(message, command, silent=False):
+        """Drop n lines of the string
+    Examples:
+        !droplines 2 a
+        b
+        c
+        Result: c
+        !droplines -2 a
+        b
+        c
+        Result: a"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        result = ' '.join(command[2:]).split('\n')
+        num = await Util.parse_int(
+            message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
+        if num is None:
+            return
+        if num < 0:
+            result = '\n'.join(result[:len(result) + num])
+        else:
+            result = '\n'.join(result[num:])
         await Msg.response(message, result, silent)
         return result
 

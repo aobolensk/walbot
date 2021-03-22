@@ -125,8 +125,36 @@
         !disablecmd ping guild \
         !disablecmd ping global
 
+**dropchars**: Drop n characters of the string \
+    Examples: \
+        !dropchars 2 hello \
+        Result: llo \
+        !dropchars -2 hello \
+        Result: hel \
+    *This command can be used as subcommand*
+
+**droplines**: Drop n lines of the string \
+    Examples: \
+        !droplines 2 a \
+        b \
+        c \
+        Result: c \
+        !droplines -2 a \
+        b \
+        c \
+        Result: a \
+    *This command can be used as subcommand*
+
 **dropmarkov**: Drop Markov database \
     Example: !dropmarkov
+
+**dropwords**: Drop n words of the string \
+    Examples: \
+        !dropwords 2 a b c \
+        Result: c \
+        !dropwords -2 a b c \
+        Result: a \
+    *This command can be used as subcommand*
 
 **emojify**: Emojify text \
     Example: !emojify Hello! \
