@@ -141,7 +141,7 @@ class MarkovCommands(BaseCmd):
         words = bc.markov.get_next_words_list(command[1])
         skipped_words = max(0, len(words) - 100)
         result = f"Next for '{command[1]}':\n"
-        result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
+        result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words[:100]])
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
         await Msg.response(message, result, silent)
