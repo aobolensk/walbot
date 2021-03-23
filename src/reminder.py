@@ -18,14 +18,14 @@ class Reminder:
 
     def get_next_event_delta(self):
         if self.repeat_interval_measure == "minutes":
-            return datetime.datetime.timedelta(minutes=self.repeat_after)
+            return datetime.timedelta(minutes=self.repeat_after)
         if self.repeat_interval_measure == "months":
             return dateutil.relativedelta.relativedelta(months=self.repeat_after)
         if self.repeat_interval_measure == "years":
             return dateutil.relativedelta.relativedelta(years=self.repeat_after)
         else:
             log.error(f"Unknown repeat_interval_measure: {self.repeat_interval_measure}")
-            return datetime.datetime.timedelta(minutes=0)
+            return datetime.timedelta(minutes=0)
 
     def __eq__(self, time):
         return self.time == time
