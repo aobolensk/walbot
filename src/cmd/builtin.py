@@ -1001,8 +1001,9 @@ class BuiltinCommands(BaseCmd):
             result += (
                 f"Commit name: {bc.info.commit_name}\n"
                 f"Branch name: {bc.info.branch_name}\n"
-                f"Dependencies:\n"
             )
+            # Dependencies info
+            result += "Dependencies:\n"
             result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items())
         await Msg.response(message, result, silent)
 
