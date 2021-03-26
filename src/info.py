@@ -51,6 +51,27 @@ class BotInfo:
         time = repo.head.object.committed_datetime
         return time
 
+    def query_dependencies_info(self):
+        res = {}
+        import numpy
+        res["numpy"] = numpy.__version__
+        import discord
+        ver = discord.version_info
+        res["discord.py"] = f"{ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}"
+        import requests
+        res["requests"] = requests.__version__
+        import numba
+        res["numba"] = numba.__version__
+        import psutil
+        res["psutil"] = psutil.__version__
+        import dateutil
+        res["dateutil"] = dateutil.__version__
+        import git
+        res["GitPython"] = git.__version__
+        import yaml
+        res["PyYAML"] = yaml.__version__
+        return res
+
     @property
     def uptime(self):
         days, remainder = divmod(

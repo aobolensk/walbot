@@ -1003,8 +1003,8 @@ class BuiltinCommands(BaseCmd):
                 f"Commit name: {bc.info.commit_name}\n"
                 f"Branch name: {bc.info.branch_name}\n"
                 f"Dependencies:\n"
-                f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
             )
+            result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items())
         await Msg.response(message, result, silent)
 
     @staticmethod
