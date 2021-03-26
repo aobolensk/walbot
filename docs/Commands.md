@@ -54,6 +54,12 @@
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images
 
+**calc**: Calculate mathematical expression \
+    Examples: \
+        !calc 2+2*2 \
+        !calc 4/2-1 \
+    *This command can be used as subcommand*
+
 **channelid**: Get channel ID \
     Example: !channelid \
     *This command can be used as subcommand*
