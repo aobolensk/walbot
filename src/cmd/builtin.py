@@ -1005,6 +1005,9 @@ class BuiltinCommands(BaseCmd):
             # Dependencies info
             result += "Dependencies:\n"
             result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items())
+        elif len(command) > 1:
+            await Msg.response(message, f"Unknown argument '{command[1]}' for '{command[0]}' command", silent)
+            return
         await Msg.response(message, result, silent)
 
     @staticmethod
