@@ -990,7 +990,6 @@ class BuiltinCommands(BaseCmd):
         if not hasattr(bc, "bot_user"):
             await Msg.response(message, "Bot is not loaded yet!", silent)
             return
-        ver = discord.version_info
         result = (
             f"{bc.bot_user} (WalBot instance)\n"
             f"Source code: <{const.GIT_REPO_LINK}>\n"
