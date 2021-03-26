@@ -982,20 +982,29 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _about(message, command, silent=False):
         """Get information about the bot
-    Example: !about"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+    Examples:
+        !about
+        !about -v"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         if not hasattr(bc, "bot_user"):
             await Msg.response(message, "Bot is not loaded yet!", silent)
             return
         ver = discord.version_info
-        result = (f"{bc.bot_user} (WalBot instance)\n"
-                  f"Source code: <{const.GIT_REPO_LINK}>\n"
-                  f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} "
-                  f"(done at {bc.info.version_time})\n"
-                  f"Dependencies:\n"
-                  f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
-                  f"Uptime: {bc.info.uptime}\n")
+        result = (
+            f"{bc.bot_user} (WalBot instance)\n"
+            f"Source code: <{const.GIT_REPO_LINK}>\n"
+            f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} "
+            f"(done at {bc.info.version_time})\n"
+            f"Uptime: {bc.info.uptime}\n"
+        )
+        if len(command) > 1 and command[1] == "-v":
+            result += (
+                f"Commit name: {bc.info.commit_name}\n"
+                f"Branch name: {bc.info.branch_name}\n"
+                f"Dependencies:\n"
+                f"    discord.py: {ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}\n"
+            )
         await Msg.response(message, result, silent)
 
     @staticmethod

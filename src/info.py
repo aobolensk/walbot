@@ -21,6 +21,22 @@ class BotInfo:
         return sha
 
     @property
+    def commit_name(self):
+        repo = self._get_repo()
+        if repo is None:
+            return "<unknown>"
+        commit = repo.head.commit.message.strip()
+        return commit
+
+    @property
+    def branch_name(self):
+        repo = self._get_repo()
+        if repo is None:
+            return "<unknown>"
+        branch = repo.active_branch.name
+        return branch
+
+    @property
     def is_version_dirty(self) -> bool:
         repo = self._get_repo()
         if repo is None:
