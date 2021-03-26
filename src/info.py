@@ -25,7 +25,7 @@ class BotInfo:
         repo = self._get_repo()
         if repo is None:
             return "<unknown>"
-        commit = repo.head.commit.message.strip()
+        commit = repo.head.commit.message.splitlines()[0].strip()
         return commit
 
     @property
