@@ -9,11 +9,20 @@ from src.utils import Util
 
 
 class MathExprEvaluator:
+    @staticmethod
+    def _limited_power(a, b):
+        if b > 100:
+            raise ValueError(f"Exponent {b} is too big")
+        return op.pow(a, b)
+
     _ops = {
         ast.Add: op.add,
         ast.Sub: op.sub,
         ast.Mult: op.mul,
         ast.Div: op.truediv,
+        ast.Pow: _limited_power,
+        ast.FloorDiv: op.floordiv,
+        ast.Mod: op.mod,
     }
 
     def _evaluate_expr_node(self, node):
