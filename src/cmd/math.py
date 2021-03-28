@@ -9,7 +9,6 @@ from src.utils import Util
 
 
 class MathExprEvaluator:
-    @staticmethod
     def _limited_power(a, b):
         if b > 100:
             raise ValueError(f"Exponent {b} is too big")
