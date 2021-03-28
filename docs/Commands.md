@@ -448,6 +448,3 @@
 
 **wme**: Send direct message to author with something \
     Example: !wme Hello!
-
-**wmeimg**: Send image in direct message to author \
-    Example: !wmeimg &lt;image_name&gt;

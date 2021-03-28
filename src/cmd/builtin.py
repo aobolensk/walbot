@@ -162,8 +162,6 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "img",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "wmeimg",
-                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "listimg",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addimg",
@@ -1234,14 +1232,6 @@ class BuiltinCommands(BaseCmd):
             result = random.randint(0, len(list_images) - 1)  # integer random
             await Msg.response(message, None, silent,
                                files=[discord.File(os.path.join(const.IMAGES_DIRECTORY, list_images[result]))])
-            return
-        await _BuiltinInternals.get_image(message, command, silent)
-
-    @staticmethod
-    async def _wmeimg(message, command, silent=False):
-        """Send image in direct message to author
-    Example: !wmeimg <image_name>"""
-        if not await Util.check_args_count(message, command, silent, min=2):
             return
         await _BuiltinInternals.get_image(message, command, silent)
 
