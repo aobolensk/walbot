@@ -160,7 +160,8 @@ class WalBot(discord.Client):
         if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
             for response in self.config.responses.values():
                 if re.search(response.regex, message.content):
-                    text = await Command.process_subcommands(response.text, message, self.config.users[message.author.id])
+                    text = await Command.process_subcommands(
+                        response.text, message, self.config.users[message.author.id])
                     await Msg.reply(message, text, False)
         if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             for reaction in self.config.reactions.values():
