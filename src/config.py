@@ -52,7 +52,8 @@ class Command:
     def get_actor(self):
         return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
 
-    async def process_variables(self, string, message, command, safe=False):
+    @staticmethod
+    async def process_variables(string, message, command, safe=False):
         string = string.replace("@author@", message.author.mention)
         if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[1:])):
             string = string.replace("@args@", ' '.join(command[1:]))
@@ -79,7 +80,8 @@ class Command:
                 string = string.replace("@arg" + str(i) + "@", command[i])
         return string
 
-    async def process_subcommands(self, content, message, user, safe=False):
+    @staticmethod
+    async def process_subcommands(content, message, user, safe=False):
         command_indicators = {
             ')': '(',
             ']': '[',
