@@ -39,18 +39,19 @@ class _BuiltinInternals:
                         await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
                         break
                     # Unicode emoji
-                    emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
-                    emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
-                    emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
-                    if emoji_match:
-                        temp_image_file = tempfile.NamedTemporaryFile()
-                        with open(temp_image_file.name, 'wb') as f:
-                            f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
-                        shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                        await Msg.response(
-                            message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
-                        os.unlink(temp_image_file.name + ".png")
-                        break
+                    if emoji.UNICODE_EMOJI_REGEX.match(command[i]):
+                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
+                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
+                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
+                        if emoji_match:
+                            temp_image_file = tempfile.NamedTemporaryFile()
+                            with open(temp_image_file.name, 'wb') as f:
+                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
+                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
+                            await Msg.response(
+                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                            os.unlink(temp_image_file.name + ".png")
+                            break
                     min_dist = 100000
                     suggestion = ""
                     for file in (os.path.splitext(os.path.basename(file))[0].lower() for file in files):
