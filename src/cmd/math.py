@@ -22,6 +22,10 @@ class MathExprEvaluator:
         ast.Pow: _limited_power,
         ast.FloorDiv: op.floordiv,
         ast.Mod: op.mod,
+        ast.BitAnd: op.and_,
+        ast.BitOr: op.or_,
+        ast.BitXor: op.xor,
+        ast.Invert: op.inv,
     }
 
     def _evaluate_expr_node(self, node):
