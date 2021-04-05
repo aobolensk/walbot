@@ -19,6 +19,8 @@ class MarkovCommands(BaseCmd):
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "findmarkov",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "getmarkovword",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "statmarkov",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
@@ -100,6 +102,38 @@ class MarkovCommands(BaseCmd):
             message, f"Found {amount} words in model: {found}"
                      f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
             silent, suppress_embeds=True)
+
+    @staticmethod
+    async def _getmarkovword(message, command, silent=False):
+        """Get particular word from Markov model by regex
+    Examples:
+        !getmarkovword hello -a <- get amount of found words
+        !getmarkovword hello 0 <- get word by index
+"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        regex = command[1]
+        try:
+            found = bc.markov.find_words(regex)
+        except re.error as e:
+            await Msg.response(message, f"Invalid regular expression: {e}", silent)
+            return
+        amount = len(found)
+        if command[2] == '-a':
+            result = str(amount)
+            await Msg.response(message, result, silent)
+            return result
+        else:
+            index = await Util.parse_int(
+                message, command[2], f"Third parameter '{command[2]}' should be a valid index", silent)
+            if index is None:
+                return
+            if not 0 <= index < amount:
+                await Msg.response(message, f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])", silent)
+                return
+            result = found[index]
+            await Msg.response(message, result, silent)
+            return result
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):
