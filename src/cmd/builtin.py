@@ -511,7 +511,7 @@ class BuiltinCommands(BaseCmd):
             if command.perform is not None:
                 result += command.get_actor().__doc__
             elif command.message is not None:
-                result += command.message
+                result += "`" + command.message + "`"
             elif command.cmd_line is not None:
                 result += f"calls external command `{command.cmd_line}`"
             else:
