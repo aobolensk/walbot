@@ -86,7 +86,7 @@ class MarkovCommands(BaseCmd):
     Examples:
         !findmarkov hello
         !findmarkov hello -f"""
-        if not await Util.check_args_count(message, command, silent, min=2):
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         regex = command[1]
         try:
@@ -108,8 +108,7 @@ class MarkovCommands(BaseCmd):
         """Get particular word from Markov model by regex
     Examples:
         !getmarkovword hello -a <- get amount of found words
-        !getmarkovword hello 0 <- get word by index
-"""
+        !getmarkovword hello 0 <- get word by index"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         regex = command[1]

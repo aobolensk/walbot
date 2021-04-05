@@ -189,7 +189,6 @@
     Examples: \
         !getmarkovword hello -a &lt;- get amount of found words \
         !getmarkovword hello 0 &lt;- get word by index \
- \
     *This command can be used as subcommand*
 
 **help**: Print list of commands and get examples \
