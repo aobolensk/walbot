@@ -26,6 +26,9 @@ class MathExprEvaluator:
         ast.BitOr: op.or_,
         ast.BitXor: op.xor,
         ast.Invert: op.inv,
+        ast.LShift: op.lshift,
+        ast.RShift: op.rshift,
+        ast.USub: op.neg,
     }
 
     def _evaluate_expr_node(self, node):
