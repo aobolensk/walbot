@@ -29,6 +29,7 @@ class MathExprEvaluator:
         ast.LShift: op.lshift,
         ast.RShift: op.rshift,
         ast.USub: op.neg,
+        ast.UAdd: op.pos,
     }
 
     def _evaluate_expr_node(self, node):
