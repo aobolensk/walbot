@@ -61,13 +61,9 @@ class MathCommands(BaseCmd):
             return
         expr = ' '.join(command[1:])
         try:
-            ev = MathExprEvaluator()
-            result = str(ev.evaluate(expr))
+            result = str(MathExprEvaluator().evaluate(expr))
         except Exception as e:
             await Msg.response(message, f"Expression evaluation failed: {e}", silent)
-            return
-        if result is None:
-            await Msg.response(message, "Unknown error happened during expression evaluation", silent)
             return
         await Msg.response(message, result, silent)
         return result
