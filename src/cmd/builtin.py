@@ -474,6 +474,9 @@ class BuiltinCommands(BaseCmd):
                 elif cmd.cmd_line is not None:
                     s = (name, f"calls external command `{cmd.cmd_line}`")
                     commands.append(s)
+                elif cmd.is_private:
+                    s = (name, cmd.get_actor().__doc__)
+                    commands.append(s)
             commands.sort()
             version = bc.info.version
             if len(command) == 2 and command[1] == '-p':
