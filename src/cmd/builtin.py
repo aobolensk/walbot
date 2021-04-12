@@ -443,7 +443,7 @@ class BuiltinCommands(BaseCmd):
             if not message.mentions:
                 await Msg.response(message, "You need to mention the user you want to get profile of", silent)
                 return
-            info = message.guild.get_member(message.mentions[0].id)
+            info = await message.guild.fetch_member(message.mentions[0].id)
         if info is None:
             await Msg.response(message, "Could not get information about this user", silent)
             return
