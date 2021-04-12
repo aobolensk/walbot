@@ -46,7 +46,7 @@ def check_updates(context: AutoUpdateContext):
         g = git.cmd.Git(os.getcwd())
         g.pull()
     except git.exc.GitCommandError as e:
-        if "Connection timed out" in e.stderr:
+        if "Connection timed out" in e.stderr or "Could not resolve host" in e.stderr:
             log.warning(f"{e.command}: {e.stderr}")
         else:
             raise e
