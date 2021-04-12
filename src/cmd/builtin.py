@@ -203,6 +203,8 @@ class BuiltinCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "code",
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "permlevel",
+                                     permission=const.Permission.USER.value, subcommand=True)
 
     @staticmethod
     async def _takechars(message, command, silent=False):
@@ -1582,3 +1584,13 @@ class BuiltinCommands(BaseCmd):
         await Msg.response(message, "Bot commands reloading is started...", silent)
         bc.commands.update(reload=True)
         await Msg.response(message, "Bot commands reloading is finished", silent)
+
+    @staticmethod
+    async def _permlevel(message, command, silent=False):
+        """Get permission level for current user
+    Usage: !permlevel"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        info = message.author
+        perm_level = bc.config.users[message.author.id].permission_level
+        await Msg.response(message, f"Permission level for {info.nick} is {perm_level}", silent)
