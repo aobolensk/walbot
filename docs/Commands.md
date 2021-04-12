@@ -250,6 +250,10 @@
 **permcmd**: Set commands permission \
     Example: !permcmd ping 0
 
+**permlevel**: Get permission level for user \
+    Usage: !permlevel \
+           !permlevel `@user`
+
 **permuser**: Set user permission \
     Example: !permuser @nickname 0
 

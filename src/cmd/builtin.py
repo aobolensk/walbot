@@ -203,6 +203,8 @@ class BuiltinCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "code",
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "permlevel",
+                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _takechars(message, command, silent=False):
@@ -1582,3 +1584,28 @@ class BuiltinCommands(BaseCmd):
         await Msg.response(message, "Bot commands reloading is started...", silent)
         bc.commands.update(reload=True)
         await Msg.response(message, "Bot commands reloading is finished", silent)
+
+    @staticmethod
+    async def _permlevel(message, command, silent=False):
+        """Get permission level for user
+    Usage: !permlevel
+           !permlevel `@user`"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+            return
+        info = ""
+        user_id = 0
+        if len(command) == 1:
+            info = message.author
+            user_id = message.author.id
+        elif len(command) == 2:
+            if not message.mentions:
+                await Msg.response(message, "You need to mention the user you want to get profile of", silent)
+                return
+            info = await message.guild.fetch_member(message.mentions[0].id)
+            user_id = message.mentions[0].id
+        if info is None or user_id not in bc.config.users.keys():
+            await Msg.response(message, "Could not get permission level for this user", silent)
+            return
+        perm_level = bc.config.users[user_id].permission_level
+        nick = str(info.nick) + " (" + str(info) + ")" if info.nick is not None else str(info)
+        await Msg.response(message, f"Permission level for {nick} is {perm_level}", silent)
