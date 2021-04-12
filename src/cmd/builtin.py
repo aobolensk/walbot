@@ -204,7 +204,7 @@ class BuiltinCommands(BaseCmd):
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "permlevel",
-                                     permission=const.Permission.USER.value, subcommand=True)
+                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _takechars(message, command, silent=False):
@@ -1587,7 +1587,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _permlevel(message, command, silent=False):
-        """Get permission level for current user
+        """Get permission level for user
     Usage: !permlevel
            !permlevel `@user`"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
