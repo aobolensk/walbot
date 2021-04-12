@@ -1588,9 +1588,24 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _permlevel(message, command, silent=False):
         """Get permission level for current user
-    Usage: !permlevel"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+    Usage: !permlevel
+           !permlevel `@user`"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        info = message.author
-        perm_level = bc.config.users[message.author.id].permission_level
-        await Msg.response(message, f"Permission level for {info.nick} is {perm_level}", silent)
+        info = ""
+        user_id = 0
+        if len(command) == 1:
+            info = message.author
+            user_id = message.author.id
+        elif len(command) == 2:
+            if not message.mentions:
+                await Msg.response(message, "You need to mention the user you want to get profile of", silent)
+                return
+            info = await message.guild.fetch_member(message.mentions[0].id)
+            user_id = message.mentions[0].id
+        if info is None or user_id not in bc.config.users.keys():
+            await Msg.response(message, "Could not get permission level for this user", silent)
+            return
+        perm_level = bc.config.users[user_id].permission_level
+        nick = str(info.nick) + " (" + str(info) + ")" if info.nick is not None else str(info)
+        await Msg.response(message, f"Permission level for {nick} is {perm_level}", silent)
