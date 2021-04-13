@@ -30,6 +30,12 @@ class MathExprEvaluator:
         ast.RShift: op.rshift,
         ast.USub: op.neg,
         ast.UAdd: op.pos,
+        ast.Eq: op.eq,
+        ast.NotEq: op.ne,
+        ast.Lt: op.lt,
+        ast.LtE: op.le,
+        ast.Gt: op.gt,
+        ast.GtE: op.ge
     }
 
     def _evaluate_expr_node(self, node):
@@ -39,6 +45,9 @@ class MathExprEvaluator:
             return self._ops[type(node.op)](self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.right))
         elif isinstance(node, ast.UnaryOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.operand))
+        elif isinstance(node, ast.Compare):
+            return int(self._ops[type(node.ops[0])](
+                self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.comparators[0])))
         else:
             raise Exception(f"Failed to parse '{node}'")
 
