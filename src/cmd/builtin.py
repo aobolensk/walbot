@@ -1599,7 +1599,8 @@ class BuiltinCommands(BaseCmd):
             user_id = message.author.id
         elif len(command) == 2:
             if not message.mentions:
-                await Msg.response(message, "You need to mention the user you want to get profile of", silent)
+                await Msg.response(message, "You need to mention the user "
+                                            "for whom you want to get the permission level", silent)
                 return
             info = await message.guild.fetch_member(message.mentions[0].id)
             user_id = message.mentions[0].id
