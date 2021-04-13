@@ -145,6 +145,10 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "randselects",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "eqwords",
+                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "eqstrs",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "silent",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "time",
@@ -1106,6 +1110,34 @@ class BuiltinCommands(BaseCmd):
         options = ' '.join(command[1:]).split(';')
         index = random.randint(0, len(options) - 1)
         result = options[index]
+        await Msg.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _eqwords(message, command, silent=False):
+        """Check if two words are equal or not
+    Example: !eqwords a b"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        result = "true" if command[1] == command[2] else "false"
+        await Msg.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _eqstrs(message, command, silent=False):
+        """Check if two strings separated by ';' are equal or not
+    Example: !eqstrs a;b"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        options = ' '.join(command[1:]).split(';')
+        print(options)
+        if len(options) < 2:
+            await Msg.response(message, "Too few options to compare", silent)
+            return
+        if len(options) > 2:
+            await Msg.response(message, "Too many options to compare", silent)
+            return
+        result = "true" if options[0] == options[1] else "false"
         await Msg.response(message, result, silent)
         return result
 

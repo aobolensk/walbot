@@ -176,6 +176,14 @@
         !enablecmd ping guild \
         !enablecmd ping global
 
+**eqstrs**: Check if two strings separated by ';' are equal or not \
+    Example: !eqstrs a;b \
+    *This command can be used as subcommand*
+
+**eqwords**: Check if two words are equal or not \
+    Example: !eqwords a b \
+    *This command can be used as subcommand*
+
 **extexec**: Execute external shell command \
     Note: Be careful when you are executing external commands! \
     Example: !extexec uname -a \
