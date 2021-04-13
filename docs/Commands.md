@@ -198,6 +198,13 @@
         !help -p \
         !help help
 
+**if**: If expression is true (!= 0) then return first expression otherwise return the second one \
+    Examples: \
+        !if 1 It's true;It's false -&gt; It's true \
+        !if 0 It's true;It's false -&gt; It's false \
+ \
+    *This command can be used as subcommand*
+
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;
 
