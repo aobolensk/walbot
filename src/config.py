@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import inspect
 import os
 import re
 import sys
@@ -97,6 +98,8 @@ class Command:
                             updated = True
                             message.content = content[j + 1:i]
                             command = message.content.split()
+                            if not command:
+                                return
                             if command[0] not in bc.config.commands.data.keys():
                                 if command[0] in bc.config.commands.aliases.keys():
                                     command[0] = bc.config.commands.aliases[command[0]]
@@ -122,6 +125,9 @@ class Command:
         return content
 
     async def run(self, message, command, user, silent=False):
+        if len(inspect.stack(0)) >= const.MAX_SUBCOMMAND_DEPTH:
+            await message.channel.send("ERROR: Maximum subcommand depth is reached!")
+            return
         log.debug(f"Processing command: {message.content}")
         if not self.is_available(message.channel.id):
             await message.channel.send(f"Command '{command[0]}' is not available in this channel")
