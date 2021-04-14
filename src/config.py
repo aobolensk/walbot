@@ -164,8 +164,13 @@ class Command:
             log.debug2(f"Command (after processing subcommands): {response}")
             if response:
                 if not silent:
-                    for chunk in Msg.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
-                        await message.channel.send(chunk)
+                    if len(response) > const.DISCORD_MAX_MESSAGE_LENGTH * 5:
+                        await message.channel.send(
+                            "ERROR: Max message length exceeded "
+                            f"({len(response)} > {const.DISCORD_MAX_MESSAGE_LENGTH * 5})")
+                    else:
+                        for chunk in Msg.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
+                            await message.channel.send(chunk)
                 return response
         elif self.cmd_line is not None:
             cmd_line = self.cmd_line[:]
