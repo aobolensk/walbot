@@ -35,7 +35,9 @@ class MathExprEvaluator:
         ast.Lt: op.lt,
         ast.LtE: op.le,
         ast.Gt: op.gt,
-        ast.GtE: op.ge
+        ast.GtE: op.ge,
+        ast.And: op.and_,
+        ast.Or: op.or_,
     }
 
     def _evaluate_expr_node(self, node):
@@ -43,6 +45,8 @@ class MathExprEvaluator:
             return node.n
         elif isinstance(node, ast.BinOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.right))
+        elif isinstance(node, ast.BoolOp):
+            return self._ops[type(node.op)](self._evaluate_expr_node(node.values[0]), self._evaluate_expr_node(node.values[1]))
         elif isinstance(node, ast.UnaryOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.operand))
         elif isinstance(node, ast.Compare):
