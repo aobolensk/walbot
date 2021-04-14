@@ -46,7 +46,8 @@ class MathExprEvaluator:
         elif isinstance(node, ast.BinOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.right))
         elif isinstance(node, ast.BoolOp):
-            return self._ops[type(node.op)](self._evaluate_expr_node(node.values[0]), self._evaluate_expr_node(node.values[1]))
+            return self._ops[type(node.op)](
+                self._evaluate_expr_node(node.values[0]), self._evaluate_expr_node(node.values[1]))
         elif isinstance(node, ast.UnaryOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.operand))
         elif isinstance(node, ast.Compare):
