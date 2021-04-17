@@ -1007,6 +1007,7 @@ class BuiltinCommands(BaseCmd):
         )
         if len(command) > 1 and command[1] == "-v":
             result += (
+                f"Deployment time: {bc.deployment_time}\n"
                 f"Commit name: {bc.info.commit_name}\n"
                 f"Branch name: {bc.info.branch_name}\n"
             )
