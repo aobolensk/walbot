@@ -91,6 +91,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "toupper",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "join",
+                                     permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "range",
                                      permission=const.Permission.USER.value, subcommand=True)
         bc.commands.register_command(__name__, self.get_classname(), "ping",
@@ -389,6 +391,17 @@ class BuiltinCommands(BaseCmd):
         """Convert text to upper case
     Example: !toupper SoMe TeXt"""
         result = ' '.join(command[1:]).upper()
+        await Msg.response(message, result, silent)
+        return result
+
+    @staticmethod
+    async def _join(message, command, silent=False):
+        """Join words with string as separator
+    Example: !join + 1 2 3 -> 1+2+3"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        separator = command[1]
+        result = separator.join(command[2:])
         await Msg.response(message, result, silent)
         return result
 

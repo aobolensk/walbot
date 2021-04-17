@@ -219,6 +219,10 @@
 **inspectmarkov**: Inspect next words in Markov model for current one \
     Example: !inspectmarkov hello
 
+**join**: Join words with string as separator \
+    Example: !join + 1 2 3 -&gt; 1+2+3 \
+    *This command can be used as subcommand*
+
 **listalias**: Print list of aliases \
     Example: !listalias \
     *This command can be used as subcommand*
