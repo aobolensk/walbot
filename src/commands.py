@@ -25,7 +25,7 @@ class Commands:
     def _path_to_module(self, path: str):
         result = ''
         for c in path:
-            if c != os.pathsep and c != '.' or result[-1] != '.':
+            if c not in (os.pathsep, '.') or result[-1] != '.':
                 result += c
         return result
 
