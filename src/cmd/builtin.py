@@ -1468,7 +1468,7 @@ class BuiltinCommands(BaseCmd):
             if not root.endswith(const.IMAGES_DIRECTORY):
                 continue
             for file in files:
-                if os.path.splitext(os.path.basename(file))[0] == command[1]:
+                if os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
                     try:
                         with open(os.path.join(const.IMAGES_DIRECTORY, file), "rb") as f:
                             await bc.bot_user.edit(avatar=f.read())
