@@ -122,21 +122,20 @@ class MarkovCommands(BaseCmd):
             result = str(amount)
             await Msg.response(message, result, silent)
             return result
-        else:
-            index = await Util.parse_int(
-                message, command[2],
-                f"Third parameter '{command[2]}' should be a valid index", silent)
-            if index is None:
-                return
-            if not 0 <= index < amount:
-                await Msg.response(
-                    message,
-                    f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])",
-                    silent)
-                return
-            result = found[index]
-            await Msg.response(message, result, silent)
-            return result
+        index = await Util.parse_int(
+            message, command[2],
+            f"Third parameter '{command[2]}' should be a valid index", silent)
+        if index is None:
+            return
+        if not 0 <= index < amount:
+            await Msg.response(
+                message,
+                f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])",
+                silent)
+            return
+        result = found[index]
+        await Msg.response(message, result, silent)
+        return result
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):
