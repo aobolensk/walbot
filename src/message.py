@@ -11,7 +11,7 @@ class Msg:
     @staticmethod
     async def reply(message, content, silent, **kwargs):
         if silent:
-            log.info("[SILENT] -> " + content)
+            log.debug("[SILENT] -> " + content)
             return
         msg = None
         if content:
@@ -33,7 +33,7 @@ class Msg:
     @staticmethod
     async def response(message, content, silent, **kwargs):
         if silent:
-            log.info("[SILENT] -> " + content)
+            log.debug("[SILENT] -> " + content)
             return
         msg = None
         if content:
@@ -55,7 +55,7 @@ class Msg:
     @staticmethod
     async def send_direct_message(author, content, silent, **kwargs):
         if silent:
-            log.info("[SILENT] -> " + content)
+            log.debug("[SILENT] -> " + content)
             return
         if author.dm_channel is None:
             await author.create_dm()
