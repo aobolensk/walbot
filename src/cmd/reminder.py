@@ -410,7 +410,7 @@ class ReminderCommands(BaseCmd):
             return
         rem = bc.config.reminders[index]
         rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) - datetime.datetime.now()
-        if (rem_time < datetime.timedelta(days=1)):
+        if rem_time < datetime.timedelta(days=1):
             rem_time = "0 days, " + rem_time
         result = f"Time until reminder {index} ('{rem.message}') is {rem_time}"
         await Msg.response(message, result, silent)

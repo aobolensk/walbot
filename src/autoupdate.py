@@ -52,7 +52,7 @@ def check_updates(context: AutoUpdateContext):
             raise e
     new_sha = context.repo.head.object.hexsha
     log.debug(f"{old_sha} {new_sha}")
-    if (old_sha == new_sha):
+    if old_sha == new_sha:
         return log.debug("No new updates")
     os.system(f"{sys.executable} -m pip install -r requirements.txt")
     os.system(f"{sys.executable} walbot.py stop")
