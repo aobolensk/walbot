@@ -42,7 +42,7 @@ class MarkovCommands(BaseCmd):
             return
         if len(command) > 1:
             result = ""
-            for i in range(const.MAX_MARKOV_ATTEMPTS):
+            for _ in range(const.MAX_MARKOV_ATTEMPTS):
                 result = bc.markov.generate(word=command[-1])
                 if len(result.split()) > 1:
                     break
