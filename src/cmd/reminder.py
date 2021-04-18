@@ -167,7 +167,7 @@ class ReminderCommands(BaseCmd):
             return
         text = ' '.join(command[3:])
         if command[1] == "in":
-            time = await _ReminderInternals.parse_reminder_args_in(command[2])
+            time = await _ReminderInternals.parse_reminder_args_in(message, command[2], silent)
         else:
             time = await _ReminderInternals.parse_reminder_args(message, command[1], command[2], silent)
         if time is None:
@@ -206,7 +206,7 @@ class ReminderCommands(BaseCmd):
         if index in bc.config.reminders.keys():
             text = ' '.join(command[4:])
             if command[2] == "in":
-                time = await _ReminderInternals.parse_reminder_args_in(command[3])
+                time = await _ReminderInternals.parse_reminder_args_in(message, command[3], silent)
             else:
                 time = await _ReminderInternals.parse_reminder_args(message, command[2], command[3], silent)
             if time is None:
