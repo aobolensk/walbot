@@ -54,18 +54,18 @@ class Msg:
 
     @staticmethod
     async def send_direct_message(author, content, silent, **kwargs):
-        if not silent:
-            if author.dm_channel is None:
-                await author.create_dm()
-            if content:
-                for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
-                    msg = await author.dm_channel.send(
-                        chunk,
-                        tts=kwargs.get("tts", False),
-                        files=kwargs.get("files", None))
-                    if kwargs.get("suppress_embeds", False):
-                        await msg.edit(suppress=True)
-            elif kwargs.get("files", None):
-                msg = await author.dm_channel.send(None, files=kwargs.get("files", None))
-        else:
+        if silent:
             log.info("[SILENT] -> " + content)
+            return
+        if author.dm_channel is None:
+            await author.create_dm()
+        if content:
+            for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                msg = await author.dm_channel.send(
+                    chunk,
+                    tts=kwargs.get("tts", False),
+                    files=kwargs.get("files", None))
+                if kwargs.get("suppress_embeds", False):
+                    await msg.edit(suppress=True)
+        elif kwargs.get("files", None):
+            msg = await author.dm_channel.send(None, files=kwargs.get("files", None))
