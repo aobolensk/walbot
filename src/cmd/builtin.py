@@ -1267,8 +1267,13 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
+        alias_mapping = {}
         for alias, command in bc.commands.aliases.items():
-            result += alias + " -> " + command + '\n'
+            if command not in alias_mapping.keys():
+                alias_mapping[command] = []
+            alias_mapping[command].append(alias)
+        for command, aliases in alias_mapping.items():
+            result += f"{', '.join(aliases)} -> {command}\n"
         await Msg.response(message, result, silent)
         return result
 
