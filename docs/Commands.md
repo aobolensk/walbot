@@ -333,9 +333,16 @@
 **repeatreminder**: Make reminder repeating with particular period \
     Examples: \
         !repeatreminder 1 1 \
-        !repeatreminder 1 1h \
-        !repeatreminder 1 1d \
-        !repeatreminder 1 1w \
+        !repeatreminder 1 hourly \
+        !repeatreminder 1 daily \
+        !repeatreminder 1 weekly \
+        !repeatreminder 1 monthly \
+        !repeatreminder 1 annually \
+        !repeatreminder 1 2h \
+        !repeatreminder 1 2d \
+        !repeatreminder 1 2w \
+        !repeatreminder 1 2m \
+        !repeatreminder 1 2y \
         !repeatreminder 1 0 \
     Note: number without postfix is translated to minutes. 0 means disabling repetition
 

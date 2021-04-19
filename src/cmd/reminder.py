@@ -42,6 +42,14 @@ class _ReminderInternals:
                 return
             date = datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
+        elif date.endswith("d"):
+            days_amount = date[:-1]
+            days_amount = await Util.parse_int(
+                message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
+            if days_amount is None:
+                return
+            date = datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("w"):
             weeks_amount = date[:-1]
             weeks_amount = await Util.parse_int(
@@ -296,9 +304,16 @@ class ReminderCommands(BaseCmd):
         """Make reminder repeating with particular period
     Examples:
         !repeatreminder 1 1
-        !repeatreminder 1 1h
-        !repeatreminder 1 1d
-        !repeatreminder 1 1w
+        !repeatreminder 1 hourly
+        !repeatreminder 1 daily
+        !repeatreminder 1 weekly
+        !repeatreminder 1 monthly
+        !repeatreminder 1 annually
+        !repeatreminder 1 2h
+        !repeatreminder 1 2d
+        !repeatreminder 1 2w
+        !repeatreminder 1 2m
+        !repeatreminder 1 2y
         !repeatreminder 1 0
     Note: number without postfix is translated to minutes. 0 means disabling repetition"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
@@ -310,6 +325,18 @@ class ReminderCommands(BaseCmd):
         if index not in bc.config.reminders.keys():
             await Msg.response(message, "Invalid index of reminder!", silent)
             return
+
+        if command[2] == "hourly":
+            command[2] = "1h"
+        elif command[2] == "daily":
+            command[2] = "1d"
+        elif command[2] == "weekly":
+            command[2] = "1w"
+        elif command[2] == "monthly":
+            command[2] = "1m"
+        elif command[2] == "annually":
+            command[2] = "1y"
+
         if command[2].endswith("h"):
             duration = command[2][:-1]
             duration = await Util.parse_int(
