@@ -1,5 +1,3 @@
-import re
-
 alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
 
 text_to_emoji = {

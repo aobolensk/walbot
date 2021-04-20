@@ -12,7 +12,7 @@ import urllib.request
 import discord
 import requests
 
-from src import const
+from src import const, emoji
 from src.algorithms import levenshtein_distance
 from src.commands import BaseCmd
 from src.config import BackgroundEvent, Command, bc, log
