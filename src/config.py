@@ -9,7 +9,7 @@ import zipfile
 
 import yaml
 
-from src import emoji, const
+from src import const
 from src.log import log
 from src.message import Msg
 from src.utils import Util
@@ -168,10 +168,10 @@ class Command:
                         await message.channel.send(
                             "ERROR: Max message length exceeded "
                             f"({len(response)} > {const.DISCORD_MAX_MESSAGE_LENGTH * 5})")
-                    elif len(emoji.UNICODE_EMOJI_REGEX.findall(response)) > 50:
+                    elif len(const.UNICODE_EMOJI_REGEX.findall(response)) > 50:
                         await message.channel.send(
                             "ERROR: Max amount of Unicode emojis for one message exceeded "
-                            f"({len(emoji.UNICODE_EMOJI_REGEX.findall(response))} > {50})")
+                            f"({len(const.UNICODE_EMOJI_REGEX.findall(response))} > {50})")
                     else:
                         for chunk in Msg.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
                             await message.channel.send(chunk)

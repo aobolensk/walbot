@@ -12,7 +12,7 @@ import urllib.request
 import discord
 import requests
 
-from src import const, emoji
+from src import const
 from src.algorithms import levenshtein_distance
 from src.commands import BaseCmd
 from src.config import BackgroundEvent, Command, bc, log
@@ -39,7 +39,7 @@ class _BuiltinInternals:
                         await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
                         break
                     # Unicode emoji
-                    if emoji.UNICODE_EMOJI_REGEX.match(command[i]):
+                    if const.UNICODE_EMOJI_REGEX.match(command[i]):
                         emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
                         emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
                         emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
