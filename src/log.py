@@ -1,3 +1,7 @@
+"""log.py
+Contains definition of WalBot logger and instance of the logger
+"""
+
 import logging
 import logging.config
 import os
@@ -6,6 +10,10 @@ from src import const
 
 
 class Log:
+    """WalBot logger
+    Proper usage: the single object of this class defined below class definition
+    """
+
     def debug2(self, msg, *args, **kwargs):
         """Log with severity 'DEBUG2'."""
         self.log.log(const.LogLevel.DEBUG2, msg, *args, **kwargs)
@@ -58,4 +66,5 @@ class Log:
         self.info("Logging system is set up")
 
 
+# Use this logger instance for logging everywhere
 log = Log()
