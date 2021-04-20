@@ -11,6 +11,7 @@ import urllib.request
 
 import discord
 import requests
+from dateutil import tz
 
 from src import const, emoji
 from src.algorithms import levenshtein_distance
@@ -1172,10 +1173,24 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _time(message, command, silent=False):
         """Show current time
-    Example: !time"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+    Examples:
+        !time
+        !time Europe/Moscow
+        !time America/New_York
+    Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        result = str(datetime.datetime.now()).split('.')[0]
+        timezone = None
+        if len(command) == 2:
+            timezone = tz.gettz(command[1])
+            if timezone is None:
+                await Msg.response(
+                    message,
+                    "Incorrect timezone. "
+                    "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
+                    silent)
+                return
+        result = str(datetime.datetime.now(timezone)).split('.')[0]
         await Msg.response(message, result, silent)
         return result
 
