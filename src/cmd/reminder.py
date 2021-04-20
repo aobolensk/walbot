@@ -181,6 +181,9 @@ class ReminderCommands(BaseCmd):
         if time is None:
             return
         id_ = bc.config.ids["reminder"]
+        if datetime.datetime.strptime(str(time), const.REMINDER_TIME_FORMAT) < datetime.datetime.now():
+            await Msg.response(message, "Reminder timestamp is earlier than now", silent)
+            return
         bc.config.reminders[id_] = Reminder(
             str(time), text, message.channel.id, message.author.name,
             datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
@@ -218,6 +221,9 @@ class ReminderCommands(BaseCmd):
             else:
                 time = await _ReminderInternals.parse_reminder_args(message, command[2], command[3], silent)
             if time is None:
+                return
+            if datetime.datetime.strptime(str(time), const.REMINDER_TIME_FORMAT) < datetime.datetime.now():
+                await Msg.response(message, "Reminder timestamp is earlier than now", silent)
                 return
             bc.config.reminders[index] = Reminder(
                 str(time), text, message.channel.id, bc.config.reminders[index].author,
