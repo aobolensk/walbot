@@ -237,6 +237,7 @@ class GuildSettings:
         self.responses_whitelist = set()
         self.reactions_whitelist = set()
         self.markov_pings = True
+        self.ignored = False
 
 
 class User:

@@ -117,6 +117,8 @@ class WalBot(discord.Client):
 
     async def on_message(self, message):
         try:
+            if self.config.guilds[message.channel.guild.id].ignored:
+                return
             bc.message_buffer.push(message)
             log.info(f"<{message.id}> {message.author} -> {message.content}")
             if message.author.id == self.user.id:

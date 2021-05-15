@@ -19,6 +19,8 @@ class MiniWalBot(discord.Client):
 
     async def on_message(self, message):
         try:
+            if self.config.guilds[message.channel.guild.id].ignored:
+                return
             log.info(str(message.author) + " -> " + message.content)
             if message.author.id == self.user.id:
                 return
