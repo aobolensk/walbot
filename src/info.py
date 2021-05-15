@@ -6,6 +6,8 @@ from src.config import bc
 
 
 class BotInfo:
+    """Get info about walbot instance"""
+
     def _get_repo(self):
         try:
             return git.Repo(search_parent_directories=True)
@@ -14,6 +16,7 @@ class BotInfo:
 
     @property
     def version(self):
+        """Get walbot repo commit SHA"""
         repo = self._get_repo()
         if repo is None:
             return "<unknown>"
@@ -22,6 +25,7 @@ class BotInfo:
 
     @property
     def commit_name(self):
+        """Get walbot repo commit name"""
         repo = self._get_repo()
         if repo is None:
             return "<unknown>"
@@ -30,6 +34,7 @@ class BotInfo:
 
     @property
     def branch_name(self):
+        """Get walbot repo branch name"""
         repo = self._get_repo()
         if repo is None:
             return "<unknown>"
@@ -38,6 +43,7 @@ class BotInfo:
 
     @property
     def is_version_dirty(self) -> bool:
+        """Get walbot repo dirtyness"""
         repo = self._get_repo()
         if repo is None:
             return False
@@ -45,6 +51,7 @@ class BotInfo:
 
     @property
     def version_time(self):
+        """Get walbot repo last commit date/time"""
         repo = self._get_repo()
         if repo is None:
             return "<unknown>"
@@ -52,6 +59,7 @@ class BotInfo:
         return time
 
     def query_dependencies_info(self):
+        """Get dict with walbot dependencies versions"""
         res = {}
         import numpy
         res["numpy"] = numpy.__version__
@@ -74,6 +82,7 @@ class BotInfo:
 
     @property
     def uptime(self):
+        """Get walbot uptime"""
         days, remainder = divmod(
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
