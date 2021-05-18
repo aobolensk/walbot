@@ -1,5 +1,6 @@
 import os
 import subprocess
+import tempfile
 
 import yaml
 
@@ -92,3 +93,7 @@ class Util:
             if verbose:
                 log.debug("Using slow YAML Dumper")
         return loader, dumper
+
+    @staticmethod
+    def tmp_dir():
+        return tempfile.gettempdir() + os.sep + "walbot"

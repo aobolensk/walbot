@@ -45,7 +45,8 @@ class _BuiltinInternals:
                         emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
                         emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
                         if emoji_match:
-                            temp_image_file = tempfile.NamedTemporaryFile()
+                            os.makedirs(Util.tmp_dir(), exist_ok=True)
+                            temp_image_file = tempfile.NamedTemporaryFile(dir=Util.tmp_dir())
                             with open(temp_image_file.name, 'wb') as f:
                                 f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
                             shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
@@ -1514,7 +1515,8 @@ class BuiltinCommands(BaseCmd):
                 else:
                     # Not recognized source
                     break
-                temp_image_file = tempfile.NamedTemporaryFile()
+                os.makedirs(Util.tmp_dir(), exist_ok=True)
+                temp_image_file = tempfile.NamedTemporaryFile(dir=Util.tmp_dir())
                 try:
                     with urllib.request.urlopen(rq) as response:
                         temp_image_file.write(response.read())
