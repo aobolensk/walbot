@@ -1,7 +1,10 @@
 from src.markov import Markov
 
 
-LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+LOREM = (
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+    "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+)
 
 
 def test_markov_correctly_parses_sentence():
