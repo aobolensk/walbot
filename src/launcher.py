@@ -49,6 +49,12 @@ class Launcher:
         subparsers["patch"].add_argument(
             "file", nargs='?', default="all",
             help='Config file to patch', choices=["all", *self.config_files])
+        # Test
+        subparsers["test"].add_argument(
+            "-v", "--verbose", action="store_true", help="Verbose", default=False)
+        subparsers["test"].add_argument(
+            "-vv", "--verbose2", action="store_true", help="Verbose (level2)", default=False)
+        # Parse args
         self.args = self._parser.parse_args()
         if self.args.action is None:
             self._parser.print_help()
@@ -79,7 +85,7 @@ class Launcher:
 
     def test(self):
         """Launch tests"""
-        importlib.import_module("src.test").start_testing()
+        importlib.import_module("src.test").start_testing(self.args)
 
     def docs(self):
         """Generate command docs"""
