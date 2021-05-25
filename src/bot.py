@@ -160,11 +160,15 @@ class WalBot(discord.Client):
         elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
             bc.markov.add_string(message.content)
         if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+            responses_count = 0
             for response in self.config.responses.values():
+                if responses_count >= const.MAX_BOT_RESPONSES_ON_ONE_MESSAGE:
+                    break
                 if re.search(response.regex, message.content):
                     text = await Command.process_subcommands(
                         response.text, message, self.config.users[message.author.id])
                     await Msg.reply(message, text, False)
+                    responses_count += 1
         if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             for reaction in self.config.reactions.values():
                 if re.search(reaction.regex, message.content):
