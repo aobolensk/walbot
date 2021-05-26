@@ -97,3 +97,8 @@ class Util:
     @staticmethod
     def tmp_dir():
         return tempfile.gettempdir() + os.sep + "walbot"
+
+
+def null(*args, **kwargs):
+    """Drop return value"""
+    return
