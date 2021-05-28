@@ -2,7 +2,7 @@ from src import const
 from src.commands import BaseCmd
 from src.config import Reaction, Response, bc
 from src.message import Msg
-from src.utils import Util
+from src.utils import Util, null
 
 
 class ReactionCommands(BaseCmd):
@@ -91,9 +91,9 @@ class ReactionCommands(BaseCmd):
             return
         parts = ' '.join(command[1:]).split(';', 1)
         if len(parts) < 2:
-            await Msg.response(
-                message, "You need to provide regex and text that are separated by semicolon (;)", silent)
-            return
+            return null(
+                await Msg.response(
+                    message, "You need to provide regex and text that are separated by semicolon (;)", silent))
         regex, text = parts
         bc.config.responses[bc.config.ids["response"]] = Response(regex, text)
         bc.config.ids["response"] += 1
@@ -112,9 +112,9 @@ class ReactionCommands(BaseCmd):
         if index in bc.config.responses.keys():
             parts = ' '.join(command[2:]).split(';', 1)
             if len(parts) < 2:
-                await Msg.response(
-                    message, "You need to provide regex and text that are separated by semicolon (;)", silent)
-                return
+                return null(
+                    await Msg.response(
+                        message, "You need to provide regex and text that are separated by semicolon (;)", silent))
             regex, text = parts
             bc.config.responses[index] = Response(regex, text)
             await Msg.response(message, f"Response '{text}' on '{regex}' successfully updated", silent)

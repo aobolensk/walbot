@@ -5,7 +5,7 @@ from src.commands import BaseCmd
 from src.config import bc
 from src.message import Msg
 from src.quote import Quote
-from src.utils import Util
+from src.utils import Util, null
 
 
 class QuoteCommands(BaseCmd):
@@ -30,8 +30,7 @@ class QuoteCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         if not bc.config.quotes:
-            await Msg.response(message, "<Quotes database is empty>", silent)
-            return
+            return null(await Msg.response(message, "<Quotes database is empty>", silent))
         if len(command) == 2:
             index = await Util.parse_int(
                 message, command[1], f"Second parameter for '{command[0]}' should be an index of quote", silent)
