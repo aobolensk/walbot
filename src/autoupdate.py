@@ -72,6 +72,8 @@ def start(args):
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
         os.system(f"{sys.executable} walbot.py start --nohup &")
+    else:
+        log.debug("Bot is already started in different shell. Starting autoupdate routine.")
     try:
         while True:
             time.sleep(const.AUTOUPDATE_CHECK_INTERVAL)
