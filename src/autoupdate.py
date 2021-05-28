@@ -68,8 +68,7 @@ def check_updates(context: AutoUpdateContext):
             os.system(f"{sys.executable} walbot.py stopmini")
             log.info("Bot is fully loaded. MiniWalBot is stopped.")
             break
-        else:
-            log.debug("Bot is not fully loaded yet. Waiting...")
+        log.debug("Bot is not fully loaded yet. Waiting...")
 
 
 def start(args):
