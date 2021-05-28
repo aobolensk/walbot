@@ -55,10 +55,12 @@ def check_updates(context: AutoUpdateContext):
     if old_sha == new_sha:
         return log.debug("No new updates")
     os.system(f"{sys.executable} -m pip install -r requirements.txt")
+    os.system(f"{sys.executable} walbot.py startmini --nohup &")
     os.system(f"{sys.executable} walbot.py stop")
     if context.check_versions():
         os.system(f"{sys.executable} walbot.py patch")
     os.system(f"{sys.executable} walbot.py start --nohup &")
+    os.system(f"{sys.executable} walbot.py stopmini")
 
 
 def start(args):
