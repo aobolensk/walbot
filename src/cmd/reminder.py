@@ -6,7 +6,7 @@ from src.commands import BaseCmd
 from src.config import bc
 from src.message import Msg
 from src.reminder import Reminder
-from src.utils import Util
+from src.utils import Util, null
 
 
 class _ReminderInternals:
@@ -27,8 +27,7 @@ class _ReminderInternals:
             elif date in WEEK_DAYS_ABBREV:
                 weekday = WEEK_DAYS_ABBREV.index(date.lower())
             else:
-                await Msg.response(message, "Unexpected error during day of week processing!", silent)
-                return
+                return null(await Msg.response(message, "Unexpected error during day of week processing!", silent))
             days_delta = (weekday - datetime.datetime.today().weekday() + 7) % 7
             if days_delta == 0:
                 days_delta = 7
@@ -83,20 +82,22 @@ class _ReminderInternals:
         try:
             time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
         except ValueError:
-            await Msg.response(message, f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
-                                        "More information about format: <https://strftime.org/>", silent)
-            return
+            return null(
+                await Msg.response(
+                    message,
+                    f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
+                    "More information about format: <https://strftime.org/>", silent))
         return time
 
     @staticmethod
     async def parse_reminder_args_in(message, time, silent):
         r = const.REMINDER_IN_REGEX.match(time)
         if r is None:
-            await Msg.response(
-                message, ("Provide relative time in the following format: "
-                          "<weeks>w<days>d<hours>h<minutes>m. "
-                          "All parts except one are optional"), silent)
-            return
+            return null(
+                await Msg.response(
+                    message, ("Provide relative time in the following format: "
+                              "<weeks>w<days>d<hours>h<minutes>m. "
+                              "All parts except one are optional"), silent))
         weeks = int(r.group(2)) if r.group(2) is not None else 0
         days = int(r.group(4)) if r.group(4) is not None else 0
         hours = int(r.group(6)) if r.group(6) is not None else 0
@@ -141,8 +142,7 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index not in bc.config.reminders.keys():
-            await Msg.response(message, "Invalid index of reminder!", silent)
-            return
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
         reminder = bc.config.reminders[index]
         rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
         result = (f"{index} - {reminder.time}"
@@ -182,8 +182,7 @@ class ReminderCommands(BaseCmd):
             return
         id_ = bc.config.ids["reminder"]
         if datetime.datetime.strptime(str(time), const.REMINDER_TIME_FORMAT) < datetime.datetime.now():
-            await Msg.response(message, "Reminder timestamp is earlier than now", silent)
-            return
+            return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
         bc.config.reminders[id_] = Reminder(
             str(time), text, message.channel.id, message.author.name,
             datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
@@ -223,8 +222,7 @@ class ReminderCommands(BaseCmd):
             if time is None:
                 return
             if datetime.datetime.strptime(str(time), const.REMINDER_TIME_FORMAT) < datetime.datetime.now():
-                await Msg.response(message, "Reminder timestamp is earlier than now", silent)
-                return
+                return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
             bc.config.reminders[index] = Reminder(
                 str(time), text, message.channel.id, bc.config.reminders[index].author,
                 datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
@@ -329,8 +327,7 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index not in bc.config.reminders.keys():
-            await Msg.response(message, "Invalid index of reminder!", silent)
-            return
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
 
         if command[2] == "hourly":
             command[2] = "1h"
@@ -385,11 +382,10 @@ class ReminderCommands(BaseCmd):
             if duration is None:
                 return
         if duration == 0:
-            await Msg.response(message, f"Repetition is disabled for reminder {index}", silent)
-            return
+            return null(await Msg.response(message, f"Repetition is disabled for reminder {index}", silent))
         if duration < 0:
-            await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent)
-            return
+            return null(
+                await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent))
         bc.config.reminders[index].repeat_after = duration
         await Msg.response(
             message,
@@ -408,11 +404,9 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index not in bc.config.reminders.keys():
-            await Msg.response(message, "Invalid index of reminder!", silent)
-            return
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
         if bc.config.reminders[index].repeat_after == 0:
-            await Msg.response(message, "This reminder is not recurring!", silent)
-            return
+            return null(await Msg.response(message, "This reminder is not recurring!", silent))
         rem = bc.config.reminders[index]
         new_time = datetime.datetime.strftime(
             datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) +
@@ -439,8 +433,7 @@ class ReminderCommands(BaseCmd):
         if index is None:
             return
         if index not in bc.config.reminders.keys():
-            await Msg.response(message, "Invalid index of reminder!", silent)
-            return
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
         rem = bc.config.reminders[index]
         rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) - datetime.datetime.now()
         if rem_time < datetime.timedelta(days=1):
