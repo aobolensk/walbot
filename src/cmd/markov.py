@@ -6,7 +6,7 @@ from src import const
 from src.commands import BaseCmd
 from src.config import bc
 from src.message import Msg
-from src.utils import Util
+from src.utils import Util, null
 
 
 class MarkovCommands(BaseCmd):
@@ -75,8 +75,7 @@ class MarkovCommands(BaseCmd):
         try:
             removed = bc.markov.del_words(regex)
         except re.error as e:
-            await Msg.response(message, f"Invalid regular expression: {e}", silent)
-            return
+            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
         await Msg.response(
             message, f"Deleted {len(removed)} words from model: {removed}", silent, suppress_embeds=True)
 
@@ -92,8 +91,7 @@ class MarkovCommands(BaseCmd):
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            await Msg.response(message, f"Invalid regular expression: {e}", silent)
-            return
+            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
         amount = len(found)
         if not (len(command) > 2 and command[2] == '-f' and
                 bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
@@ -115,8 +113,7 @@ class MarkovCommands(BaseCmd):
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            await Msg.response(message, f"Invalid regular expression: {e}", silent)
-            return
+            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
         amount = len(found)
         if command[2] == '-a':
             result = str(amount)
@@ -128,11 +125,11 @@ class MarkovCommands(BaseCmd):
         if index is None:
             return
         if not 0 <= index < amount:
-            await Msg.response(
-                message,
-                f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])",
-                silent)
-            return
+            return null(
+                await Msg.response(
+                    message,
+                    f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])",
+                    silent))
         result = found[index]
         await Msg.response(message, result, silent)
         return result
