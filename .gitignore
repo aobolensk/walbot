@@ -18,6 +18,7 @@ src/cmd/private/**
 
 # Bot cache
 .bot_cache
+.minibot_cache
 
 # Bot logs
 logs/
