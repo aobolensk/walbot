@@ -1010,7 +1010,7 @@ class BuiltinCommands(BaseCmd):
             f"{bc.bot_user} (WalBot instance)\n"
             f"Source code: <{const.GIT_REPO_LINK}>\n"
             f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} "
-            f"(done at {bc.info.version_time})\n"
+            f"(updated at {bc.info.version_time})\n"
             f"Uptime: {bc.info.uptime}\n"
         )
         if len(command) > 1 and command[1] == "-v":
