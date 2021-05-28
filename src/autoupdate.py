@@ -88,3 +88,4 @@ def start(args):
             check_updates(context)
     except KeyboardInterrupt:
         os.system(f"{sys.executable} walbot.py stop")
+    os.remove(const.BOT_CACHE_FILE_PATH)
