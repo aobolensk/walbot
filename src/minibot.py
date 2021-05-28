@@ -8,6 +8,7 @@ from src.log import log
 class MiniWalBot(discord.Client):
     def __init__(self, config, secret_config):
         super().__init__()
+        self.repl = None
         self.config = config
         self.secret_config = secret_config
 

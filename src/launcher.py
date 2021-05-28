@@ -24,7 +24,7 @@ class Launcher:
             "--autoupdate", action="store_true",
             help="Start autoupdate process for bot")
         # Start & suspend
-        for option in ("start", "restart", "suspend"):
+        for option in ("start", "restart", "suspend", "startmini", "stopmini"):
             subparsers[option].add_argument(
                 "--fast_start", action="store_true",
                 help=("Make bot start faster by disabling some optional checks:\n"
@@ -82,6 +82,16 @@ class Launcher:
         bot = importlib.import_module("src.bot")
         bot.stop(self.args)
         bot.start(self.args, main_bot=False)
+
+    def startmini(self):
+        """Start mini-bot"""
+        bot = importlib.import_module("src.bot")
+        bot.start(self.args, main_bot=False)
+
+    def stopmini(self):
+        """Stop mini-bot"""
+        bot = importlib.import_module("src.bot")
+        bot.stop(self.args, main_bot=False)
 
     def test(self):
         """Launch tests"""
