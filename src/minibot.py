@@ -6,11 +6,12 @@ from src.log import log
 
 
 class MiniWalBot(discord.Client):
-    def __init__(self, config, secret_config):
+    def __init__(self, config, secret_config, bot_response):
         super().__init__()
         self.repl = None
         self.config = config
         self.secret_config = secret_config
+        self.bot_response = bot_response
 
     async def on_ready(self):
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
@@ -36,6 +37,6 @@ class MiniWalBot(discord.Client):
                 return
             if not message.content.startswith(self.config.commands_prefix) and not self.user.mentioned_in(message):
                 return
-            await message.channel.send("<Maintenance break>")
+            await message.channel.send(self.bot_response)
         except Exception:
             log.error("on_message failed", exc_info=True)
