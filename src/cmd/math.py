@@ -5,7 +5,7 @@ from src import const
 from src.commands import BaseCmd
 from src.config import bc
 from src.message import Msg
-from src.utils import Util
+from src.utils import Util, null
 
 
 class MathExprEvaluator:
@@ -79,8 +79,7 @@ class MathCommands(BaseCmd):
         try:
             result = str(MathExprEvaluator().evaluate(expr))
         except Exception as e:
-            await Msg.response(message, f"Expression evaluation failed: {e}", silent)
-            return
+            return null(await Msg.response(message, f"Expression evaluation failed: {e}", silent))
         await Msg.response(message, result, silent)
         return result
 
@@ -112,10 +111,10 @@ class MathCommands(BaseCmd):
 
         expressions = ' '.join(command[2:]).split(';')
         if len(expressions) != 2:
-            await Msg.response(
-                message, f"There should be only 2 branches ('then' and 'else') "
-                         f"separated by ';' in '{command[0]}' command", silent)
-            return
+            return null(
+                await Msg.response(
+                    message, f"There should be only 2 branches ('then' and 'else') "
+                             f"separated by ';' in '{command[0]}' command", silent))
         result = expressions[0] if condition != 0 else expressions[1]
         await Msg.response(message, result, silent)
         return result
