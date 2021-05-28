@@ -19,6 +19,7 @@ MARKOV_CONFIG_VERSION = ver.MARKOV_CONFIG_VERSION
 SECRET_CONFIG_VERSION = ver.SECRET_CONFIG_VERSION
 
 BOT_CACHE_FILE_PATH = ".bot_cache"
+MINIBOT_CACHE_FILE_PATH = ".minibot_cache"
 NOHUP_FILE_PATH = "nohup.out"
 
 GIT_REPO_LINK = "https://github.com/aobolensk/walbot"

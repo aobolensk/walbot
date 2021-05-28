@@ -220,24 +220,26 @@ class WalBot(discord.Client):
         log.info(f"<{payload.message_id}> (delete)")
 
 
-def parse_bot_cache():
+def parse_bot_cache(main_bot):
     pid = None
-    if os.path.exists(const.BOT_CACHE_FILE_PATH):
+    cache_file_path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
+    if os.path.exists(cache_file_path):
         cache = None
-        with open(const.BOT_CACHE_FILE_PATH, 'r') as f:
+        with open(cache_file_path, 'r') as f:
             cache = f.read()
         if cache is not None:
             try:
                 pid = int(cache)
             except ValueError:
                 log.warning("Could not read pid from .bot_cache")
-                os.remove(const.BOT_CACHE_FILE_PATH)
+                os.remove(cache_file_path)
     return pid
 
 
 def start(args, main_bot=True):
     # Check whether bot is already running
-    pid = parse_bot_cache()
+    pid = parse_bot_cache(main_bot)
+    cache_file_path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
     if pid is not None and psutil.pid_exists(pid):
         return log.error("Bot is already running!")
     # Some variable initializations
@@ -256,7 +258,7 @@ def start(args, main_bot=True):
     # Selecting YAML parser
     bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
     # Saving application pd in order to safely stop it later
-    with open(const.BOT_CACHE_FILE_PATH, 'w') as f:
+    with open(cache_file_path, 'w') as f:
         f.write(str(os.getpid()))
     # Executing patch tool if it is necessary
     if args.patch:
@@ -317,7 +319,7 @@ def start(args, main_bot=True):
     log.info("Bot is disconnected!")
     if main_bot:
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
-    os.remove(const.BOT_CACHE_FILE_PATH)
+    os.remove(cache_file_path)
     if bc.restart_flag:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../walbot.py'}' start"
         log.info("Calling: " + cmd)
@@ -332,10 +334,11 @@ def start(args, main_bot=True):
             os.system(cmd)
 
 
-def stop(_):
-    if not os.path.exists(const.BOT_CACHE_FILE_PATH):
+def stop(_, main_bot=True):
+    cache_file_path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
+    if not os.path.exists(cache_file_path):
         return log.error("Could not stop the bot (cache file does not exist)")
-    pid = parse_bot_cache()
+    pid = parse_bot_cache(main_bot)
     if pid is None:
         return log.error("Could not stop the bot (cache file does not contain pid)")
     if psutil.pid_exists(pid):
@@ -357,4 +360,4 @@ def stop(_):
         log.info("Bot is stopped!")
     else:
         log.error("Could not stop the bot (bot is not running)")
-        os.remove(const.BOT_CACHE_FILE_PATH)
+        os.remove(cache_file_path)
