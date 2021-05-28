@@ -61,7 +61,15 @@ def check_updates(context: AutoUpdateContext):
     if context.check_versions():
         os.system(f"{sys.executable} walbot.py patch")
     os.system(f"{sys.executable} walbot.py start --nohup &")
-    os.system(f"{sys.executable} walbot.py stopmini")
+    while True:
+        time.sleep(1)
+        bot_cache = importlib.import_module("src.bot_cache").BotCache.parse(True)
+        if bot_cache is not None and bot_cache["ready"]:
+            os.system(f"{sys.executable} walbot.py stopmini")
+            log.info("Bot is fully loaded. MiniWalBot is stopped.")
+            break
+        else:
+            log.debug("Bot is not fully loaded yet. Waiting...")
 
 
 def start(args):

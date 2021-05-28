@@ -22,6 +22,7 @@ from src.message_buffer import MessageBuffer
 from src.reminder import Reminder
 from src.repl import Repl
 from src.utils import Util
+from src.bot_cache import BotCache
 
 
 class WalBot(discord.Client):
@@ -105,6 +106,10 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
+        BotCache.dump(True, {
+            "pid": os.getpid(),
+            "ready": True,
+        })
         if sys.platform == "win32":
             log.warning("REPL is disabled on Windows for now")
         else:
@@ -220,28 +225,14 @@ class WalBot(discord.Client):
         log.info(f"<{payload.message_id}> (delete)")
 
 
-def parse_bot_cache(main_bot):
-    pid = None
-    cache_file_path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
-    if os.path.exists(cache_file_path):
-        cache = None
-        with open(cache_file_path, 'r') as f:
-            cache = f.read()
-        if cache is not None:
-            try:
-                pid = int(cache)
-            except ValueError:
-                log.warning("Could not read pid from .bot_cache")
-                os.remove(cache_file_path)
-    return pid
-
-
 def start(args, main_bot=True):
     # Check whether bot is already running
-    pid = parse_bot_cache(main_bot)
-    cache_file_path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
-    if pid is not None and psutil.pid_exists(pid):
-        return log.error("Bot is already running!")
+    bot_cache = BotCache.parse(main_bot)
+    if bot_cache is not None:
+        print(bot_cache)
+        pid = bot_cache["pid"]
+        if pid is not None and psutil.pid_exists(pid):
+            return log.error("Bot is already running!")
     # Some variable initializations
     config = None
     secret_config = None
@@ -258,8 +249,10 @@ def start(args, main_bot=True):
     # Selecting YAML parser
     bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
     # Saving application pd in order to safely stop it later
-    with open(cache_file_path, 'w') as f:
-        f.write(str(os.getpid()))
+    BotCache.dump(main_bot, {
+        "pid": os.getpid(),
+        "ready": False,
+    })
     # Executing patch tool if it is necessary
     if args.patch:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
@@ -319,7 +312,7 @@ def start(args, main_bot=True):
     log.info("Bot is disconnected!")
     if main_bot:
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
-    os.remove(cache_file_path)
+    BotCache.remove(main_bot)
     if bc.restart_flag:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../walbot.py'}' start"
         log.info("Calling: " + cmd)
@@ -335,10 +328,10 @@ def start(args, main_bot=True):
 
 
 def stop(_, main_bot=True):
-    cache_file_path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
-    if not os.path.exists(cache_file_path):
+    if not BotCache.exists(main_bot):
         return log.error("Could not stop the bot (cache file does not exist)")
-    pid = parse_bot_cache(main_bot)
+    bot_cache = BotCache.parse(main_bot)
+    pid = bot_cache["pid"]
     if pid is None:
         return log.error("Could not stop the bot (cache file does not contain pid)")
     if psutil.pid_exists(pid):
@@ -360,4 +353,4 @@ def stop(_, main_bot=True):
         log.info("Bot is stopped!")
     else:
         log.error("Could not stop the bot (bot is not running)")
-        os.remove(cache_file_path)
+        BotCache.remove(main_bot)
