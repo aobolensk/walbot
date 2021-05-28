@@ -304,7 +304,7 @@ def start(args, main_bot=True):
     if main_bot:
         walbot = WalBot(config, secret_config)
     else:
-        walbot = importlib.import_module("src.minibot").MiniWalBot(config, secret_config)
+        walbot = importlib.import_module("src.minibot").MiniWalBot(config, secret_config, args.message)
     # Checking authentication token
     if secret_config.token is None:
         secret_config.token = input("Enter your token: ")
