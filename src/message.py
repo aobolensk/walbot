@@ -11,8 +11,7 @@ class Msg:
     @staticmethod
     async def reply(message, content, silent, **kwargs):
         if silent:
-            log.debug("[SILENT] -> " + content)
-            return
+            return log.debug("[SILENT] -> " + content)
         msg = None
         if content:
             for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
@@ -33,8 +32,7 @@ class Msg:
     @staticmethod
     async def response(message, content, silent, **kwargs):
         if silent:
-            log.debug("[SILENT] -> " + content)
-            return
+            return log.debug("[SILENT] -> " + content)
         msg = None
         if content:
             for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
@@ -55,8 +53,7 @@ class Msg:
     @staticmethod
     async def send_direct_message(author, content, silent, **kwargs):
         if silent:
-            log.debug("[SILENT] -> " + content)
-            return
+            return log.debug("[SILENT] -> " + content)
         if author.dm_channel is None:
             await author.create_dm()
         if content:
