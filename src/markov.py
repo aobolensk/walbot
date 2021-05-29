@@ -82,7 +82,7 @@ class Markov:
     def get_next_words_list(self, word):
         if word not in self.model.keys():
             return []
-        return sorted(list(self.model[word].next.items()), key=lambda x: -x[1])
+        return sorted(self.model[word].next.items(), key=lambda x: -x[1])
 
     def generate(self, word=""):
         if word not in self.model.keys():
@@ -121,7 +121,7 @@ class Markov:
                 was |= self.collect_garbage(next_node)
         if node == self.model[""]:
             result = []
-            for node in set(list(self.model.values())).difference(was):
+            for node in set(self.model.values()).difference(was):
                 if hasattr(node, "word"):
                     result.append(node.word)
                     del self.model[node.word]
