@@ -13,6 +13,7 @@ import psutil
 
 from src import const
 from src.algorithms import levenshtein_distance
+from src.bot_cache import BotCache
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
 from src.info import BotInfo
 from src.log import log
@@ -22,7 +23,6 @@ from src.message_buffer import MessageBuffer
 from src.reminder import Reminder
 from src.repl import Repl
 from src.utils import Util
-from src.bot_cache import BotCache
 
 
 class WalBot(discord.Client):
