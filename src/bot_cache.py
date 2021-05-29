@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Dict, Optional
 
 import psutil
 
@@ -11,7 +12,7 @@ class BotCache:
     def __init__(self, main_bot) -> None:
         self.path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
 
-    def parse(self):
+    def parse(self) -> Optional[Dict]:
         if os.path.exists(self.path):
             cache = None
             with open(self.path, 'r') as f:
@@ -23,12 +24,12 @@ class BotCache:
                     return
                 return cache
 
-    def dump(self, cache_dict):
+    def dump(self, cache_dict) -> None:
         with open(self.path, 'w') as f:
             print(json.dumps(cache_dict), file=f)
 
-    def remove(self):
+    def remove(self) -> None:
         os.remove(self.path)
 
-    def exists(self):
+    def exists(self) -> bool:
         return os.path.exists(self.path)
