@@ -1,4 +1,5 @@
 import datetime
+import importlib
 
 import git
 
@@ -61,23 +62,15 @@ class BotInfo:
     def query_dependencies_info(self):
         """Get dict with walbot dependencies versions"""
         res = {}
-        import numpy
-        res["numpy"] = numpy.__version__
-        import discord
-        ver = discord.version_info
+        ver = importlib.import_module("discord").version_info
         res["discord.py"] = f"{ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}"
-        import requests
-        res["requests"] = requests.__version__
-        import numba
-        res["numba"] = numba.__version__
-        import psutil
-        res["psutil"] = psutil.__version__
-        import dateutil
-        res["dateutil"] = dateutil.__version__
-        import git
-        res["GitPython"] = git.__version__
-        import yaml
-        res["PyYAML"] = yaml.__version__
+        res["numpy"] = importlib.import_module("numpy").__version__
+        res["requests"] = importlib.import_module("requests").__version__
+        res["numba"] = importlib.import_module("numba").__version__
+        res["psutil"] = importlib.import_module("psutil").__version__
+        res["dateutil"] = importlib.import_module("dateutil").__version__
+        res["GitPython"] = importlib.import_module("git").__version__
+        res["PyYAML"] = importlib.import_module("yaml").__version__
         return res
 
     @property
