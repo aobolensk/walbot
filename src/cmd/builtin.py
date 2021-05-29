@@ -46,13 +46,13 @@ class _BuiltinInternals:
                         emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
                         if emoji_match:
                             os.makedirs(Util.tmp_dir(), exist_ok=True)
-                            temp_image_file = tempfile.NamedTemporaryFile(dir=Util.tmp_dir())
-                            with open(temp_image_file.name, 'wb') as f:
-                                f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under the 4th number
-                            shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                            await Msg.response(
-                                message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
-                            os.unlink(temp_image_file.name + ".png")
+                            with tempfile.NamedTemporaryFile(dir=Util.tmp_dir()) as temp_image_file:
+                                with open(temp_image_file.name, 'wb') as f:
+                                    f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under this index
+                                shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
+                                await Msg.response(
+                                    message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
+                                os.unlink(temp_image_file.name + ".png")
                             break
                     min_dist = 100000
                     suggestion = ""
@@ -1495,15 +1495,15 @@ class BuiltinCommands(BaseCmd):
                     # Not recognized source
                     break
                 os.makedirs(Util.tmp_dir(), exist_ok=True)
-                temp_image_file = tempfile.NamedTemporaryFile(dir=Util.tmp_dir())
-                try:
-                    with urllib.request.urlopen(rq) as response:
-                        temp_image_file.write(response.read())
-                    with open(temp_image_file.name, "rb") as temp_image_file:
-                        await bc.bot_user.edit(avatar=temp_image_file.read())
-                except Exception as e:
-                    log.error("Image downloading failed!", exc_info=True)
-                    return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
+                with tempfile.NamedTemporaryFile(dir=Util.tmp_dir()) as temp_image_file:
+                    try:
+                        with urllib.request.urlopen(rq) as response:
+                            temp_image_file.write(response.read())
+                        with open(temp_image_file.name, "rb") as temp_image_file:
+                            await bc.bot_user.edit(avatar=temp_image_file.read())
+                    except Exception as e:
+                        log.error("Image downloading failed!", exc_info=True)
+                        return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
                 return null(await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent))
         min_dist = 100000
         suggestion = ""
