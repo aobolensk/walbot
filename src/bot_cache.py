@@ -26,7 +26,7 @@ class BotCache:
 
     def dump(self, cache_dict) -> None:
         with open(self.path, 'w') as f:
-            print(json.dumps(cache_dict), file=f)
+            json.dump(cache_dict, f)
 
     def remove(self) -> None:
         os.remove(self.path)
