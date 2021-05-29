@@ -8,32 +8,27 @@ from src.log import log
 
 
 class BotCache:
-    @staticmethod
-    def file_path(main_bot):
-        return const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
+    def __init__(self, main_bot) -> None:
+        self.path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
 
-    @staticmethod
-    def parse(main_bot):
-        if os.path.exists(BotCache.file_path(main_bot)):
+    def parse(self):
+        if os.path.exists(self.path):
             cache = None
-            with open(BotCache.file_path(main_bot), 'r') as f:
+            with open(self.path, 'r') as f:
                 cache = json.load(f)
             if cache is not None:
                 if "pid" not in cache or not psutil.pid_exists(int(cache["pid"])):
                     log.warning("Could validate pid from .bot_cache")
-                    os.remove(BotCache.file_path(main_bot))
+                    os.remove(self.path)
                     return
                 return cache
 
-    @staticmethod
-    def dump(main_bot, cache_dict):
-        with open(BotCache.file_path(main_bot), 'w') as f:
+    def dump(self, cache_dict):
+        with open(self.path, 'w') as f:
             print(json.dumps(cache_dict), file=f)
 
-    @staticmethod
-    def remove(main_bot):
-        os.remove(BotCache.file_path(main_bot))
+    def remove(self):
+        os.remove(self.path)
 
-    @staticmethod
-    def exists(main_bot):
-        return os.path.exists(BotCache.file_path(main_bot))
+    def exists(self):
+        return os.path.exists(self.path)

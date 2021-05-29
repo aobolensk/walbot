@@ -106,7 +106,7 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
-        BotCache.dump(True, {
+        BotCache(True).dump({
             "pid": os.getpid(),
             "ready": True,
         })
@@ -227,7 +227,7 @@ class WalBot(discord.Client):
 
 def start(args, main_bot=True):
     # Check whether bot is already running
-    bot_cache = BotCache.parse(main_bot)
+    bot_cache = BotCache(main_bot).parse()
     if bot_cache is not None:
         print(bot_cache)
         pid = bot_cache["pid"]
@@ -249,7 +249,7 @@ def start(args, main_bot=True):
     # Selecting YAML parser
     bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
     # Saving application pd in order to safely stop it later
-    BotCache.dump(main_bot, {
+    BotCache(main_bot).dump({
         "pid": os.getpid(),
         "ready": False,
     })
@@ -312,7 +312,7 @@ def start(args, main_bot=True):
     log.info("Bot is disconnected!")
     if main_bot:
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
-    BotCache.remove(main_bot)
+    BotCache(main_bot).remove()
     if bc.restart_flag:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../walbot.py'}' start"
         log.info("Calling: " + cmd)
@@ -328,9 +328,9 @@ def start(args, main_bot=True):
 
 
 def stop(_, main_bot=True):
-    if not BotCache.exists(main_bot):
+    if not BotCache(main_bot).exists():
         return log.error("Could not stop the bot (cache file does not exist)")
-    bot_cache = BotCache.parse(main_bot)
+    bot_cache = BotCache(main_bot).parse()
     pid = bot_cache["pid"]
     if pid is None:
         return log.error("Could not stop the bot (cache file does not contain pid)")
@@ -353,4 +353,4 @@ def stop(_, main_bot=True):
         log.info("Bot is stopped!")
     else:
         log.error("Could not stop the bot (bot is not running)")
-        BotCache.remove(main_bot)
+        BotCache(main_bot).remove()
