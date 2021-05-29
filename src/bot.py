@@ -317,7 +317,7 @@ def start(args, main_bot=True):
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
     BotCache(main_bot).remove()
     if bc.restart_flag:
-        cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../walbot.py'}' start"
+        cmd = f"'{sys.executable}' '{os.path.dirname(os.path.dirname(__file__)) + '/walbot.py'}' start"
         log.info("Calling: " + cmd)
         if sys.platform in ("linux", "darwin"):
             fork = os.fork()
