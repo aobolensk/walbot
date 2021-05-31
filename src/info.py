@@ -62,8 +62,7 @@ class BotInfo:
     def query_dependencies_info(self):
         """Get dict with walbot dependencies versions"""
         res = {}
-        ver = importlib.import_module("discord").version_info
-        res["discord.py"] = f"{ver.major}.{ver.minor}.{ver.micro} {ver.releaselevel}"
+        res["discord.py"] = importlib.import_module("discord").__version__
         res["numpy"] = importlib.import_module("numpy").__version__
         res["requests"] = importlib.import_module("requests").__version__
         res["numba"] = importlib.import_module("numba").__version__
