@@ -16,4 +16,7 @@ def start(args) -> None:
                 au = importlib.reload(au)
     except KeyboardInterrupt as e:
         au.at_failure(e)
+    except Exception as e:
+        au.at_exit()
+        raise e
     au.at_exit()
