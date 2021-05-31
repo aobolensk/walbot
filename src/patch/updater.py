@@ -14,6 +14,7 @@ class Updater:
         getattr(self, os.path.splitext(path)[0])(config)
 
     def result(self):
+        """Get updater result: was config file actually updated or not"""
         return self.modified
 
     def _bump_version(self, config, new_version):
@@ -22,6 +23,7 @@ class Updater:
         log.info(f"Successfully upgraded to version {new_version}")
 
     def config(self, config):
+        """Update config.yaml"""
         if config.version == "0.0.1":
             for key in config.commands.data.keys():
                 if not hasattr(config.commands.data[key], "times_called"):
@@ -159,6 +161,7 @@ class Updater:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
 
     def markov(self, config):
+        """Update markov.yaml"""
         if config.version == "0.0.1":
             config.__dict__["min_chars"] = 1
             config.__dict__["min_words"] = 1
@@ -183,6 +186,7 @@ class Updater:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
 
     def secret(self, config):
+        """Update secret.yaml"""
         if config.version == "0.0.1":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
