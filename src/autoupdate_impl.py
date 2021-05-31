@@ -28,7 +28,6 @@ class AutoUpdateContext:
             return log.error(
                 "Failed to find walbot git repo. Autoupdate function is available only for git repository")
 
-
     def check_versions(self) -> bool:
         import src.version as ver
         importlib.reload(ver)
