@@ -76,7 +76,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
         log.debug("Bot is not fully loaded yet. Waiting...")
 
 
-def at_start():
+def at_start() -> None:
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
         os.system(f"{sys.executable} walbot.py start --nohup &")
@@ -84,9 +84,9 @@ def at_start():
         log.debug("Bot is already started in different shell. Starting autoupdate routine.")
 
 
-def at_failure(e: Exception):
+def at_failure(e: Exception) -> None:
     os.system(f"{sys.executable} walbot.py stop")
 
 
-def at_exit():
+def at_exit() -> None:
     os.remove(const.BOT_CACHE_FILE_PATH)
