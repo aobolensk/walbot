@@ -1529,13 +1529,13 @@ class BuiltinCommands(BaseCmd):
         if number is None:
             return
         if number <= 0:
-            await Msg.response(message, "Invalid message number", silent)
-            return
+            return null(await Msg.response(message, "Invalid message number", silent))
         if number > const.MAX_MESSAGE_HISTORY_DEPTH:
-            await Msg.response(
-                message, f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
-                silent)
-            return
+            return null(
+                await Msg.response(
+                    message,
+                    f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
+                    silent))
         result = bc.message_buffer.get(message.channel.id, number)
         if result is not None:
             result = result.content
