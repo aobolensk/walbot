@@ -181,7 +181,7 @@ class MarkovCommands(BaseCmd):
         result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
-        await Msg.response(message, result, silent)
+        await Msg.response(message, result, silent, suppress_embeds=True)
 
     @staticmethod
     async def _addmarkovfilter(message, command, silent=False):
