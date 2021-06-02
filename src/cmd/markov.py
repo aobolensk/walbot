@@ -169,12 +169,16 @@ class MarkovCommands(BaseCmd):
     async def _inspectmarkov(message, command, silent=False):
         """Inspect next words in Markov model for current one
     Example: !inspectmarkov hello"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         words = bc.markov.get_next_words_list(command[1])
         skipped_words = max(0, len(words) - 100)
         result = f"Next for '{command[1]}':\n"
-        result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words[:100]])
+        amount = len(words)
+        if not (len(command) > 2 and command[2] == '-f' and
+                bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
+            words = words[:100]
+        result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
         await Msg.response(message, result, silent)
