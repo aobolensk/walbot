@@ -89,4 +89,5 @@ def at_failure(e: Exception) -> None:
 
 
 def at_exit() -> None:
-    os.remove(const.BOT_CACHE_FILE_PATH)
+    if os.path.isfile(const.BOT_CACHE_FILE_PATH):
+        os.remove(const.BOT_CACHE_FILE_PATH)

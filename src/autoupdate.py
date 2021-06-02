@@ -1,4 +1,5 @@
 import importlib
+import signal
 import time
 
 from src import const
@@ -6,6 +7,7 @@ from src import const
 
 def start(args) -> None:
     au = importlib.import_module("src.autoupdate_impl")
+    signal.signal(signal.SIGHUP, au.at_exit)
     context = au.AutoUpdateContext()
     au.at_start()
     try:
@@ -14,6 +16,7 @@ def start(args) -> None:
             is_updated = au.check_updates(context)
             if is_updated:
                 au = importlib.reload(au)
+                signal.signal(signal.SIGHUP, au.at_exit)
     except KeyboardInterrupt as e:
         au.at_failure(e)
     except Exception as e:
