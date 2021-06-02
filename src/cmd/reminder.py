@@ -13,7 +13,6 @@ from src.utils import Util, null
 class _ReminderInternals:
     @staticmethod
     async def parse_reminder_args(message, date, time, silent):
-        print(date, time)
         WEEK_DAYS_FULL = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
         WEEK_DAYS_ABBREV = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 

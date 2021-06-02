@@ -229,7 +229,6 @@ def start(args, main_bot=True):
     # Check whether bot is already running
     bot_cache = BotCache(main_bot).parse()
     if bot_cache is not None:
-        print(bot_cache)
         pid = bot_cache["pid"]
         if pid is not None and psutil.pid_exists(pid):
             return log.error("Bot is already running!")

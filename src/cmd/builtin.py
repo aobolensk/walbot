@@ -1139,7 +1139,6 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         options = ' '.join(command[1:]).split(';')
-        print(options)
         if len(options) < 2:
             return null(await Msg.response(message, "Too few options to compare", silent))
         if len(options) > 2:
@@ -1427,7 +1426,6 @@ class BuiltinCommands(BaseCmd):
         result = ""
         i = 0
         while i < len(text):
-            print(i, text[i])
             if text[i] in emoji.emoji_to_text.keys():
                 result += emoji.emoji_to_text[text[i]]
                 i += 1
