@@ -26,6 +26,7 @@ class BotController:
         self.secret_config = None
         self.yaml_dumper = None
         self.voice_client = None
+        self.voice_client_queue = []
 
 
 bc = BotController()

@@ -487,8 +487,8 @@
 **vleave**: Leave (part) voice channel \
     Usage: !vleave
 
-**vplay**: Play YT video in voice channel \
-    Usage: !vplay &lt;youtube_url&gt;
+**vqpush**: Push YT video to queue in voice channel \
+    Usage: !vqpush &lt;youtube_url&gt;
 
 **whitelist**: Bot's whitelist \
     Examples: \

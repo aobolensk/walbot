@@ -16,7 +16,9 @@ class VoiceCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "vleave",
                                      permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "vplay",
+        bc.commands.register_command(__name__, self.get_classname(), "vqpush",
+                                     permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "vq",
                                      permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
@@ -51,9 +53,9 @@ class VoiceCommands(BaseCmd):
             bc.voice_client = None
 
     @staticmethod
-    async def _vplay(message, command, silent=False):
-        """Play YT video in voice channel
-    Usage: !vplay <youtube_url>"""
+    async def _vqpush(message, command, silent=False):
+        """Push YT video to queue in voice channel
+    Usage: !vqpush <youtube_url>"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         if bc.voice_client is None:
@@ -71,19 +73,22 @@ class VoiceCommands(BaseCmd):
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
             return null(await Msg.response(message, "Please, provide YT link", silent))
-        try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                video_info = ydl.extract_info(video_url, download=False)
-                ydl.download([video_url])
-                await Msg.response(message, f"Now playing: {video_info['title']} ({video_info['id']})", silent)
-            voice_channels = message.guild.voice_channels
-            for v in voice_channels:
-                if v.id == bc.voice_client.channel.id:
-                    if bc.voice_client is not None:
-                        await bc.voice_client.disconnect()
-                        bc.voice_client = None
-                    bc.voice_client = await v.connect()
-                    break
-            bc.voice_client.play(discord.FFmpegPCMAudio(output_file_name))
-        except Exception as e:
-            await Msg.response(message, f"vplay failed: {e}", silent)
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            video_info = ydl.extract_info(video_url, download=False)
+            ydl.download([video_url])
+        bc.voice_client_queue.append((message.channel, video_info['title'], video_info['id'], output_file_name))
+        await Msg.response(
+            message,
+            f"Added {video_info['title']} ({video_info['id']}) to the queue at position #{len(bc.voice_client_queue)}",
+            silent)
+
+    @staticmethod
+    async def _vq(message, command, silent=False):
+        """List voice channel queue
+    Usage: !vq"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        result = ""
+        for index, entry in enumerate(bc.voice_client_queue):
+            result += f"{index + 1}: {entry[1]} ({entry[2]})"
+        await Msg.response(message, result, silent)
