@@ -33,7 +33,7 @@ class VoiceCommands(BaseCmd):
         for v in voice_channels:
             if v.id == voice_channel_id:
                 if bc.voice_client is not None:
-                    bc.voice_client.disconnect()
+                    await bc.voice_client.disconnect()
                     bc.voice_client = None
                 bc.voice_client = await message.guild.voice_channels[0].connect()
                 break
@@ -75,4 +75,12 @@ class VoiceCommands(BaseCmd):
             video_info = ydl.extract_info(video_url, download=False)
             ydl.download([video_url])
             await Msg.response(message, f"Now playing: {video_info['title']} ({video_info['id']})", silent)
+        voice_channels = message.guild.voice_channels
+        for v in voice_channels:
+            if v.id == bc.voice_client.channel.id:
+                if bc.voice_client is not None:
+                    await bc.voice_client.disconnect()
+                    bc.voice_client = None
+                bc.voice_client = await v.connect()
+                break
         bc.voice_client.play(discord.FFmpegPCMAudio(output_file_name))
