@@ -487,6 +487,9 @@
 **vleave**: Leave (part) voice channel \
     Usage: !vleave
 
+**vq**: List voice channel queue \
+    Usage: !vq
+
 **vqpush**: Push YT video to queue in voice channel \
     Usage: !vqpush &lt;youtube_url&gt;
 
