@@ -1,6 +1,5 @@
 import uuid
 
-import discord
 import youtube_dl
 
 from src import const
