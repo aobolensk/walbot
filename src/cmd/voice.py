@@ -70,9 +70,12 @@ class VoiceCommands(BaseCmd):
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
             return null(await Msg.response(message, "Please, provide YT link", silent))
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            video_info = ydl.extract_info(video_url, download=False)
-            ydl.download([video_url])
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                video_info = ydl.extract_info(video_url, download=False)
+                ydl.download([video_url])
+        except Exception as e:
+            await Msg.response(message, f"ERROR: Downloading failed: {e}", silent)
         bc.voice_client_queue.append((message.channel, video_info['title'], video_info['id'], output_file_name))
         await Msg.response(
             message,
