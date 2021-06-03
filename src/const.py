@@ -7,7 +7,7 @@ import src.version as ver
 def _extract_discord_lib_version_from_requirements_txt():
     with open("requirements.txt", "r") as f:
         for line in f:
-            if line.startswith("discord.py=="):
+            if line.startswith("discord.py[voice]=="):
                 return line.split('==')[1].strip()
     return "<unknown>"
 
