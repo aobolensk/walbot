@@ -86,6 +86,8 @@ class VoiceCommands(BaseCmd):
     Usage: !vq"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
+        if not bc.voice_client_queue:
+            return null(await Msg.response(message, "<Voice queue is empty>", silent))
         result = ""
         for index, entry in enumerate(bc.voice_client_queue):
             result += f"{index + 1}: {entry[1]} ({entry[2]})\n"
