@@ -1,8 +1,13 @@
+import uuid
+
+import discord
+import youtube_dl
+
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
 from src.message import Msg
-from src.utils import Util
+from src.utils import Util, null
 
 
 class VoiceCommands(BaseCmd):
@@ -10,6 +15,8 @@ class VoiceCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "vjoin",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "vleave",
+                                     permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "vplay",
                                      permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
@@ -42,3 +49,30 @@ class VoiceCommands(BaseCmd):
         if bc.voice_client is not None:
             await bc.voice_client.disconnect()
             bc.voice_client = None
+
+    @staticmethod
+    async def _vplay(message, command, silent=False):
+        """Play YT video in voice channel
+    Usage: !vplay <youtube_url>"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        if bc.voice_client is None:
+            return null(await Msg.response(message, "Bot is not connected to voice channel", silent))
+        output_file_name = f'/tmp/walbot/{uuid.uuid4().hex}.mp3'
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': output_file_name,
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+            }],
+        }
+        video_url = command[1]
+        r = const.YT_VIDEO_REGEX.match(video_url)
+        if r is None:
+            return null(await Msg.response(message, f"Please, provide YT link", silent))
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            video_info = ydl.extract_info(video_url, download=False)
+            ydl.download([video_url])
+            await Msg.response(message, f"Now playing: {video_info['title']} ({video_info['id']})", silent)
+        bc.voice_client.play(discord.FFmpegPCMAudio(output_file_name))
