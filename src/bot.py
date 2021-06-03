@@ -63,7 +63,7 @@ class WalBot(discord.Client):
             if not bc.voice_client.is_playing():
                 chan, title, id, file_name = bc.voice_client_queue[0]
                 bc.voice_client.play(discord.FFmpegPCMAudio(file_name))
-                await chan.send(f"Now playing: {title} {id}")
+                await chan.send(f"Now playing: {title} (YT: {id})")
                 bc.voice_client_queue = bc.voice_client_queue[1:]
             await asyncio.sleep(5)
 

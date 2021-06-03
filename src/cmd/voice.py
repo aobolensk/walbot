@@ -78,7 +78,8 @@ class VoiceCommands(BaseCmd):
         bc.voice_client_queue.append((message.channel, video_info['title'], video_info['id'], output_file_name))
         await Msg.response(
             message,
-            f"Added {video_info['title']} ({video_info['id']}) to the queue at position #{len(bc.voice_client_queue)}",
+            f"Added {video_info['title']} (YT: {video_info['id']}) to the queue "
+            f"at position #{len(bc.voice_client_queue)}",
             silent)
 
     @staticmethod
