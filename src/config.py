@@ -25,6 +25,7 @@ class BotController:
         self.markov = None
         self.secret_config = None
         self.yaml_dumper = None
+        self.voice_client = None
 
 
 bc = BotController()
