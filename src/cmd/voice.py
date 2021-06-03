@@ -90,5 +90,5 @@ class VoiceCommands(BaseCmd):
             return
         result = ""
         for index, entry in enumerate(bc.voice_client_queue):
-            result += f"{index + 1}: {entry[1]} ({entry[2]})"
+            result += f"{index + 1}: {entry[1]} ({entry[2]})\n"
         await Msg.response(message, result, silent)
