@@ -71,16 +71,19 @@ class VoiceCommands(BaseCmd):
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
             return null(await Msg.response(message, "Please, provide YT link", silent))
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            video_info = ydl.extract_info(video_url, download=False)
-            ydl.download([video_url])
-            await Msg.response(message, f"Now playing: {video_info['title']} ({video_info['id']})", silent)
-        voice_channels = message.guild.voice_channels
-        for v in voice_channels:
-            if v.id == bc.voice_client.channel.id:
-                if bc.voice_client is not None:
-                    await bc.voice_client.disconnect()
-                    bc.voice_client = None
-                bc.voice_client = await v.connect()
-                break
-        bc.voice_client.play(discord.FFmpegPCMAudio(output_file_name))
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                video_info = ydl.extract_info(video_url, download=False)
+                ydl.download([video_url])
+                await Msg.response(message, f"Now playing: {video_info['title']} ({video_info['id']})", silent)
+            voice_channels = message.guild.voice_channels
+            for v in voice_channels:
+                if v.id == bc.voice_client.channel.id:
+                    if bc.voice_client is not None:
+                        await bc.voice_client.disconnect()
+                        bc.voice_client = None
+                    bc.voice_client = await v.connect()
+                    break
+            bc.voice_client.play(discord.FFmpegPCMAudio(output_file_name))
+        except Exception as e:
+            await Msg.response(message, f"vplay failed: {e}", silent)
