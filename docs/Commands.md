@@ -481,6 +481,15 @@
         !version short \
     *This command can be used as subcommand*
 
+**vjoin**: Join voice channel \
+    Usage: !vjoin &lt;voice_channel_id&gt;
+
+**vleave**: Leave (part) voice channel \
+    Usage: !vleave
+
+**vplay**: Play YT video in voice channel \
+    Usage: !vplay &lt;youtube_url&gt;
+
 **whitelist**: Bot's whitelist \
     Examples: \
         !whitelist enable/disable \
