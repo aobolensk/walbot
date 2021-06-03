@@ -39,7 +39,7 @@ class VoiceCommands(BaseCmd):
                 bc.voice_client = await message.guild.voice_channels[0].connect()
                 break
         else:
-            await Msg.response(message, f"Could not find voice channel with id {voice_channel_id}", silent)
+            await Msg.response(message, f"🔊 Could not find voice channel with id {voice_channel_id}", silent)
 
     @staticmethod
     async def _vleave(message, command, silent=False):
@@ -69,17 +69,17 @@ class VoiceCommands(BaseCmd):
         video_url = command[1]
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
-            return null(await Msg.response(message, "Please, provide YT link", silent))
+            return null(await Msg.response(message, "🔊 Please, provide YT link", silent))
         try:
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 video_info = ydl.extract_info(video_url, download=False)
                 ydl.download([video_url])
         except Exception as e:
-            await Msg.response(message, f"ERROR: Downloading failed: {e}", silent)
+            await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent)
         bc.voice_client_queue.append((message.channel, video_info['title'], video_info['id'], output_file_name))
         await Msg.response(
             message,
-            f"Added {video_info['title']} (YT: {video_info['id']}) to the queue "
+            f"🔊 Added {video_info['title']} (YT: {video_info['id']}) to the queue "
             f"at position #{len(bc.voice_client_queue)}",
             silent)
 
@@ -91,7 +91,7 @@ class VoiceCommands(BaseCmd):
             return
         if not bc.voice_client_queue:
             return null(await Msg.response(message, "<Voice queue is empty>", silent))
-        result = ""
+        result = "🔊 Voice channel queue:"
         for index, entry in enumerate(bc.voice_client_queue):
             result += f"{index + 1}: {entry[1]} ({entry[2]})\n"
         await Msg.response(message, result, silent)
