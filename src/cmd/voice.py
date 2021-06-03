@@ -57,8 +57,6 @@ class VoiceCommands(BaseCmd):
     Usage: !vqpush <youtube_url>"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        if bc.voice_client is None:
-            return null(await Msg.response(message, "Bot is not connected to voice channel", silent))
         output_file_name = f'/tmp/walbot/{uuid.uuid4().hex}.mp3'
         ydl_opts = {
             'format': 'bestaudio/best',
