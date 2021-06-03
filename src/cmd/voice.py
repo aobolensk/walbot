@@ -70,7 +70,7 @@ class VoiceCommands(BaseCmd):
         video_url = command[1]
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
-            return null(await Msg.response(message, f"Please, provide YT link", silent))
+            return null(await Msg.response(message, "Please, provide YT link", silent))
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             video_info = ydl.extract_info(video_url, download=False)
             ydl.download([video_url])
