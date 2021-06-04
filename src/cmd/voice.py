@@ -36,7 +36,7 @@ class VoiceCommands(BaseCmd):
                 if bc.voice_client is not None:
                     await bc.voice_client.disconnect()
                     bc.voice_client = None
-                bc.voice_client = await message.guild.voice_channels[0].connect()
+                bc.voice_client = await v.connect()
                 break
         else:
             await Msg.response(message, f"🔊 Could not find voice channel with id {voice_channel_id}", silent)
