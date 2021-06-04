@@ -7,6 +7,7 @@ from src.commands import BaseCmd
 from src.config import bc
 from src.message import Msg
 from src.utils import Util, null
+from src.voice import VoiceQueueEntry
 
 
 class VoiceCommands(BaseCmd):
@@ -76,7 +77,8 @@ class VoiceCommands(BaseCmd):
                 ydl.download([video_url])
         except Exception as e:
             await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent)
-        bc.voice_client_queue.append((message.channel, video_info['title'], video_info['id'], output_file_name))
+        bc.voice_client_queue.append(VoiceQueueEntry(
+            message.channel, video_info['title'], video_info['id'], output_file_name, message.author.name))
         await Msg.response(
             message,
             f"🔊 Added {video_info['title']} (YT: {video_info['id']}) to the queue "
@@ -91,7 +93,7 @@ class VoiceCommands(BaseCmd):
             return
         if not bc.voice_client_queue:
             return null(await Msg.response(message, "<Voice queue is empty>", silent))
-        result = "🔊 Voice channel queue:"
+        result = "🔊 Voice channel queue:\n"
         for index, entry in enumerate(bc.voice_client_queue):
             result += f"{index + 1}: {entry[1]} ({entry[2]})\n"
         await Msg.response(message, result, silent)
