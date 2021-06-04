@@ -9,8 +9,21 @@ from src.log import log
 
 
 class BotCache:
+    _state = {
+        "pid": os.getpid(),
+        "ready": False,
+        "do_not_update": False,
+    }
+
+    def get_state(self) -> dict:
+        return self._state
+
     def __init__(self, main_bot) -> None:
         self.path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
+
+    def update(self, upd_dict):
+        for key, value in upd_dict.items():
+            self._state[key] = value
 
     def parse(self) -> Optional[Dict]:
         if os.path.exists(self.path):
@@ -24,9 +37,9 @@ class BotCache:
                     return
                 return cache
 
-    def dump(self, cache_dict) -> None:
+    def dump_to_file(self) -> None:
         with open(self.path, 'w') as f:
-            json.dump(cache_dict, f)
+            json.dump(self._state, f)
 
     def remove(self) -> None:
         os.remove(self.path)

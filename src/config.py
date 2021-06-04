@@ -27,6 +27,9 @@ class BotController:
         self.yaml_dumper = None
         self.voice_client = None
         self.voice_client_queue = []
+        # Do not autoupdate flags:
+        self.voice_do_not_update = False
+        self.reminder_do_not_update = False
 
 
 bc = BotController()

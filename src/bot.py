@@ -35,6 +35,7 @@ class WalBot(discord.Client):
         self.loop.create_task(self.process_reminders())
         self.loop.create_task(self._precompile())
         self.loop.create_task(self.voice_routine())
+        self.bot_cache = BotCache(True)
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -52,8 +53,18 @@ class WalBot(discord.Client):
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
 
+    async def update_autoupdate_flag(self, current_autoupdate_flag):
+        if current_autoupdate_flag != self.bot_cache.get_state()["do_not_update"]:
+            self.bot_cache.update({"do_not_update": current_autoupdate_flag})
+            self.bot_cache.dump_to_file()
+
     async def voice_routine(self):
         while True:
+            if bc.voice_client:
+                bc.voice_do_not_update = True
+            else:
+                bc.voice_do_not_update = False
+            await self.update_autoupdate_flag(bc.voice_do_not_update or bc.reminder_do_not_update)
             if bc.voice_client is None or not bc.voice_client_queue or bc.voice_client.is_playing():
                 await asyncio.sleep(5)
                 continue
@@ -92,6 +103,7 @@ class WalBot(discord.Client):
             now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_TIME_FORMAT)
             to_remove = []
             to_append = []
+            reminder_do_not_update_flag = False
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
@@ -111,6 +123,11 @@ class WalBot(discord.Client):
                 elif rem < now:
                     log.debug2(f"Scheduled reminder with id {key} removal")
                     to_remove.append(key)
+                else:
+                    if ((datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) - datetime.datetime.now())
+                            < datetime.timedelta(minutes=5)):
+                        reminder_do_not_update_flag = True
+            bc.reminder_do_not_update = reminder_do_not_update_flag
             for key in to_remove:
                 self.config.reminders.pop(key)
             for item in to_append:
@@ -122,10 +139,10 @@ class WalBot(discord.Client):
 
     async def on_ready(self):
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
-        BotCache(True).dump({
-            "pid": os.getpid(),
+        self.bot_cache.update({
             "ready": True,
         })
+        self.bot_cache.dump_to_file()
         if sys.platform == "win32":
             log.warning("REPL is disabled on Windows for now")
         else:
@@ -264,10 +281,7 @@ def start(args, main_bot=True):
     # Selecting YAML parser
     bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
     # Saving application pd in order to safely stop it later
-    BotCache(main_bot).dump({
-        "pid": os.getpid(),
-        "ready": False,
-    })
+    BotCache(main_bot).dump_to_file()
     # Executing patch tool if it is necessary
     if args.patch:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
