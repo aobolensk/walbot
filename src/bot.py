@@ -57,7 +57,6 @@ class WalBot(discord.Client):
             if bc.voice_client is None or not bc.voice_client_queue or bc.voice_client.is_playing():
                 await asyncio.sleep(5)
                 continue
-            print(bc.voice_client.is_connected())
             if not bc.voice_client.is_connected():
                 await bc.voice_client.connect()
             if not bc.voice_client.is_playing():
