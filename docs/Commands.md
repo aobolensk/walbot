@@ -493,6 +493,9 @@
 **vqpush**: Push YT video to queue in voice channel \
     Usage: !vqpush &lt;youtube_url&gt;
 
+**vqskip**: Skip current track in voice queue \
+    Usage: !vqskip
+
 **whitelist**: Bot's whitelist \
     Examples: \
         !whitelist enable/disable \

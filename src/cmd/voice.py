@@ -18,6 +18,8 @@ class VoiceCommands(BaseCmd):
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "vqpush",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "vqskip",
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "vq",
                                      permission=const.Permission.USER.value, subcommand=False)
 
@@ -86,6 +88,15 @@ class VoiceCommands(BaseCmd):
             silent)
 
     @staticmethod
+    async def _vqskip(message, command, silent=False):
+        """Skip current track in voice queue
+    Usage: !vqskip"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        if bc.voice_client is not None:
+            bc.voice_client.stop()
+
+    @staticmethod
     async def _vq(message, command, silent=False):
         """List voice channel queue
     Usage: !vq"""
@@ -95,5 +106,5 @@ class VoiceCommands(BaseCmd):
             return null(await Msg.response(message, "<Voice queue is empty>", silent))
         result = "🔊 Voice channel queue:\n"
         for index, entry in enumerate(bc.voice_client_queue):
-            result += f"{index + 1}: {entry[1]} ({entry[2]})\n"
+            result += f"{index + 1}: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}\n"
         await Msg.response(message, result, silent)
