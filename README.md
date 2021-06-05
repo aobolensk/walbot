@@ -26,6 +26,7 @@ $ python walbot.py docs           # Generate commands documentation
 $ python walbot.py autoupdate
 $ python walbot.py start --autoupdate
 
+# Run tests and tools
 $ python walbot.py test           # Run walbot tests
 $ python walbot.py patch          # Patch config files
 $ python walbot.py mexplorer      # Run Markov model explorer
