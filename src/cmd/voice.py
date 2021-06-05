@@ -7,6 +7,7 @@ import youtube_dl
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
+from src.log import log
 from src.message import Msg
 from src.utils import Util, null
 from src.voice import VoiceQueueEntry
@@ -41,9 +42,13 @@ class VoiceCommands(BaseCmd):
         for v in voice_channels:
             if v.id == voice_channel_id:
                 if bc.voice_client is not None:
+                    log.debug("Disconnecting from previous voice channel...")
                     await bc.voice_client.disconnect()
+                    log.debug("Disconnected from previous voice channel")
                     bc.voice_client = None
+                log.debug(f"Connecting to the voice channel {voice_channel_id}...")
                 bc.voice_client = await v.connect()
+                log.debug("Connected to the voice channel")
                 break
         else:
             await Msg.response(message, f"🔊 Could not find voice channel with id {voice_channel_id}", silent)
@@ -55,8 +60,12 @@ class VoiceCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         if bc.voice_client is not None:
+            log.debug("Leaving previous voice channel...")
             await bc.voice_client.disconnect()
+            log.debug("Left previous voice channel")
             bc.voice_client = None
+        else:
+            log.debug("No previous voice channel to leave")
 
     @staticmethod
     async def _vqpush(message, command, silent=False):
@@ -99,6 +108,9 @@ class VoiceCommands(BaseCmd):
             return
         if bc.voice_client is not None:
             bc.voice_client.stop()
+            log.debug("Skipped current voice queue entry")
+        else:
+            log.debug("Nothing to skip")
 
     @staticmethod
     async def _vq(message, command, silent=False):
