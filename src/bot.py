@@ -82,15 +82,7 @@ class WalBot(discord.Client):
                         log.error(f"Failed to connect: {e}")
                     log.debug("Connecting voice channel (1/2)...")
                 else:
-                    try:
-                        chan = bc.voice_client.channel
-                        log.debug("Reconnecting voice channel (1/2)...")
-                        await bc.voice_client.disconnect()
-                        log.debug("Reconnecting voice channel (2/2)...")
-                        bc.voice_client = await chan.connect()
-                        log.debug("Reconnected voice channel")
-                    except Exception as e:
-                        log.error(f"ERROR: Failed to reconnect the channel: {e}")
+                    pass
                 if not bc.voice_client.is_playing():
                     entry = bc.voice_client_queue[0]
                     try:
