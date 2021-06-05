@@ -63,11 +63,6 @@ class WalBot(discord.Client):
         voice_client_queue_disconnect_counter = 0
 
         while True:
-            log.debug(
-                "Voice routine: "
-                f"{bc.voice_client is None} "
-                f"{not bc.voice_client_queue} "
-                f"{bc.voice_client.is_playing() if bc.voice_client else None}")
             if bc.voice_client:
                 bc.voice_do_not_update = True
             else:
