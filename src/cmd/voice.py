@@ -50,7 +50,7 @@ class VoiceCommands(BaseCmd):
                 try:
                     bc.voice_client = await v.connect()
                 except Exception as e:
-                    await Msg.response(message, f"ERROR: Failed to connect: {e}", silent)
+                    return null(await Msg.response(message, f"ERROR: Failed to connect: {e}", silent))
                 log.debug("Connected to the voice channel")
                 break
         else:
@@ -101,7 +101,7 @@ class VoiceCommands(BaseCmd):
                     else:
                         log.debug(f"Found in cache: {video_url}")
             except Exception as e:
-                await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent)
+                return null(await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent))
             bc.voice_client_queue.append(VoiceQueueEntry(
                 message.channel, video_info['title'], video_info['id'], output_file_name, message.author.name))
             await Msg.response(
@@ -153,7 +153,7 @@ class VoiceCommands(BaseCmd):
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
-            await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent)
+            return null(await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent))
         ud = info['upload_date']
         yt_info_embed_dict = {
             "title": info['title'],
