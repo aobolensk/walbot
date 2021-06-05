@@ -146,10 +146,14 @@ class VoiceCommands(BaseCmd):
                 "url": info['thumbnail']
             },
             "fields": [
-                { "name": "Likes", "value": f"{info['like_count']}", "inline": True },
-                { "name": "Dislikes", "value": f"{info['dislike_count']}", "inline": True },
-                { "name": "Channel", "value": f"[{info['uploader']}]({info['uploader_url']})", "inline": True },
-                { "name": "Uploaded", "value": f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", "inline": True },
+                {"name": "Likes", "value": f"{info['like_count']}", "inline": True},
+                {"name": "Dislikes", "value": f"{info['dislike_count']}", "inline": True},
+                {"name": "Channel", "value": f"[{info['uploader']}]({info['uploader_url']})", "inline": True},
+                {
+                    "name": "Uploaded",
+                    "value": f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}",
+                    "inline": True
+                },
             ]
         }
         await Msg.response(message, "", silent, embed=discord.Embed.from_dict(yt_info_embed_dict))
