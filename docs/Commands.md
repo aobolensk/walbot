@@ -504,3 +504,6 @@
 
 **wme**: Send direct message to author with something \
     Example: !wme Hello!
+
+**ytinfo**: Print info about YT video \
+    Usage: !ytinfo &lt;youtube_url&gt;

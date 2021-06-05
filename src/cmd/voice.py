@@ -1,5 +1,7 @@
+import datetime
 import uuid
 
+import discord
 import youtube_dl
 
 from src import const
@@ -21,6 +23,8 @@ class VoiceCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "vqskip",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "vq",
+                                     permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "ytinfo",
                                      permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
@@ -108,3 +112,44 @@ class VoiceCommands(BaseCmd):
         for index, entry in enumerate(bc.voice_client_queue):
             result += f"{index + 1}: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}\n"
         await Msg.response(message, result, silent)
+
+    @staticmethod
+    async def _ytinfo(message, command, silent=False):
+        """Print info about YT video
+    Usage: !ytinfo <youtube_url>"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        video_url = command[1]
+        r = const.YT_VIDEO_REGEX.match(video_url)
+        if r is None:
+            return null(await Msg.response(message, "Please, provide valid YT link", silent))
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': "1.mp3",
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+            }],
+        }
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(video_url, download=False)
+        except Exception as e:
+            await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent)
+        ud = info['upload_date']
+        yt_info_embed_dict = {
+            "title": info['title'],
+            "description": info['description'][:2048],
+            "url": info['webpage_url'],
+            "color": 0xcc1818,
+            "thumbnail": {
+                "url": info['thumbnail']
+            },
+            "fields": [
+                { "name": "Likes", "value": f"{info['like_count']}", "inline": True },
+                { "name": "Dislikes", "value": f"{info['dislike_count']}", "inline": True },
+                { "name": "Channel", "value": f"[{info['uploader']}]({info['uploader_url']})", "inline": True },
+                { "name": "Uploaded", "value": f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", "inline": True },
+            ]
+        }
+        await Msg.response(message, "", silent, embed=discord.Embed.from_dict(yt_info_embed_dict))
