@@ -60,6 +60,12 @@ def check_updates(context: AutoUpdateContext) -> bool:
         else:
             raise e
     bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
+    if bot_cache is None:
+        return log.warning("Could not read bot cache. Skipping this cycle, will try to update on the next one")
+    if "do_not_update" not in bot_cache.keys():
+        return log.warning(
+            "Could not find 'do_not_update' field in bot cache. "
+            "Skipping this cycle, will try to update on the next one")
     if bot_cache["do_not_update"]:
         return log.debug("Automatic update is not permitted. Skipping this cycle, will try to update on the next one")
     os.system(f"{sys.executable} -m pip install -r requirements.txt")
