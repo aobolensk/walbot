@@ -138,8 +138,10 @@ class VoiceCommands(BaseCmd):
     @staticmethod
     async def _ytinfo(message, command, silent=False):
         """Print info about YT video
-    Usage: !ytinfo <youtube_url>"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+    Usage:
+        !ytinfo <youtube_url>
+        !ytinfo <youtube_url> -f  <- full description"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         video_url = command[1]
         r = const.YT_VIDEO_REGEX.match(video_url)
@@ -161,7 +163,7 @@ class VoiceCommands(BaseCmd):
         ud = info['upload_date']
         yt_info_embed_dict = {
             "title": info['title'],
-            "description": info['description'][:2048],
+            "description": (info['description'][:2048] if len(command) > 2 and command[2] == "-f" else ""),
             "url": info['webpage_url'],
             "color": 0xcc1818,
             "thumbnail": {

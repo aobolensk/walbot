@@ -506,4 +506,6 @@
     Example: !wme Hello!
 
 **ytinfo**: Print info about YT video \
-    Usage: !ytinfo &lt;youtube_url&gt;
+    Usage: \
+        !ytinfo &lt;youtube_url&gt; \
+        !ytinfo &lt;youtube_url&gt; -f  &lt;- full description
