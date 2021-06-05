@@ -43,11 +43,8 @@ Commands tutorial: [Read](docs/CommandsTutorial.md)
 
 Debian/Ubuntu:
 ```console
-$ sudo apt install python3-yaml
-```
-Arch Linux/Manjaro:
-```console
-$ sudo pacman -S python-yaml
+$ sudo apt install python3-yaml    # Debian/Ubuntu
+$ sudo pacman -S python-yaml       # Arch Linux/Manjaro
 ```
 Alternative:
 ```console
