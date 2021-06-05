@@ -59,6 +59,9 @@ class WalBot(discord.Client):
             self.bot_cache.dump_to_file()
 
     async def voice_routine(self):
+        # Disconnect if bot is inactive in voice channel
+        voice_client_queue_disconnect_counter = 0
+
         while True:
             log.debug(
                 "Voice routine: "
@@ -71,6 +74,17 @@ class WalBot(discord.Client):
                 bc.voice_do_not_update = False
             await self.update_autoupdate_flag(bc.voice_do_not_update or bc.reminder_do_not_update)
             try:
+                if bc.voice_client is not None and not bc.voice_client_queue and not bc.voice_client.is_playing():
+                    voice_client_queue_disconnect_counter += 1
+                    if voice_client_queue_disconnect_counter >= 5:
+                        log.debug("Queue is empty. Disconnecting...")
+                        await bc.voice_client.disconnect()
+                        log.debug("Disconnected due to empty queue")
+                        bc.voice_client = None
+                        voice_client_queue_disconnect_counter = 0
+                        continue
+                else:
+                    voice_client_queue_disconnect_counter = 0
                 if bc.voice_client is None or not bc.voice_client_queue or bc.voice_client.is_playing():
                     await asyncio.sleep(5)
                     continue
