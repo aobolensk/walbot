@@ -84,7 +84,7 @@ class WalBot(discord.Client):
                     bc.voice_client = await chan.connect()
                     log.debug("Reconnected voice channel")
                 except Exception as e:
-                    await entry.channel.send(f"ERROR: Failed to reconnect the channel: {e}")
+                    log.error(f"ERROR: Failed to reconnect the channel: {e}")
             if not bc.voice_client.is_playing():
                 entry = bc.voice_client_queue[0]
                 try:
