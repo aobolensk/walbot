@@ -148,12 +148,6 @@ class VoiceCommands(BaseCmd):
         if r is None:
             return null(await Msg.response(message, "Please, provide valid YT link", silent))
         ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': "1.mp3",
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-            }],
         }
         try:
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
