@@ -70,31 +70,39 @@ class WalBot(discord.Client):
             else:
                 bc.voice_do_not_update = False
             await self.update_autoupdate_flag(bc.voice_do_not_update or bc.reminder_do_not_update)
-            if bc.voice_client is None or not bc.voice_client_queue or bc.voice_client.is_playing():
-                await asyncio.sleep(5)
-                continue
-            if not bc.voice_client.is_connected():
-                await bc.voice_client.connect()
-            else:
-                try:
-                    chan = bc.voice_client.channel
-                    log.debug("Reconnecting voice channel (1/2)...")
-                    await bc.voice_client.disconnect()
-                    log.debug("Reconnecting voice channel (2/2)...")
-                    bc.voice_client = await chan.connect()
-                    log.debug("Reconnected voice channel")
-                except Exception as e:
-                    log.error(f"ERROR: Failed to reconnect the channel: {e}")
-            if not bc.voice_client.is_playing():
-                entry = bc.voice_client_queue[0]
-                try:
-                    log.debug(f"Started to play {entry.file_name}")
-                    bc.voice_client.play(discord.FFmpegPCMAudio(entry.file_name))
-                except Exception as e:
-                    await entry.channel.send(f"ERROR: Failed to play: {e}")
-                await entry.channel.send(
-                    f"🔊 Now playing: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}")
-                bc.voice_client_queue = bc.voice_client_queue[1:]
+            try:
+                if bc.voice_client is None or not bc.voice_client_queue or bc.voice_client.is_playing():
+                    await asyncio.sleep(5)
+                    continue
+                if not bc.voice_client.is_connected():
+                    log.debug("Connecting voice channel (1/2)...")
+                    try:
+                        await bc.voice_client.connect()
+                    except Exception as e:
+                        log.error(f"Failed to connect: {e}")
+                    log.debug("Connecting voice channel (1/2)...")
+                else:
+                    try:
+                        chan = bc.voice_client.channel
+                        log.debug("Reconnecting voice channel (1/2)...")
+                        await bc.voice_client.disconnect()
+                        log.debug("Reconnecting voice channel (2/2)...")
+                        bc.voice_client = await chan.connect()
+                        log.debug("Reconnected voice channel")
+                    except Exception as e:
+                        log.error(f"ERROR: Failed to reconnect the channel: {e}")
+                if not bc.voice_client.is_playing():
+                    entry = bc.voice_client_queue[0]
+                    try:
+                        log.debug(f"Started to play {entry.file_name}")
+                        bc.voice_client.play(discord.FFmpegPCMAudio(entry.file_name))
+                    except Exception as e:
+                        await entry.channel.send(f"ERROR: Failed to play: {e}")
+                    await entry.channel.send(
+                        f"🔊 Now playing: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}")
+                    bc.voice_client_queue = bc.voice_client_queue[1:]
+            except Exception as e:
+                log.error(f"voice_routine logic failed: {e}")
             await asyncio.sleep(5)
 
     async def _precompile(self):
