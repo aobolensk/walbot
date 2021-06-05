@@ -327,6 +327,8 @@ class Config:
             except Exception:
                 log.error("yaml.dump failed", exc_info=True)
         secret_config_mutex.release()
+        if bc.voice_do_not_update:
+            return log.info("Markov module save is skipped since bot is in voice channel")
         markov_mutex = threading.Lock()
         markov_mutex.acquire()
         log.info("Saving of Markov module data is started")
