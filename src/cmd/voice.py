@@ -168,6 +168,7 @@ class VoiceCommands(BaseCmd):
                 "url": info['thumbnail']
             },
             "fields": [
+                {"name": "Views", "value": f"{info['view_count']}", "inline": True},
                 {"name": "Likes", "value": f"{info['like_count']}", "inline": True},
                 {"name": "Dislikes", "value": f"{info['dislike_count']}", "inline": True},
                 {"name": "Channel", "value": f"[{info['uploader']}]({info['uploader_url']})", "inline": True},
@@ -176,6 +177,7 @@ class VoiceCommands(BaseCmd):
                     "value": f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}",
                     "inline": True
                 },
+                {"name": "Duration", "value": f"{datetime.timedelta(seconds=info['duration'])}", "inline": True},
             ]
         }
         await Msg.response(message, "", silent, embed=discord.Embed.from_dict(yt_info_embed_dict))
