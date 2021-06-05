@@ -41,7 +41,6 @@ Commands tutorial: [Read](docs/CommandsTutorial.md)
 
 ### How to setup fast YAML loader and dumper?
 
-Debian/Ubuntu:
 ```console
 $ sudo apt install python3-yaml    # Debian/Ubuntu
 $ sudo pacman -S python-yaml       # Arch Linux/Manjaro
