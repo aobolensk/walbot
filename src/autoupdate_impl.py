@@ -47,6 +47,10 @@ class AutoUpdateContext:
 
 def check_updates(context: AutoUpdateContext) -> bool:
     old_sha = context.repo.head.object.hexsha
+    try:
+        context.repo.remotes.origin.fetch()
+    except Exception as e:
+        return log.error(f"Fetch failed: {e}. Skipping this cycle, will try to update on the next one")
     new_sha = context.repo.remotes.origin.refs['master'].object.name_rev.split()[0]
     log.debug(f"{old_sha} {new_sha}")
     if old_sha == new_sha:
