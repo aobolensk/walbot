@@ -1497,11 +1497,15 @@ class BuiltinCommands(BaseCmd):
                     try:
                         with urllib.request.urlopen(rq) as response:
                             temp_image_file.write(response.read())
-                        with open(temp_image_file.name, "rb") as temp_image_file:
-                            await bc.bot_user.edit(avatar=temp_image_file.read())
                     except Exception as e:
                         log.error("Image downloading failed!", exc_info=True)
                         return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
+                    try:
+                        with open(temp_image_file.name, "rb") as temp_image_file:
+                            await bc.bot_user.edit(avatar=temp_image_file.read())
+                    except Exception as e:
+                        log.error("Changing avatar failed!", exc_info=True)
+                        return null(await Msg.response(message, f"Changing avatar failed: {e}", silent))
                 return null(await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent))
         min_dist = 100000
         suggestion = ""
