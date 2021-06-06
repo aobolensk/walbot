@@ -13,7 +13,7 @@ import yaml
 from src import const
 from src.log import log
 from src.message import Msg
-from src.utils import Util
+from src.utils import Util, null
 
 
 class BotController:
@@ -132,15 +132,12 @@ class Command:
 
     async def run(self, message, command, user, silent=False):
         if len(inspect.stack(0)) >= const.MAX_SUBCOMMAND_DEPTH:
-            await message.channel.send("ERROR: Maximum subcommand depth is reached!")
-            return
+            return null(await message.channel.send("ERROR: Maximum subcommand depth is reached!"))
         log.debug(f"Processing command: {message.content}")
         if not self.is_available(message.channel.id):
-            await message.channel.send(f"Command '{command[0]}' is not available in this channel")
-            return
+            return null(await message.channel.send(f"Command '{command[0]}' is not available in this channel"))
         if user is not None and self.permission > user.permission_level:
-            await message.channel.send(f"You don't have permission to call command '{command[0]}'")
-            return
+            return null(await message.channel.send(f"You don't have permission to call command '{command[0]}'"))
         self.times_called += 1
         postpone_execution = [
             "addcmd",
