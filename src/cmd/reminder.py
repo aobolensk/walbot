@@ -80,12 +80,13 @@ class _ReminderInternals:
                 dateutil.relativedelta.relativedelta(years=years_amount), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
-            time = datetime.datetime.strptime(time, const.REMINDER_TIME_FORMAT).strftime(const.REMINDER_TIME_FORMAT)
+            time = datetime.datetime.strptime(
+                time, const.REMINDER_DATETIME_FORMAT).strftime(const.REMINDER_DATETIME_FORMAT)
         except ValueError:
             return null(
                 await Msg.response(
                     message,
-                    f"{time} does not match format {const.REMINDER_TIME_FORMAT}\n"
+                    f"{time} does not match format {const.REMINDER_DATETIME_FORMAT}\n"
                     "More information about format: <https://strftime.org/>", silent))
         return time
 
@@ -103,7 +104,7 @@ class _ReminderInternals:
         hours = int(r.group(6)) if r.group(6) is not None else 0
         minutes = int(r.group(8)) if r.group(8) is not None else 0
         time = (datetime.datetime.now() + datetime.timedelta(
-            weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_TIME_FORMAT)
+            weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_DATETIME_FORMAT)
         return time
 
 
@@ -181,11 +182,11 @@ class ReminderCommands(BaseCmd):
         if time is None:
             return
         id_ = bc.config.ids["reminder"]
-        if datetime.datetime.strptime(str(time), const.REMINDER_TIME_FORMAT) < datetime.datetime.now():
+        if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
             return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
         bc.config.reminders[id_] = Reminder(
             str(time), text, message.channel.id, message.author.name,
-            datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
+            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT))
         bc.config.ids["reminder"] += 1
         await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
 
@@ -221,11 +222,11 @@ class ReminderCommands(BaseCmd):
                 time = await _ReminderInternals.parse_reminder_args(message, command[2], command[3], silent)
             if time is None:
                 return
-            if datetime.datetime.strptime(str(time), const.REMINDER_TIME_FORMAT) < datetime.datetime.now():
+            if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
                 return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
             bc.config.reminders[index] = Reminder(
                 str(time), text, message.channel.id, bc.config.reminders[index].author,
-                datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
+                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT))
             await Msg.response(
                 message, f"Successfully updated reminder {index}: '{text}' at {time}", silent)
         else:
@@ -409,12 +410,12 @@ class ReminderCommands(BaseCmd):
             return null(await Msg.response(message, "This reminder is not recurring!", silent))
         rem = bc.config.reminders[index]
         new_time = datetime.datetime.strftime(
-            datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) +
-            rem.get_next_event_delta(), const.REMINDER_TIME_FORMAT)
+            datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) +
+            rem.get_next_event_delta(), const.REMINDER_DATETIME_FORMAT)
         id_ = bc.config.ids["reminder"]
         bc.config.reminders[id_] = Reminder(
             str(new_time), rem.message, message.channel.id, bc.config.reminders[index].author,
-            datetime.datetime.now().strftime(const.REMINDER_TIME_FORMAT))
+            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT))
         bc.config.reminders[id_].repeat_after = rem.repeat_after
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
@@ -435,7 +436,7 @@ class ReminderCommands(BaseCmd):
         if index not in bc.config.reminders.keys():
             return null(await Msg.response(message, "Invalid index of reminder!", silent))
         rem = bc.config.reminders[index]
-        rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) - datetime.datetime.now()
+        rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now()
         if rem_time < datetime.timedelta(days=1):
             rem_time = "0 days, " + rem_time
         result = f"Time until reminder {index} ('{rem.message}') is {rem_time}"

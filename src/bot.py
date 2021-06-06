@@ -127,7 +127,7 @@ class WalBot(discord.Client):
         await self.wait_until_ready()
         while not self.is_closed():
             log.debug3("Reminder processing iteration has started")
-            now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_TIME_FORMAT)
+            now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
             to_remove = []
             to_append = []
             reminder_do_not_update_flag = False
@@ -140,7 +140,7 @@ class WalBot(discord.Client):
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                     if rem.repeat_after > 0:
                         new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
-                        new_time = new_time.strftime(const.REMINDER_TIME_FORMAT)
+                        new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
                         to_append.append(
                             Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
                         to_append[-1].repeat_after = rem.repeat_after
@@ -151,7 +151,7 @@ class WalBot(discord.Client):
                     log.debug2(f"Scheduled reminder with id {key} removal")
                     to_remove.append(key)
                 else:
-                    if ((datetime.datetime.strptime(rem.time, const.REMINDER_TIME_FORMAT) - datetime.datetime.now())
+                    if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
                             < datetime.timedelta(minutes=5)):
                         reminder_do_not_update_flag = True
             bc.reminder_do_not_update = reminder_do_not_update_flag

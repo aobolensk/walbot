@@ -134,7 +134,7 @@ class Updater:
         if config.version == "0.0.19":
             for index in config.reminders.keys():
                 config.reminders[index].__dict__["time_created"] = (
-                    datetime.datetime(1970, 1, 1).strftime(const.REMINDER_TIME_FORMAT))
+                    datetime.datetime(1970, 1, 1).strftime(const.REMINDER_DATETIME_FORMAT))
             self._bump_version(config, "0.0.20")
         if config.version == "0.0.20":
             for key in config.commands.data.keys():
