@@ -55,14 +55,6 @@ def check_updates(context: AutoUpdateContext) -> bool:
     log.debug(f"{old_sha} {new_sha}")
     if old_sha == new_sha:
         return log.debug("No new updates")
-    try:
-        g = git.cmd.Git(os.getcwd())
-        g.pull()
-    except git.exc.GitCommandError as e:
-        if "Connection timed out" in e.stderr or "Could not resolve host" in e.stderr:
-            log.warning(f"{e.command}: {e.stderr}")
-        else:
-            raise e
     bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
     if bot_cache is None:
         return log.warning("Could not read bot cache. Skipping this cycle, will try to update on the next one")
@@ -72,6 +64,14 @@ def check_updates(context: AutoUpdateContext) -> bool:
             "Skipping this cycle, will try to update on the next one")
     if bot_cache["do_not_update"]:
         return log.debug("Automatic update is not permitted. Skipping this cycle, will try to update on the next one")
+    try:
+        g = git.cmd.Git(os.getcwd())
+        g.pull()
+    except git.exc.GitCommandError as e:
+        if "Connection timed out" in e.stderr or "Could not resolve host" in e.stderr:
+            log.warning(f"{e.command}: {e.stderr}")
+        else:
+            raise e
     os.system(f"{sys.executable} -m pip install -r requirements.txt")
     minibot_response = "WalBot automatic update is in progress. Please, wait..."
     os.system(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &")
