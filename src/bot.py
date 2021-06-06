@@ -71,7 +71,7 @@ class WalBot(discord.Client):
             try:
                 if bc.voice_client is not None and not bc.voice_client_queue and not bc.voice_client.is_playing():
                     voice_client_queue_disconnect_counter += 1
-                    if voice_client_queue_disconnect_counter >= 5:
+                    if voice_client_queue_disconnect_counter >= 10:
                         log.debug("Queue is empty. Disconnecting...")
                         await bc.voice_client.disconnect()
                         log.debug("Disconnected due to empty queue")
