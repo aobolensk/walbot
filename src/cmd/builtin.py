@@ -1032,9 +1032,12 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _addbgevent(message, command, silent=False):
         """Add background event
-    Example: !addbgevent 60 ping"""
+    Example: !addbgevent 60 ping
+    Note: This command is *deprecated*"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
+        await Msg.response(
+            message, "⚠️ WARN: Background events are deprecated and may be removed at any moment", silent)
         duration = await Util.parse_int(
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
         if duration is None:
@@ -1047,9 +1050,12 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _listbgevent(message, command, silent=False):
         """Print list of background events
-    Example: !listbgevent"""
+    Example: !listbgevent
+    Note: This command is *deprecated*"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
+        await Msg.response(
+            message, "⚠️ WARN: Background events are deprecated and may be removed at any moment", silent)
         result = ""
         for index, event in enumerate(bc.background_events):
             result += (f"{index}: '{event.message.content}' every {event.period} seconds,"
@@ -1063,9 +1069,12 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _delbgevent(message, command, silent=False):
         """Delete background event
-    Example: !delbgevent 0"""
+    Example: !delbgevent 0
+    Note: This command is *deprecated*"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
+        await Msg.response(
+            message, "⚠️ WARN: Background events are deprecated and may be removed at any moment", silent)
         index = await Util.parse_int(
             message, command[1], f"Second parameter for '{command[0]}' should be an index of background event", silent)
         if index is None:
