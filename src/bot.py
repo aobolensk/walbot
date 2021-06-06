@@ -93,7 +93,7 @@ class WalBot(discord.Client):
                 else:
                     pass
                 if not bc.voice_client.is_playing():
-                    entry = bc.voice_client_queue[0]
+                    entry = bc.voice_client_queue.popleft()
                     try:
                         log.debug(f"Started to play {entry.file_name}")
                         bc.voice_client.play(discord.FFmpegPCMAudio(entry.file_name))
@@ -101,7 +101,6 @@ class WalBot(discord.Client):
                         await entry.channel.send(f"ERROR: Failed to play: {e}")
                     await entry.channel.send(
                         f"🔊 Now playing: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}")
-                    bc.voice_client_queue = bc.voice_client_queue[1:]
             except Exception as e:
                 log.error(f"voice_routine logic failed: {e}")
             await asyncio.sleep(5)

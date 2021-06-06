@@ -6,6 +6,7 @@ import re
 import sys
 import threading
 import zipfile
+from collections import deque
 
 import yaml
 
@@ -26,7 +27,7 @@ class BotController:
         self.secret_config = None
         self.yaml_dumper = None
         self.voice_client = None
-        self.voice_client_queue = []
+        self.voice_client_queue = deque()
         # Do not autoupdate flags:
         self.voice_do_not_update = False
         self.reminder_do_not_update = False
