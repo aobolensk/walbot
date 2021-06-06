@@ -37,17 +37,17 @@ class Util:
 
     @staticmethod
     def check_version(name, actual, expected, solutions=None, fatal=True):
-        if (actual != expected):
-            if not fatal:
-                log.warning(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
-            else:
-                log.error(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
-            if solutions:
-                log.info("Possible solutions:")
-                for solution in solutions:
-                    log.info(f" - {solution}")
-            return not fatal
-        return True
+        if (actual == expected):
+            return True
+        if not fatal:
+            log.warning(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
+        else:
+            log.error(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
+        if solutions:
+            log.info("Possible solutions:")
+            for solution in solutions:
+                log.info(f" - {solution}")
+        return not fatal
 
     @staticmethod
     async def run_external_command(message, cmd_line, silent=False):
@@ -66,12 +66,13 @@ class Util:
     @staticmethod
     def read_config_file(path):
         yaml_loader, _ = Util.get_yaml()
-        if os.path.isfile(path):
-            with open(path, 'r') as f:
-                try:
-                    return yaml.load(f.read(), Loader=yaml_loader)
-                except Exception:
-                    log.error(f"File '{path}' can not be read!", exc_info=True)
+        if not os.path.isfile(path):
+            return None
+        with open(path, 'r') as f:
+            try:
+                return yaml.load(f.read(), Loader=yaml_loader)
+            except Exception:
+                log.error(f"File '{path}' can not be read!", exc_info=True)
         return None
 
     @staticmethod
