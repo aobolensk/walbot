@@ -87,6 +87,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
             log.info("Bot is fully loaded. MiniWalBot is stopped.")
             break
         log.debug("Bot is not fully loaded yet. Waiting...")
+    return True
 
 
 def at_start() -> None:
