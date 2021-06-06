@@ -8,6 +8,7 @@ import re
 import shutil
 import tempfile
 import urllib.request
+import urllib.parse
 
 import discord
 import requests
@@ -1322,7 +1323,7 @@ class BuiltinCommands(BaseCmd):
         if not re.match(const.FILENAME_REGEX, name):
             return null(await Msg.response(message, f"Incorrect name '{name}'", silent))
         url = command[2]
-        ext = url.split('.')[-1]
+        ext = urllib.parse.urlparse(url).path.split('.')[-1]
         if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
             return null(await Msg.response(message, "Please, provide direct link to image", silent))
         for root, _, files in os.walk(const.IMAGES_DIRECTORY):
@@ -1462,16 +1463,17 @@ class BuiltinCommands(BaseCmd):
     Hint: Use !listimg for list of available images"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
+        image = command[1]
         for root, _, files in os.walk(const.IMAGES_DIRECTORY):
             if not root.endswith(const.IMAGES_DIRECTORY):
                 continue
             for file in files:
-                if os.path.splitext(os.path.basename(file))[0].lower() == command[1].lower():
+                if os.path.splitext(os.path.basename(file))[0].lower() == image.lower():
                     try:
                         with open(os.path.join(const.IMAGES_DIRECTORY, file), "rb") as f:
                             await bc.bot_user.edit(avatar=f.read())
                         await Msg.response(
-                            message, f"Successfully changed bot avatar to {command[1]}", silent)
+                            message, f"Successfully changed bot avatar to {image}", silent)
                     except discord.HTTPException as e:
                         await Msg.response(
                             message, f"Failed to change bot avatar.\nError: {e}", silent)
@@ -1480,15 +1482,15 @@ class BuiltinCommands(BaseCmd):
                 hdr = {
                     "User-Agent": "Mozilla/5.0"
                 }
-                r = const.EMOJI_REGEX.match(command[1])
+                r = const.EMOJI_REGEX.match(image)
                 if r is not None:
                     # Discord emoji
                     log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")
                     rq = urllib.request.Request(
                         f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", headers=hdr)
-                elif command[1].split('.')[-1] in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
+                elif urllib.parse.urlparse(image).path.split('.')[-1] in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
                     # Direct link to an image
-                    rq = urllib.request.Request(command[1], headers=hdr)
+                    rq = urllib.request.Request(image, headers=hdr)
                 else:
                     # Not recognized source
                     break
@@ -1506,19 +1508,15 @@ class BuiltinCommands(BaseCmd):
                     except Exception as e:
                         log.error("Changing avatar failed!", exc_info=True)
                         return null(await Msg.response(message, f"Changing avatar failed: {e}", silent))
-                return null(await Msg.response(message, f"Successfully changed bot avatar to {command[1]}", silent))
+                return null(await Msg.response(message, f"Successfully changed bot avatar to {image}", silent))
         min_dist = 100000
         suggestion = ""
         for file in (os.path.splitext(os.path.basename(file))[0].lower() for file in files):
-            dist = levenshtein_distance(command[1], file)
+            dist = levenshtein_distance(image, file)
             if dist < min_dist:
                 suggestion = file
                 min_dist = dist
-        await Msg.response(
-            message,
-            f"Image '{command[1]}' is not found! "
-            f"Probably you meant '{suggestion}'",
-            silent)
+        await Msg.response(message, f"Image '{image}' is not found! Probably you meant '{suggestion}'", silent)
 
     @staticmethod
     async def _message(message, command, silent=False):
