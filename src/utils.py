@@ -1,5 +1,4 @@
 import os
-import stat
 import subprocess
 import sys
 import tempfile
@@ -115,10 +114,7 @@ def dump_autocomplete_script(shell, parser):
             log.error("Shell autocompletion scripts update failed.")
             log.error(f"    Install `shtab`: {sys.executable} -m pip install shtab")
         result = shtab.complete(parser, shell="bash").replace("walbot.py", "./walbot.py")
-        bash_completion_file = os.path.join(os.getcwd(), "tools/autocomplete/walbot-completion.bash")
-        with open(bash_completion_file, "w") as f:
+        with open(os.path.join(os.getcwd(), "tools/autocomplete/walbot-completion.bash"), "w") as f:
             print(result, file=f)
-        st = os.stat(bash_completion_file)
-        os.chmod(bash_completion_file, st.st_mode | stat.S_IEXEC)
     else:
         log.error("Unsupported shell type")
