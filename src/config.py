@@ -7,6 +7,7 @@ import sys
 import threading
 import zipfile
 from collections import deque
+from enum import IntEnum
 
 import yaml
 
@@ -14,6 +15,12 @@ from src import const
 from src.log import log
 from src.message import Msg
 from src.utils import Util, null
+
+
+class DoNotUpdateFlag(IntEnum):
+    VOICE = 0
+    REMINDER = 1
+    POLL = 2
 
 
 class BotController:
@@ -28,9 +35,7 @@ class BotController:
         self.yaml_dumper = None
         self.voice_client = None
         self.voice_client_queue = deque()
-        # Do not autoupdate flags:
-        self.voice_do_not_update = False
-        self.reminder_do_not_update = False
+        self.do_not_update = [0] * len(DoNotUpdateFlag)
 
 
 bc = BotController()
@@ -325,7 +330,7 @@ class Config:
             except Exception:
                 log.error("yaml.dump failed", exc_info=True)
         secret_config_mutex.release()
-        if bc.voice_do_not_update:
+        if bc.do_not_update[DoNotUpdateFlag.VOICE]:
             return log.info("Markov module save is skipped since bot is in voice channel")
         markov_mutex = threading.Lock()
         markov_mutex.acquire()

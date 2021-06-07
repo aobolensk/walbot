@@ -14,7 +14,7 @@ import psutil
 from src import const
 from src.algorithms import levenshtein_distance
 from src.bot_cache import BotCache
-from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
+from src.config import Command, Config, DoNotUpdateFlag, GuildSettings, SecretConfig, User, bc
 from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
@@ -64,10 +64,10 @@ class WalBot(discord.Client):
 
         while True:
             if bc.voice_client:
-                bc.voice_do_not_update = True
+                bc.do_not_update[DoNotUpdateFlag.VOICE] = True
             else:
-                bc.voice_do_not_update = False
-            await self.update_autoupdate_flag(bc.voice_do_not_update or bc.reminder_do_not_update)
+                bc.do_not_update[DoNotUpdateFlag.VOICE] = False
+            await self.update_autoupdate_flag(any(bc.do_not_update))
             try:
                 if bc.voice_client is not None and not bc.voice_client_queue and not bc.voice_client.is_playing():
                     voice_client_queue_disconnect_counter += 1
@@ -154,7 +154,7 @@ class WalBot(discord.Client):
                     if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
                             < datetime.timedelta(minutes=5)):
                         reminder_do_not_update_flag = True
-            bc.reminder_do_not_update = reminder_do_not_update_flag
+            bc.do_not_update[DoNotUpdateFlag.REMINDER] = reminder_do_not_update_flag
             for key in to_remove:
                 self.config.reminders.pop(key)
             for item in to_append:

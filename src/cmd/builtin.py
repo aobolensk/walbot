@@ -17,7 +17,7 @@ from dateutil import tz
 from src import const, emoji
 from src.algorithms import levenshtein_distance
 from src.commands import BaseCmd
-from src.config import BackgroundEvent, Command, bc, log
+from src.config import BackgroundEvent, Command, DoNotUpdateFlag, bc, log
 from src.message import Msg
 from src.utils import Util, null
 
@@ -946,6 +946,7 @@ class BuiltinCommands(BaseCmd):
         for i in range(len(options)):
             poll_message += emoji.alphabet[i] + " -> " + options[i] + '\n'
         poll_message = await Msg.response(message, poll_message, silent)
+        bc.do_not_update[DoNotUpdateFlag.POLL] += 1
         for i in range(len(options)):
             try:
                 await poll_message.add_reaction(emoji.alphabet[i])
@@ -981,6 +982,7 @@ class BuiltinCommands(BaseCmd):
                         await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
                     except Exception:
                         log.debug(f"Error on remove_reaction: {emoji.alphabet[i]}")
+                bc.do_not_update[DoNotUpdateFlag.POLL] -= 1
                 return
 
     @staticmethod
