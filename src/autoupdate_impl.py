@@ -64,6 +64,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
             "Skipping this cycle, will try to update on the next one")
     if bot_cache["do_not_update"]:
         return log.debug("Automatic update is not permitted. Skipping this cycle, will try to update on the next one")
+    context.repo.git.reset("--hard")
     try:
         g = git.cmd.Git(os.getcwd())
         g.pull()
