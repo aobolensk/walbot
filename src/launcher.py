@@ -12,9 +12,9 @@ from src import const
 class Launcher:
     """This class parses provided command line options and dispatches execution depending on them."""
 
-    def __init__(self):
-        self._parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
-        subparsers = self._parser.add_subparsers(dest="action")
+    def _get_argparser(self):
+        parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
+        subparsers = parser.add_subparsers(dest="action")
         subparsers = {
             cmd: subparsers.add_parser(
                 cmd, help=getattr(self, cmd).__doc__, formatter_class=argparse.RawTextHelpFormatter)
@@ -59,6 +59,10 @@ class Launcher:
             "-v", "--verbose", action="store_true", help="Verbose", default=False)
         subparsers["test"].add_argument(
             "-vv", "--verbose2", action="store_true", help="Verbose (level2)", default=False)
+        return parser
+
+    def __init__(self):
+        self._parser = self._get_argparser()
         # Parse args
         self.args = self._parser.parse_args()
         if self.args.action is None:
