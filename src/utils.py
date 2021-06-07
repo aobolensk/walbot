@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 import tempfile
 
 import yaml
@@ -103,3 +104,17 @@ class Util:
 def null(*args, **kwargs):
     """Drop return value"""
     return
+
+
+def dump_autocomplete_script(shell, parser):
+    if shell == "bash":
+        try:
+            import shtab
+        except ImportError:
+            log.error("Shell autocompletion scripts update failed.")
+            log.error(f"    Install `shtab`: {sys.executable} -m pip install shtab")
+        result = shtab.complete(parser, shell="bash").replace("walbot.py", "./walbot.py")
+        with open(os.path.join(os.getcwd(), "tools/autocomplete/walbot-completion.bash"), "w") as f:
+            print(result, file=f)
+    else:
+        log.error("Unsupported shell type")
