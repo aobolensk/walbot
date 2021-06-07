@@ -42,7 +42,6 @@ class BotCache:
                 except json.decoder.JSONDecodeError:
                     time.sleep(0.5)
 
-
     def dump_to_file(self) -> None:
         with open(self.path, 'w') as f:
             json.dump(self._state, f)
