@@ -49,6 +49,7 @@ FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
 LOGGING_FORMAT = "%(asctime)s [%(levelname)s] %(filename)s: %(message)s"
 REMINDER_DATE_FORMAT = "%Y-%m-%d"
 REMINDER_DATETIME_FORMAT = "%Y-%m-%d %H:%M"
+EMBED_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
 USER_ID_REGEX = re.compile(r'<@!(\d*)>')
 ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')

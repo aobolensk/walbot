@@ -134,7 +134,18 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
-                    await channel.send(f"{' '.join(rem.ping_users)}\nYou asked to remind at {now} -> {rem.message}")
+                    reminder_embed_dict = {
+                        "title": "You asked to remind",
+                        "description": rem.message,
+                        "color": 0xcc1818,
+                        "footer": {
+                            "text": rem.author,
+                        },
+                        "timestamp": datetime.datetime.now(datetime.timezone.utc).strftime(const.EMBED_TIMESTAMP_FORMAT)
+                    }
+                    await channel.send(
+                        ' '.join(rem.ping_users if rem.ping_users else ""),
+                        embed=discord.Embed.from_dict(reminder_embed_dict))
                     for user_id in rem.whisper_users:
                         await Msg.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
