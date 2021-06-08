@@ -79,7 +79,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
     os.system(f"{sys.executable} walbot.py stop")
     if context.check_versions():
         os.system(f"{sys.executable} walbot.py patch")
-    os.system(f"{sys.executable} walbot.py start --nohup &")
+    os.system(f"{sys.executable} walbot.py start --fast_start --nohup &")
     while True:
         time.sleep(1)
         bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
@@ -94,7 +94,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
 def at_start() -> None:
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
-        os.system(f"{sys.executable} walbot.py start --nohup &")
+        os.system(f"{sys.executable} walbot.py start --fast_start --nohup &")
     else:
         log.debug("Bot is already started in different shell. Starting autoupdate routine.")
 

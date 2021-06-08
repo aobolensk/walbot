@@ -48,6 +48,7 @@ class WalBot(discord.Client):
         bc.message_buffer = MessageBuffer()
         bc.info = BotInfo()
         if not bc.args.fast_start:
+            log.debug("Started Markov model checks...")
             if bc.markov.check():
                 log.info("Markov model has passed all checks")
             else:
