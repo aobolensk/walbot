@@ -42,7 +42,6 @@ class WalBot(discord.Client):
         bc.latency = lambda: self.latency
         bc.change_status = self.change_status
         bc.change_presence = self.change_presence
-        bc.get_channel = self.get_channel
         bc.close = self.close
         bc.secret_config = self.secret_config
         bc.message_buffer = MessageBuffer()
