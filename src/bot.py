@@ -15,6 +15,7 @@ from src import const
 from src.algorithms import levenshtein_distance
 from src.bot_cache import BotCache
 from src.config import Command, Config, DoNotUpdateFlag, GuildSettings, SecretConfig, User, bc
+from src.embed import DiscordEmbed
 from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
@@ -134,18 +135,13 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
-                    reminder_embed_dict = {
-                        "title": "You asked to remind",
-                        "description": rem.message,
-                        "color": 0xcc1818,
-                        "footer": {
-                            "text": rem.author,
-                        },
-                        "timestamp": datetime.datetime.now(datetime.timezone.utc).strftime(const.EMBED_TIMESTAMP_FORMAT)
-                    }
-                    await channel.send(
-                        ' '.join(rem.ping_users if rem.ping_users else ""),
-                        embed=discord.Embed.from_dict(reminder_embed_dict))
+                    e = DiscordEmbed()
+                    e.title("You asked to remind")
+                    e.description(rem.message)
+                    e.color(0xcc1818)
+                    e.timestamp(datetime.datetime.now(datetime.timezone.utc))
+                    e.footer(text=rem.author)
+                    await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
                     for user_id in rem.whisper_users:
                         await Msg.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
