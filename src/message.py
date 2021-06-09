@@ -58,13 +58,20 @@ class Msg:
             return log.debug("[SILENT] -> " + content)
         if author.dm_channel is None:
             await author.create_dm()
+        msg = None
         if content:
             for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                 msg = await author.dm_channel.send(
                     chunk,
                     tts=kwargs.get("tts", False),
-                    files=kwargs.get("files", None))
+                    files=kwargs.get("files", None),
+                    embed=kwargs.get("embed", None))
                 if kwargs.get("suppress_embeds", False):
                     await msg.edit(suppress=True)
         elif kwargs.get("files", None):
             msg = await author.dm_channel.send(None, files=kwargs.get("files", None))
+        elif kwargs.get("embed", None):
+            msg = await author.dm_channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
+            if kwargs.get("suppress_embeds", False):
+                await msg.edit(suppress=True)
+        return msg
