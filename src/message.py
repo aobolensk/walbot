@@ -18,12 +18,13 @@ class Msg:
                 msg = await message.reply(
                     chunk,
                     tts=kwargs.get("tts", False),
-                    files=kwargs.get("files", None))
+                    files=kwargs.get("files", None),
+                    embed=kwargs.get("embed", None))
                 if kwargs.get("suppress_embeds", False):
                     await msg.edit(suppress=True)
         elif kwargs.get("files", None):
             msg = await message.reply(None, files=kwargs.get("files", None))
-        if kwargs.get("embed", None):
+        elif kwargs.get("embed", None):
             msg = await message.reply(embed=kwargs["embed"], tts=kwargs.get("tts", False))
             if kwargs.get("suppress_embeds", False):
                 await msg.edit(suppress=True)
@@ -39,12 +40,13 @@ class Msg:
                 msg = await message.channel.send(
                     chunk,
                     tts=kwargs.get("tts", False),
-                    files=kwargs.get("files", None))
+                    files=kwargs.get("files", None),
+                    embed=kwargs.get("embed", None))
                 if kwargs.get("suppress_embeds", False):
                     await msg.edit(suppress=True)
         elif kwargs.get("files", None):
             msg = await message.channel.send(None, files=kwargs.get("files", None))
-        if kwargs.get("embed", None):
+        elif kwargs.get("embed", None):
             msg = await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
             if kwargs.get("suppress_embeds", False):
                 await msg.edit(suppress=True)
