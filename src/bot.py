@@ -3,6 +3,7 @@ import datetime
 import importlib
 import itertools
 import os
+import random
 import re
 import signal
 import sys
@@ -138,7 +139,7 @@ class WalBot(discord.Client):
                     e = DiscordEmbed()
                     e.title("You asked to remind")
                     e.description(rem.message)
-                    e.color(0xcc1818)
+                    e.color(random.randint(0x000000, 0xffffff))
                     e.timestamp(datetime.datetime.now(datetime.timezone.utc))
                     e.footer(text=rem.author)
                     await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
