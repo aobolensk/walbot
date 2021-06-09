@@ -1,12 +1,12 @@
 import datetime
 import os
 
-import discord
 import youtube_dl
 
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
+from src.embed import DiscordEmbed
 from src.log import log
 from src.message import Msg
 from src.utils import Util, null
@@ -155,25 +155,16 @@ class VoiceCommands(BaseCmd):
         except Exception as e:
             return null(await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent))
         ud = info['upload_date']
-        yt_info_embed_dict = {
-            "title": info['title'],
-            "description": (info['description'][:2048] if len(command) > 2 and command[2] == "-f" else ""),
-            "url": info['webpage_url'],
-            "color": 0xcc1818,
-            "thumbnail": {
-                "url": info['thumbnail']
-            },
-            "fields": [
-                {"name": "Views", "value": f"{info['view_count']}", "inline": True},
-                {"name": "Likes", "value": f"{info['like_count']}", "inline": True},
-                {"name": "Dislikes", "value": f"{info['dislike_count']}", "inline": True},
-                {"name": "Channel", "value": f"[{info['uploader']}]({info['uploader_url']})", "inline": True},
-                {
-                    "name": "Uploaded",
-                    "value": f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}",
-                    "inline": True
-                },
-                {"name": "Duration", "value": f"{datetime.timedelta(seconds=info['duration'])}", "inline": True},
-            ]
-        }
-        await Msg.response(message, "", silent, embed=discord.Embed.from_dict(yt_info_embed_dict))
+        e = DiscordEmbed()
+        e.title(info['title'])
+        e.title_url(info['webpage_url'])
+        e.description(info['description'][:2048] if len(command) > 2 and command[2] == "-f" else "")
+        e.color(0xcc1818)
+        e.thumbnail(info['thumbnail'])
+        e.add_field("Views", str(info['view_count']), True)
+        e.add_field("Likes", str(info['like_count']), True)
+        e.add_field("Dislikes", str(info['dislike_count']), True)
+        e.add_field("Channel", f"[{info['uploader']}]({info['uploader_url']})", True)
+        e.add_field("Uploaded", f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", True)
+        e.add_field("Duration", f"{datetime.timedelta(seconds=info['duration'])}", True)
+        await Msg.response(message, "", silent, embed=e.get())
