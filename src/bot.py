@@ -65,10 +65,7 @@ class WalBot(discord.Client):
         voice_client_queue_disconnect_counter = 0
 
         while True:
-            if bc.voice_client:
-                bc.do_not_update[DoNotUpdateFlag.VOICE] = True
-            else:
-                bc.do_not_update[DoNotUpdateFlag.VOICE] = False
+            bc.do_not_update[DoNotUpdateFlag.VOICE] = bool(bc.voice_client)
             await self.update_autoupdate_flag(any(bc.do_not_update))
             try:
                 if bc.voice_client is not None and not bc.voice_client_queue and not bc.voice_client.is_playing():
