@@ -325,8 +325,7 @@
 
 **reminder**: Print information about reminder \
     Example: \
-        !reminder 1 \
-    *This command can be used as subcommand*
+        !reminder 1
 
 **remindme**: Ask bot to ping you when it sends reminder \
     Example: !remindme 1
