@@ -354,7 +354,7 @@ def start(args, main_bot=True):
             "run patch tool",
             "remove secret.yaml (your Discord authentication token will be lost!)",
         ])
-    if not ok:
+    if main_bot and not ok:
         sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
     config.commands.update()
     # Constructing bot instance
