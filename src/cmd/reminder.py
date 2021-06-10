@@ -113,7 +113,7 @@ class _ReminderInternals:
 class ReminderCommands(BaseCmd):
     def bind(self):
         bc.commands.register_command(__name__, self.get_classname(), "reminder",
-                                     permission=const.Permission.USER.value, subcommand=True)
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "updreminder",
@@ -147,15 +147,16 @@ class ReminderCommands(BaseCmd):
         if index not in bc.config.reminders.keys():
             return null(await Msg.response(message, "Invalid index of reminder!", silent))
         reminder = bc.config.reminders[index]
-        rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
-        result = (f"{index} - {reminder.time}"
-                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
-                  f" -> {reminder.message}"
-                  f"{rep if reminder.repeat_after else ''}\n"
-                  f"Author: {reminder.author}\n"
-                  f"Created: {reminder.time_created}")
-        await Msg.response(message, result, silent)
-        return result
+        e = DiscordEmbed()
+        e.title("Reminder info")
+        e.description(reminder.message)
+        e.footer(f"{reminder.author} • {datetime.datetime.strptime(reminder.time, const.REMINDER_DATETIME_FORMAT)}")
+        e.add_field("Index", str(index), True)
+        e.add_field("Channel", f"<#{reminder.channel_id}>", True)
+        if reminder.repeat_after:
+            e.add_field("Repeats every", f"{reminder.repeat_after} {reminder.repeat_interval_measure}", True)
+        e.add_field("Created", reminder.time_created, True)
+        await Msg.response(message, "", silent, embed=e.get())
 
     @staticmethod
     async def _addreminder(message, command, silent=False):
