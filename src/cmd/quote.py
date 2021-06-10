@@ -1,4 +1,6 @@
+import datetime
 import random
+from src.embed import DiscordEmbed
 
 from src import const
 from src.commands import BaseCmd
@@ -38,10 +40,18 @@ class QuoteCommands(BaseCmd):
                 return
         else:
             index = random.choice(list(bc.config.quotes.keys()))
-        if index in bc.config.quotes.keys():
-            await Msg.response(message, f"Quote {index}: {bc.config.quotes[index].full_quote()}", silent)
-        else:
-            await Msg.response(message, "Invalid index of quote!", silent)
+        if index not in bc.config.quotes.keys():
+            return null(await Msg.response(message, "Invalid index of quote!", silent))
+        quote = bc.config.quotes[index]
+        e = DiscordEmbed()
+        e.title("Quote")
+        e.description(quote.message)
+        e.color(random.randint(0x000000, 0xffffff))
+        e.timestamp(datetime.datetime.strptime(str(quote.timestamp), const.TIMESTAMP_DATETIME_FORMAT))
+        e.add_field("Index", str(index), True)
+        e.add_field("Author", quote.author, True)
+        e.add_field("Added by", quote.added_by, True)
+        await Msg.response(message, "", silent, embed=e.get())
 
     @staticmethod
     async def _addquote(message, command, silent=False):
