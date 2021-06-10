@@ -1,10 +1,12 @@
 import datetime
+import random
 
 import dateutil.relativedelta
 
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
+from src.embed import DiscordEmbed
 from src.message import Msg
 from src.reminder import Reminder
 from src.utils import Util, null
@@ -117,7 +119,7 @@ class ReminderCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "updreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "listreminder",
-                                     permission=const.Permission.USER.value, subcommand=True)
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "delreminder",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "remindme",
@@ -235,25 +237,39 @@ class ReminderCommands(BaseCmd):
     @staticmethod
     async def _listreminder(message, command, silent=False):
         """Print list of reminders
-    Example: !listreminder"""
+    Examples:
+        !listreminder
+        !listreminder 5 <- prints only first 5 reminders"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
+        if len(command) == 2:
+            count = await Util.parse_int(
+                message, command[1],
+                f"Second parameter for '{command[0]}' should be amount of reminders to print", silent)
+            if count is None:
+                return
+            reminders_count = count
+        else:
+            reminders_count = len(bc.config.reminders)
         reminder_list = []
         for index, reminder in bc.config.reminders.items():
             rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
             reminder_list.append(
                 (reminder.time,
-                 f"{index} - {reminder.time}"
+                 reminder.message,
+                 f"{index} at {reminder.time} "
                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
-                 f" -> {reminder.message}"
                  f"{rep if reminder.repeat_after else ''}"))
         reminder_list.sort()
-        result = '\n'.join([x[1] for x in reminder_list])
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "No reminders found!", silent)
-        return result
+        reminder_list = reminder_list[:reminders_count]
+        embed_color = random.randint(0x000000, 0xffffff)
+        for reminder_chunk in Msg.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+            e = DiscordEmbed()
+            e.title("List of reminders")
+            e.color(embed_color)
+            for rem in reminder_chunk:
+                e.add_field(rem[1], rem[2])
+            await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _delreminder(message, command, silent=False):

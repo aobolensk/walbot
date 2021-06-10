@@ -156,6 +156,9 @@ class Updater:
                 guild.__dict__["ignored"] = False
             self._bump_version(config, "0.0.24")
         if config.version == "0.0.24":
+            config.commands.data["listreminder"].subcommand = False
+            self._bump_version(config, "0.0.25")
+        if config.version == "0.0.25":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

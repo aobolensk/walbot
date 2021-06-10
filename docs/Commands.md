@@ -249,8 +249,9 @@
     *This command can be used as subcommand*
 
 **listreminder**: Print list of reminders \
-    Example: !listreminder \
-    *This command can be used as subcommand*
+    Examples: \
+        !listreminder \
+        !listreminder 5 &lt;- prints only first 5 reminders
 
 **listresponse**: Print list of responses \
     Example: !listresponse \
