@@ -162,6 +162,10 @@ class Updater:
             config.commands.data["reminder"].subcommand = False
             self._bump_version(config, "0.0.26")
         if config.version == "0.0.26":
+            for index in config.quotes.keys():
+               config.quotes[index].added_by = config.quotes[index].added_by[:-5]
+            self._bump_version(config, "0.0.27")
+        if config.version == "0.0.27":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")
