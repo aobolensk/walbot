@@ -49,7 +49,7 @@ class QuoteCommands(BaseCmd):
         e.color(random.randint(0x000000, 0xffffff))
         e.timestamp(datetime.datetime.strptime(str(quote.timestamp), const.TIMESTAMP_DATETIME_FORMAT))
         e.add_field("Index", str(index), True)
-        e.add_field("Author", quote.author, True)
+        e.add_field("Author", quote.author if quote.author else "<unknown>", True)
         e.add_field("Added by", quote.added_by, True)
         await Msg.response(message, "", silent, embed=e.get())
 
