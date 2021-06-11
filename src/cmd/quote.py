@@ -61,7 +61,7 @@ class QuoteCommands(BaseCmd):
             return
         quote = ' '.join(command[1:])
         index = bc.config.ids["quote"]
-        bc.config.quotes[index] = Quote(quote, str(message.author))
+        bc.config.quotes[index] = Quote(quote, message.author.name)
         bc.config.ids["quote"] += 1
         await Msg.response(
             message,
