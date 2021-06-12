@@ -6,6 +6,7 @@ import os
 import random
 import re
 import shutil
+import sys
 import tempfile
 import urllib.request
 import urllib.parse
@@ -1021,6 +1022,7 @@ class BuiltinCommands(BaseCmd):
                 f"Deployment time: {bc.deployment_time}\n"
                 f"Commit name: {bc.info.commit_name}\n"
                 f"Branch name: {bc.info.branch_name}\n"
+                f"Python interpreter: " + sys.version.replace('\n', ' ') + "\n"
             )
             # Dependencies info
             result += "Dependencies:\n"
