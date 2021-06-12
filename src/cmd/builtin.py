@@ -3,10 +3,10 @@ import base64
 import datetime
 import imghdr
 import os
+import platform
 import random
 import re
 import shutil
-import sys
 import tempfile
 import urllib.request
 import urllib.parse
@@ -1022,7 +1022,8 @@ class BuiltinCommands(BaseCmd):
                 f"Deployment time: {bc.deployment_time}\n"
                 f"Commit name: {bc.info.commit_name}\n"
                 f"Branch name: {bc.info.branch_name}\n"
-                f"Python interpreter: " + sys.version.replace('\n', ' ') + "\n"
+                f"Python interpreter: {platform.python_implementation()} {platform.python_version()} "
+                f"({', '.join(platform.python_build())}) [{platform.python_compiler()}]\n"
             )
             # Dependencies info
             result += "Dependencies:\n"
