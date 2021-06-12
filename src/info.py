@@ -1,5 +1,6 @@
 import datetime
 import importlib
+from typing import Dict, Optional
 
 import git
 
@@ -9,14 +10,14 @@ from src.config import bc
 class BotInfo:
     """Get info about walbot instance"""
 
-    def _get_repo(self):
+    def _get_repo(self) -> Optional[git.Repo]:
         try:
             return git.Repo(search_parent_directories=True)
         except git.exc.InvalidGitRepositoryError:
             return
 
     @property
-    def version(self):
+    def version(self) -> str:
         """Get walbot repo commit SHA"""
         repo = self._get_repo()
         if repo is None:
@@ -25,7 +26,7 @@ class BotInfo:
         return sha
 
     @property
-    def commit_name(self):
+    def commit_name(self) -> str:
         """Get walbot repo commit name"""
         repo = self._get_repo()
         if repo is None:
@@ -34,7 +35,7 @@ class BotInfo:
         return commit
 
     @property
-    def branch_name(self):
+    def branch_name(self) -> str:
         """Get walbot repo branch name"""
         repo = self._get_repo()
         if repo is None:
@@ -51,7 +52,7 @@ class BotInfo:
         return repo.is_dirty()
 
     @property
-    def version_time(self):
+    def version_time(self) -> str:
         """Get walbot repo last commit date/time"""
         repo = self._get_repo()
         if repo is None:
@@ -59,7 +60,7 @@ class BotInfo:
         time = repo.head.object.committed_datetime
         return time
 
-    def query_dependencies_info(self):
+    def query_dependencies_info(self) -> Dict[str, str]:
         """Get dict with walbot dependencies versions"""
         res = {}
         res["discord.py"] = importlib.import_module("discord").__version__
@@ -74,7 +75,7 @@ class BotInfo:
         return res
 
     @property
-    def uptime(self):
+    def uptime(self) -> str:
         """Get walbot uptime"""
         days, remainder = divmod(
             int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
