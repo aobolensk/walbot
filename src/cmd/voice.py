@@ -130,10 +130,19 @@ class VoiceCommands(BaseCmd):
             return
         if not bc.voice_client_queue:
             return null(await Msg.response(message, "<Voice queue is empty>", silent))
-        result = "🔊 Voice channel queue:\n"
-        for index, entry in enumerate(bc.voice_client_queue):
-            result += f"{index + 1}: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}\n"
-        await Msg.response(message, result, silent)
+        voice_client_queue = list(bc.voice_client_queue)
+        pos = 0
+        for voice_queue_chunk in Msg.split_by_chunks(voice_client_queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+            e = DiscordEmbed()
+            e.title("🔊 Voice queue 🔊")
+            e.color(0xcc1818)
+            for entry in voice_queue_chunk:
+                pos += 1
+                e.add_field(
+                    f"{entry.title}",
+                    f"Position {pos} (YT: {entry.id}) requested by {entry.requested_by}"
+                )
+            await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _ytinfo(message, command, silent=False):
