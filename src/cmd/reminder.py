@@ -400,6 +400,7 @@ class ReminderCommands(BaseCmd):
             if duration is None:
                 return
         if duration == 0:
+            bc.config.reminders[index].repeat_after = 0
             return null(await Msg.response(message, f"Repetition is disabled for reminder {index}", silent))
         if duration < 0:
             return null(
