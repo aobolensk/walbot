@@ -118,7 +118,7 @@ class VoiceCommands(BaseCmd):
             return
         if bc.voice_client is not None:
             bc.voice_client.stop()
-            log.debug("Skipped current voice queue entry")
+            await Msg.response(message, "Skipped current song", silent)
         else:
             log.debug("Nothing to skip")
 
