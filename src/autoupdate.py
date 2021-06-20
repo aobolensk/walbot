@@ -3,6 +3,7 @@ import signal
 import time
 
 from src import const
+from src.log import log
 
 
 def start(args) -> None:
@@ -17,6 +18,7 @@ def start(args) -> None:
             if is_updated:
                 au = importlib.reload(au)
                 signal.signal(signal.SIGHUP, au.at_exit)
+                log.debug("Reloaded autoupdate implementation module")
     except KeyboardInterrupt as e:
         au.at_failure(e)
     except Exception as e:
