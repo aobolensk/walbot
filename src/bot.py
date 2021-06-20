@@ -89,8 +89,6 @@ class WalBot(discord.Client):
                     except Exception as e:
                         log.error(f"Failed to connect: {e}")
                     log.debug("Connecting voice channel (1/2)...")
-                else:
-                    pass
                 if not bc.voice_client.is_playing():
                     entry = bc.voice_client_queue.popleft()
                     try:
