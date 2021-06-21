@@ -1686,6 +1686,10 @@ class BuiltinCommands(BaseCmd):
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
         if duration is None:
             return
+        if duration < 0:
+            return null(await Msg.response(message, "Timer duration shoule be more than 0 seconds", silent))
+        if duration > 60 * 60:
+            return null(await Msg.response(message, "Timer duration shoule be less than 1 hour", silent))
         finish = datetime.datetime.now() + datetime.timedelta(seconds=duration)
         id_ = bc.config.ids["timer"]
         bc.config.ids["timer"] += 1
