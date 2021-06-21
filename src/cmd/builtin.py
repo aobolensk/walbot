@@ -1686,10 +1686,12 @@ class BuiltinCommands(BaseCmd):
             return
         finish = datetime.datetime.now() + datetime.timedelta(seconds=duration)
         timer_msg = await Msg.response(message, f"⏰ Timer: {finish - start}", silent)
+        bc.do_not_update[DoNotUpdateFlag.TIMER] += 1
         while True:
             current = datetime.datetime.now()
             if current >= finish:
                 await timer_msg.edit(content="Time is up!")
+                bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
                 break
             await timer_msg.edit(content=f"⏰ Timer: {finish - current}")
             await asyncio.sleep(1)

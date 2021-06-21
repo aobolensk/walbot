@@ -21,6 +21,7 @@ class DoNotUpdateFlag(IntEnum):
     VOICE = 0
     REMINDER = 1
     POLL = 2
+    TIMER = 3
 
 
 class BotController:
