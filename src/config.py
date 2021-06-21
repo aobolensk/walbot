@@ -273,6 +273,7 @@ class Config:
             "reaction": 1,
             "response": 1,
             "quote": 1,
+            "timer": 1,
         }
         self.saving = {
             "backup": {

@@ -166,6 +166,9 @@ class Updater:
                 config.quotes[index].added_by = config.quotes[index].added_by[:-5]
             self._bump_version(config, "0.0.27")
         if config.version == "0.0.27":
+            config.ids["timer"] = 1
+            self._bump_version(config, "0.0.28")
+        if config.version == "0.0.28":
             log.info(f"Version of {self.config_path} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_path}!")

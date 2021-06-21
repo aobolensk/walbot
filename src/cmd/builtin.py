@@ -1685,12 +1685,15 @@ class BuiltinCommands(BaseCmd):
         if duration is None:
             return
         finish = datetime.datetime.now() + datetime.timedelta(seconds=duration)
-        timer_msg = await Msg.response(message, f"⏰ Timer: {finish - start}", silent)
+        id_ = bc.config.ids["timer"]
+        bc.config.ids["timer"] += 1
+        timer_msg = await Msg.response(message, f"⏰ Timer #{id_}: {finish - start}", silent)
         bc.do_not_update[DoNotUpdateFlag.TIMER] += 1
         while True:
             current = datetime.datetime.now()
             if current >= finish:
-                await timer_msg.edit(content="Time is up!")
+                await timer_msg.edit(content=f"⏰ Timer #{id_}: 0:00:00.000000!")
+                await Msg.response(message, f"⏰ Timer #{id_}: Time is up!", silent)
                 bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
                 break
             await timer_msg.edit(content=f"⏰ Timer: {finish - current}")
