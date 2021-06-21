@@ -21,6 +21,7 @@ class DoNotUpdateFlag(IntEnum):
     VOICE = 0
     REMINDER = 1
     POLL = 2
+    TIMER = 3
 
 
 class BotController:
@@ -271,6 +272,8 @@ class Config:
             "reminder": 1,
             "reaction": 1,
             "response": 1,
+            "quote": 1,
+            "timer": 1,
         }
         self.saving = {
             "backup": {

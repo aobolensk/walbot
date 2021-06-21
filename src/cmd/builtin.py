@@ -208,6 +208,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "reloadbotcommands",
                                      permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "timer",
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1670,3 +1672,35 @@ class BuiltinCommands(BaseCmd):
         perm_level = bc.config.users[user_id].permission_level
         nick = str(info.nick) + " (" + str(info) + ")" if info.nick is not None else str(info)
         await Msg.response(message, f"Permission level for {nick} is {perm_level}", silent)
+
+    @staticmethod
+    async def _timer(message, command, silent=False):
+        """Set timer
+    Usage: !timer 10"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        if bc.do_not_update[DoNotUpdateFlag.TIMER]:
+            return null(await Msg.response(message, "You can run only one timer simultaneously!", silent))
+        start = datetime.datetime.now()
+        duration = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
+        if duration is None:
+            return
+        if duration < 0:
+            return null(await Msg.response(message, "Timer duration shoule be more than 0 seconds", silent))
+        if duration > 60 * 60:
+            return null(await Msg.response(message, "Timer duration shoule be less than 1 hour", silent))
+        finish = datetime.datetime.now() + datetime.timedelta(seconds=duration)
+        id_ = bc.config.ids["timer"]
+        bc.config.ids["timer"] += 1
+        timer_msg = await Msg.response(message, f"⏰ Timer #{id_}: {finish - start}", silent)
+        bc.do_not_update[DoNotUpdateFlag.TIMER] += 1
+        while True:
+            current = datetime.datetime.now()
+            if current >= finish:
+                await timer_msg.edit(content=f"⏰ Timer #{id_}: 0:00:00.000000!")
+                await Msg.response(message, f"⏰ Timer #{id_}: Time is up!", silent)
+                bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
+                break
+            await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}")
+            await asyncio.sleep(1)

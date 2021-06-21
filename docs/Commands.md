@@ -419,6 +419,9 @@
     Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
     *This command can be used as subcommand*
 
+**timer**: Set timer \
+    Usage: !timer 10
+
 **timescmd**: Print how many times command was invoked \
     Examples: \
         !timescmd echo \
