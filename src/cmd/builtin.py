@@ -19,6 +19,7 @@ from src import const, emoji
 from src.algorithms import levenshtein_distance
 from src.commands import BaseCmd
 from src.config import BackgroundEvent, Command, DoNotUpdateFlag, bc, log
+from src.embed import DiscordEmbed
 from src.message import Msg
 from src.utils import Util, null
 
@@ -470,13 +471,14 @@ class BuiltinCommands(BaseCmd):
         if info is None:
             return null(await Msg.response(message, "Could not get information about this user", silent))
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
-        result = (f"{message.author.mention}\n"
-                  f"User: {f'{info.nick} ({info})'if info.nick is not None else info}\n"
-                  f"Avatar: <{info.avatar_url}>\n"
-                  f"Created at: {info.created_at}\n"
-                  f"Joined this server at: {info.joined_at}\n"
-                  f"Roles: {roles}\n")
-        await Msg.response(message, result, silent)
+        e = DiscordEmbed()
+        e.title(message.author)
+        e.thumbnail(str(info.avatar_url))
+        e.add_field("User", f'{info.nick} ({info})' if info.nick is not None else f'{info}', True)
+        e.add_field("Created at", str(info.created_at).split('.')[0], True)
+        e.add_field("Joined this server at", str(info.joined_at).split('.')[0], True)
+        e.add_field("Roles", roles)
+        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _help(message, command, silent=False):
