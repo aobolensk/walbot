@@ -1679,6 +1679,8 @@ class BuiltinCommands(BaseCmd):
     Usage: !timer 10"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
+        if bc.do_not_update[DoNotUpdateFlag.TIMER]:
+            return null(await Msg.response(message, "You can run only one timer simultaneously!", silent))
         start = datetime.datetime.now()
         duration = await Util.parse_int(
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
