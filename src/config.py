@@ -272,6 +272,7 @@ class Config:
             "reminder": 1,
             "reaction": 1,
             "response": 1,
+            "quote": 1,
         }
         self.saving = {
             "backup": {
