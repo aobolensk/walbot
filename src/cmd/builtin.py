@@ -1695,6 +1695,7 @@ class BuiltinCommands(BaseCmd):
         bc.config.ids["timer"] += 1
         timer_msg = await Msg.response(message, f"⏰ Timer #{id_}: {finish - start}", silent)
         bc.do_not_update[DoNotUpdateFlag.TIMER] += 1
+        print_counter = 0
         while True:
             current = datetime.datetime.now()
             if current >= finish:
@@ -1702,5 +1703,8 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(message, f"⏰ Timer #{id_}: Time is up!", silent)
                 bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
                 break
-            await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}")
-            await asyncio.sleep(1)
+            print_counter += 1
+            if print_counter == 10:
+                await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}")
+                print_counter = 0
+            await asyncio.sleep(0.1)
