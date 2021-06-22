@@ -1702,7 +1702,7 @@ class BuiltinCommands(BaseCmd):
                 bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
                 break
             print_counter += 1
-            if print_counter == 10 * bc.do_not_update[DoNotUpdateFlag.TIMER]:
+            if print_counter >= 10 * bc.do_not_update[DoNotUpdateFlag.TIMER]:
                 await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}")
                 print_counter = 0
             await asyncio.sleep(0.1)
