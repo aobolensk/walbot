@@ -1679,8 +1679,6 @@ class BuiltinCommands(BaseCmd):
     Usage: !timer 10"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        if bc.do_not_update[DoNotUpdateFlag.TIMER]:
-            return null(await Msg.response(message, "You can run only one timer simultaneously!", silent))
         start = datetime.datetime.now()
         duration = await Util.parse_int(
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
@@ -1704,7 +1702,7 @@ class BuiltinCommands(BaseCmd):
                 bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
                 break
             print_counter += 1
-            if print_counter == 10:
+            if print_counter == 10 * bc.do_not_update[DoNotUpdateFlag.TIMER]:
                 await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}")
                 print_counter = 0
             await asyncio.sleep(0.1)
