@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src import const
 
 alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
@@ -122,7 +124,7 @@ emoji_to_text = {
 }
 
 
-def get_clock_emoji(time: str):
+def get_clock_emoji(time: str) -> Optional[str]:
     r = const.TIME_24H_REGEX.match(time)
     if r is None:
         return
