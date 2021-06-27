@@ -17,6 +17,7 @@ from src.algorithms import levenshtein_distance
 from src.bot_cache import BotCache
 from src.config import Command, Config, DoNotUpdateFlag, GuildSettings, SecretConfig, User, bc
 from src.embed import DiscordEmbed
+from src.emoji import get_clock_emoji
 from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
@@ -131,8 +132,9 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
+                    clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
                     e = DiscordEmbed()
-                    e.title("You asked to remind")
+                    e.title(f"{clock_emoji} You asked to remind")
                     e.description(rem.message)
                     e.color(random.randint(0x000000, 0xffffff))
                     e.timestamp(datetime.datetime.now(datetime.timezone.utc))

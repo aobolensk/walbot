@@ -46,6 +46,7 @@ AUTOUPDATE_CHECK_INTERVAL = 10 * 60  # seconds
 
 ALNUM_STRING_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9 ]+$')
 FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
+TIME_24H_REGEX = re.compile('^(0?[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$')
 LOGGING_FORMAT = "%(asctime)s [%(levelname)s] %(filename)s: %(message)s"
 REMINDER_DATE_FORMAT = "%Y-%m-%d"
 REMINDER_DATETIME_FORMAT = "%Y-%m-%d %H:%M"

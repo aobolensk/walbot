@@ -1,3 +1,5 @@
+from src import const
+
 alphabet = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
 
 text_to_emoji = {
@@ -118,3 +120,19 @@ emoji_to_text = {
     '❗': '!',
     '❓': '?',
 }
+
+def get_clock_emoji(time: str):
+    r = const.TIME_24H_REGEX.match(time)
+    if r is None:
+        return
+    hours, minutes = (int(x) for x in r.groups())
+    if minutes < 15:
+        minutes = 0
+    elif 15 <= minutes < 45:
+        minutes = 30
+    else:  # 45 <= minutes < 60
+        minutes = 0
+        hours += 1
+    while hours >= 12:
+        hours -= 12
+    return f":clock{hours}{minutes if minutes > 0 else ''}:"
