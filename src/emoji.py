@@ -121,6 +121,7 @@ emoji_to_text = {
     '❓': '?',
 }
 
+
 def get_clock_emoji(time: str):
     r = const.TIME_24H_REGEX.match(time)
     if r is None:
