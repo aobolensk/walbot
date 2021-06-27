@@ -134,6 +134,8 @@ def get_clock_emoji(time: str):
     else:  # 45 <= minutes < 60
         minutes = 0
         hours += 1
-    while hours >= 12:
+    while hours > 12:
         hours -= 12
+    while hours <= 0:
+        hours += 12
     return f":clock{hours}{minutes if minutes > 0 else ''}:"
