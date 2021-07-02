@@ -77,7 +77,7 @@ UNICODE_EMOJI_REGEX = re.compile(
 )
 
 YT_VIDEO_REGEX = re.compile(
-    r'http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?')
+    r'http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch.*\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?.*')
 
 ROLE_EVERYONE = "@everyone"
 ROLE_HERE = "@here"

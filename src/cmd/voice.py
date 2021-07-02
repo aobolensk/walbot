@@ -1,5 +1,6 @@
 import datetime
 import os
+import urllib.parse
 
 import youtube_dl
 
@@ -81,7 +82,11 @@ class VoiceCommands(BaseCmd):
             r = const.YT_VIDEO_REGEX.match(video_url)
             if r is None:
                 return null(await Msg.response(message, "🔊 Please, provide YT link", silent))
-            yt_video_id = r.groups()[0]
+            parse_url = urllib.parse.urlparse(video_url)
+            params = urllib.parse.parse_qs(parse_url.query)
+            if 'v' not in params.keys() or not params['v']:
+                await Msg.response(message, "🔊 Please, provide valid YT video URL", silent)
+            yt_video_id = params['v'][-1]
             output_file_name = f'/tmp/walbot/yt_{yt_video_id}.mp3'
             ydl_opts = {
                 'format': 'bestaudio/best',
