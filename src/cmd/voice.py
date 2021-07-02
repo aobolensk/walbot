@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import os
 import urllib.parse
@@ -13,6 +14,40 @@ from src.message import Msg
 from src.utils import Util, null
 from src.voice import VoiceQueueEntry
 
+class _VoiceInternals:
+    @staticmethod
+    async def push_video(message, yt_video_url, silent):
+        r = const.YT_VIDEO_REGEX.match(yt_video_url)
+        if r is None:
+            return
+        yt_video_id = r.groups()[0]
+        output_file_name = f'/tmp/walbot/yt_{yt_video_id}.mp3'
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': output_file_name,
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+            }],
+        }
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                video_info = ydl.extract_info(yt_video_url, download=False)
+                if not os.path.exists(output_file_name):
+                    log.debug(f"Downloading YT video {yt_video_url} ...")
+                    ydl.download([yt_video_url])
+                    log.debug(f"Downloaded {yt_video_url}")
+                else:
+                    log.debug(f"Found in cache: {yt_video_url}")
+        except Exception as e:
+            return null(await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent))
+        bc.voice_client_queue.append(VoiceQueueEntry(
+            message.channel, video_info['title'], video_info['id'], output_file_name, message.author.name))
+        await Msg.response(
+            message,
+            f"🔊 Added {video_info['title']} (YT: {video_info['id']}) to the queue "
+            f"at position #{len(bc.voice_client_queue)}",
+            silent)
 
 class VoiceCommands(BaseCmd):
     def bind(self):
@@ -78,42 +113,35 @@ class VoiceCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         for i in range(1, len(command)):
-            video_url = command[i]
-            r = const.YT_VIDEO_REGEX.match(video_url)
+            yt_url = command[i]
+            r = const.YT_VIDEO_REGEX.match(yt_url) or const.YT_PLAYLIST_REGEX.match(yt_url)
             if r is None:
                 return null(await Msg.response(message, "🔊 Please, provide YT link", silent))
-            parse_url = urllib.parse.urlparse(video_url)
+
+            # Parse YT url
+            parse_url = urllib.parse.urlparse(yt_url)
             params = urllib.parse.parse_qs(parse_url.query)
-            if 'v' not in params.keys() or not params['v']:
-                await Msg.response(message, "🔊 Please, provide valid YT video URL", silent)
-            yt_video_id = params['v'][-1]
-            output_file_name = f'/tmp/walbot/yt_{yt_video_id}.mp3'
-            ydl_opts = {
-                'format': 'bestaudio/best',
-                'outtmpl': output_file_name,
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                }],
-            }
-            try:
-                with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                    video_info = ydl.extract_info(video_url, download=False)
-                    if not os.path.exists(output_file_name):
-                        log.debug(f"Downloading YT video {video_url} ...")
-                        ydl.download([video_url])
-                        log.debug(f"Downloaded {video_url}")
-                    else:
-                        log.debug(f"Found in cache: {video_url}")
-            except Exception as e:
-                return null(await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent))
-            bc.voice_client_queue.append(VoiceQueueEntry(
-                message.channel, video_info['title'], video_info['id'], output_file_name, message.author.name))
-            await Msg.response(
-                message,
-                f"🔊 Added {video_info['title']} (YT: {video_info['id']}) to the queue "
-                f"at position #{len(bc.voice_client_queue)}",
-                silent)
+
+            if parse_url.path == '/playlist' and 'list' in params.keys() and params['list']:
+                # Process YT playlist
+                ydl_opts = {
+                    'dump_single_json': True,
+                    'extract_flat' : True,
+                }
+                try:
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        yt_playlist_data = ydl.extract_info(yt_url, download=False)
+                except Exception as e:
+                    return null(await Msg.response(message, f"🔊 ERROR: Fetching YT playlist data failed: {e}", silent))
+                yt_video_ids = [entry["id"] for entry in yt_playlist_data["entries"]]
+                download_promises = []
+                for yt_video_id in yt_video_ids:
+                    download_promises.append(_VoiceInternals.push_video(message, f"https://youtu.be/{yt_video_id}", silent))
+                await asyncio.gather(*download_promises)
+                await Msg.response(message, f"Downloading playlist '{params['list'][0]}' is finished", silent)
+            else:
+                # Process YT video
+                await _VoiceInternals.push_video(message, yt_url, silent)
 
     @staticmethod
     async def _vqskip(message, command, silent=False):
