@@ -14,6 +14,7 @@ from src.message import Msg
 from src.utils import Util, null
 from src.voice import VoiceQueueEntry
 
+
 class _VoiceInternals:
     @staticmethod
     async def push_video(message, yt_video_url, silent):
@@ -48,6 +49,7 @@ class _VoiceInternals:
             f"🔊 Added {video_info['title']} (YT: {video_info['id']}) to the queue "
             f"at position #{len(bc.voice_client_queue)}",
             silent)
+
 
 class VoiceCommands(BaseCmd):
     def bind(self):
@@ -126,7 +128,7 @@ class VoiceCommands(BaseCmd):
                 # Process YT playlist
                 ydl_opts = {
                     'dump_single_json': True,
-                    'extract_flat' : True,
+                    'extract_flat': True,
                 }
                 try:
                     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -136,7 +138,8 @@ class VoiceCommands(BaseCmd):
                 yt_video_ids = [entry["id"] for entry in yt_playlist_data["entries"]]
                 download_promises = []
                 for yt_video_id in yt_video_ids:
-                    download_promises.append(_VoiceInternals.push_video(message, f"https://youtu.be/{yt_video_id}", silent))
+                    download_promises.append(
+                        _VoiceInternals.push_video(message, f"https://youtu.be/{yt_video_id}", silent))
                 await asyncio.gather(*download_promises)
                 await Msg.response(message, f"Downloading playlist '{params['list'][0]}' is finished", silent)
             else:
