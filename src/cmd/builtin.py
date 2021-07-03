@@ -26,6 +26,57 @@ from src.utils import Util, null
 
 class _BuiltinInternals:
     @staticmethod
+    async def add_image(message, command, silent, update):
+        name = command[1]
+        if not re.match(const.FILENAME_REGEX, name):
+            return null(await Msg.response(message, f"Incorrect name '{name}'", silent))
+        url = command[2]
+        ext = urllib.parse.urlparse(url).path.split('.')[-1]
+        if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
+            return null(await Msg.response(message, "Please, provide direct link to image", silent))
+
+        found = False
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
+                continue
+            for file in files:
+                if name == os.path.splitext(os.path.basename(file))[0]:
+                    found = True
+                    if not update:
+                        return null(await Msg.response(message, f"Image '{name}' already exists", silent))
+        if update and not found:
+            return null(await Msg.response(message, f"Image '{name}' does not exist", silent))
+
+        if not os.path.exists(const.IMAGES_DIRECTORY):
+            os.makedirs(const.IMAGES_DIRECTORY)
+        image_path = os.path.join(const.IMAGES_DIRECTORY, name + '.' + ext)
+        with open(image_path, 'wb') as f:
+            try:
+                hdr = {
+                    "User-Agent": "Mozilla/5.0"
+                }
+                rq = urllib.request.Request(url, headers=hdr)
+                with urllib.request.urlopen(rq) as response:
+                    f.write(response.read())
+            except ValueError:
+                return null(await Msg.response(message, "Incorrect image URL format!", silent))
+            except Exception as e:
+                os.remove(image_path)
+                log.error("Image downloading failed!", exc_info=True)
+                return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
+
+        if imghdr.what(image_path) is None:
+            log.error("Received file is not an image!")
+            os.remove(image_path)
+            log.info(f"Removed file {image_path}")
+            return null(await Msg.response(message, "Received file is not an image", silent))
+
+        if not update:
+            await Msg.response(message, f"Image '{name}' is successfully added!", silent)
+        else:
+            await Msg.response(message, f"Image '{name}' is successfully updated!", silent)
+
+    @staticmethod
     async def get_image(message, command, silent):
         for i in range(1, len(command)):
             for root, _, files in os.walk(const.IMAGES_DIRECTORY):
@@ -177,6 +228,8 @@ class BuiltinCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "listimg",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "addimg",
+                                     permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "updimg",
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "delimg",
                                      permission=const.Permission.MOD.value, subcommand=False)
@@ -1337,42 +1390,15 @@ class BuiltinCommands(BaseCmd):
     Example: !addimg name url"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        name = command[1]
-        if not re.match(const.FILENAME_REGEX, name):
-            return null(await Msg.response(message, f"Incorrect name '{name}'", silent))
-        url = command[2]
-        ext = urllib.parse.urlparse(url).path.split('.')[-1]
-        if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
-            return null(await Msg.response(message, "Please, provide direct link to image", silent))
-        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
-            if not root.endswith(const.IMAGES_DIRECTORY):
-                continue
-            for file in files:
-                if name == os.path.splitext(os.path.basename(file))[0]:
-                    return null(await Msg.response(message, f"Image '{name}' already exists", silent))
-        if not os.path.exists(const.IMAGES_DIRECTORY):
-            os.makedirs(const.IMAGES_DIRECTORY)
-        image_path = os.path.join(const.IMAGES_DIRECTORY, name + '.' + ext)
-        with open(image_path, 'wb') as f:
-            try:
-                hdr = {
-                    "User-Agent": "Mozilla/5.0"
-                }
-                rq = urllib.request.Request(url, headers=hdr)
-                with urllib.request.urlopen(rq) as response:
-                    f.write(response.read())
-            except ValueError:
-                return null(await Msg.response(message, "Incorrect image URL format!", silent))
-            except Exception as e:
-                os.remove(image_path)
-                log.error("Image downloading failed!", exc_info=True)
-                return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
-        if imghdr.what(image_path) is None:
-            log.error("Received file is not an image!")
-            os.remove(image_path)
-            log.info(f"Removed file {image_path}")
-            return null(await Msg.response(message, "Received file is not an image", silent))
-        await Msg.response(message, f"Image '{name}' successfully added!", silent)
+        await _BuiltinInternals.add_image(message, command, silent, update=False)
+
+    @staticmethod
+    async def _updimg(message, command, silent=False):
+        """Update image for !img command
+    Example: !updimg name url"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        await _BuiltinInternals.add_image(message, command, silent, update=True)
 
     @staticmethod
     async def _delimg(message, command, silent=False):

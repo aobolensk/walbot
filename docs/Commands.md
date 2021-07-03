@@ -450,6 +450,9 @@
     Note: Be careful when you are executing external commands! \
     Example: !updextcmd uname uname -a
 
+**updimg**: Update image for !img command \
+    Example: !updimg name url
+
 **updreaction**: Update reaction \
     Example: !updreaction index emoji regex
 
