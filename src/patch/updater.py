@@ -190,7 +190,7 @@ class Updater:
             config.model[""].__dict__["word"] = None
             self._bump_version(config, "0.0.5")
         if config.version == "0.0.5":
-            for i in range(len(config.filters)):
+            for i, _ in enumerate(config.filters):
                 config.__dict__["filters"][i] = re.compile(config.filters[i].pattern, re.DOTALL)
             self._bump_version(config, "0.0.6")
         if config.version == "0.0.6":

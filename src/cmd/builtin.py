@@ -1001,8 +1001,8 @@ class BuiltinCommands(BaseCmd):
                     message,
                     f"Too many options for poll (got: {len(options)}, max: {const.MAX_POLL_OPTIONS})", silent))
         poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
-        for i in range(len(options)):
-            poll_message += emoji.alphabet[i] + " -> " + options[i] + '\n'
+        for i, option in enumerate(options):
+            poll_message += emoji.alphabet[i] + " -> " + option + '\n'
         poll_message = await Msg.response(message, poll_message, silent)
         bc.do_not_update[DoNotUpdateFlag.POLL] += 1
         for i in range(len(options)):
@@ -1448,15 +1448,15 @@ class BuiltinCommands(BaseCmd):
         text = ' '.join(command[1:]).lower()
         result = ""
         is_emoji = False
-        for i in range(len(text)):
+        for i, word in enumerate(text):
             if not is_emoji:
                 result += ' '
-            if text[i] in emoji.text_to_emoji.keys():
+            if word in emoji.text_to_emoji.keys():
                 is_emoji = True
-                result += emoji.text_to_emoji[text[i]] + ' '
+                result += emoji.text_to_emoji[word] + ' '
             else:
                 is_emoji = False
-                result += text[i]
+                result += word
         result = result.strip()
         await Msg.response(message, result, silent)
         return result
