@@ -34,16 +34,16 @@ class WalBot(discord.Client):
         self.repl = None
         self.config = config
         self.secret_config = secret_config
-        self.loop.create_task(self.config_autosave())
-        self.loop.create_task(self.process_reminders())
+        self.loop.create_task(self._config_autosave())
+        self.loop.create_task(self._process_reminders())
         self.loop.create_task(self._precompile())
-        self.loop.create_task(self.voice_routine())
+        self.loop.create_task(self._voice_routine())
         self.bot_cache = BotCache(True)
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
         bc.latency = lambda: self.latency
-        bc.change_status = self.change_status
+        bc.change_status = self._change_status
         bc.change_presence = self.change_presence
         bc.close = self.close
         bc.secret_config = self.secret_config
@@ -56,18 +56,18 @@ class WalBot(discord.Client):
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
 
-    async def update_autoupdate_flag(self, current_autoupdate_flag):
+    async def _update_autoupdate_flag(self, current_autoupdate_flag):
         if current_autoupdate_flag != self.bot_cache.get_state()["do_not_update"]:
             self.bot_cache.update({"do_not_update": current_autoupdate_flag})
             self.bot_cache.dump_to_file()
 
-    async def voice_routine(self):
+    async def _voice_routine(self):
         # Disconnect if bot is inactive in voice channel
         voice_client_queue_disconnect_counter = 0
 
         while True:
             bc.do_not_update[DoNotUpdateFlag.VOICE] = bool(bc.voice_client)
-            await self.update_autoupdate_flag(any(bc.do_not_update))
+            await self._update_autoupdate_flag(any(bc.do_not_update))
             try:
                 if bc.voice_client is not None and not bc.voice_client_queue and not bc.voice_client.is_playing():
                     voice_client_queue_disconnect_counter += 1
@@ -108,10 +108,10 @@ class WalBot(discord.Client):
         levenshtein_distance("", "")
         log.debug("Finished precompiling functions")
 
-    async def change_status(self, string, type_):
+    async def _change_status(self, string, type_):
         await self.change_presence(activity=discord.Activity(name=string, type=type_))
 
-    async def config_autosave(self):
+    async def _config_autosave(self):
         await self.wait_until_ready()
         index = 1
         while not self.is_closed():
@@ -121,7 +121,7 @@ class WalBot(discord.Client):
             index += 1
             await asyncio.sleep(self.config.saving["period"] * 60)
 
-    async def process_reminders(self):
+    async def _process_reminders(self):
         await self.wait_until_ready()
         while not self.is_closed():
             log.debug3("Reminder processing iteration has started")
@@ -205,10 +205,10 @@ class WalBot(discord.Client):
             if self.config.users[message.author.id].permission_level < 0:
                 return
             if message.content.startswith(self.config.commands_prefix):
-                await self.process_command(message)
+                await self._process_command(message)
             else:
-                await self.process_regular_message(message)
-                await self.process_repetitions(message)
+                await self._process_regular_message(message)
+                await self._process_repetitions(message)
         except Exception:
             log.error("on_message failed", exc_info=True)
 
@@ -232,11 +232,11 @@ class WalBot(discord.Client):
             if self.config.users[message.author.id].permission_level < 0:
                 return
             if message.content.startswith(self.config.commands_prefix):
-                await self.process_command(message)
+                await self._process_command(message)
         except Exception:
             log.error("on_message_edit failed", exc_info=True)
 
-    async def process_repetitions(self, message):
+    async def _process_repetitions(self, message):
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
         if (all(m) and m[0].content == m[1].content == m[2].content and
             (m[0].author.id != self.user.id and
@@ -244,7 +244,7 @@ class WalBot(discord.Client):
              m[2].author.id != self.user.id)):
             await message.channel.send(m[0].content)
 
-    async def process_regular_message(self, message):
+    async def _process_regular_message(self, message):
         if (self.user.mentioned_in(message) or self.user.id in [
                 member.id for member in list(
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
@@ -272,7 +272,7 @@ class WalBot(discord.Client):
                     except discord.HTTPException:
                         pass
 
-    async def process_command(self, message):
+    async def _process_command(self, message):
         command = message.content.split(' ')
         command = list(filter(None, command))
         command[0] = command[0][1:]
@@ -284,11 +284,11 @@ class WalBot(discord.Client):
             else:
                 await message.channel.send(
                     f"Unknown command '{command[0]}', "
-                    f"probably you meant '{self.suggest_similar_command(command[0])}'")
+                    f"probably you meant '{self._suggest_similar_command(command[0])}'")
                 return
         await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
 
-    def suggest_similar_command(self, unknown_command):
+    def _suggest_similar_command(self, unknown_command):
         min_dist = 100000
         suggestion = ""
         for command in self.config.commands.data.keys():
