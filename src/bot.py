@@ -212,6 +212,30 @@ class WalBot(discord.Client):
         except Exception:
             log.error("on_message failed", exc_info=True)
 
+    async def on_message_edit(self, _, message):
+        try:
+            if self.config.guilds[message.channel.guild.id].ignored:
+                return
+            bc.message_buffer.push(message)
+            log.info(f"<{message.id}> {message.author} -> {message.content}")
+            if message.author.id == self.user.id:
+                return
+            if isinstance(message.channel, discord.DMChannel):
+                return
+            if message.channel.guild.id is None:
+                return
+            if self.config.guilds[message.channel.guild.id].is_whitelisted:
+                if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
+                    return
+            if message.author.id not in self.config.users.keys():
+                self.config.users[message.author.id] = User(message.author.id)
+            if self.config.users[message.author.id].permission_level < 0:
+                return
+            if message.content.startswith(self.config.commands_prefix):
+                await self.process_command(message)
+        except Exception:
+            log.error("on_message failed", exc_info=True)
+
     async def process_repetitions(self, message):
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
         if (all(m) and m[0].content == m[1].content == m[2].content and
