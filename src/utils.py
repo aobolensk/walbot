@@ -38,7 +38,7 @@ class Util:
 
     @staticmethod
     def check_version(name, actual, expected, solutions=None, fatal=True):
-        if (actual == expected):
+        if actual == expected:
             return True
         if not fatal:
             log.warning(f"{name} versions mismatch. Expected: {expected}, but actual: {actual}")
