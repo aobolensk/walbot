@@ -114,7 +114,7 @@ def dump_autocomplete_script(shell, parser):
             log.error("Shell autocompletion scripts update failed.")
             log.error(f"    Install `shtab`: {sys.executable} -m pip install shtab")
         result = shtab.complete(parser, shell="bash").replace("walbot.py", "./walbot.py")
-        with open(os.path.join(os.getcwd(), "tools/autocomplete/walbot-completion.bash"), "w") as f:
+        with open(os.path.join(os.getcwd(), "tools", "autocomplete", "walbot-completion.bash"), "w") as f:
             print(result, file=f)
     else:
         log.error("Unsupported shell type")
