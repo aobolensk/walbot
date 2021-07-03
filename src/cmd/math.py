@@ -43,18 +43,17 @@ class MathExprEvaluator:
     def _evaluate_expr_node(self, node):
         if isinstance(node, ast.Num):
             return node.n
-        elif isinstance(node, ast.BinOp):
+        if isinstance(node, ast.BinOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.right))
-        elif isinstance(node, ast.BoolOp):
+        if isinstance(node, ast.BoolOp):
             return self._ops[type(node.op)](
                 self._evaluate_expr_node(node.values[0]), self._evaluate_expr_node(node.values[1]))
-        elif isinstance(node, ast.UnaryOp):
+        if isinstance(node, ast.UnaryOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.operand))
-        elif isinstance(node, ast.Compare):
+        if isinstance(node, ast.Compare):
             return int(self._ops[type(node.ops[0])](
                 self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.comparators[0])))
-        else:
-            raise Exception(f"Failed to parse '{node}'")
+        raise Exception(f"Failed to parse '{node}'")
 
     def evaluate(self, expr):
         return self._evaluate_expr_node(ast.parse(expr, mode='eval').body)
