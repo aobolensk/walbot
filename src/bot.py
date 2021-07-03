@@ -217,7 +217,7 @@ class WalBot(discord.Client):
             if self.config.guilds[message.channel.guild.id].ignored:
                 return
             bc.message_buffer.push(message)
-            log.info(f"<{message.id}> {message.author} -> {message.content}")
+            log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
             if message.author.id == self.user.id:
                 return
             if isinstance(message.channel, discord.DMChannel):
@@ -234,7 +234,7 @@ class WalBot(discord.Client):
             if message.content.startswith(self.config.commands_prefix):
                 await self.process_command(message)
         except Exception:
-            log.error("on_message failed", exc_info=True)
+            log.error("on_message_edit failed", exc_info=True)
 
     async def process_repetitions(self, message):
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
@@ -305,7 +305,7 @@ class WalBot(discord.Client):
 
     async def on_raw_message_edit(self, payload):
         try:
-            log.info(f"<{payload.message_id}> (edit) {payload.data['author']['username']}#"
+            log.info(f"<{payload.message_id}> (raw_edit) {payload.data['author']['username']}#"
                      f"{payload.data['author']['discriminator']} -> {payload.data['content']}")
         except KeyError:
             pass
