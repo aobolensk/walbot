@@ -306,50 +306,47 @@ class Config:
 
     def save(self, config_file, markov_file, secret_config_file, wait=False):
         config_mutex = threading.Lock()
-        config_mutex.acquire()
-        log.info("Saving of config is started")
-        with open(config_file, 'wb') as f:
-            try:
-                f.write(yaml.dump(
-                    self,
-                    Dumper=bc.yaml_dumper,
-                    encoding='utf-8',
-                    allow_unicode=True))
-                log.info("Saving of config is finished")
-            except Exception:
-                log.error("yaml.dump failed", exc_info=True)
-        config_mutex.release()
+        with config_mutex:
+            log.info("Saving of config is started")
+            with open(config_file, 'wb') as f:
+                try:
+                    f.write(yaml.dump(
+                        self,
+                        Dumper=bc.yaml_dumper,
+                        encoding='utf-8',
+                        allow_unicode=True))
+                    log.info("Saving of config is finished")
+                except Exception:
+                    log.error("yaml.dump failed", exc_info=True)
         secret_config_mutex = threading.Lock()
-        secret_config_mutex.acquire()
-        log.info("Saving of secret config is started")
-        with open(secret_config_file, 'wb') as f:
-            try:
-                f.write(yaml.dump(
-                    bc.secret_config,
-                    Dumper=bc.yaml_dumper,
-                    encoding='utf-8',
-                    allow_unicode=True))
-                log.info("Saving of secret config is finished")
-            except Exception:
-                log.error("yaml.dump failed", exc_info=True)
-        secret_config_mutex.release()
+        with secret_config_mutex:
+            log.info("Saving of secret config is started")
+            with open(secret_config_file, 'wb') as f:
+                try:
+                    f.write(yaml.dump(
+                        bc.secret_config,
+                        Dumper=bc.yaml_dumper,
+                        encoding='utf-8',
+                        allow_unicode=True))
+                    log.info("Saving of secret config is finished")
+                except Exception:
+                    log.error("yaml.dump failed", exc_info=True)
         if bc.do_not_update[DoNotUpdateFlag.VOICE]:
             return log.info("Markov module save is skipped since bot is in voice channel")
         markov_mutex = threading.Lock()
-        markov_mutex.acquire()
-        log.info("Saving of Markov module data is started")
-        try:
-            thread = threading.Thread(
-                target=bc.markov.serialize,
-                args=(markov_file, bc.yaml_dumper))
-            thread.start()
-            if wait:
-                log.info("Waiting for saving of Markov module data...")
-                thread.join()
-                log.info("Saving of Markov is waited")
-        except Exception:
-            log.error("Saving of Markov module data is failed", exc_info=True)
-        markov_mutex.release()
+        with markov_mutex:
+            log.info("Saving of Markov module data is started")
+            try:
+                thread = threading.Thread(
+                    target=bc.markov.serialize,
+                    args=(markov_file, bc.yaml_dumper))
+                thread.start()
+                if wait:
+                    log.info("Waiting for saving of Markov module data...")
+                    thread.join()
+                    log.info("Saving of Markov is waited")
+            except Exception:
+                log.error("Saving of Markov module data is failed", exc_info=True)
 
     async def disable_pings_in_response(self, message, response):
         if not self.guilds[message.channel.guild.id].markov_pings:
