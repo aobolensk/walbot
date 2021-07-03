@@ -97,7 +97,7 @@ class MathCommands(BaseCmd):
         true = ["true"]
         false = ["false"]
 
-        if condition.lower() not in (true + false):
+        if condition.lower() not in true + false:
             condition = await Util.parse_int(
                 message, command[1], f"Second parameter should be either number or {', '.join(true + false)}", silent)
             if condition is None:
