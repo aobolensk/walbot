@@ -29,7 +29,7 @@ from src.utils import Util
 
 
 class WalBot(discord.Client):
-    def __init__(self, config, secret_config):
+    def __init__(self, config: Config, secret_config: SecretConfig) -> None:
         super().__init__()
         self.repl = None
         self.config = config
@@ -56,12 +56,12 @@ class WalBot(discord.Client):
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
 
-    async def _update_autoupdate_flag(self, current_autoupdate_flag):
+    async def _update_autoupdate_flag(self, current_autoupdate_flag: bool) -> None:
         if current_autoupdate_flag != self.bot_cache.get_state()["do_not_update"]:
             self.bot_cache.update({"do_not_update": current_autoupdate_flag})
             self.bot_cache.dump_to_file()
 
-    async def _voice_routine(self):
+    async def _voice_routine(self) -> None:
         # Disconnect if bot is inactive in voice channel
         voice_client_queue_disconnect_counter = 0
 
@@ -103,15 +103,15 @@ class WalBot(discord.Client):
                 log.error(f"voice_routine logic failed: {e}")
             await asyncio.sleep(5)
 
-    async def _precompile(self):
+    async def _precompile(self) -> None:
         log.debug("Started precompiling functions...")
         levenshtein_distance("", "")
         log.debug("Finished precompiling functions")
 
-    async def _change_status(self, string, type_):
+    async def _change_status(self, string: str, type_: discord.ActivityType) -> None:
         await self.change_presence(activity=discord.Activity(name=string, type=type_))
 
-    async def _config_autosave(self):
+    async def _config_autosave(self) -> None:
         await self.wait_until_ready()
         index = 1
         while not self.is_closed():
@@ -121,7 +121,7 @@ class WalBot(discord.Client):
             index += 1
             await asyncio.sleep(self.config.saving["period"] * 60)
 
-    async def _process_reminders(self):
+    async def _process_reminders(self) -> None:
         await self.wait_until_ready()
         while not self.is_closed():
             log.debug3("Reminder processing iteration has started")
@@ -169,7 +169,7 @@ class WalBot(discord.Client):
             log.debug3("Reminder processing iteration has finished")
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
         self.bot_cache.update({
             "ready": True,
@@ -185,7 +185,7 @@ class WalBot(discord.Client):
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
         bc.bot_user = self.user
 
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message) -> None:
         try:
             if self.config.guilds[message.channel.guild.id].ignored:
                 return
@@ -212,7 +212,7 @@ class WalBot(discord.Client):
         except Exception:
             log.error("on_message failed", exc_info=True)
 
-    async def on_message_edit(self, _, message):
+    async def on_message_edit(self, _: discord.Message, message: discord.Message) -> None:
         try:
             if self.config.guilds[message.channel.guild.id].ignored:
                 return
@@ -236,7 +236,7 @@ class WalBot(discord.Client):
         except Exception:
             log.error("on_message_edit failed", exc_info=True)
 
-    async def _process_repetitions(self, message):
+    async def _process_repetitions(self, message: discord.Message) -> None:
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
         if (all(m) and m[0].content == m[1].content == m[2].content and
             (m[0].author.id != self.user.id and
@@ -244,7 +244,7 @@ class WalBot(discord.Client):
              m[2].author.id != self.user.id)):
             await message.channel.send(m[0].content)
 
-    async def _process_regular_message(self, message):
+    async def _process_regular_message(self, message: discord.Message) -> None:
         if (self.user.mentioned_in(message) or self.user.id in [
                 member.id for member in list(
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
@@ -272,7 +272,7 @@ class WalBot(discord.Client):
                     except discord.HTTPException:
                         pass
 
-    async def _process_command(self, message):
+    async def _process_command(self, message: discord.Message) -> None:
         command = message.content.split(' ')
         command = list(filter(None, command))
         command[0] = command[0][1:]
@@ -288,7 +288,7 @@ class WalBot(discord.Client):
                 return
         await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
 
-    def _suggest_similar_command(self, unknown_command):
+    def _suggest_similar_command(self, unknown_command: str) -> str:
         min_dist = 100000
         suggestion = ""
         for command in self.config.commands.data.keys():
@@ -303,14 +303,14 @@ class WalBot(discord.Client):
                 min_dist = dist
         return suggestion
 
-    async def on_raw_message_edit(self, payload):
+    async def on_raw_message_edit(self, payload: discord.RawMessageUpdateEvent) -> None:
         try:
             log.info(f"<{payload.message_id}> (raw_edit) {payload.data['author']['username']}#"
                      f"{payload.data['author']['discriminator']} -> {payload.data['content']}")
         except KeyError:
             pass
 
-    async def on_raw_message_delete(self, payload):
+    async def on_raw_message_delete(self, payload: discord.RawMessageDeleteEvent) -> None:
         log.info(f"<{payload.message_id}> (delete)")
 
 
