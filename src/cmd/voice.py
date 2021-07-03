@@ -110,7 +110,7 @@ class VoiceCommands(BaseCmd):
 
     @staticmethod
     async def _vqpush(message, command, silent=False):
-        """Push YT video to queue in voice channel
+        """Push YT video or playlist to queue in voice channel
     Usage: !vqpush <youtube_url>"""
         if not await Util.check_args_count(message, command, silent, min=2):
             return

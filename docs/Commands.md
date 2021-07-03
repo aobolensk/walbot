@@ -496,7 +496,7 @@
 **vq**: List voice channel queue \
     Usage: !vq
 
-**vqpush**: Push YT video to queue in voice channel \
+**vqpush**: Push YT video or playlist to queue in voice channel \
     Usage: !vqpush &lt;youtube_url&gt;
 
 **vqskip**: Skip current track in voice queue \
