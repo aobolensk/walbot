@@ -530,8 +530,8 @@ class BuiltinCommands(BaseCmd):
         e.title(message.author)
         e.thumbnail(str(info.avatar_url))
         e.add_field("User", f'{info.nick} ({info})' if info.nick is not None else f'{info}', True)
-        e.add_field("Created at", str(info.created_at).split('.')[0], True)
-        e.add_field("Joined this server at", str(info.joined_at).split('.')[0], True)
+        e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
+        e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
         e.add_field("Roles", roles)
         await Msg.response(message, None, silent, embed=e.get())
 
@@ -1253,7 +1253,7 @@ class BuiltinCommands(BaseCmd):
                         "Incorrect timezone. "
                         "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
                         silent))
-        result = str(datetime.datetime.now(timezone)).split('.')[0]
+        result = str(datetime.datetime.now(timezone)).split('.', maxsplit=1)[0]
         await Msg.response(message, result, silent)
         return result
 
