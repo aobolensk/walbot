@@ -46,8 +46,12 @@ class BotCache:
         with open(self.path, 'w') as f:
             json.dump(self._state, f)
 
-    def remove(self) -> None:
-        os.remove(self.path)
+    def remove(self) -> bool:
+        try:
+            os.remove(self.path)
+            return True
+        except FileNotFoundError:
+            return False
 
     def exists(self) -> bool:
         return os.path.exists(self.path)
