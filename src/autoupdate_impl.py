@@ -101,7 +101,7 @@ def at_start() -> None:
 
 
 def at_failure(e: Exception) -> None:
-    os.system(f"{sys.executable} walbot.py stop")
+    pass
 
 
 def at_exit() -> None:
