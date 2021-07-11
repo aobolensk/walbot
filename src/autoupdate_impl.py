@@ -74,7 +74,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
             log.warning(f"{e.command}: {e.stderr}")
         else:
             raise e
-    subprocess.call(f"{sys.executable} -m pip install -r requirements.txt")
+    subprocess.call(f"{sys.executable} -m pip install -r requirements.txt", shell=True)
     minibot_response = "WalBot automatic update is in progress. Please, wait..."
     subprocess.call(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &")
     subprocess.call(f"{sys.executable} walbot.py stop")
