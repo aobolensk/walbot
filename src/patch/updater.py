@@ -1,17 +1,43 @@
 import datetime
 import os
 import re
+import shutil
+import sys
+
+import yaml
 
 from src import const
 from src.log import log
+from src.utils import Util
 
 
 class Updater:
-    def __init__(self, path, config):
+    def __init__(self, name):
         """Dispaching config to its updater by config name"""
-        self.config_path = path
+        self.config_name = name
         self.modified = False
-        getattr(self, os.path.splitext(path)[0])(config)
+
+    def _save_yaml_file(self, path, config):
+        _, yaml_dumper = Util.get_yaml()
+        with open(path, 'wb') as f:
+            f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))
+
+
+    def update(self):
+        """Perform update"""
+        yaml_path = self.config_name + '.yaml'
+        if os.path.isfile(yaml_path):
+            # .yaml file path
+            config = Util.read_config_file(yaml_path)
+            getattr(self, self.config_name)(config)
+        else:
+            if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+                pass
+            else:
+                log.error(f"File '{self.config_name}.yaml' does not exist")
+                sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+        if self.modified:
+            self._save_yaml_file(yaml_path, config)
 
     def result(self):
         """Get updater result: was config file actually updated or not"""
@@ -169,9 +195,9 @@ class Updater:
             config.ids["timer"] = 1
             self._bump_version(config, "0.0.28")
         if config.version == "0.0.28":
-            log.info(f"Version of {self.config_path} is up to date!")
+            log.info(f"Version of {self.config_name} is up to date!")
         else:
-            log.error(f"Unknown version {config.version} for {self.config_path}!")
+            log.error(f"Unknown version {config.version} for {self.config_name}!")
 
     def markov(self, config):
         """Update markov.yaml"""
@@ -194,13 +220,13 @@ class Updater:
                 config.__dict__["filters"][i] = re.compile(config.filters[i].pattern, re.DOTALL)
             self._bump_version(config, "0.0.6")
         if config.version == "0.0.6":
-            log.info(f"Version of {self.config_path} is up to date!")
+            log.info(f"Version of {self.config_name} is up to date!")
         else:
-            log.error(f"Unknown version {config.version} for {self.config_path}!")
+            log.error(f"Unknown version {config.version} for {self.config_name}!")
 
     def secret(self, config):
         """Update secret.yaml"""
         if config.version == "0.0.1":
-            log.info(f"Version of {self.config_path} is up to date!")
+            log.info(f"Version of {self.config_name} is up to date!")
         else:
-            log.error(f"Unknown version {config.version} for {self.config_path}!")
+            log.error(f"Unknown version {config.version} for {self.config_name}!")
