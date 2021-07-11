@@ -6,6 +6,7 @@ import os
 import random
 import re
 import signal
+import sqlite3
 import subprocess
 import sys
 import time
@@ -392,7 +393,6 @@ def start(args, main_bot=True):
     if secret_config.token is None:
         if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
             secret_config = types.SimpleNamespace()
-            import sqlite3
             con = sqlite3.connect(os.path.join("db", "secret.db"))
             cur = con.cursor()
             cur.execute("SELECT value FROM tokens WHERE key = 'discord'")
