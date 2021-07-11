@@ -6,9 +6,11 @@ import os
 import random
 import re
 import signal
+import sqlite3
 import subprocess
 import sys
 import time
+import types
 
 import discord
 import psutil
@@ -389,7 +391,17 @@ def start(args, main_bot=True):
         walbot = importlib.import_module("src.minibot").MiniWalBot(config, secret_config, args.message)
     # Checking authentication token
     if secret_config.token is None:
-        secret_config.token = input("Enter your token: ")
+        if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+            secret_config = types.SimpleNamespace()
+            con = sqlite3.connect(os.path.join("db", "secret.db"))
+            cur = con.cursor()
+            cur.execute("SELECT value FROM tokens WHERE key = 'discord'")
+            secret_config.token = cur.fetchone()[0]
+            cur.execute("SELECT value FROM db_info WHERE key = 'version'")
+            secret_config.version = cur.fetchone()[0]
+            con.close()
+        else:
+            secret_config.token = input("Enter your token: ")
     # Starting the bot
     walbot.run(secret_config.token)
     # After stopping the bot
