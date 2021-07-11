@@ -1,17 +1,42 @@
 import datetime
 import os
 import re
+import sqlite3
+import sys
+
+import yaml
 
 from src import const
 from src.log import log
+from src.utils import Util
 
 
 class Updater:
-    def __init__(self, path, config):
+    def __init__(self, name):
         """Dispaching config to its updater by config name"""
-        self.config_path = path
+        self.config_name = name
         self.modified = False
-        getattr(self, os.path.splitext(path)[0])(config)
+
+    def _save_yaml_file(self, path, config):
+        _, yaml_dumper = Util.get_yaml()
+        with open(path, 'wb') as f:
+            f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))
+
+    def update(self):
+        """Perform update"""
+        yaml_path = self.config_name + '.yaml'
+        if os.path.isfile(yaml_path):
+            # .yaml file path
+            config = Util.read_config_file(yaml_path)
+            getattr(self, self.config_name + "_yaml")(config)
+        else:
+            if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+                getattr(self, self.config_name + "_db")()
+            else:
+                log.error(f"File '{self.config_name}.yaml' does not exist")
+                sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+        if self.modified:
+            self._save_yaml_file(yaml_path, config)
 
     def result(self):
         """Get updater result: was config file actually updated or not"""
@@ -22,7 +47,7 @@ class Updater:
         self.modified = True
         log.info(f"Successfully upgraded to version {new_version}")
 
-    def config(self, config):
+    def config_yaml(self, config):
         """Update config.yaml"""
         if config.version == "0.0.1":
             for key in config.commands.data.keys():
@@ -169,11 +194,11 @@ class Updater:
             config.ids["timer"] = 1
             self._bump_version(config, "0.0.28")
         if config.version == "0.0.28":
-            log.info(f"Version of {self.config_path} is up to date!")
+            log.info(f"Version of {self.config_name} is up to date!")
         else:
-            log.error(f"Unknown version {config.version} for {self.config_path}!")
+            log.error(f"Unknown version {config.version} for {self.config_name}!")
 
-    def markov(self, config):
+    def markov_yaml(self, config):
         """Update markov.yaml"""
         if config.version == "0.0.1":
             config.__dict__["min_chars"] = 1
@@ -194,13 +219,30 @@ class Updater:
                 config.__dict__["filters"][i] = re.compile(config.filters[i].pattern, re.DOTALL)
             self._bump_version(config, "0.0.6")
         if config.version == "0.0.6":
-            log.info(f"Version of {self.config_path} is up to date!")
+            log.info(f"Version of {self.config_name} is up to date!")
         else:
-            log.error(f"Unknown version {config.version} for {self.config_path}!")
+            log.error(f"Unknown version {config.version} for {self.config_name}!")
 
-    def secret(self, config):
+    def secret_yaml(self, config):
         """Update secret.yaml"""
         if config.version == "0.0.1":
-            log.info(f"Version of {self.config_path} is up to date!")
+            if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+                os.makedirs("db", exist_ok=True)
+                con = sqlite3.connect(os.path.join("db", "secret.db"))
+                cur = con.cursor()
+                cur.execute("CREATE TABLE db_info (key text, value text)")
+                cur.execute("INSERT INTO db_info VALUES ('version', '0.1.0')")
+                cur.execute("CREATE TABLE tokens (key text, value text)")
+                cur.execute("INSERT INTO tokens VALUES ('discord', ?)", (config.token,))
+                con.commit()
+                con.close()
+                os.remove(self.config_name + '.yaml')
+                log.info("Successfully migrated contig.yaml to db/config.db!")
+            else:
+                log.info(f"Version of {self.config_name} is up to date!")
         else:
-            log.error(f"Unknown version {config.version} for {self.config_path}!")
+            log.error(f"Unknown version {config.version} for {self.config_name}!")
+
+    def secret_db(self):
+        """Update db/secret.db"""
+        pass

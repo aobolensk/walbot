@@ -8,6 +8,7 @@ __pycache__
 config.yaml
 markov.yaml
 secret.yaml
+db/
 
 # Bot data
 backup/
