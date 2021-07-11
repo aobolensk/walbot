@@ -95,7 +95,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
 def at_start() -> None:
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
-        os.system(f"{sys.executable} walbot.py start --fast_start --nohup &")
+        subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
     else:
         log.debug("Bot is already started in different shell. Starting autoupdate routine.")
 

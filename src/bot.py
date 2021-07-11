@@ -6,6 +6,7 @@ import os
 import random
 import re
 import signal
+import subprocess
 import sys
 import time
 
@@ -342,7 +343,7 @@ def start(args, main_bot=True):
     if args.patch:
         cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
         log.info("Executing patch tool: " + cmd)
-        os.system(cmd)
+        subprocess.call(cmd)
     # Read configuration files
     config = Util.read_config_file(const.CONFIG_PATH)
     if config is None:
@@ -407,12 +408,12 @@ def start(args, main_bot=True):
         if sys.platform in ("linux", "darwin"):
             fork = os.fork()
             if fork == 0:
-                os.system(cmd)
+                subprocess.call(cmd)
             elif fork > 0:
                 log.info("Stopping current instance of the bot")
                 sys.exit(const.ExitStatus.NO_ERROR)
         else:
-            os.system(cmd)
+            subprocess.call(cmd)
 
 
 def stop(_, main_bot=True):
