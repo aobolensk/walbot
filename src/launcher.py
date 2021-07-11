@@ -4,9 +4,11 @@ WalBot launcher
 
 import argparse
 import importlib
+import os
 import sys
 
 from src import const
+from src.log import log
 
 
 class Launcher:
@@ -63,10 +65,19 @@ class Launcher:
         subparsers["autocomplete"].add_argument("type", nargs=1, help="Shell type", choices=["bash"])
         return parser
 
+    def _list_env_var_flags(self):
+        log.debug2("--- Environment variable flags: ---")
+        for var in [
+            "WALBOT_FEATURE_NEW_CONFIG"
+        ]:
+            log.debug2(f"{var}: {os.getenv(var)}")
+        log.debug2("--- End of environment variable flags: ---")
+
     def __init__(self):
         self._parser = self._get_argparser()
         # Parse args
         self.args = self._parser.parse_args()
+        self._list_env_var_flags()
         if self.args.action is None:
             self._parser.print_help()
         else:
