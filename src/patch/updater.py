@@ -1,7 +1,7 @@
 import datetime
 import os
 import re
-import shutil
+import sqlite3
 import sys
 
 import yaml
@@ -26,13 +26,14 @@ class Updater:
     def update(self):
         """Perform update"""
         yaml_path = self.config_name + '.yaml'
+        db_path = os.path.join("db", self.config_name + '.db')
         if os.path.isfile(yaml_path):
             # .yaml file path
             config = Util.read_config_file(yaml_path)
-            getattr(self, self.config_name)(config)
+            getattr(self, self.config_name + "_yaml")(config)
         else:
             if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
-                pass
+                getattr(self, self.config_name + "_db")()
             else:
                 log.error(f"File '{self.config_name}.yaml' does not exist")
                 sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
@@ -48,7 +49,7 @@ class Updater:
         self.modified = True
         log.info(f"Successfully upgraded to version {new_version}")
 
-    def config(self, config):
+    def config_yaml(self, config):
         """Update config.yaml"""
         if config.version == "0.0.1":
             for key in config.commands.data.keys():
@@ -199,7 +200,7 @@ class Updater:
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
 
-    def markov(self, config):
+    def markov_yaml(self, config):
         """Update markov.yaml"""
         if config.version == "0.0.1":
             config.__dict__["min_chars"] = 1
@@ -224,9 +225,26 @@ class Updater:
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
 
-    def secret(self, config):
+    def secret_yaml(self, config):
         """Update secret.yaml"""
         if config.version == "0.0.1":
-            log.info(f"Version of {self.config_name} is up to date!")
+            if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+                os.makedirs("db", exist_ok=True)
+                con = sqlite3.connect(os.path.join("db", "secret.db"))
+                cur = con.cursor()
+                cur.execute("CREATE TABLE db_info (key text, value text)")
+                cur.execute("INSERT INTO db_info VALUES ('version', '0.1.0')")
+                cur.execute("CREATE TABLE tokens (key text, value text)")
+                cur.execute("INSERT INTO tokens VALUES ('discord', ?)", (config.token,))
+                con.commit()
+                con.close()
+                os.remove(self.config_name + '.yaml')
+                log.info("Successfully migrated contig.yaml to db/config.db!")
+            else:
+                log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
+
+    def secret_db(self):
+        """Update db/secret.db"""
+        pass
