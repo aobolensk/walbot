@@ -22,11 +22,9 @@ class Updater:
         with open(path, 'wb') as f:
             f.write(yaml.dump(config, Dumper=yaml_dumper, encoding='utf-8', allow_unicode=True))
 
-
     def update(self):
         """Perform update"""
         yaml_path = self.config_name + '.yaml'
-        db_path = os.path.join("db", self.config_name + '.db')
         if os.path.isfile(yaml_path):
             # .yaml file path
             config = Util.read_config_file(yaml_path)
