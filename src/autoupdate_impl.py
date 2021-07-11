@@ -76,16 +76,16 @@ def check_updates(context: AutoUpdateContext) -> bool:
             raise e
     subprocess.call(f"{sys.executable} -m pip install -r requirements.txt", shell=True)
     minibot_response = "WalBot automatic update is in progress. Please, wait..."
-    subprocess.call(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &")
-    subprocess.call(f"{sys.executable} walbot.py stop")
+    subprocess.call(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &", shell=True)
+    subprocess.call(f"{sys.executable} walbot.py stop", shell=True)
     if context.check_versions():
-        subprocess.call(f"{sys.executable} walbot.py patch")
-    subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &")
+        subprocess.call(f"{sys.executable} walbot.py patch", shell=True)
+    subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
     while True:
         time.sleep(1)
         bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
         if bot_cache is not None and bot_cache["ready"]:
-            subprocess.call(f"{sys.executable} walbot.py stopmini")
+            subprocess.call(f"{sys.executable} walbot.py stopmini", shell=True)
             log.info("Bot is fully loaded. MiniWalBot is stopped.")
             break
         log.debug("Bot is not fully loaded yet. Waiting...")
