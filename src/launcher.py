@@ -22,6 +22,11 @@ class Launcher:
                 cmd, help=getattr(self, cmd).__doc__, formatter_class=argparse.RawTextHelpFormatter)
             for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
         }
+        # Common
+        for option in subparsers.keys():
+            subparsers[option].add_argument(
+                "--name", default="WalBot", help="Bot instance name")
+        # Start
         subparsers["start"].add_argument(
             "--autoupdate", action="store_true",
             help="Start autoupdate process for bot")

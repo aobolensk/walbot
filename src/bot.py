@@ -32,9 +32,10 @@ from src.utils import Util
 
 
 class WalBot(discord.Client):
-    def __init__(self, config: Config, secret_config: SecretConfig) -> None:
+    def __init__(self, name: str, config: Config, secret_config: SecretConfig) -> None:
         super().__init__()
         self.repl = None
+        self.instance_name = name
         self.config = config
         self.secret_config = secret_config
         self.loop.create_task(self._config_autosave())
@@ -173,7 +174,9 @@ class WalBot(discord.Client):
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self) -> None:
-        log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
+        log.info(
+            f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
+            f"instance: {self.instance_name}")
         self.bot_cache.update({
             "ready": True,
         })
@@ -386,9 +389,9 @@ def start(args, main_bot=True):
     config.commands.update()
     # Constructing bot instance
     if main_bot:
-        walbot = WalBot(config, secret_config)
+        walbot = WalBot(args.name, config, secret_config)
     else:
-        walbot = importlib.import_module("src.minibot").MiniWalBot(config, secret_config, args.message)
+        walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
     # Checking authentication token
     if secret_config.token is None:
         if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":

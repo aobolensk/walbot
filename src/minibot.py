@@ -6,15 +6,18 @@ from src.log import log
 
 
 class MiniWalBot(discord.Client):
-    def __init__(self, config: Config, secret_config: SecretConfig, bot_response: str) -> None:
+    def __init__(self, name: str, config: Config, secret_config: SecretConfig, bot_response: str) -> None:
         super().__init__()
         self.repl = None
+        self.instance_name = name
         self.config = config
         self.secret_config = secret_config
         self.bot_response = bot_response
 
     async def on_ready(self) -> None:
-        log.info(f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__})")
+        log.info(
+            f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
+            f"instance: {self.instance_name}")
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
