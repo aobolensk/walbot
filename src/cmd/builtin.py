@@ -1597,15 +1597,20 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         g = message.guild
-        result = (f"**Server**: '{g.name}', members: {g.member_count}, region: {g.region}, "
-                  f"created: {g.created_at.replace(microsecond=0)}\n")
-        icon_url = f"<{g.icon_url}>" if g.icon_url else "<no icon>"
-        result += f"**Icon**: {icon_url}\n"
-        text_channels = (f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels)
-        result += f"**Text channels**: {', '.join(text_channels)}\n"
-        voice_channels = (f"{ch.name}" for ch in g.voice_channels)
-        result += f"**Voice channels**: {', '.join(voice_channels)}\n"
-        await Msg.response(message, result, silent)
+        e = DiscordEmbed()
+        e.title(g.name)
+        if g.icon_url:
+            e.thumbnail(str(g.icon_url))
+        e.add_field("Members", str(g.member_count), True)
+        e.add_field("Region", str(g.region), True)
+        e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
+        e.add_field("Text channels",
+                    ', '.join([f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels]), True)
+        e.add_field("Voice channels", ', '.join([f"{ch.name}" for ch in g.voice_channels]), True)
+        e.add_field("Server emojis", ' '.join([str(emoji) for emoji in g.emojis]))
+        e.add_field("Verification level", str(g.verification_level), True)
+        e.add_field("Server Boost level", str(g.premium_tier), True)
+        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _pin(message, command, silent=False):
