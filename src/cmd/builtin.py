@@ -1604,8 +1604,12 @@ class BuiltinCommands(BaseCmd):
         e.add_field("Members", str(g.member_count), True)
         e.add_field("Region", str(g.region), True)
         e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
-        e.add_field("Text channels", ', '.join([f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels]))
-        e.add_field("Voice channels", ', '.join([f"{ch.name}" for ch in g.voice_channels]))
+        e.add_field("Text channels",
+                    ', '.join([f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels]), True)
+        e.add_field("Voice channels", ', '.join([f"{ch.name}" for ch in g.voice_channels]), True)
+        e.add_field("Server emojis", ' '.join([str(emoji) for emoji in g.emojis]))
+        e.add_field("Verification level", str(g.verification_level), True)
+        e.add_field("Server Boost level", str(g.premium_tier), True)
         await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
