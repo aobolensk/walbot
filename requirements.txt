@@ -1,6 +1,6 @@
 numpy==1.21.0
 discord.py[voice]==1.7.3
-requests==2.25.1
+requests==2.26.0
 numba==0.53.1
 psutil==5.8.0
 python_dateutil==2.8.1
