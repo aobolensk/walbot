@@ -32,8 +32,8 @@ from src.utils import Util
 
 
 class WalBot(discord.Client):
-    def __init__(self, name: str, config: Config, secret_config: SecretConfig) -> None:
-        super().__init__()
+    def __init__(self, name: str, config: Config, secret_config: SecretConfig, intents: discord.Intents) -> None:
+        super().__init__(intents=intents)
         self.repl = None
         self.instance_name = name
         self.config = config
@@ -387,11 +387,6 @@ def start(args, main_bot=True):
     if main_bot and not ok:
         sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
     config.commands.update()
-    # Constructing bot instance
-    if main_bot:
-        walbot = WalBot(args.name, config, secret_config)
-    else:
-        walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
     # Checking authentication token
     if secret_config.token is None:
         if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
@@ -405,8 +400,19 @@ def start(args, main_bot=True):
             con.close()
         else:
             secret_config.token = input("Enter your token: ")
+    # Constructing bot instance
+    if main_bot:
+        intents = discord.Intents.default()
+        intents.presences = True
+        intents.members = True
+        walbot = WalBot(args.name, config, secret_config, intents=intents)
+    else:
+        walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
     # Starting the bot
-    walbot.run(secret_config.token)
+    try:
+        walbot.run(secret_config.token)
+    except discord.errors.PrivilegedIntentsRequired:
+        log.error("Privileged Gateway Intents are not enabled!")
     # After stopping the bot
     if walbot.repl is not None:
         walbot.repl.stop()
