@@ -532,7 +532,11 @@ class BuiltinCommands(BaseCmd):
         e.add_field("User", f'{info.nick} ({info})' if info.nick is not None else f'{info}', True)
         e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
         e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
-        e.add_field("Roles", roles)
+        e.add_field("Roles", roles, True)
+        e.add_field("Status",
+                    f"desktop: {info.desktop_status}\n"
+                    f"mobile: {info.mobile_status}\n"
+                    f"web: {info.web_status}")
         await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
@@ -1604,6 +1608,8 @@ class BuiltinCommands(BaseCmd):
         e.add_field("Members", str(g.member_count), True)
         e.add_field("Region", str(g.region), True)
         e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
+        if g.owner is not None:
+            e.add_field("Owner", str(g.owner).split('#', 1)[0], True)
         e.add_field("Text channels",
                     ', '.join([f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels]), True)
         e.add_field("Voice channels", ', '.join([f"{ch.name}" for ch in g.voice_channels]), True)
