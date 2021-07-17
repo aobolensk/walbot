@@ -526,10 +526,10 @@ class BuiltinCommands(BaseCmd):
         if info is None:
             return null(await Msg.response(message, "Could not get information about this user", silent))
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
+        nick = f'{info.nick} ({info})' if info.nick is not None else f'{info}'
         e = DiscordEmbed()
-        e.title(message.author)
+        e.title(nick)
         e.thumbnail(str(info.avatar_url))
-        e.add_field("User", f'{info.nick} ({info})' if info.nick is not None else f'{info}', True)
         e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
         e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
         e.add_field("Roles", roles, True)
