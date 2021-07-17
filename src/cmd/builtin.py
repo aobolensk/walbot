@@ -527,8 +527,10 @@ class BuiltinCommands(BaseCmd):
             return null(await Msg.response(message, "Could not get information about this user", silent))
         roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
         nick = f'{info.nick} ({info})' if info.nick is not None else f'{info}'
+        title = nick + (' (bot)' if info.bot else '')
+        flags = ' '.join([str(flag[0]) for flag in info.public_flags if flag[1]])
         e = DiscordEmbed()
-        e.title(nick)
+        e.title(title)
         e.thumbnail(str(info.avatar_url))
         e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
         e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
@@ -536,7 +538,9 @@ class BuiltinCommands(BaseCmd):
         e.add_field("Status",
                     f"desktop: {info.desktop_status}\n"
                     f"mobile: {info.mobile_status}\n"
-                    f"web: {info.web_status}")
+                    f"web: {info.web_status}", True)
+        if flags:
+            e.add_field("Flags", flags)
         await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
