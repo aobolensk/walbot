@@ -7,6 +7,7 @@ import sys
 import yaml
 
 from src import const
+from src.ff import FF
 from src.log import log
 from src.utils import Util
 
@@ -30,7 +31,7 @@ class Updater:
             config = Util.read_config_file(yaml_path)
             getattr(self, self.config_name + "_yaml")(config)
         else:
-            if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+            if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
                 getattr(self, self.config_name + "_db")()
             else:
                 log.error(f"File '{self.config_name}.yaml' does not exist")
@@ -226,7 +227,7 @@ class Updater:
     def secret_yaml(self, config):
         """Update secret.yaml"""
         if config.version == "0.0.1":
-            if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+            if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
                 os.makedirs("db", exist_ok=True)
                 con = sqlite3.connect(os.path.join("db", "secret.db"))
                 cur = con.cursor()

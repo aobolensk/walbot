@@ -4,10 +4,10 @@ WalBot launcher
 
 import argparse
 import importlib
-import os
 import sys
 
 from src import const
+from src.ff import FF
 from src.log import log
 
 
@@ -71,12 +71,10 @@ class Launcher:
         return parser
 
     def _list_env_var_flags(self):
-        log.debug2("--- Environment variable flags: ---")
-        for var in [
-            "WALBOT_FEATURE_NEW_CONFIG"
-        ]:
-            log.debug2(f"{var}: {os.getenv(var)}")
-        log.debug2("--- End of environment variable flags: ---")
+        log.debug("--- Environment variable flags: ---")
+        for key, value in FF.get_list().items():
+            log.debug(f"{key}: {value}")
+        log.debug("--- End of environment variable flags: ---")
 
     def __init__(self):
         self._parser = self._get_argparser()

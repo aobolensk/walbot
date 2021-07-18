@@ -20,6 +20,7 @@ from src.bot_cache import BotCache
 from src.config import Command, Config, DoNotUpdateFlag, GuildSettings, SecretConfig, User, bc
 from src.embed import DiscordEmbed
 from src.emoji import get_clock_emoji
+from src.ff import FF
 from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
@@ -388,7 +389,7 @@ def start(args, main_bot=True):
     config.commands.update()
     # Checking authentication token
     if secret_config.token is None:
-        if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
+        if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
             secret_config = SecretConfig()
             con = sqlite3.connect(os.path.join("db", "secret.db"))
             cur = con.cursor()
