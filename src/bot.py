@@ -10,7 +10,6 @@ import sqlite3
 import subprocess
 import sys
 import time
-import types
 
 import discord
 import psutil
@@ -390,7 +389,7 @@ def start(args, main_bot=True):
     # Checking authentication token
     if secret_config.token is None:
         if os.getenv("WALBOT_FEATURE_NEW_CONFIG") == "1":
-            secret_config = types.SimpleNamespace()
+            secret_config = SecretConfig()
             con = sqlite3.connect(os.path.join("db", "secret.db"))
             cur = con.cursor()
             cur.execute("SELECT value FROM tokens WHERE key = 'discord'")
