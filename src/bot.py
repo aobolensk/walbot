@@ -6,7 +6,6 @@ import os
 import random
 import re
 import signal
-import sqlite3
 import subprocess
 import sys
 import time
@@ -391,13 +390,6 @@ def start(args, main_bot=True):
     if secret_config.token is None:
         if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
             secret_config = SecretConfig()
-            con = sqlite3.connect(os.path.join("db", "secret.db"))
-            cur = con.cursor()
-            cur.execute("SELECT value FROM tokens WHERE key = 'discord'")
-            secret_config.token = cur.fetchone()[0]
-            cur.execute("SELECT value FROM db_info WHERE key = 'version'")
-            secret_config.version = cur.fetchone()[0]
-            con.close()
         else:
             secret_config.token = input("Enter your token: ")
     # Constructing bot instance

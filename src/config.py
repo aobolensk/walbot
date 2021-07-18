@@ -3,6 +3,7 @@ import datetime
 import inspect
 import os
 import re
+import sqlite3
 import sys
 import threading
 import zipfile
@@ -12,6 +13,7 @@ from enum import IntEnum
 import yaml
 
 from src import const
+from src.ff import FF
 from src.log import log
 from src.message import Msg
 from src.utils import Util, null
@@ -371,5 +373,14 @@ class Config:
 
 class SecretConfig:
     def __init__(self):
+        if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
+            con = sqlite3.connect(os.path.join("db", "secret.db"))
+            cur = con.cursor()
+            cur.execute("SELECT value FROM tokens WHERE key = 'discord'")
+            self.token = cur.fetchone()[0]
+            cur.execute("SELECT value FROM db_info WHERE key = 'version'")
+            self.version = cur.fetchone()[0]
+            con.close()
+            return
         self.token = None
         self.version = const.SECRET_CONFIG_VERSION
