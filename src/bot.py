@@ -404,7 +404,7 @@ def start(args, main_bot=True):
     try:
         walbot.run(secret_config.token)
     except discord.errors.PrivilegedIntentsRequired:
-        log.error("Privileged Gateway Intents are not enabled!")
+        log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
     # After stopping the bot
     if walbot.repl is not None:
         walbot.repl.stop()
