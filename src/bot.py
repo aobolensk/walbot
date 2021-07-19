@@ -388,9 +388,8 @@ def start(args, main_bot=True):
     config.commands.update()
     # Checking authentication token
     if secret_config.token is None:
-        if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
-            secret_config = SecretConfig()
-        else:
+        secret_config = SecretConfig()
+        if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
             secret_config.token = input("Enter your token: ")
     # Constructing bot instance
     if main_bot:
