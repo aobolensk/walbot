@@ -393,9 +393,7 @@ def start(args, main_bot=True):
             secret_config.token = input("Enter your token: ")
     # Constructing bot instance
     if main_bot:
-        intents = discord.Intents.default()
-        intents.presences = True
-        intents.members = True
+        intents = discord.Intents.all()
         walbot = WalBot(args.name, config, secret_config, intents=intents)
     else:
         walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
