@@ -1766,6 +1766,6 @@ class BuiltinCommands(BaseCmd):
         if id_ is None:
             return
         if id_ not in bc.timers.keys():
-            return null(await Msg.response(message, f"⏰ Unknown timer id", silent))
+            return null(await Msg.response(message, f"⏰ Unknown timer id: {id_}", silent))
         bc.timers[id_] = False
         await Msg.response(message, f"⏰ Timer #{id_} is stopped!", silent)
