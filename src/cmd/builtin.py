@@ -1727,7 +1727,7 @@ class BuiltinCommands(BaseCmd):
             return
         if duration < 0:
             return null(await Msg.response(message, "Timer duration should be more than 0 seconds", silent))
-        if duration > 60 * 60:
+        if duration > const.MAX_TIMER_DURATION_IN_SECONDS:
             return null(await Msg.response(message, "Timer duration should be less than 1 hour", silent))
         finish = datetime.datetime.now() + datetime.timedelta(seconds=duration)
         id_ = bc.config.ids["timer"]
