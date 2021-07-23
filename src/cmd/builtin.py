@@ -263,6 +263,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "timer",
                                      permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "stoptimer",
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "echo",
                                      message="@args@",
                                      permission=const.Permission.USER.value, subcommand=True)
@@ -1734,9 +1736,14 @@ class BuiltinCommands(BaseCmd):
         bc.config.ids["timer"] += 1
         timer_msg = await Msg.response(message, f"⏰ Timer #{id_}: {finish - start}", silent)
         bc.do_not_update[DoNotUpdateFlag.TIMER] += 1
+        bc.timers[id_] = True
         print_counter = 0
         while True:
             current = datetime.datetime.now()
+            if not bc.timers[id_]:
+                await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}! (stopped)")
+                bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
+                break
             if current >= finish:
                 await timer_msg.edit(content=f"⏰ Timer #{id_}: 0:00:00.000000!")
                 await Msg.response(message, f"⏰ Timer #{id_}: Time is up!", silent)
@@ -1747,3 +1754,18 @@ class BuiltinCommands(BaseCmd):
                 await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}")
                 print_counter = 0
             await asyncio.sleep(0.1)
+
+    @staticmethod
+    async def _stoptimer(message, command, silent=False):
+        """Stop timer
+    Usage: !timer 1"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        id_ = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an integer", silent)
+        if id_ is None:
+            return
+        if id_ not in bc.timers.keys():
+            return null(await Msg.response(message, f"⏰ Unknown timer id", silent))
+        bc.timers[id_] = False
+        await Msg.response(message, f"⏰ Timer #{id_} is stopped!", silent)

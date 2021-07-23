@@ -39,6 +39,7 @@ class BotController:
         self.voice_client = None
         self.voice_client_queue = deque()
         self.do_not_update = [0] * len(DoNotUpdateFlag)
+        self.timers = dict()
 
 
 bc = BotController()

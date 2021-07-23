@@ -381,6 +381,9 @@
     Possible activities: [playing, streaming, watching, listening] \
     Possible bot statuses: [online, idle, dnd, invisible]
 
+**stoptimer**: Stop timer \
+    Usage: !timer 1
+
 **takechars**: Take n characters of the string \
     Examples: \
         !takechars 2 hello \
