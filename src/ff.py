@@ -2,7 +2,6 @@ import os
 from typing import Dict
 
 
-
 class FF:
     """Feature flag"""
 
