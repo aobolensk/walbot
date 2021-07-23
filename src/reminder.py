@@ -24,9 +24,8 @@ class Reminder:
             return dateutil.relativedelta.relativedelta(months=self.repeat_after)
         if self.repeat_interval_measure == "years":
             return dateutil.relativedelta.relativedelta(years=self.repeat_after)
-        else:
-            log.error(f"Unknown repeat_interval_measure: {self.repeat_interval_measure}")
-            return datetime.timedelta(minutes=0)
+        log.error(f"Unknown repeat_interval_measure: {self.repeat_interval_measure}")
+        return datetime.timedelta(minutes=0)
 
     def __eq__(self, time):
         return self.time == time
