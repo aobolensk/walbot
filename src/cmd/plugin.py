@@ -26,7 +26,7 @@ class PluginCommands(BaseCmd):
         e = DiscordEmbed()
         e.title("List of plugins")
         for plugin_name in plugin_names:
-            is_enabled = bc.plugin_manager.get_plugin(plugin_name)
+            is_enabled = bc.plugin_manager.get_plugin(plugin_name).is_enabled()
             e.add_field(plugin_name, "enabled" if is_enabled else "disabled", True)
         await Msg.response(message, None, silent, embed=e.get())
 
