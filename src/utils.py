@@ -77,6 +77,15 @@ class Util:
         return None
 
     @staticmethod
+    def path_to_module(path: str) -> str:
+        """Convert OS path to Python module"""
+        result = ''
+        for c in path:
+            if c not in (os.pathsep, '.') or result[-1] != '.':
+                result += c
+        return result
+
+    @staticmethod
     def get_yaml(verbose=False):
         try:
             loader = yaml.CLoader

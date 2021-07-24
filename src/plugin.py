@@ -7,6 +7,7 @@ from typing import Dict, KeysView, Optional
 import discord
 
 from src.log import log
+from src.utils import Util
 
 
 class BasePlugin:
@@ -48,20 +49,13 @@ class PluginManager:
             if not func[0].startswith('_')
         ]
 
-    def _path_to_module(self, path: str) -> str:
-        result = ''
-        for c in path:
-            if c not in (os.pathsep, '.') or result[-1] != '.':
-                result += c
-        return result
-
     def register(self) -> None:
         """Find plugins in plugins directory and register them"""
         plugin_directory = os.path.join(os.path.dirname(__file__), "plugins")
         plugin_modules = ['src.plugins.' + os.path.splitext(path)[0] for path in os.listdir(plugin_directory)
                           if os.path.isfile(os.path.join(plugin_directory, path)) and path.endswith(".py")]
         private_plugin_directory = os.path.join(os.path.dirname(__file__), "plugins", "private")
-        plugin_modules += [self._path_to_module(
+        plugin_modules += [Util.path_to_module(
             f"src.plugins.private.{os.path.relpath(path, private_plugin_directory)}."
             f"{os.path.splitext(file)[0]}")
             for path, _, files in os.walk(private_plugin_directory) for file in files

@@ -4,6 +4,7 @@ import os
 
 from src import const
 from src.config import Command, bc, log
+from src.utils import Util
 
 
 class BaseCmd:
@@ -22,20 +23,13 @@ class Commands:
         if not hasattr(self, "aliases"):
             self.aliases = dict()
 
-    def _path_to_module(self, path: str):
-        result = ''
-        for c in path:
-            if c not in (os.pathsep, '.') or result[-1] != '.':
-                result += c
-        return result
-
     def update(self, reload=False):
         bc.commands = self
         cmd_directory = os.path.join(os.path.dirname(__file__), "cmd")
         cmd_modules = ['src.cmd.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
                        if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
         private_cmd_directory = os.path.join(os.path.dirname(__file__), "cmd", "private")
-        cmd_modules += [self._path_to_module(
+        cmd_modules += [Util.path_to_module(
             f"src.cmd.private.{os.path.relpath(path, private_cmd_directory)}."
             f"{os.path.splitext(file)[0]}")
             for path, _, files in os.walk(private_cmd_directory) for file in files
