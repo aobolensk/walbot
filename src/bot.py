@@ -176,7 +176,7 @@ class WalBot(discord.Client):
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self) -> None:
-        await bc.plugin_manager.broadcast_command("init")
+        asyncio.create_task(bc.plugin_manager.broadcast_command("init"))
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
