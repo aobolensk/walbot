@@ -60,6 +60,44 @@ class WalBot(discord.Client):
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
 
+    async def _bot_runner_task(self, *args, **kwargs):
+        try:
+            await self.start(*args, **kwargs)
+        finally:
+            if not self.is_closed():
+                await self.close()
+
+    def run(self, *args, **kwargs):
+        # Sightly patched implementation from discord.py discord.Client (parent) class
+        # Reference: https://github.com/Rapptz/discord.py/blob/master/discord/client.py
+        loop = self.loop
+        try:
+            loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
+            loop.add_signal_handler(signal.SIGTERM, lambda: loop.stop())
+        except NotImplementedError:
+            pass
+        asyncio.ensure_future(self._bot_runner_task(*args, *kwargs), loop=loop)
+        try:
+            loop.run_forever()
+        except KeyboardInterrupt:
+            loop.stop()
+            log.info('Received signal to terminate bot and event loop')
+        log.info("Shutting down the bot...")
+        tasks = {t for t in asyncio.all_tasks(loop=loop) if not t.done()}
+        for task in tasks:
+            task.cancel()
+        loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+        for task in tasks:
+            if not task.cancelled():
+                log.error("Asynchronous task cancel failed!")
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.run_until_complete(self._on_shutdown())
+        loop.close()
+        log.info("Bot is shut down!")
+
+    async def _on_shutdown(self) -> None:
+        await bc.plugin_manager.broadcast_command("close")
+
     async def _update_autoupdate_flag(self, current_autoupdate_flag: bool) -> None:
         if current_autoupdate_flag != self.bot_cache.get_state()["do_not_update"]:
             self.bot_cache.update({"do_not_update": current_autoupdate_flag})
