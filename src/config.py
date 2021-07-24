@@ -16,6 +16,7 @@ from src import const
 from src.ff import FF
 from src.log import log
 from src.message import Msg
+from src.message_buffer import MessageBuffer
 from src.plugin import PluginManager
 from src.utils import Util, null
 
@@ -42,6 +43,7 @@ class BotController:
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
         self.plugin_manager = PluginManager()
+        self.message_buffer = MessageBuffer()
 
 
 bc = BotController()

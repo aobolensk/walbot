@@ -24,7 +24,6 @@ from src.info import BotInfo
 from src.log import log
 from src.markov import Markov
 from src.message import Msg
-from src.message_buffer import MessageBuffer
 from src.reminder import Reminder
 from src.repl import Repl
 from src.utils import Util
@@ -50,7 +49,6 @@ class WalBot(discord.Client):
         bc.change_presence = self.change_presence
         bc.close = self.close
         bc.secret_config = self.secret_config
-        bc.message_buffer = MessageBuffer()
         bc.info = BotInfo()
         bc.plugin_manager.register()
         if not bc.args.fast_start:
