@@ -96,6 +96,11 @@ class WalBot(discord.Client):
         log.info("Bot is shut down!")
 
     async def _on_shutdown(self) -> None:
+        if self.repl is not None:
+            self.repl.stop()
+        for event in bc.background_events:
+            event.cancel()
+        bc.background_loop = None
         await bc.plugin_manager.broadcast_command("close")
 
     async def _update_autoupdate_flag(self, current_autoupdate_flag: bool) -> None:
@@ -454,11 +459,6 @@ def start(args, main_bot=True):
     except discord.errors.PrivilegedIntentsRequired:
         log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
     # After stopping the bot
-    if walbot.repl is not None:
-        walbot.repl.stop()
-    for event in bc.background_events:
-        event.cancel()
-    bc.background_loop = None
     log.info("Bot is disconnected!")
     if main_bot:
         config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
