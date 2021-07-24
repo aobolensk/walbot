@@ -261,6 +261,10 @@
     Example: !listresponse \
     *This command can be used as subcommand*
 
+**loadplugin**: Load plugin by its name \
+    Usage: \
+        !loadplugin &lt;plugin_name&gt;
+
 **markov**: Generate message using Markov chain \
     Example: !markov \
     *This command can be used as subcommand*
@@ -449,6 +453,10 @@
 
 **tts**: Send text-to-speech (TTS) message \
     Example: !tts Hello!
+
+**unloadplugin**: Unload plugin by its name \
+    Usage: \
+        !unloadplugin &lt;plugin_name&gt;
 
 **updcmd**: Update command (works only for commands that already exist) \
     Example: !updcmd hello Hello!
