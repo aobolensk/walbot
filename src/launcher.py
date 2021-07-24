@@ -71,10 +71,10 @@ class Launcher:
         return parser
 
     def _list_env_var_flags(self):
-        log.debug("--- Environment variable flags: ---")
+        log.debug2("--- Environment variable flags: ---")
         for key, value in FF.get_list().items():
-            log.debug(f"{key}: {value}")
-        log.debug("--- End of environment variable flags: ---")
+            log.debug2(f"{key}: {value}")
+        log.debug2("--- End of environment variable flags: ---")
 
     def __init__(self):
         self._parser = self._get_argparser()
