@@ -14,8 +14,9 @@ db/
 backup/
 images/
 
-# Private user commands files
+# Private user iles
 src/cmd/private/**
+src/plugins/private/**
 
 # Bot cache
 .bot_cache

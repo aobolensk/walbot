@@ -25,6 +25,7 @@ from src.log import log
 from src.markov import Markov
 from src.message import Msg
 from src.message_buffer import MessageBuffer
+from src.plugin import PluginManager
 from src.reminder import Reminder
 from src.repl import Repl
 from src.utils import Util
@@ -52,6 +53,8 @@ class WalBot(discord.Client):
         bc.secret_config = self.secret_config
         bc.message_buffer = MessageBuffer()
         bc.info = BotInfo()
+        bc.plugin_manager = PluginManager()
+        bc.plugin_manager.register()
         if not bc.args.fast_start:
             log.debug("Started Markov model checks...")
             if bc.markov.check():
@@ -173,6 +176,7 @@ class WalBot(discord.Client):
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def on_ready(self) -> None:
+        await bc.plugin_manager.broadcast_command("init")
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
@@ -191,6 +195,7 @@ class WalBot(discord.Client):
         bc.bot_user = self.user
 
     async def on_message(self, message: discord.Message) -> None:
+        await bc.plugin_manager.broadcast_command("on_message", message)
         try:
             if self.config.guilds[message.channel.guild.id].ignored:
                 return
