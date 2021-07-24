@@ -106,7 +106,9 @@ class PluginManager:
                 await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
     def get_plugin(self, plugin_name: str) -> Optional[BasePlugin]:
+        """Get plugin object"""
         return self._plugins.get(plugin_name)
 
     def get_plugins_list(self) -> KeysView[str]:
+        """Get list of plugin names that were registered"""
         return self._plugins.keys()
