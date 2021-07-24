@@ -52,6 +52,12 @@
 **addresponse**: Add bot response on message that contains particular regex \
     Example: !addresponse regex;text
 
+**autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \
+    Usage: \
+        !autostartplugin &lt;plugin_name&gt;          &lt;- check if autostart is enabled \
+        !autostartplugin &lt;plugin_name&gt; enable   &lt;- enable autostart for plugin \
+        !autostartplugin &lt;plugin_name&gt; disable  &lt;- disable autostart for plugin
+
 **avatar**: Change bot avatar \
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images

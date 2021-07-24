@@ -195,6 +195,9 @@ class Updater:
             config.ids["timer"] = 1
             self._bump_version(config, "0.0.28")
         if config.version == "0.0.28":
+            config.__dict__["plugins"] = dict()
+            self._bump_version(config, "0.0.29")
+        if config.version == "0.0.29":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

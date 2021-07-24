@@ -94,7 +94,7 @@ class PluginManager:
             return log.error(f"Unknown plugin '{plugin_name}'")
         if command_name not in self._plugin_functions_interface:
             return log.error(f"Unknown command '{command_name}' for plugin")
-        if self._plugins[plugin_name].is_enabled():
+        if self._plugins[plugin_name].is_enabled() or command_name == "init":
             await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
     async def broadcast_command(self, command_name: str, *args, **kwargs) -> None:

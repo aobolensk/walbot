@@ -16,6 +16,7 @@ from src import const
 from src.ff import FF
 from src.log import log
 from src.message import Msg
+from src.plugin import PluginManager
 from src.utils import Util, null
 
 
@@ -40,6 +41,7 @@ class BotController:
         self.voice_client_queue = deque()
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
+        self.plugin_manager = PluginManager()
 
 
 bc = BotController()
@@ -270,6 +272,7 @@ class Config:
         self.reminders = dict()
         self.responses = dict()
         self.quotes = dict()
+        self.plugins = dict()
         self.commands_prefix = "!"
         self.ids = {
             "reminder": 1,
