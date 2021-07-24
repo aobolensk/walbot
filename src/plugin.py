@@ -2,7 +2,7 @@ import importlib
 import inspect
 import os
 from abc import abstractmethod
-from typing import Dict
+from typing import Dict, KeysView, Optional
 
 import discord
 
@@ -15,12 +15,19 @@ class BasePlugin:
     def get_classname(cls):
         return cls.__name__
 
+    def __init__(self) -> None:
+        self._enabled = False
+
     # Plugin interface:
+
+    def is_enabled(self) -> bool:
+        """Get plugin initialization state"""
+        return self._enabled
 
     @abstractmethod
     async def init(self) -> None:
         """Executes when plugin was loaded"""
-        pass
+        self._enabled = True
 
     @abstractmethod
     async def on_message(self, message: discord.Message) -> None:
@@ -30,7 +37,7 @@ class BasePlugin:
     @abstractmethod
     async def close(self) -> None:
         """Executes when plugin was unloaded"""
-        pass
+        self._enabled = False
 
 
 class PluginManager:
@@ -41,14 +48,14 @@ class PluginManager:
             if not func[0].startswith('_')
         ]
 
-    def _path_to_module(self, path: str):
+    def _path_to_module(self, path: str) -> str:
         result = ''
         for c in path:
             if c not in (os.pathsep, '.') or result[-1] != '.':
                 result += c
         return result
 
-    def register(self):
+    def register(self) -> None:
         """Find plugins in plugins directory and register them"""
         plugin_directory = os.path.join(os.path.dirname(__file__), "plugins")
         plugin_modules = ['src.plugins.' + os.path.splitext(path)[0] for path in os.listdir(plugin_directory)
@@ -95,3 +102,9 @@ class PluginManager:
             return log.error(f"Unknown command '{command_name}' for plugin")
         for plugin_name in self._plugins.keys():
             await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
+
+    def get_plugin(self, plugin_name: str) -> Optional[BasePlugin]:
+        return self._plugins.get(plugin_name)
+
+    def get_plugins_list(self) -> KeysView[str]:
+        return self._plugins.keys()

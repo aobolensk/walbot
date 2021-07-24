@@ -241,6 +241,10 @@
     Example: !listmarkovfilter \
     *This command can be used as subcommand*
 
+**listplugin**: Print list of plugins \
+    Usage: \
+        !listplugin
+
 **listquote**: Print list of all quotes \
     Example: !listquote
 
