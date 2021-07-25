@@ -88,7 +88,7 @@ class Util:
         return result
 
     @staticmethod
-    def get_yaml(verbose: bool=False) -> Any:
+    def get_yaml(verbose: bool = False) -> Any:
         """Get YAML loader and dumper type.
         yaml.Loader and yaml.Dumper are slower implementations than yaml.CLoader and yaml.CDumper"""
         try:
