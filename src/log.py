@@ -2,6 +2,7 @@
 Contains definition of WalBot logger and instance of the logger
 """
 
+import functools
 import logging
 import logging.config
 import os
@@ -64,6 +65,37 @@ class Log:
         self.error = self.log.error
         self.warning = self.log.warning
         self.info("Logging system is set up")
+
+    def trace_function(self, func):
+        """Tracing enter and exit events for functions. It should be used as a decorator"""
+        def inner(*args, **kwargs):
+            self.debug(f"Function '{func.__name__}' (ENTER)")
+            ret = func(*args, **kwargs)
+            self.debug(f"Function '{func.__name__}' (EXIT)")
+            return ret
+        return inner
+
+    def trace_async_function(self, func):
+        """Tracing enter and exit events for async functions. It should be used as a decorator"""
+        @functools.wraps(func)
+        async def wrapped(*args):
+            self.debug(f"Function '{func.__name__}' (ENTER)")
+            ret = await func(*args)
+            self.debug(f"Function '{func.__name__}' (EXIT)")
+            return ret
+        return wrapped
+
+    class trace_block:
+        """Tracing enter and exit events for blocks of code. It should be used as a context manager"""
+        def __init__(self, name):
+            self._name = name
+            log.debug(f"Block '{name}' (ENTER)")
+
+        def __enter__(self):
+            pass
+
+        def __exit__(self, type, value, traceback):
+            log.debug(f"Block '{self._name}' (EXIT)")
 
 
 # Use this logger instance for logging everywhere
