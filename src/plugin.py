@@ -99,7 +99,6 @@ class PluginManager:
             if await self._plugins[plugin_name].is_enabled() or command_name == "init":
                 await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
-
     def get_plugins_list(self) -> KeysView[str]:
         """Get list of plugin names that were registered"""
         return self._plugins.keys()
