@@ -23,6 +23,11 @@ class Log:
         """Log with severity 'DEBUG3'."""
         self.log.log(const.LogLevel.DEBUG3, msg, *args, **kwargs)
 
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super().__new__(cls)
+        return cls.instance
+
     def __init__(self):
         logging.config.dictConfig({
             'version': 1,
