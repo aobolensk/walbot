@@ -36,9 +36,7 @@ class WalBot(discord.Client):
         self.instance_name = name
         self.config = config
         self.secret_config = secret_config
-        self.loop.create_task(self._config_autosave())
         self.loop.create_task(self._process_reminders())
-        self.loop.create_task(self._precompile())
         self.loop.create_task(self._voice_routine())
         self.bot_cache = BotCache(True)
         bc.config = self.config
@@ -232,6 +230,8 @@ class WalBot(discord.Client):
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
         bc.bot_user = self.user
+        self.loop.create_task(self._config_autosave())
+        self.loop.create_task(self._precompile())
 
     def _load_plugins(self) -> None:
         for plugin_name in bc.plugin_manager.get_plugins_list():
