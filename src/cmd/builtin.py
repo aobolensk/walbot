@@ -261,6 +261,8 @@ class BuiltinCommands(BaseCmd):
                                      permission=const.Permission.MOD.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "reloadbotcommands",
                                      permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_command(__name__, self.get_classname(), "permlevel",
+                                     permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "timer",
                                      permission=const.Permission.USER.value, subcommand=False)
         bc.commands.register_command(__name__, self.get_classname(), "stoptimer",
@@ -271,8 +273,6 @@ class BuiltinCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "code",
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "permlevel",
-                                     permission=const.Permission.USER.value, subcommand=False)
 
     @staticmethod
     async def _takechars(message, command, silent=False):
