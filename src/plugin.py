@@ -2,7 +2,7 @@ import importlib
 import inspect
 import os
 from abc import abstractmethod
-from typing import Dict, KeysView, Optional
+from typing import Any, Dict, KeysView
 
 import discord
 
@@ -21,7 +21,7 @@ class BasePlugin:
 
     # Plugin interface:
 
-    def is_enabled(self) -> bool:
+    async def is_enabled(self) -> bool:
         """Get plugin initialization state"""
         return self._enabled
 
@@ -82,26 +82,23 @@ class PluginManager:
             else:
                 log.error(f"Module '{module}' have no classes in it")
 
-    async def send_command(self, plugin_name: str, command_name: str, *args, **kwargs) -> None:
+    async def send_command(self, plugin_name: str, command_name: str, *args, **kwargs) -> Any:
         """Send command to specific plugin"""
         if plugin_name not in self._plugins.keys():
             return log.error(f"Unknown plugin '{plugin_name}'")
         if command_name not in self._plugin_functions_interface:
             return log.error(f"Unknown command '{command_name}' for plugin")
-        if self._plugins[plugin_name].is_enabled() or command_name == "init":
-            await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
+        if await self._plugins[plugin_name].is_enabled() or command_name == "init":
+            return await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
     async def broadcast_command(self, command_name: str, *args, **kwargs) -> None:
         """Broadcast command for all plugins"""
         if command_name not in self._plugin_functions_interface:
             return log.error(f"Unknown command '{command_name}' for plugin")
         for plugin_name in self._plugins.keys():
-            if self._plugins[plugin_name].is_enabled() or command_name == "init":
+            if await self._plugins[plugin_name].is_enabled() or command_name == "init":
                 await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
-    def get_plugin(self, plugin_name: str) -> Optional[BasePlugin]:
-        """Get plugin object"""
-        return self._plugins.get(plugin_name)
 
     def get_plugins_list(self) -> KeysView[str]:
         """Get list of plugin names that were registered"""
