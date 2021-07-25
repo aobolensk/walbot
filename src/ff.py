@@ -14,7 +14,7 @@ class FF:
         """Get if feature flag is enabled"""
         if feature_flag not in FF._feature_flag_list:
             raise ValueError(f"Incorrect feature flag: {feature_flag}")
-        value = os.getenv(feature_flag)
+        value = (os.getenv(feature_flag) or "").upper()
         return value in ("1", "ON")
 
     @staticmethod
