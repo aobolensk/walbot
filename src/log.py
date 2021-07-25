@@ -87,6 +87,7 @@ class Log:
 
     class trace_block:
         """Tracing enter and exit events for blocks of code. It should be used as a context manager"""
+
         def __init__(self, name):
             self._name = name
             log.debug(f"Block '{name}' (ENTER)")
