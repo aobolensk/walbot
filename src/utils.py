@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import tempfile
+from typing import Any
 
 import yaml
 
@@ -65,7 +66,8 @@ class Util:
         return result
 
     @staticmethod
-    def read_config_file(path):
+    def read_config_file(path: str) -> Any:
+        """Read YAML configuration file"""
         yaml_loader, _ = Util.get_yaml()
         if not os.path.isfile(path):
             return None
@@ -86,7 +88,9 @@ class Util:
         return result
 
     @staticmethod
-    def get_yaml(verbose=False):
+    def get_yaml(verbose: bool=False) -> Any:
+        """Get YAML loader and dumper type.
+        yaml.Loader and yaml.Dumper are slower implementations than yaml.CLoader and yaml.CDumper"""
         try:
             loader = yaml.CLoader
             if verbose:
@@ -106,7 +110,8 @@ class Util:
         return loader, dumper
 
     @staticmethod
-    def tmp_dir():
+    def tmp_dir() -> str:
+        """Get walbot temporary directory path inside system temporary directory"""
         return tempfile.gettempdir() + os.sep + "walbot"
 
 
