@@ -22,7 +22,7 @@ class _VoiceInternals:
         if r is None:
             return
         yt_video_id = r.groups()[0]
-        output_file_name = f'/tmp/walbot/yt_{yt_video_id}.mp3'
+        output_file_name = f'{Util.tmp_dir()}/yt_{yt_video_id}.mp3'
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': output_file_name,
