@@ -8,8 +8,8 @@ import random
 import re
 import shutil
 import tempfile
-import urllib.request
 import urllib.parse
+import urllib.request
 
 import discord
 import requests
