@@ -5,11 +5,13 @@ from src.log import log
 class Msg:
     @staticmethod
     def split_by_chunks(message, count):
+        """Split message content by chunks with particular size"""
         for i in range(0, len(message), count):
             yield message[i:i + count]
 
     @staticmethod
     async def reply(message, content, silent, **kwargs):
+        """Reply on particular message"""
         if silent:
             return log.debug("[SILENT] -> " + content)
         msg = None
@@ -32,6 +34,7 @@ class Msg:
 
     @staticmethod
     async def response(message, content, silent, **kwargs):
+        """Send response"""
         if silent:
             return log.debug("[SILENT] -> " + content)
         msg = None
@@ -54,6 +57,7 @@ class Msg:
 
     @staticmethod
     async def send_direct_message(author, content, silent, **kwargs):
+        """Send direct message to message author"""
         if silent:
             return log.debug("[SILENT] -> " + content)
         if author.dm_channel is None:
