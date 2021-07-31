@@ -15,8 +15,9 @@ import psutil
 
 from src import const
 from src.algorithms import levenshtein_distance
+from src.bc import DoNotUpdateFlag
 from src.bot_cache import BotCache
-from src.config import Command, Config, DoNotUpdateFlag, GuildSettings, SecretConfig, User, bc
+from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
 from src.embed import DiscordEmbed
 from src.emoji import get_clock_emoji
 from src.ff import FF

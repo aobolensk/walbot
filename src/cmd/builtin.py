@@ -17,8 +17,9 @@ from dateutil import tz
 
 from src import const, emoji
 from src.algorithms import levenshtein_distance
+from src.bc import DoNotUpdateFlag
 from src.commands import BaseCmd
-from src.config import BackgroundEvent, Command, DoNotUpdateFlag, bc, log
+from src.config import BackgroundEvent, Command, bc, log
 from src.embed import DiscordEmbed
 from src.message import Msg
 from src.utils import Util, null
