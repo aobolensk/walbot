@@ -1,9 +1,9 @@
 import asyncio
 import datetime
+import importlib
 import inspect
 import os
 import re
-import sqlite3
 import sys
 import threading
 import zipfile
@@ -351,6 +351,7 @@ class Config:
 class SecretConfig:
     def __init__(self):
         if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
+            sqlite3 = importlib.import_module("sqlite3")
             con = sqlite3.connect(os.path.join("db", "secret.db"))
             cur = con.cursor()
             cur.execute("SELECT value FROM tokens WHERE key = 'discord'")

@@ -5,10 +5,6 @@
 Discord bot in Python
 
 ### Requirements:
-- libsqlite3-dev
-  ```sh
-  sudo apt install libsqlite3-dev  # Debian/Ubuntu
-  ```
 - [ffmpeg](https://www.ffmpeg.org/)
 - [Python](https://www.python.org/) 3.7-3.9
 

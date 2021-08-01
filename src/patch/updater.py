@@ -1,7 +1,6 @@
 import datetime
 import os
 import re
-import sqlite3
 import sys
 
 import yaml
@@ -232,6 +231,7 @@ class Updater:
         if config.version == "0.0.1":
             if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
                 os.makedirs("db", exist_ok=True)
+                sqlite3 = importlib.import_module("sqlite3")
                 con = sqlite3.connect(os.path.join("db", "secret.db"))
                 cur = con.cursor()
                 cur.execute("CREATE TABLE db_info (key text, value text)")
