@@ -51,7 +51,7 @@ class QuoteCommands(BaseCmd):
         e.add_field("Index", str(index), True)
         e.add_field("Author", quote.author if quote.author else "<unknown>", True)
         e.add_field("Added by", quote.added_by, True)
-        await Msg.response(message, "", silent, embed=e.get())
+        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _addquote(message, command, silent=False):

@@ -156,7 +156,7 @@ class ReminderCommands(BaseCmd):
         if reminder.repeat_after:
             e.add_field("Repeats every", f"{reminder.repeat_after} {reminder.repeat_interval_measure}", True)
         e.add_field("Created", reminder.time_created, True)
-        await Msg.response(message, "", silent, embed=e.get())
+        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _addreminder(message, command, silent=False):

@@ -216,4 +216,4 @@ class VoiceCommands(BaseCmd):
         e.add_field("Channel", f"[{info['uploader']}]({info['uploader_url']})", True)
         e.add_field("Uploaded", f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", True)
         e.add_field("Duration", f"{datetime.timedelta(seconds=info['duration'])}", True)
-        await Msg.response(message, "", silent, embed=e.get())
+        await Msg.response(message, None, silent, embed=e.get())
