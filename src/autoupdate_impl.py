@@ -7,8 +7,10 @@ from dataclasses import dataclass
 from typing import Optional
 
 import git
+import psutil
 
 from src import const
+from src.bot_cache import BotCache
 from src.log import log
 
 
@@ -97,7 +99,14 @@ def at_start() -> None:
         log.debug("Bot is not started! Starting...")
         subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
     else:
-        log.debug("Bot is already started in different shell. Starting autoupdate routine.")
+        bot_cache = BotCache(True).parse()
+        pid = bot_cache["pid"]
+        if pid is not None and psutil.pid_exists(pid):
+            log.debug("Bot is already started in different shell. Starting autoupdate routine.")
+        else:
+            os.remove(const.BOT_CACHE_FILE_PATH)
+            log.debug("Bot is not started! Starting...")
+            subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
 
 
 def at_failure(e: Exception) -> None:
