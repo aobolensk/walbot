@@ -1679,7 +1679,11 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         new_nick = ' '.join(command[1:])
-        await message.guild.me.edit(nick=new_nick)
+        try:
+            await message.guild.me.edit(nick=new_nick)
+        except discord.HTTPException as e:
+            await Msg.response(message, f"Bot nickname change failed. ERROR: '{e}'", silent)
+            return
         await Msg.response(message, f"Bot nickname was changed to '{new_nick}'", silent)
 
     @staticmethod
