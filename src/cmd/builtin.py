@@ -274,6 +274,9 @@ class BuiltinCommands(BaseCmd):
         bc.commands.register_command(__name__, self.get_classname(), "code",
                                      message="`@args@`",
                                      permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_command(__name__, self.get_classname(), "codeblock",
+                                     message="```\n@args@\n```",
+                                     permission=const.Permission.USER.value, subcommand=True)
 
     @staticmethod
     async def _takechars(message, command, silent=False):
