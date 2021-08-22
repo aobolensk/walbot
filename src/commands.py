@@ -99,3 +99,7 @@ class Commands:
             self.data[command_name] = Command(module_name, class_name, '_' + command_name, **kwargs)
         self.data[command_name].is_global = True
         self.data[command_name].is_private = ".private." in module_name
+
+    def register_commands(self, module_name, class_name, commands):
+        for command_name, command_args in commands.items():
+            self.register_command(module_name, class_name, command_name, **command_args)
