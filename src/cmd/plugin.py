@@ -8,14 +8,12 @@ from src.utils import Util, null
 
 class PluginCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "listplugin",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "loadplugin",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "unloadplugin",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "autostartplugin",
-                                     permission=const.Permission.MOD.value, subcommand=False)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "listplugin": dict(permission=const.Permission.USER.value, subcommand=False),
+            "loadplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "unloadplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "autostartplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
+        })
 
     @staticmethod
     async def _listplugin(message, command, silent=False):

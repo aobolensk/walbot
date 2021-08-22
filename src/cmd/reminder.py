@@ -112,26 +112,18 @@ class _ReminderInternals:
 
 class ReminderCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "reminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "updreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "remindme",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "remindwme",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "repeatreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "skipreminder",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "timeuntilreminder",
-                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "reminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addreminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "updreminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "listreminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "delreminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "remindme": dict(permission=const.Permission.USER.value, subcommand=False),
+            "remindwme": dict(permission=const.Permission.USER.value, subcommand=False),
+            "repeatreminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "skipreminder": dict(permission=const.Permission.USER.value, subcommand=False),
+            "timeuntilreminder": dict(permission=const.Permission.USER.value, subcommand=True),
+        })
 
     @staticmethod
     async def _reminder(message, command, silent=False):

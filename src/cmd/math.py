@@ -61,10 +61,10 @@ class MathExprEvaluator:
 
 class MathCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "calc",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "if",
-                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "calc": dict(permission=const.Permission.USER.value, subcommand=True),
+            "if": dict(permission=const.Permission.USER.value, subcommand=True),
+        })
 
     @staticmethod
     async def _calc(message, command, silent=False):

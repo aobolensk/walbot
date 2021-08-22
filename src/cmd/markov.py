@@ -11,28 +11,19 @@ from src.utils import Util, null
 
 class MarkovCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "markov",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "markovgc",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delmarkov",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "findmarkov",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "getmarkovword",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "statmarkov",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "dropmarkov",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "inspectmarkov",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addmarkovfilter",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listmarkovfilter",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "delmarkovfilter",
-                                     permission=const.Permission.MOD.value, subcommand=True)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "markov": dict(permission=const.Permission.USER.value, subcommand=True),
+            "markovgc": dict(permission=const.Permission.USER.value, subcommand=False),
+            "delmarkov": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "findmarkov": dict(permission=const.Permission.USER.value, subcommand=False),
+            "getmarkovword": dict(permission=const.Permission.USER.value, subcommand=True),
+            "statmarkov": dict(permission=const.Permission.USER.value, subcommand=False),
+            "dropmarkov": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "inspectmarkov": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listmarkovfilter": dict(permission=const.Permission.USER.value, subcommand=True),
+            "delmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=True),
+        })
 
     @staticmethod
     async def _markov(message, command, silent=False):

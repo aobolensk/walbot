@@ -12,16 +12,13 @@ from src.utils import Util, null
 
 class QuoteCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "quote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addquote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listquote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delquote",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "setquoteauthor",
-                                     permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "quote": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addquote": dict(permission=const.Permission.USER.value, subcommand=False),
+            "listquote": dict(permission=const.Permission.USER.value, subcommand=False),
+            "delquote": dict(permission=const.Permission.USER.value, subcommand=False),
+            "setquoteauthor": dict(permission=const.Permission.USER.value, subcommand=False),
+        })
 
     @staticmethod
     async def _quote(message, command, silent=False):

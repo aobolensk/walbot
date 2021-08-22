@@ -53,18 +53,14 @@ class _VoiceInternals:
 
 class VoiceCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "vjoin",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "vleave",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "vqpush",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "vqskip",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "vq",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "ytinfo",
-                                     permission=const.Permission.USER.value, subcommand=False)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "vjoin": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vleave": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vqpush": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vqskip": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vq": dict(permission=const.Permission.USER.value, subcommand=False),
+            "ytinfo": dict(permission=const.Permission.USER.value, subcommand=False),
+        })
 
     @staticmethod
     async def _vjoin(message, command, silent=False):

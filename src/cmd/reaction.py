@@ -7,22 +7,16 @@ from src.utils import Util, null
 
 class ReactionCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "addreaction",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "updreaction",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delreaction",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listreaction",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "addresponse",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "updresponse",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delresponse",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listresponse",
-                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "addreaction": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "updreaction": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "delreaction": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listreaction": dict(permission=const.Permission.USER.value, subcommand=True),
+            "addresponse": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "updresponse": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "delresponse": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listresponse": dict(permission=const.Permission.USER.value, subcommand=True),
+        })
 
     @staticmethod
     async def _addreaction(message, command, silent=False):

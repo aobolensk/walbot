@@ -126,157 +126,82 @@ class _BuiltinInternals:
 
 class BuiltinCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "takechars",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "dropchars",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "countchars",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "takewords",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "dropwords",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "countwords",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "takelines",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "droplines",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "countlines",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "tolower",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "toupper",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "join",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "range",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "ping",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "help",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "profile",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addcmd",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addextcmd",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "updcmd",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "updextcmd",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delcmd",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "enablecmd",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "disablecmd",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "permcmd",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "timescmd",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "permuser",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "extexec",
-                                     permission=const.Permission.ADMIN.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "whitelist",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "config",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "wme",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "poll",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "version",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "about",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addbgevent",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listbgevent",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "delbgevent",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "random",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "randselect",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "randselects",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "eqwords",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "eqstrs",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "silent",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "time",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "uptime",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "status",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "channelid",
-                                     permission=const.Permission.MOD.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "addalias",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delalias",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listalias",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "img",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "listimg",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "addimg",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "updimg",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "delimg",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "tts",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "urlencode",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "emojify",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "demojify",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "shutdown",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "restart",
-                                     permission=const.Permission.ADMIN.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "avatar",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "message",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "server",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "pin",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "slowmode",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "curl",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "nick",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "reloadbotcommands",
-                                     permission=const.Permission.MOD.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "permlevel",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "timer",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "stoptimer",
-                                     permission=const.Permission.USER.value, subcommand=False)
-        bc.commands.register_command(__name__, self.get_classname(), "echo",
-                                     message="@args@",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "code",
-                                     message="`@args@`",
-                                     permission=const.Permission.USER.value, subcommand=True)
-        bc.commands.register_command(__name__, self.get_classname(), "codeblock",
-                                     message="```\n@args@\n```",
-                                     permission=const.Permission.USER.value, subcommand=True)
+        bc.commands.register_commands(__name__, self.get_classname(), {
+            "takechars": dict(permission=const.Permission.USER.value, subcommand=True),
+            "dropchars": dict(permission=const.Permission.USER.value, subcommand=True),
+            "countchars": dict(permission=const.Permission.USER.value, subcommand=True),
+            "takewords": dict(permission=const.Permission.USER.value, subcommand=True),
+            "dropwords": dict(permission=const.Permission.USER.value, subcommand=True),
+            "countwords": dict(permission=const.Permission.USER.value, subcommand=True),
+            "takelines": dict(permission=const.Permission.USER.value, subcommand=True),
+            "droplines": dict(permission=const.Permission.USER.value, subcommand=True),
+            "countlines": dict(permission=const.Permission.USER.value, subcommand=True),
+            "tolower": dict(permission=const.Permission.USER.value, subcommand=True),
+            "toupper": dict(permission=const.Permission.USER.value, subcommand=True),
+            "join": dict(permission=const.Permission.USER.value, subcommand=True),
+            "range": dict(permission=const.Permission.USER.value, subcommand=True),
+            "ping": dict(permission=const.Permission.USER.value, subcommand=False),
+            "help": dict(permission=const.Permission.USER.value, subcommand=False),
+            "profile": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "addextcmd": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "updcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "updextcmd": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "delcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "enablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "disablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "permcmd": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "timescmd": dict(permission=const.Permission.USER.value, subcommand=True),
+            "permuser": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "extexec": dict(permission=const.Permission.ADMIN.value, subcommand=True),
+            "whitelist": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "config": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "wme": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "poll": dict(permission=const.Permission.USER.value, subcommand=False),
+            "version": dict(permission=const.Permission.USER.value, subcommand=True),
+            "about": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addbgevent": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listbgevent": dict(permission=const.Permission.USER.value, subcommand=True),
+            "delbgevent": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "random": dict(permission=const.Permission.USER.value, subcommand=True),
+            "randselect": dict(permission=const.Permission.USER.value, subcommand=True),
+            "randselects": dict(permission=const.Permission.USER.value, subcommand=True),
+            "eqwords": dict(permission=const.Permission.USER.value, subcommand=True),
+            "eqstrs": dict(permission=const.Permission.USER.value, subcommand=True),
+            "silent": dict(permission=const.Permission.USER.value, subcommand=False),
+            "time": dict(permission=const.Permission.USER.value, subcommand=True),
+            "uptime": dict(permission=const.Permission.USER.value, subcommand=True),
+            "status": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "channelid": dict(permission=const.Permission.MOD.value, subcommand=True),
+            "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
+            "img": dict(permission=const.Permission.USER.value, subcommand=False),
+            "listimg": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addimg": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "updimg": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "delimg": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "tts": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "urlencode": dict(permission=const.Permission.USER.value, subcommand=True),
+            "emojify": dict(permission=const.Permission.USER.value, subcommand=True),
+            "demojify": dict(permission=const.Permission.USER.value, subcommand=True),
+            "shutdown": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "restart": dict(permission=const.Permission.ADMIN.value, subcommand=False),
+            "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "message": dict(permission=const.Permission.USER.value, subcommand=True),
+            "server": dict(permission=const.Permission.USER.value, subcommand=False),
+            "pin": dict(permission=const.Permission.USER.value, subcommand=True),
+            "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "curl": dict(permission=const.Permission.USER.value, subcommand=True),
+            "nick": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "reloadbotcommands": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
+            "timer": dict(permission=const.Permission.USER.value, subcommand=False),
+            "stoptimer": dict(permission=const.Permission.USER.value, subcommand=False),
+            "echo": dict(message="@args@", permission=const.Permission.USER.value, subcommand=True),
+            "code": dict(message="`@args@`", permission=const.Permission.USER.value, subcommand=True),
+            "codeblock": dict(message="```\n@args@\n```", permission=const.Permission.USER.value, subcommand=True),
+        })
 
     @staticmethod
     async def _takechars(message, command, silent=False):
