@@ -226,7 +226,10 @@ class WalBot(discord.Client):
         except Exception:
             log.error("on_message failed", exc_info=True)
 
-    async def on_message_edit(self, _: discord.Message, message: discord.Message) -> None:
+    async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:
+        if message.embeds != old_message.embeds:
+            log.info(f"<{message.id}> (edit, embed update) {message.author} -> {message.content}")
+            return
         try:
             if self.config.guilds[message.channel.guild.id].ignored:
                 return
