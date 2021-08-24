@@ -1693,7 +1693,7 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _stoptimer(message, command, silent=False):
         """Stop timer
-    Usage: !timer 1"""
+    Usage: !stoptimer 1"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         id_ = await Util.parse_int(

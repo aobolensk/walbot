@@ -399,7 +399,7 @@
     Usage: !stopstopwatch 1
 
 **stoptimer**: Stop timer \
-    Usage: !timer 1
+    Usage: !stoptimer 1
 
 **stopwatch**: Start stopwatch \
     Usage: !stopwatch
