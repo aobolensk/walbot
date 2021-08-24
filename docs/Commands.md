@@ -142,6 +142,9 @@
         !disablecmd ping guild \
         !disablecmd ping global
 
+**donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
+    Usage: !donotupdatestate
+
 **dropchars**: Drop n characters of the string \
     Examples: \
         !dropchars 2 hello \
