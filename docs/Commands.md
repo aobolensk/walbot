@@ -395,8 +395,14 @@
     Possible activities: [playing, streaming, watching, listening] \
     Possible bot statuses: [online, idle, dnd, invisible]
 
+**stopstopwatch**: Stop stopwatch \
+    Usage: !stopstopwatch 1
+
 **stoptimer**: Stop timer \
     Usage: !timer 1
+
+**stopwatch**: Start stopwatch \
+    Usage: !stopwatch
 
 **takechars**: Take n characters of the string \
     Examples: \
