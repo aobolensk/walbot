@@ -11,6 +11,7 @@ class DoNotUpdateFlag(IntEnum):
     REMINDER = 1
     POLL = 2
     TIMER = 3
+    STOPWATCH = 4
 
 
 class BotController:
@@ -32,5 +33,6 @@ class BotController:
         self.voice_client_queue = deque()
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
+        self.stopwatches = dict()
         self.plugin_manager = PluginManager()
         self.message_buffer = MessageBuffer()
