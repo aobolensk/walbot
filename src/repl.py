@@ -1,7 +1,7 @@
+import asyncio
 import inspect
 import itertools
 import socket
-import threading
 
 from src.config import bc
 from src.log import log
@@ -35,9 +35,6 @@ class Repl:
         self.channel = None
         self.sock = None
         self.port = port
-        thread = threading.Thread(target=self.start)
-        thread.setDaemon(True)
-        thread.start()
 
     def parse_command(self, message) -> str:
         message = message.split(' ')
@@ -47,23 +44,25 @@ class Repl:
             return getattr(REPLCommands, message[0])(message).strip() + '\n'
         return "\n"
 
-    def start(self) -> None:
+    async def start(self) -> None:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR or socket.SO_REUSEPORT, 1)
         self.sock.bind((REPL_HOST, self.port))
+        self.sock.setblocking(False)
         self.sock.listen()
+        loop = asyncio.get_event_loop()
+        log.debug(f"REPL initialized on port {self.port}")
         while True:
-            log.debug(f"REPL initialized on port {self.port}")
             try:
-                conn, addr = self.sock.accept()
+                conn, addr = await loop.sock_accept(self.sock)
                 with conn:
                     log.debug(f"Connected by {addr}")
                     while True:
-                        conn.send("> ".encode("utf-8"))
-                        data = conn.recv(1024)
+                        await loop.sock_sendall(conn, "> ".encode("utf-8"))
+                        data = await loop.sock_recv(conn, 1024)
                         if not data:
                             break
-                        conn.send(self.parse_command(data.decode("utf-8").strip()).encode("utf-8"))
+                        await loop.sock_sendall(conn, self.parse_command(data.decode("utf-8").strip()).encode("utf-8"))
             except OSError as e:
                 log.warning(f"REPL: {e}")
 
