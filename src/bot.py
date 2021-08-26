@@ -41,6 +41,7 @@ class WalBot(discord.Client):
         self.bot_cache = BotCache(True)
         self.loop.create_task(self._process_reminders())
         self.loop.create_task(VoiceRoutine(self.bot_cache).start())
+        self.loop.create_task(self._repl_routine())
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -51,6 +52,7 @@ class WalBot(discord.Client):
         bc.secret_config = self.secret_config
         bc.info = BotInfo()
         bc.plugin_manager.register()
+        bc.fetch_channel = self.fetch_channel
         if not bc.args.fast_start:
             log.debug("Started Markov model checks...")
             if bc.markov.check():
@@ -167,6 +169,13 @@ class WalBot(discord.Client):
             log.debug3("Reminder processing iteration has finished")
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
+    async def _repl_routine(self) -> None:
+        if sys.platform == "win32":
+            log.warning("REPL is disabled on Windows for now")
+        else:
+            self.repl = Repl(self.config.repl["port"])
+            await self.repl.start()
+
     async def on_ready(self) -> None:
         self._load_plugins()
         log.info(
@@ -176,10 +185,6 @@ class WalBot(discord.Client):
             "ready": True,
         })
         self.bot_cache.dump_to_file()
-        if sys.platform == "win32":
-            log.warning("REPL is disabled on Windows for now")
-        else:
-            self.repl = Repl(self.config.repl["port"])
         bc.guilds = self.guilds
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
