@@ -11,14 +11,17 @@ REPL_HOST = ''
 
 class REPLCommands:
     async def help(self, command):
+        """Print list of the commands"""
         commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
                     if not func[0].startswith('_')]
         return ', '.join(commands)
 
     async def ping(self, command):
+        """Ping the bot"""
         return "Pong!"
 
     async def channels(self, command):
+        """Print list of the channels bot is connected to"""
         guilds = ((channel.id, channel.name) for channel in
                   itertools.chain.from_iterable(guild.text_channels for guild in bc.guilds))
         result = ""
@@ -27,6 +30,7 @@ class REPLCommands:
         return result
 
     async def echo(self, command):
+        """Send message to specific channel"""
         if len(command) < 3:
             return "Usage: echo <channel_id> <nessage>"
         channel = command[1]
