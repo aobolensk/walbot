@@ -10,15 +10,15 @@ REPL_HOST = ''
 
 
 class REPLCommands:
-    async def help(self, message):
+    async def help(self, command):
         commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
                     if not func[0].startswith('_')]
         return ', '.join(commands)
 
-    async def ping(self, message):
+    async def ping(self, command):
         return "Pong!"
 
-    async def channels(self, message):
+    async def channels(self, command):
         guilds = ((channel.id, channel.name) for channel in
                   itertools.chain.from_iterable(guild.text_channels for guild in bc.guilds))
         result = ""
@@ -26,11 +26,11 @@ class REPLCommands:
             result += f"{guild[0]} -> {guild[1]}\n"
         return result
 
-    async def echo(self, message):
-        if len(message) < 3:
-            return "Usage: echo <channel_id> <message>"
-        channel = message[1]
-        text = ' '.join(message[2:])
+    async def echo(self, command):
+        if len(command) < 3:
+            return "Usage: echo <channel_id> <nessage>"
+        channel = command[1]
+        text = ' '.join(command[2:])
         channel = await bc.fetch_channel(int(channel))
         await channel.send(text)
 
@@ -43,11 +43,11 @@ class Repl:
         self.commands = REPLCommands()
 
     async def parse_command(self, message) -> str:
-        message = message.split(' ')
+        args = message.split(' ')
         commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
                     if not func[0].startswith('_')]
-        if message[0] in commands:
-            result = await getattr(self.commands, message[0])(message) or ""
+        if args[0] in commands:
+            result = await getattr(self.commands, args[0])(args) or ""
             return result.strip() + '\n'
         return "\n"
 
