@@ -170,11 +170,8 @@ class WalBot(discord.Client):
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def _repl_routine(self) -> None:
-        if sys.platform == "win32":
-            log.warning("REPL is disabled on Windows for now")
-        else:
-            self.repl = Repl(self.config.repl["port"])
-            await self.repl.start()
+        self.repl = Repl(self.config.repl["port"])
+        await self.repl.start()
 
     async def on_ready(self) -> None:
         self._load_plugins()
