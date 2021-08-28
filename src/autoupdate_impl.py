@@ -32,6 +32,7 @@ class AutoUpdateContext:
                 "Failed to find walbot git repo. Autoupdate function is available only for git repository")
 
     def check_versions(self) -> bool:
+        """Compare versions from updated version.py with current ones"""
         import src.version as ver
         importlib.reload(ver)
         updated = False
@@ -49,6 +50,7 @@ class AutoUpdateContext:
 
 
 def check_updates(context: AutoUpdateContext) -> bool:
+    """Function that performs updates check. It is called periodically"""
     old_sha = context.repo.head.object.hexsha
     try:
         context.repo.remotes.origin.fetch()
@@ -95,6 +97,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
 
 
 def at_start() -> None:
+    """Autoupdate initialization"""
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
         subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
@@ -112,9 +115,11 @@ def at_start() -> None:
 
 
 def at_failure(e: Exception) -> None:
+    """Autoupdate fatal error handling"""
     pass
 
 
 def at_exit() -> None:
+    """Autoupdate finalize"""
     if os.path.isfile(const.BOT_CACHE_FILE_PATH):
         os.remove(const.BOT_CACHE_FILE_PATH)
