@@ -44,14 +44,14 @@ class Repl:
         self.channel = None
         self.sock = None
         self.port = port
-        self.commands = REPLCommands()
 
-    async def parse_command(self, message) -> str:
+    async def parse_command(self, commands, message) -> str:
         args = message.split(' ')
-        commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
-                    if not func[0].startswith('_')]
-        if args[0] in commands:
-            result = await getattr(self.commands, args[0])(args) or ""
+        commands_list = [
+            func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
+            if not func[0].startswith('_')]
+        if args[0] in commands_list:
+            result = await getattr(commands, args[0])(args) or ""
             return result.strip() + '\n'
         return "\n"
 
@@ -68,12 +68,13 @@ class Repl:
                 conn, addr = await loop.sock_accept(self.sock)
                 with conn:
                     log.debug(f"Connected by {addr}")
+                    commands = REPLCommands()
                     while True:
                         await loop.sock_sendall(conn, "> ".encode("utf-8"))
                         data = await loop.sock_recv(conn, 1024)
                         if not data:
                             break
-                        result = await self.parse_command(data.decode("utf-8").strip())
+                        result = await self.parse_command(commands, data.decode("utf-8").strip())
                         await loop.sock_sendall(conn, result.encode("utf-8"))
             except OSError as e:
                 log.warning(f"REPL: {e}")
