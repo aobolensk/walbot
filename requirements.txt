@@ -1,5 +1,5 @@
 numpy==1.21.2
-git+https://github.com/Rapptz/discord.py#45d498c  # Aug 28, 2021
+discord.py[voice]==1.7.3
 requests==2.26.0
 numba==0.53.1
 psutil==5.8.0
