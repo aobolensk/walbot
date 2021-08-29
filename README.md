@@ -53,6 +53,19 @@ $ cd pyyaml
 $ sudo python setup.py --with-libyaml install
 ```
 
+### Setting up bot autorestart on system startup
+
+Requirements:
+- cron
+- tmux
+
+Setup example:
+- Run `crontab -e`
+- Add the following line to the file:
+  ```sh
+  @reboot /bin/sleep 5 && /usr/bin/tmux new-session -ds walbot 'cd <path-to-walbot> && <path-to-python3> walbot.py autoupdate --name "your-bot-instance-name"'
+  ```
+
 ### Using walbot in Docker container
 
 ```console
