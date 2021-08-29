@@ -78,9 +78,10 @@ class Repl:
             func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
             if not func[0].startswith('_')]
         if args[0] in commands_list:
-            result = await getattr(commands, args[0])(args) or ""
-            return result.strip() + '\n'
-        return "\n"
+            result = await getattr(commands, args[0])(args)
+            result = result.strip() + '\n' if result else ""
+            return result
+        return ""
 
     async def start(self) -> None:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
