@@ -285,7 +285,7 @@ class BuiltinCommands(BaseCmd):
                     s = (name, f"calls external command `{cmd.cmd_line}`")
                     commands.append(s)
                 elif cmd.is_private:
-                    s = (name, "*Private command*\n" + cmd.get_actor().__doc__)
+                    s = (name, "*Private command*\n" + (cmd.get_actor().__doc__ or "*<No docs provided>*"))
                     commands.append(s)
             commands.sort()
             version = bc.info.version
@@ -321,7 +321,7 @@ class BuiltinCommands(BaseCmd):
                 return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
             result = name + ": "
             if command.perform is not None:
-                result += command.get_actor().__doc__
+                result += command.get_actor().__doc__ or "*<No docs provided>*"
             elif command.message is not None:
                 result += "`" + command.message + "`"
             elif command.cmd_line is not None:
