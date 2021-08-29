@@ -109,7 +109,8 @@ def at_start() -> None:
         if pid is not None and psutil.pid_exists(pid):
             log.debug("Bot is already started in different shell. Starting autoupdate routine.")
         else:
-            os.remove(const.BOT_CACHE_FILE_PATH)
+            if os.path.isfile(const.BOT_CACHE_FILE_PATH):
+                os.remove(const.BOT_CACHE_FILE_PATH)
             log.debug("Bot is not started! Starting...")
             subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
 
