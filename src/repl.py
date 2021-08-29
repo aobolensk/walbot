@@ -10,6 +10,17 @@ REPL_HOST = ''
 
 
 class REPLCommands:
+    def _build_prompt(self) -> str:
+        prompt = ""
+        if self._current_channel is not None:
+            prompt = str(self._current_channel)
+        prompt += "> "
+        return prompt
+
+    def __init__(self) -> None:
+        self._current_channel = None
+        self.prompt = self._build_prompt
+
     async def help(self, command):
         """Print list of the commands"""
         commands = [func[0] for func in inspect.getmembers(REPLCommands, inspect.isfunction)
@@ -29,14 +40,25 @@ class REPLCommands:
             result += f"{guild[0]} -> {guild[1]}\n"
         return result
 
-    async def echo(self, command):
-        """Send message to specific channel"""
-        if len(command) < 3:
-            return "Usage: echo <channel_id> <nessage>"
+    async def join(self, command):
+        """Join specific channel"""
+        if len(command) < 2:
+            return "Usage: join <channel_id>"
         channel = command[1]
-        text = ' '.join(command[2:])
-        channel = await bc.fetch_channel(int(channel))
-        await channel.send(text)
+        try:
+            self._current_channel = await bc.fetch_channel(int(channel))
+        except Exception as e:
+            return f"Failed to join channel: {e}"
+        return "Joined channel: " + str(self._current_channel)
+
+    async def echo(self, command):
+        """Send message to joined channel"""
+        if len(command) < 2:
+            return "Usage: echo <message>"
+        text = ' '.join(command[1:])
+        if self._current_channel is None:
+            return "Cannot send message to undefined channel. First execute: join <channel_id>"
+        await self._current_channel.send(text)
 
 
 class Repl:
@@ -70,7 +92,7 @@ class Repl:
                     log.debug(f"Connected by {addr}")
                     commands = REPLCommands()
                     while True:
-                        await loop.sock_sendall(conn, "> ".encode("utf-8"))
+                        await loop.sock_sendall(conn, commands.prompt().encode("utf-8"))
                         data = await loop.sock_recv(conn, 1024)
                         if not data:
                             break
