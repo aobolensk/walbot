@@ -51,6 +51,10 @@ class REPLCommands:
             return f"Failed to join channel: {e}"
         return "Joined channel: " + str(self._current_channel)
 
+    async def part(self, command):
+        """Part channel"""
+        self._current_channel = None
+
     async def echo(self, command):
         """Send message to joined channel"""
         if len(command) < 2:
