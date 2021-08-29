@@ -94,7 +94,7 @@ class Repl:
             try:
                 conn, addr = await loop.sock_accept(self.sock)
                 with conn:
-                    log.debug(f"Connected by {addr}")
+                    log.debug(f"Connected {addr[0]}:{addr[1]}")
                     commands = REPLCommands()
                     while True:
                         await loop.sock_sendall(conn, commands.prompt().encode("utf-8"))
@@ -103,6 +103,7 @@ class Repl:
                             break
                         result = await self.parse_command(commands, data.decode("utf-8").strip())
                         await loop.sock_sendall(conn, result.encode("utf-8"))
+                log.debug(f"Disconnected {addr[0]}:{addr[1]}")
             except OSError as e:
                 log.warning(f"REPL: {e}")
 
