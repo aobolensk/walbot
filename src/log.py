@@ -6,6 +6,7 @@ import functools
 import logging
 import logging.config
 import os
+from typing import Any
 
 from src import const
 
@@ -15,11 +16,11 @@ class Log:
     Proper usage: the single object of this class defined below class definition
     """
 
-    def debug2(self, msg, *args, **kwargs):
+    def debug2(self, msg: str, *args, **kwargs) -> None:
         """Log with severity 'DEBUG2'."""
         self.log.log(const.LogLevel.DEBUG2, msg, *args, **kwargs)
 
-    def debug3(self, msg, *args, **kwargs):
+    def debug3(self, msg: str, *args, **kwargs) -> None:
         """Log with severity 'DEBUG3'."""
         self.log.log(const.LogLevel.DEBUG3, msg, *args, **kwargs)
 
@@ -28,7 +29,7 @@ class Log:
             cls.instance = super().__new__(cls)
         return cls.instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         logging.config.dictConfig({
             'version': 1,
             'disable_existing_loggers': True,
@@ -71,7 +72,7 @@ class Log:
         self.warning = self.log.warning
         self.info("Logging system is set up")
 
-    def trace_function(self, func):
+    def trace_function(self, func) -> Any:
         """Tracing enter and exit events for functions. It should be used as a decorator"""
         def inner(*args, **kwargs):
             self.debug(f"Function '{func.__name__}' (ENTER)")
@@ -80,7 +81,7 @@ class Log:
             return ret
         return inner
 
-    def trace_async_function(self, func):
+    def trace_async_function(self, func) -> Any:
         """Tracing enter and exit events for async functions. It should be used as a decorator"""
         @functools.wraps(func)
         async def wrapped(*args):
@@ -93,14 +94,14 @@ class Log:
     class trace_block:  # pylint: disable=invalid-name
         """Tracing enter and exit events for blocks of code. It should be used as a context manager"""
 
-        def __init__(self, name):
+        def __init__(self, name) -> None:
             self._name = name
             log.debug(f"Block '{name}' (ENTER)")
 
-        def __enter__(self):
+        def __enter__(self) -> None:
             pass
 
-        def __exit__(self, type, value, traceback):
+        def __exit__(self, type, value, traceback) -> None:
             log.debug(f"Block '{self._name}' (EXIT)")
 
 
