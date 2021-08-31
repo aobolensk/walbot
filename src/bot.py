@@ -6,9 +6,11 @@ import os
 import random
 import re
 import signal
+import shutil
 import subprocess
 import sys
 import time
+import zipfile
 
 import discord
 import psutil
@@ -371,7 +373,18 @@ def start(args, main_bot=True):
         secret_config = SecretConfig()
     bc.markov = Util.read_config_file(const.MARKOV_PATH)
     if bc.markov is None:
+        if os.path.isdir("backup"):
+            # Check available backups
+            markov_backups = sorted([x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
+            if markov_backups:
+                with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
+                    zip_ref.extractall(".")
+                log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
+                shutil.move(markov_backups[-1][:-4], "markov.yaml")
+                bc.markov = Util.read_config_file(const.MARKOV_PATH)
+    if bc.markov is None:
         bc.markov = Markov()
+        log.warning("Failed to restore Markov model from backup")
     # Check config versions
     ok = True
     ok &= Util.check_version(
