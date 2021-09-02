@@ -382,9 +382,12 @@ def start(args, main_bot=True):
             log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
             shutil.move(markov_backups[-1][:-4], "markov.yaml")
             bc.markov = Util.read_config_file(const.MARKOV_PATH)
+            if bc.markov is None:
+                bc.markov = Markov()
+                log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
     if bc.markov is None:
         bc.markov = Markov()
-        log.warning("Failed to restore Markov model from backup")
+        log.info("Created empty Markov model")
     # Check config versions
     ok = True
     ok &= Util.check_version(
