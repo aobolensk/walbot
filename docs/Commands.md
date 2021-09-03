@@ -276,6 +276,37 @@
 
 **statmarkov**: Show stats for Markov module \
     Example: !statmarkov
+# Module: math
+**calc**: Calculate mathematical expression \
+    Examples: \
+        !calc 2+2*2 \
+        !calc 4/2-1 \
+    *This command can be used as subcommand*
+
+**if**: If expression is true (!= 0) then return first expression otherwise return the second one \
+    Examples: \
+        !if 1 It's true;It's false -&gt; It's true \
+        !if 0 It's true;It's false -&gt; It's false \
+ \
+    *This command can be used as subcommand*
+# Module: plugin
+**autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \
+    Usage: \
+        !autostartplugin &lt;plugin_name&gt;          &lt;- check if autostart is enabled \
+        !autostartplugin &lt;plugin_name&gt; enable   &lt;- enable autostart for plugin \
+        !autostartplugin &lt;plugin_name&gt; disable  &lt;- disable autostart for plugin
+
+**listplugin**: Print list of plugins \
+    Usage: \
+        !listplugin
+
+**loadplugin**: Load plugin by its name \
+    Usage: \
+        !loadplugin &lt;plugin_name&gt;
+
+**unloadplugin**: Unload plugin by its name \
+    Usage: \
+        !unloadplugin &lt;plugin_name&gt;
 # Module: quote
 **addquote**: Add quote to quotes database \
     Example: !addquote Hello, world!
@@ -396,37 +427,6 @@
         !updreminder 0 in 1w Test reminder 2 \
         !updreminder 0 in 5h10m Test reminder 3 \
 
-# Module: plugin
-**autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \
-    Usage: \
-        !autostartplugin &lt;plugin_name&gt;          &lt;- check if autostart is enabled \
-        !autostartplugin &lt;plugin_name&gt; enable   &lt;- enable autostart for plugin \
-        !autostartplugin &lt;plugin_name&gt; disable  &lt;- disable autostart for plugin
-
-**listplugin**: Print list of plugins \
-    Usage: \
-        !listplugin
-
-**loadplugin**: Load plugin by its name \
-    Usage: \
-        !loadplugin &lt;plugin_name&gt;
-
-**unloadplugin**: Unload plugin by its name \
-    Usage: \
-        !unloadplugin &lt;plugin_name&gt;
-# Module: math
-**calc**: Calculate mathematical expression \
-    Examples: \
-        !calc 2+2*2 \
-        !calc 4/2-1 \
-    *This command can be used as subcommand*
-
-**if**: If expression is true (!= 0) then return first expression otherwise return the second one \
-    Examples: \
-        !if 1 It's true;It's false -&gt; It's true \
-        !if 0 It's true;It's false -&gt; It's false \
- \
-    *This command can be used as subcommand*
 # Module: string
 **countchars**: Calculate length of the message \
     Example: !countchars some text \

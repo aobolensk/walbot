@@ -1,7 +1,6 @@
 import importlib
 import inspect
 import os
-from collections import OrderedDict
 from typing import Any, Dict
 
 from src import const
@@ -71,7 +70,7 @@ class Commands:
             )
             repeat = True
             while repeat:
-                result = OrderedDict()
+                result = dict()
                 repeat = False
                 to_remove = []
                 for name, command in self.data.items():
@@ -96,7 +95,8 @@ class Commands:
                         result[command.module_name] = [s]
                 for name in to_remove:
                     del self.data[name]
-            for module_name, help_list in result.items():
+            result = sorted(result.items())
+            for module_name, help_list in result:
                 f.write("# Module: " + module_name.split('.')[-1] + "\n")
                 f.write('\n'.join(sorted(help_list)))
 
