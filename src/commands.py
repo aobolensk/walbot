@@ -1,6 +1,7 @@
 import importlib
 import inspect
 import os
+from collections import OrderedDict
 from typing import Any, Dict
 
 from src import const
@@ -70,7 +71,7 @@ class Commands:
             )
             repeat = True
             while repeat:
-                result = dict()
+                result = OrderedDict()
                 repeat = False
                 to_remove = []
                 for name, command in self.data.items():
