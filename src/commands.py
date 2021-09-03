@@ -70,7 +70,7 @@ class Commands:
             )
             repeat = True
             while repeat:
-                result = []
+                result = dict()
                 repeat = False
                 to_remove = []
                 for name, command in self.data.items():
@@ -89,10 +89,15 @@ class Commands:
                         s += " \\\n    *This command can be used as subcommand*"
                     s += '\n'
                     s = s.replace('<', '&lt;').replace('>', '&gt;')
-                    result.append(s)
+                    if command.module_name in result.keys():
+                        result[command.module_name].append(s)
+                    else:
+                        result[command.module_name] = [s]
                 for name in to_remove:
                     del self.data[name]
-            f.write('\n'.join(sorted(result)))
+            for module_name, help_list in result.items():
+                f.write("# Module: " + module_name.split('.')[-1] + "\n")
+                f.write('\n'.join(sorted(help_list)))
 
     def register_command(self, module_name: str, class_name: str, command_name: str, **kwargs) -> None:
         """Create Command object and save it to commands list"""
