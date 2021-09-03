@@ -96,9 +96,13 @@ class Commands:
                 for name in to_remove:
                     del self.data[name]
             result = sorted(result.items())
+            # Filling up ToC (table of contents)
+            f.write("# Table of Contents:\n")
+            for module_name, _ in result:
+                f.write("* [Module: " + module_name.split('.')[-1] + "](#module-" + module_name.split('.')[-1] + ")\n")
+            # Add commands grouped by modules
             for module_name, help_list in result:
-                f.write("# Module: " + module_name.split('.')[-1] + "\n")
-                f.write('\n'.join(sorted(help_list)))
+                f.write("\n# Module: " + module_name.split('.')[-1] + "\n\n" + '\n'.join(sorted(help_list)))
 
     def register_command(self, module_name: str, class_name: str, command_name: str, **kwargs) -> None:
         """Create Command object and save it to commands list"""
