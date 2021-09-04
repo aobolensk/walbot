@@ -327,7 +327,7 @@ class ReminderCommands(BaseCmd):
         email = command[2]
         if index in bc.config.reminders.keys():
             bc.config.reminders[index].email_users.append(email)
-            await Msg.response(message, f"E-mail will sent to you when reminder {index} is sent", silent)
+            await Msg.response(message, f"E-mail will be sent to you when reminder {index} is sent", silent)
         else:
             await Msg.response(message, "Invalid index of reminder!", silent)
 
