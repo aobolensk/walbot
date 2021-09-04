@@ -304,7 +304,6 @@
     Examples: \
         !if 1 It's true;It's false -&gt; It's true \
         !if 0 It's true;It's false -&gt; It's false \
- \
     *This command can be used as subcommand*
 
 # Module: plugin
@@ -391,8 +390,7 @@
         !addreminder 1y Annual event \
         !addreminder in 1w5d10h5m Test reminder \
         !addreminder in 1w Test reminder 2 \
-        !addreminder in 5h10m Test reminder 3 \
-
+        !addreminder in 5h10m Test reminder 3
 
 **delreminder**: Delete reminder by index \
     Example: !delreminder 0
@@ -450,8 +448,7 @@
         !addreminder 0 1y Annual event \
         !updreminder 0 in 1w5d10h5m Test reminder \
         !updreminder 0 in 1w Test reminder 2 \
-        !updreminder 0 in 5h10m Test reminder 3 \
-
+        !updreminder 0 in 5h10m Test reminder 3
 
 # Module: string
 

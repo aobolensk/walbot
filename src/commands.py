@@ -79,7 +79,7 @@ class Commands:
                     s = "**" + name + "**: "
                     try:
                         docstring = command.get_actor().__doc__ or "*<No docs provided>*"
-                        s += " \\\n".join(docstring.split('\n'))
+                        s += " \\\n".join(docstring.strip().split('\n'))
                     except (AttributeError, KeyError):
                         to_remove.append(name)
                         log.warning(f"Command '{name}' is not found and removed from config and documentation")
