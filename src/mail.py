@@ -20,7 +20,7 @@ class Mail:
         server.login(self.secrets["email"], self.secrets["password"])
         server.auth_plain()
         result = (
-            f"From: {self.secrets['email']}\n"
+            f"From: WalBot <{self.secrets['email']}>\n"
             f"To: {', '.join(addrs)}\n"
             f"Subject: {subject}\n"
             "\n" +
