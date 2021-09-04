@@ -316,7 +316,7 @@ class ReminderCommands(BaseCmd):
 
     @staticmethod
     async def _remindeme(message, command, silent=False):
-        """Ask bot to send an e-mail you when it sends reminder
+        """Ask bot to send you an e-mail when it sends reminder
     Example: !remindeme 1 <your-email-address>"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
