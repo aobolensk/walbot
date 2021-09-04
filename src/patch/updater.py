@@ -201,6 +201,10 @@ class Updater:
             config.ids["stopwatch"] = 1
             self._bump_version(config, "0.0.30")
         if config.version == "0.0.30":
+            for index, reminder in config.reminders.items():
+                reminder.__dict__["email_users"] = []
+            self._bump_version(config, "0.0.31")
+        if config.version == "0.0.31":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

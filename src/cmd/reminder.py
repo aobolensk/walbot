@@ -120,6 +120,7 @@ class ReminderCommands(BaseCmd):
             "delreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "remindme": dict(permission=const.Permission.USER.value, subcommand=False),
             "remindwme": dict(permission=const.Permission.USER.value, subcommand=False),
+            "remindeme": dict(permission=const.Permission.MOD.value, subcommand=False),
             "repeatreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "skipreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "timeuntilreminder": dict(permission=const.Permission.USER.value, subcommand=True),
@@ -310,6 +311,23 @@ class ReminderCommands(BaseCmd):
             bc.config.reminders[index].whisper_users.append(message.author.id)
             await Msg.response(
                 message, f"You will be notified in direct messages when reminder {index} is sent", silent)
+        else:
+            await Msg.response(message, "Invalid index of reminder!", silent)
+
+    @staticmethod
+    async def _remindeme(message, command, silent=False):
+        """Ask bot to send an e-mail you when it sends reminder
+    Example: !remindeme 1 <your-email-address>"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        email = command[2]
+        if index in bc.config.reminders.keys():
+            bc.config.reminders[index].email_users.append(email)
+            await Msg.response(message, f"E-mail will sent to you when reminder {index} is sent", silent)
         else:
             await Msg.response(message, "Invalid index of reminder!", silent)
 

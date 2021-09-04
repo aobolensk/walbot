@@ -146,6 +146,15 @@ class WalBot(discord.Client):
                     for user_id in rem.whisper_users:
                         await Msg.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
+                    if rem.email_users:
+                        try:
+                            mail = Mail(self.secret_config)
+                            mail.send(
+                                rem.email_users,
+                                f"Reminder: {rem.message}",
+                                f"You asked to remind at {now} -> {rem.message}")
+                        except Exception as e:
+                            log.error(f"Reminder e-mail notification failed: {e}")
                     if rem.repeat_after > 0:
                         new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                         new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)

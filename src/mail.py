@@ -27,4 +27,5 @@ class Mail:
             message
         )
         server.sendmail(from_addr=self.secrets["email"], to_addrs=addrs, msg=result)
+        log.info(f"Sent message:\n'''\n{result}'''")
         server.quit()

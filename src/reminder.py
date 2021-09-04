@@ -12,6 +12,7 @@ class Reminder:
         self.channel_id = channel_id
         self.ping_users = []
         self.whisper_users = []
+        self.email_users = []
         self.repeat_after = 0
         self.repeat_interval_measure = "minutes"
         self.author = author_name

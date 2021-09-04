@@ -400,6 +400,9 @@
         !listreminder \
         !listreminder 5 &lt;- prints only first 5 reminders
 
+**remindeme**: Ask bot to send an e-mail you when it sends reminder \
+    Example: !remindeme 1 &lt;your-email-address&gt;
+
 **reminder**: Print information about reminder \
     Example: \
         !reminder 1
