@@ -10,6 +10,7 @@ class Mail:
         self.secrets = None
         if not all(secret_config.mail.values()):
             log.error("Email service cannot be initialized. Fill all mail fields in secret.yaml")
+            return
         self.secrets = secret_config.mail
 
     def send(self, addrs: List[str], subject: str, message: str) -> None:
