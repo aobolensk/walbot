@@ -247,7 +247,15 @@ class Updater:
                 os.remove(self.config_name + '.yaml')
                 log.info("Successfully migrated contig.yaml to db/config.db!")
             else:
-                log.info(f"Version of {self.config_name} is up to date!")
+                config.__dict__["mail"] = {
+                    "smtp_server": None,
+                    "email": None,
+                    "password": None,
+                }
+                config.__dict__["admin_email_list"] = list()
+                self._bump_version(config, "0.0.2")
+        if config.version == "0.0.2":
+            log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
 

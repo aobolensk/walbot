@@ -363,3 +363,9 @@ class SecretConfig:
             return
         self.token = None
         self.version = const.SECRET_CONFIG_VERSION
+        self.mail = {
+            "smtp_server": None,
+            "email": None,
+            "password": None,
+        }
+        self.admin_email_list = list()
