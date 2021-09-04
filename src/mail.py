@@ -19,6 +19,8 @@ class Mail:
         server.ehlo(self.secrets["email"])
         server.login(self.secrets["email"], self.secrets["password"])
         server.auth_plain()
+        all_addrs = addrs.copy()
+        all_addrs.append(self.secrets["email"])
         result = (
             f"From: WalBot <{self.secrets['email']}>\n"
             f"To: {', '.join(addrs)}\n"
