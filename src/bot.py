@@ -25,6 +25,7 @@ from src.emoji import get_clock_emoji
 from src.ff import FF
 from src.info import BotInfo
 from src.log import log
+from src.mail import Mail
 from src.markov import Markov
 from src.message import Msg
 from src.reminder import Reminder
@@ -145,6 +146,15 @@ class WalBot(discord.Client):
                     for user_id in rem.whisper_users:
                         await Msg.send_direct_message(
                             self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
+                    if rem.email_users:
+                        try:
+                            mail = Mail(self.secret_config)
+                            mail.send(
+                                rem.email_users,
+                                f"Reminder: {rem.message}",
+                                f"You asked to remind at {now} -> {rem.message}")
+                        except Exception as e:
+                            log.error(f"Reminder e-mail notification failed: {e}")
                     if rem.repeat_after > 0:
                         new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                         new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
@@ -227,7 +237,10 @@ class WalBot(discord.Client):
             else:
                 await self._process_regular_message(message)
                 await self._process_repetitions(message)
-        except Exception:
+        except Exception as e:
+            if self.secret_config.admin_email_list:
+                mail = Mail(self.secret_config)
+                mail.send(self.secret_config.admin_email_list, "WalBot on_message failed", f"on_message failed:\n{e}")
             log.error("on_message failed", exc_info=True)
 
     async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:
