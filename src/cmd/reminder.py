@@ -150,6 +150,8 @@ class ReminderCommands(BaseCmd):
         if reminder.repeat_after:
             e.add_field("Repeats every", f"{reminder.repeat_after} {reminder.repeat_interval_measure}", True)
         e.add_field("Created", reminder.time_created, True)
+        if reminder.prereminders_list:
+            e.add_field("Pre reminders (in minutes)", ', '.join([str(x) for x in reminder.prereminders_list]), True)
         await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
