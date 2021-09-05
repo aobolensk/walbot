@@ -133,6 +133,21 @@ class WalBot(discord.Client):
             to_append = []
             reminder_do_not_update_flag = False
             for key, rem in self.config.reminders.items():
+                for i in range(len(rem.prereminders_list)):
+                    prereminder = rem.prereminders_list[i]
+                    if prereminder == 0:
+                        continue
+                    if rem == (datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder)).strftime(const.REMINDER_DATETIME_FORMAT):
+                        channel = self.get_channel(rem.channel_id)
+                        e = DiscordEmbed()
+                        clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                        e.title(f"{prereminder} minutes left until reminder")
+                        e.description(rem.message)
+                        e.color(random.randint(0x000000, 0xffffff))
+                        e.timestamp(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
+                        e.footer(text=rem.author)
+                        await channel.send("", embed=e.get())
+                        rem.prereminders_list[i] = 0
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
                     clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
@@ -168,8 +183,11 @@ class WalBot(discord.Client):
                     log.debug2(f"Scheduled reminder with id {key} removal")
                     to_remove.append(key)
                 else:
+                    prereminders_delay = 0
+                    if rem.prereminders_list:
+                        prereminders_delay = max(rem.prereminders_list)
                     if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
-                            < datetime.timedelta(minutes=5)):
+                            < datetime.timedelta(minutes=(5 + prereminders_delay / 60))):
                         reminder_do_not_update_flag = True
             bc.do_not_update[DoNotUpdateFlag.REMINDER] = reminder_do_not_update_flag
             for key in to_remove:

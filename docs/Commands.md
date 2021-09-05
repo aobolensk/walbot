@@ -429,6 +429,13 @@
         !repeatreminder 1 0 \
     Note: number without postfix is translated to minutes. 0 means disabling repetition
 
+**setprereminders**: Set pre reminders notifying that reminder will be sent in particular time. \
+        For example, send pre reminder 10 minutes before actual event (to prepare or something) \
+    Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \
+    Examples: \
+        !setprereminders 1 10 \
+        !setprereminders 2 5 10 15
+
 **skipreminder**: Skip next instance of recurring (repeating) reminder \
     Example: !skipreminder 1 \
     Note: only recurring (repeating) reminders are affected by this command

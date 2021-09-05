@@ -15,6 +15,7 @@ class Reminder:
         self.email_users = []
         self.repeat_after = 0
         self.repeat_interval_measure = "minutes"
+        self.prereminders_list = []
         self.author = author_name
         self.time_created = time_created
 

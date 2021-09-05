@@ -124,6 +124,7 @@ class ReminderCommands(BaseCmd):
             "repeatreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "skipreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "timeuntilreminder": dict(permission=const.Permission.USER.value, subcommand=True),
+            "setprereminders": dict(permission=const.Permission.USER.value, subcommand=False),
         })
 
     @staticmethod
@@ -469,3 +470,35 @@ class ReminderCommands(BaseCmd):
         result = f"Time until reminder {index} ('{rem.message}') is {rem_time}"
         await Msg.response(message, result, silent)
         return result
+
+    @staticmethod
+    async def _setprereminders(message, command, silent=False):
+        """Set pre reminders notifying that reminder will be sent in particular time.
+        For example, send pre reminder 10 minutes before actual event (to prepare or something)
+    Usage: !setprereminders <reminder_id> [<time_before_reminder_in_minutes> ...]
+    Examples:
+        !setprereminders 1 10
+        !setprereminders 2 5 10 15"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
+        rem = bc.config.reminders[index]
+        prereminders_list = []
+        for i in range(2, len(command)):
+            time_before_reminder = await Util.parse_int(
+                message, command[i], f"Parameter #{i} for '{command[0]}' should be time in minutes", silent)
+            if time_before_reminder is None:
+                return
+            prereminders_list.append(time_before_reminder)
+            if time_before_reminder <= 0:
+                return null(await Msg.response(message, "Pre reminder time should be > 0 minutes", silent))
+            if time_before_reminder > 60:
+                return null(await Msg.response(message, "Pre reminder time should be <= 60 minutes", silent))
+        rem.prereminders_list = prereminders_list
+        result = f"Set prereminders list for reminder {index}: {', '.join([str(x) for x in rem.prereminders_list])}"
+        await Msg.response(message, result, silent)
