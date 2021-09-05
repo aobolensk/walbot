@@ -481,7 +481,7 @@ class ReminderCommands(BaseCmd):
     Examples:
         !setprereminders 1 10
         !setprereminders 2 5 10 15"""
-        if not await Util.check_args_count(message, command, silent, min=3):
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
         index = await Util.parse_int(
             message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
