@@ -137,14 +137,17 @@ class WalBot(discord.Client):
                     prereminder = rem.prereminders_list[i]
                     if prereminder == 0:
                         continue
-                    if rem == (datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder)).strftime(const.REMINDER_DATETIME_FORMAT):
+                    prereminder_time = (
+                        datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder))
+                    if rem == prereminder_time.strftime(const.REMINDER_DATETIME_FORMAT):
                         channel = self.get_channel(rem.channel_id)
                         e = DiscordEmbed()
                         clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
                         e.title(f"{prereminder} minutes left until reminder")
                         e.description(rem.message)
                         e.color(random.randint(0x000000, 0xffffff))
-                        e.timestamp(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
+                        e.timestamp(
+                            datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
                         e.footer(text=rem.author)
                         await channel.send("", embed=e.get())
                         rem.prereminders_list[i] = 0
