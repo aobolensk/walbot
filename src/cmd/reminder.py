@@ -251,12 +251,14 @@ class ReminderCommands(BaseCmd):
         reminder_list = []
         for index, reminder in bc.config.reminders.items():
             rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
+            prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
             reminder_list.append(
                 (reminder.time,
                  reminder.message,
                  f"{index} at {reminder.time} "
                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
-                 f"{rep if reminder.repeat_after else ''}"))
+                 f"{rep if reminder.repeat_after else ''}"
+                 f"{prereminders if reminder.prereminders_list else ''}"))
         reminder_list.sort()
         reminder_list = reminder_list[:reminders_count]
         embed_color = random.randint(0x000000, 0xffffff)
