@@ -135,7 +135,8 @@ class WalBot(discord.Client):
             for key, rem in self.config.reminders.items():
                 for i in range(len(rem.prereminders_list)):
                     prereminder = rem.prereminders_list[i]
-                    if prereminder == 0:
+                    used_prereminder = rem.used_prereminders_list[i]
+                    if prereminder == 0 or used_prereminder:
                         continue
                     prereminder_time = (
                         datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder))
@@ -150,7 +151,7 @@ class WalBot(discord.Client):
                             datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
                         e.footer(text=rem.author)
                         await channel.send("", embed=e.get())
-                        rem.prereminders_list[i] = 0
+                        rem.used_prereminders_list[i] = True
                 if rem == now:
                     channel = self.get_channel(rem.channel_id)
                     clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
