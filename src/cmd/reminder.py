@@ -500,9 +500,9 @@ class ReminderCommands(BaseCmd):
                 return
             prereminders_list.append(time_before_reminder)
             if time_before_reminder <= 0:
-                return null(await Msg.response(message, "Pre reminder time should be > 0 minutes", silent))
-            if time_before_reminder > 60:
-                return null(await Msg.response(message, "Pre reminder time should be <= 60 minutes", silent))
+                return null(await Msg.response(message, "Pre reminder time should be more than 0 minutes", silent))
+            if time_before_reminder > 24 * 60:
+                return null(await Msg.response(message, "Pre reminder time should be less than 1 day", silent))
         rem.prereminders_list = prereminders_list
         result = f"Set prereminders list for reminder {index}: {', '.join([str(x) for x in rem.prereminders_list])}"
         await Msg.response(message, result, silent)
