@@ -29,6 +29,10 @@ class Mail:
             "\n" +
             message
         )
-        server.sendmail(from_addr=self.secrets["email"], to_addrs=addrs, msg=result)
+        server.sendmail(
+            from_addr=self.secrets["email"],
+            to_addrs=addrs,
+            msg=result.encode("utf-8")
+        )
         log.info(f"Sent message:\n'''\n{result}'''")
         server.quit()
