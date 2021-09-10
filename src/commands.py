@@ -1,6 +1,7 @@
 import importlib
 import inspect
 import os
+from collections import defaultdict
 from typing import Any, Dict
 
 from src import const
@@ -70,7 +71,7 @@ class Commands:
             )
             repeat = True
             while repeat:
-                result = dict()
+                result = defaultdict(list)
                 repeat = False
                 to_remove = []
                 for name, command in self.data.items():
@@ -89,10 +90,7 @@ class Commands:
                         s += " \\\n    *This command can be used as subcommand*"
                     s += '\n'
                     s = s.replace('<', '&lt;').replace('>', '&gt;')
-                    if command.module_name in result.keys():
-                        result[command.module_name].append(s)
-                    else:
-                        result[command.module_name] = [s]
+                    result[command.module_name].append(s)
                 for name in to_remove:
                     del self.data[name]
             result = sorted(result.items())
