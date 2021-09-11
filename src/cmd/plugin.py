@@ -1,3 +1,5 @@
+"""WalBot plugin system management"""
+
 from src import const
 from src.commands import BaseCmd
 from src.config import bc

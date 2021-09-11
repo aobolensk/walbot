@@ -1,3 +1,5 @@
+"""WalBot reminders"""
+
 import datetime
 import random
 

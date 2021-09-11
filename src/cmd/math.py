@@ -1,3 +1,5 @@
+"""Math operations"""
+
 import ast
 import operator as op
 

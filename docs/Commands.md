@@ -2,16 +2,16 @@
 <!-- To regenerate this file launch `python walbot.py docs` command or simply launch the bot -->
 
 # Table of Contents:
-* [Module: builtin](#module-builtin)
-* [Module: markov](#module-markov)
-* [Module: math](#module-math)
-* [Module: plugin](#module-plugin)
-* [Module: quote](#module-quote)
-* [Module: reaction](#module-reaction)
-* [Module: reminder](#module-reminder)
-* [Module: string](#module-string)
-* [Module: timer](#module-timer)
-* [Module: voice](#module-voice)
+* [Module: builtin](#module-builtin): Built-in WalBot commands
+* [Module: markov](#module-markov): Markov model commands
+* [Module: math](#module-math): Math operations
+* [Module: plugin](#module-plugin): WalBot plugin system management
+* [Module: quote](#module-quote): Interaction with WalBot quote database
+* [Module: reaction](#module-reaction): Management of bot reactions to user messages
+* [Module: reminder](#module-reminder): WalBot reminders
+* [Module: string](#module-string): Helper functions for working with strings
+* [Module: timer](#module-timer): Timer and stopwatch
+* [Module: voice](#module-voice): Connection to voice channel
 
 # Module: builtin
 

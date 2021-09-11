@@ -1,3 +1,5 @@
+"""Management of bot reactions to user messages"""
+
 from src import const
 from src.commands import BaseCmd
 from src.config import Reaction, Response, bc

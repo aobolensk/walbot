@@ -1,3 +1,5 @@
+"""Connection to voice channel"""
+
 import asyncio
 import datetime
 import os

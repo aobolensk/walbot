@@ -1,3 +1,5 @@
+"""Built-in WalBot commands"""
+
 import asyncio
 import base64
 import datetime

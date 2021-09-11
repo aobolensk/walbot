@@ -1,3 +1,5 @@
+"""Markov model commands"""
+
 import asyncio
 import os
 import re

@@ -100,7 +100,7 @@ class Commands:
             f.write("# Table of Contents:\n")
             for module_name, _ in result:
                 if self.module_help[module_name] is not None:
-                    module_description = " " + self.module_help[module_name].strip().split('\n')[0]
+                    module_description = ": " + self.module_help[module_name].strip().split('\n')[0]
                 else:
                     module_description = ""
                 f.write(

@@ -1,3 +1,5 @@
+"""Interaction with WalBot quote database"""
+
 import datetime
 import random
 from src.embed import DiscordEmbed

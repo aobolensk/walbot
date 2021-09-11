@@ -1,3 +1,5 @@
+"""Timer and stopwatch"""
+
 import asyncio
 import datetime
 
