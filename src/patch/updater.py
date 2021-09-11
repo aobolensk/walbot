@@ -212,6 +212,9 @@ class Updater:
                 reminder.__dict__["used_prereminders_list"] = [False] * len(reminder.prereminders_list)
             self._bump_version(config, "0.0.33")
         if config.version == "0.0.33":
+            config.commands.__dict__["module_help"] = dict()
+            self._bump_version(config, "0.0.34")
+        if config.version == "0.0.34":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

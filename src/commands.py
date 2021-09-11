@@ -24,6 +24,7 @@ class Commands:
             self.data = dict()
         if not hasattr(self, "aliases"):
             self.aliases = dict()
+        self.module_help = dict()
 
     def update(self, reload: bool = False) -> None:
         """Update commands list by loading (reloading) all command modules:
@@ -43,6 +44,7 @@ class Commands:
         for module in cmd_modules:
             log.debug2(f"Processing commands from module: {module}")
             commands_file = importlib.import_module(module)
+            self.module_help[module] = commands_file.__doc__
             if reload:
                 importlib.reload(commands_file)
             commands = [obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
@@ -97,7 +99,13 @@ class Commands:
             # Filling up ToC (table of contents)
             f.write("# Table of Contents:\n")
             for module_name, _ in result:
-                f.write("* [Module: " + module_name.split('.')[-1] + "](#module-" + module_name.split('.')[-1] + ")\n")
+                if self.module_help[module_name] is not None:
+                    module_description = " " + self.module_help[module_name].strip().split('\n')[0]
+                else:
+                    module_description = ""
+                f.write(
+                    "* [Module: " + module_name.split('.')[-1] + "](#module-" + module_name.split('.')[-1] + ")"
+                    + module_description + "\n")
             # Add commands grouped by modules
             for module_name, help_list in result:
                 f.write("\n# Module: " + module_name.split('.')[-1] + "\n\n" + '\n'.join(sorted(help_list)))
