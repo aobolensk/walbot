@@ -13,13 +13,19 @@ class Mail:
             return
         self.secrets = secret_config.mail
 
+    def connect(self) -> None:
+        self._server = smtplib.SMTP_SSL(self.secrets["smtp_server"])
+        self._server.ehlo(self.secrets["email"])
+        self._server.login(self.secrets["email"], self.secrets["password"])
+        self._server.auth_plain()
+
+    def disconnect(self) -> None:
+        self._server.quit()
+
     def send(self, addrs: List[str], subject: str, message: str) -> None:
         if not self.secrets:
             return
-        server = smtplib.SMTP_SSL(self.secrets["smtp_server"])
-        server.ehlo(self.secrets["email"])
-        server.login(self.secrets["email"], self.secrets["password"])
-        server.auth_plain()
+        self.connect()
         all_addrs = addrs.copy()
         all_addrs.append(self.secrets["email"])
         result = (
@@ -29,10 +35,10 @@ class Mail:
             "\n" +
             message
         )
-        server.sendmail(
+        self._server.sendmail(
             from_addr=self.secrets["email"],
             to_addrs=addrs,
             msg=result.encode("utf-8")
         )
         log.info(f"Sent message:\n'''\n{result}'''")
-        server.quit()
+        self.disconnect()
