@@ -30,7 +30,7 @@ class Mail:
         all_addrs.append(self.secrets["email"])
         result = (
             f"From: WalBot <{self.secrets['email']}>\n"
-            f"To: {', '.join(addrs)}\n"
+            f"To: {', '.join(all_addrs)}\n"
             f"Subject: {subject}\n"
             "\n" +
             message
