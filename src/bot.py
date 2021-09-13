@@ -124,85 +124,97 @@ class WalBot(discord.Client):
             self.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH)
             index += 1
 
+    async def _process_reminders_iteration(self) -> None:
+        log.debug3("Reminder processing iteration has started")
+        now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
+        to_remove = []
+        to_append = []
+        reminder_do_not_update_flag = False
+        for key, rem in self.config.reminders.items():
+            for i in range(len(rem.prereminders_list)):
+                prereminder = rem.prereminders_list[i]
+                used_prereminder = rem.used_prereminders_list[i]
+                if prereminder == 0 or used_prereminder:
+                    continue
+                prereminder_time = (
+                    datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder))
+                if rem == prereminder_time.strftime(const.REMINDER_DATETIME_FORMAT):
+                    channel = self.get_channel(rem.channel_id)
+                    e = DiscordEmbed()
+                    clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                    e.title(f"{prereminder} minutes left until reminder")
+                    e.description(rem.message)
+                    e.color(random.randint(0x000000, 0xffffff))
+                    e.timestamp(
+                        datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
+                    e.footer(text=rem.author)
+                    await channel.send("", embed=e.get())
+                    rem.used_prereminders_list[i] = True
+            if rem == now:
+                channel = self.get_channel(rem.channel_id)
+                clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                e = DiscordEmbed()
+                e.title(f"{clock_emoji} You asked to remind")
+                e.description(rem.message)
+                e.color(random.randint(0x000000, 0xffffff))
+                e.timestamp(datetime.datetime.now(datetime.timezone.utc))
+                e.footer(text=rem.author)
+                await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
+                for user_id in rem.whisper_users:
+                    await Msg.send_direct_message(
+                        self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
+                if rem.email_users:
+                    try:
+                        mail = Mail(self.secret_config)
+                        mail.send(
+                            rem.email_users,
+                            f"Reminder: {rem.message}",
+                            f"You asked to remind at {now} -> {rem.message}")
+                    except Exception as e:
+                        log.error(f"Reminder e-mail notification failed: {e}")
+                if rem.repeat_after > 0:
+                    new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
+                    new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
+                    to_append.append(
+                        Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
+                    to_append[-1].repeat_after = rem.repeat_after
+                    to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
+                    to_append[-1].prereminders_list = rem.prereminders_list
+                    log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
+                to_remove.append(key)
+            elif rem < now:
+                log.debug2(f"Scheduled reminder with id {key} removal")
+                to_remove.append(key)
+            else:
+                prereminders_delay = 0
+                if rem.prereminders_list:
+                    prereminders_delay = max(rem.prereminders_list)
+                if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
+                        < datetime.timedelta(minutes=(5 + prereminders_delay / 60))):
+                    reminder_do_not_update_flag = True
+        bc.do_not_update[DoNotUpdateFlag.REMINDER] = reminder_do_not_update_flag
+        for key in to_remove:
+            self.config.reminders.pop(key)
+        for item in to_append:
+            key = self.config.ids["reminder"]
+            self.config.reminders[key] = item
+            self.config.ids["reminder"] += 1
+        log.debug3("Reminder processing iteration has finished")
+        await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
+
     async def _process_reminders(self) -> None:
         await self.wait_until_ready()
         while not self.is_closed():
-            log.debug3("Reminder processing iteration has started")
-            now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
-            to_remove = []
-            to_append = []
-            reminder_do_not_update_flag = False
-            for key, rem in self.config.reminders.items():
-                for i in range(len(rem.prereminders_list)):
-                    prereminder = rem.prereminders_list[i]
-                    used_prereminder = rem.used_prereminders_list[i]
-                    if prereminder == 0 or used_prereminder:
-                        continue
-                    prereminder_time = (
-                        datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder))
-                    if rem == prereminder_time.strftime(const.REMINDER_DATETIME_FORMAT):
-                        channel = self.get_channel(rem.channel_id)
-                        e = DiscordEmbed()
-                        clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
-                        e.title(f"{prereminder} minutes left until reminder")
-                        e.description(rem.message)
-                        e.color(random.randint(0x000000, 0xffffff))
-                        e.timestamp(
-                            datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
-                        e.footer(text=rem.author)
-                        await channel.send("", embed=e.get())
-                        rem.used_prereminders_list[i] = True
-                if rem == now:
-                    channel = self.get_channel(rem.channel_id)
-                    clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
-                    e = DiscordEmbed()
-                    e.title(f"{clock_emoji} You asked to remind")
-                    e.description(rem.message)
-                    e.color(random.randint(0x000000, 0xffffff))
-                    e.timestamp(datetime.datetime.now(datetime.timezone.utc))
-                    e.footer(text=rem.author)
-                    await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
-                    for user_id in rem.whisper_users:
-                        await Msg.send_direct_message(
-                            self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
-                    if rem.email_users:
-                        try:
-                            mail = Mail(self.secret_config)
-                            mail.send(
-                                rem.email_users,
-                                f"Reminder: {rem.message}",
-                                f"You asked to remind at {now} -> {rem.message}")
-                        except Exception as e:
-                            log.error(f"Reminder e-mail notification failed: {e}")
-                    if rem.repeat_after > 0:
-                        new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
-                        new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
-                        to_append.append(
-                            Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
-                        to_append[-1].repeat_after = rem.repeat_after
-                        to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
-                        to_append[-1].prereminders_list = rem.prereminders_list
-                        log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
-                    to_remove.append(key)
-                elif rem < now:
-                    log.debug2(f"Scheduled reminder with id {key} removal")
-                    to_remove.append(key)
-                else:
-                    prereminders_delay = 0
-                    if rem.prereminders_list:
-                        prereminders_delay = max(rem.prereminders_list)
-                    if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
-                            < datetime.timedelta(minutes=(5 + prereminders_delay / 60))):
-                        reminder_do_not_update_flag = True
-            bc.do_not_update[DoNotUpdateFlag.REMINDER] = reminder_do_not_update_flag
-            for key in to_remove:
-                self.config.reminders.pop(key)
-            for item in to_append:
-                key = self.config.ids["reminder"]
-                self.config.reminders[key] = item
-                self.config.ids["reminder"] += 1
-            log.debug3("Reminder processing iteration has finished")
-            await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
+            try:
+                await self._process_reminders_iteration()
+            except Exception as e:
+                if self.secret_config.admin_email_list:
+                    mail = Mail(self.secret_config)
+                    mail.send(
+                        self.secret_config.admin_email_list,
+                        "WalBot process_reminders_iteration failed",
+                        f"process_reminders_iteration failed:\n{e}")
+                log.error("on_message failed", exc_info=True)
 
     async def _repl_routine(self) -> None:
         self.repl = Repl(self.config.repl["port"])
