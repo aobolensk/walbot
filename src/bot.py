@@ -201,7 +201,6 @@ class WalBot(discord.Client):
             self.config.reminders[key] = item
             self.config.ids["reminder"] += 1
         log.debug3("Reminder processing iteration has finished")
-        await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def _process_reminders(self) -> None:
         await self.wait_until_ready()
@@ -215,7 +214,9 @@ class WalBot(discord.Client):
                         self.secret_config.admin_email_list,
                         "WalBot process_reminders_iteration failed",
                         f"process_reminders_iteration failed:\n{e}")
-                log.error("on_message failed", exc_info=True)
+                log.error("process_reminders_iteration failed", exc_info=True)
+                break
+            await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def _repl_routine(self) -> None:
         self.repl = Repl(self.config.repl["port"])
