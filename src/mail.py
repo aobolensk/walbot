@@ -25,20 +25,23 @@ class Mail:
     def send(self, addrs: List[str], subject: str, message: str) -> None:
         if not self.secrets:
             return
-        self.connect()
-        all_addrs = addrs.copy()
-        all_addrs.append(self.secrets["email"])
-        result = (
-            f"From: WalBot <{self.secrets['email']}>\n"
-            f"To: {', '.join(all_addrs)}\n"
-            f"Subject: {subject}\n"
-            "\n" +
-            message
-        )
-        self._server.sendmail(
-            from_addr=self.secrets["email"],
-            to_addrs=addrs,
-            msg=result.encode("utf-8")
-        )
-        log.info(f"Sent message:\n'''\n{result}'''")
-        self.disconnect()
+        try:
+            self.connect()
+            all_addrs = addrs.copy()
+            all_addrs.append(self.secrets["email"])
+            result = (
+                f"From: WalBot <{self.secrets['email']}>\n"
+                f"To: {', '.join(all_addrs)}\n"
+                f"Subject: {subject}\n"
+                "\n" +
+                message
+            )
+            self._server.sendmail(
+                from_addr=self.secrets["email"],
+                to_addrs=addrs,
+                msg=result.encode("utf-8")
+            )
+            log.info(f"Sent message:\n'''\n{result}'''")
+            self.disconnect()
+        except Exception as e:
+            log.error(f"Send e-mail failed: {e}", exc_info=True)
