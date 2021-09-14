@@ -306,7 +306,7 @@ class WalBot(discord.Client):
 
     async def _process_repetitions(self, message: discord.Message) -> None:
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
-        if (all(m) and m[0].content == m[1].content == m[2].content and
+        if (all(m) and m[0].content and m[0].content == m[1].content == m[2].content and
             (m[0].author.id != self.user.id and
              m[1].author.id != self.user.id and
              m[2].author.id != self.user.id)):
