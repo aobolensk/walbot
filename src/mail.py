@@ -31,14 +31,14 @@ class Mail:
             all_addrs.append(self.secrets["email"])
             result = (
                 f"From: WalBot <{self.secrets['email']}>\n"
-                f"To: {', '.join(all_addrs)}\n"
+                f"To: {', '.join(addrs)}\n"
                 f"Subject: {subject}\n"
                 "\n" +
                 message
             )
             self._server.sendmail(
                 from_addr=self.secrets["email"],
-                to_addrs=addrs,
+                to_addrs=all_addrs,
                 msg=result.encode("utf-8")
             )
             log.info(f"Sent message:\n'''\n{result}'''")
