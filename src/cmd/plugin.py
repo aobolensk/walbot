@@ -13,6 +13,7 @@ class PluginCommands(BaseCmd):
         bc.commands.register_commands(__name__, self.get_classname(), {
             "listplugin": dict(permission=const.Permission.USER.value, subcommand=False),
             "loadplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "reloadpluginmanager": dict(permission=const.Permission.MOD.value, subcommand=False),
             "unloadplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
             "autostartplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
@@ -44,6 +45,15 @@ class PluginCommands(BaseCmd):
             return null(await Msg.response(message, f"Could not find plugin '{plugin_name}'", silent))
         await bc.plugin_manager.send_command(plugin_name, "init")
         await Msg.response(message, f"Plugin '{plugin_name}' has been loaded", silent)
+
+    @staticmethod
+    async def _reloadpluginmanager(message, command, silent=False):
+        """Reload plugin manager
+    Usage: !reloadpluginmanager"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        bc.plugin_manager.register(reload=True)
+        await Msg.response(message, "Plugin manager has been reloaded", silent)
 
     @staticmethod
     async def _unloadplugin(message, command, silent=False):

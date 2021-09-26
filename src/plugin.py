@@ -49,7 +49,7 @@ class PluginManager:
             if not func[0].startswith('_')
         ]
 
-    def register(self) -> None:
+    def register(self, reload: bool = False) -> None:
         """Find plugins in plugins directory and register them"""
         plugin_directory = os.path.join(os.path.dirname(__file__), "plugins")
         plugin_modules = ['src.plugins.' + os.path.splitext(path)[0] for path in os.listdir(plugin_directory)
@@ -63,6 +63,8 @@ class PluginManager:
         for module in plugin_modules:
             log.debug2(f"Processing plugins from module: {module}")
             plugins_file = importlib.import_module(module)
+            if reload:
+                importlib.reload(plugins_file)
             plugins = [obj[1] for obj in inspect.getmembers(plugins_file, inspect.isclass)
                        if (obj[1].__module__ == module) and issubclass(obj[1], BasePlugin)]
             if len(plugins) == 1:

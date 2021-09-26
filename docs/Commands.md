@@ -322,6 +322,9 @@
     Usage: \
         !loadplugin &lt;plugin_name&gt;
 
+**reloadplugins**: Reload plugins list \
+    Usage: !reloadplugins
+
 **unloadplugin**: Unload plugin by its name \
     Usage: \
         !unloadplugin &lt;plugin_name&gt;
