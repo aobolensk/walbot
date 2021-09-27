@@ -19,6 +19,7 @@ class Reminder:
         self.used_prereminders_list = []
         self.author = author_name
         self.time_created = time_created
+        self.notes = ""
 
     def get_next_event_delta(self):
         if self.repeat_interval_measure == "minutes":

@@ -399,6 +399,9 @@
         !addreminder in 1w Test reminder 2 \
         !addreminder in 5h10m Test reminder 3
 
+**addremindernotes**: Add reminder notes \
+    Example: !addremindernotes 1 Some text
+
 **delreminder**: Delete reminder by index \
     Example: !delreminder 0
 

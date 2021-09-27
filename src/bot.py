@@ -143,7 +143,7 @@ class WalBot(discord.Client):
                     e = DiscordEmbed()
                     clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
                     e.title(f"{prereminder} minutes left until reminder")
-                    e.description(rem.message)
+                    e.description(rem.message + "\n" + rem.notes)
                     e.color(random.randint(0x000000, 0xffffff))
                     e.timestamp(
                         datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=prereminder))
@@ -155,7 +155,7 @@ class WalBot(discord.Client):
                 clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
                 e = DiscordEmbed()
                 e.title(f"{clock_emoji} You asked to remind")
-                e.description(rem.message)
+                e.description(rem.message + "\n" + rem.notes)
                 e.color(random.randint(0x000000, 0xffffff))
                 e.timestamp(datetime.datetime.now(datetime.timezone.utc))
                 e.footer(text=rem.author)

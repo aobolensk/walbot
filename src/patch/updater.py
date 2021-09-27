@@ -215,6 +215,10 @@ class Updater:
             config.commands.__dict__["module_help"] = dict()
             self._bump_version(config, "0.0.34")
         if config.version == "0.0.34":
+            for index, reminder in config.reminders.items():
+                reminder.__dict__["notes"] = ""
+            self._bump_version(config, "0.0.35")
+        if config.version == "0.0.35":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

@@ -127,6 +127,7 @@ class ReminderCommands(BaseCmd):
             "skipreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "timeuntilreminder": dict(permission=const.Permission.USER.value, subcommand=True),
             "setprereminders": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addremindernotes": dict(permission=const.Permission.USER.value, subcommand=False),
         })
 
     @staticmethod
@@ -509,3 +510,19 @@ class ReminderCommands(BaseCmd):
         rem.used_prereminders_list = [False] * len(prereminders_list)
         result = f"Set prereminders list for reminder {index}: {', '.join([str(x) for x in rem.prereminders_list])}"
         await Msg.response(message, result, silent)
+
+    @staticmethod
+    async def _addremindernotes(message, command, silent=False):
+        """Add reminder notes
+    Example: !addremindernotes 1 Some text"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
+        rem = bc.config.reminders[index]
+        rem.notes = ' '.join(command[2:])
+        await Msg.response(message, f"Set notes for reminder {index}: {rem.notes}", silent)
