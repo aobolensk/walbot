@@ -18,7 +18,8 @@
 **about**: Get information about the bot \
     Examples: \
         !about \
-        !about -v
+        !about -v   &lt;- verbose \
+        !about -vv  &lt;- even more verbose
 
 **addalias**: Add alias for commands \
     Usage: !addalias &lt;command&gt; &lt;alias&gt; \

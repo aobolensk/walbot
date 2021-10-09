@@ -795,7 +795,9 @@ class BuiltinCommands(BaseCmd):
         """Get information about the bot
     Examples:
         !about
-        !about -v"""
+        !about -v   <- verbose
+        !about -vv  <- even more verbose
+"""
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         if not hasattr(bc, "bot_user"):
@@ -807,7 +809,7 @@ class BuiltinCommands(BaseCmd):
             f"(updated at {bc.info.version_time})\n"
             f"Uptime: {bc.info.uptime}\n"
         )
-        if len(command) > 1 and command[1] == "-v":
+        if len(command) > 1 and command[1] in ("-v", "-vv"):
             result += (
                 f"Deployment time: {bc.deployment_time}\n"
                 f"Commit name: {bc.info.commit_name}\n"
@@ -817,7 +819,9 @@ class BuiltinCommands(BaseCmd):
             )
             # Dependencies info
             result += "Dependencies:\n"
-            result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items())
+            result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
+            if len(command) > 1 and command[1] == "-vv":
+                result += f"OS info: {' '.join(platform.uname())}\n"
         elif len(command) > 1:
             return null(
                 await Msg.response(
