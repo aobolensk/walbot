@@ -155,6 +155,8 @@ class ReminderCommands(BaseCmd):
         e.add_field("Created", reminder.time_created, True)
         if reminder.prereminders_list:
             e.add_field("Pre reminders (in minutes)", ', '.join([str(x) for x in reminder.prereminders_list]), True)
+        if reminder.notes:
+            e.add_field("Notes", reminder.notes, True)
         await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
