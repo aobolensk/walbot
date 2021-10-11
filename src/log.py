@@ -25,9 +25,9 @@ class Log:
         self.log.log(const.LogLevel.DEBUG3, msg, *args, **kwargs)
 
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super().__new__(cls)
-        return cls.instance
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self) -> None:
         logging.config.dictConfig({

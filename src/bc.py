@@ -16,9 +16,9 @@ class DoNotUpdateFlag(IntEnum):
 
 class BotController:
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super().__new__(cls)
-        return cls.instance
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self):
         self.background_events = []
