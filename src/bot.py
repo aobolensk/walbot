@@ -219,6 +219,7 @@ class WalBot(discord.Client):
         self.repl = Repl(self.config.repl["port"])
         await self.repl.start()
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def on_ready(self) -> None:
         self._load_plugins()
         log.info(
@@ -246,63 +247,56 @@ class WalBot(discord.Client):
             if plugin_state["autostart"]:
                 asyncio.create_task(bc.plugin_manager.send_command(plugin_name, "init"))
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def on_message(self, message: discord.Message) -> None:
         await bc.plugin_manager.broadcast_command("on_message", message)
-        try:
-            if self.config.guilds[message.channel.guild.id].ignored:
+        if self.config.guilds[message.channel.guild.id].ignored:
+            return
+        bc.message_buffer.push(message)
+        log.info(f"<{message.id}> {message.author} -> {message.content}")
+        if message.author.id == self.user.id:
+            return
+        if isinstance(message.channel, discord.DMChannel):
+            return
+        if message.channel.guild.id is None:
+            return
+        if self.config.guilds[message.channel.guild.id].is_whitelisted:
+            if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
                 return
-            bc.message_buffer.push(message)
-            log.info(f"<{message.id}> {message.author} -> {message.content}")
-            if message.author.id == self.user.id:
-                return
-            if isinstance(message.channel, discord.DMChannel):
-                return
-            if message.channel.guild.id is None:
-                return
-            if self.config.guilds[message.channel.guild.id].is_whitelisted:
-                if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
-                    return
-            if message.author.id not in self.config.users.keys():
-                self.config.users[message.author.id] = User(message.author.id)
-            if self.config.users[message.author.id].permission_level < 0:
-                return
-            if message.content.startswith(self.config.commands_prefix):
-                await self._process_command(message)
-            else:
-                await self._process_regular_message(message)
-                await self._process_repetitions(message)
-        except Exception as e:
-            if self.secret_config.admin_email_list:
-                mail = Mail(self.secret_config)
-                mail.send(self.secret_config.admin_email_list, "WalBot on_message failed", f"on_message failed:\n{e}")
-            log.error("on_message failed", exc_info=True)
+        if message.author.id not in self.config.users.keys():
+            self.config.users[message.author.id] = User(message.author.id)
+        if self.config.users[message.author.id].permission_level < 0:
+            return
+        if message.content.startswith(self.config.commands_prefix):
+            await self._process_command(message)
+        else:
+            await self._process_regular_message(message)
+            await self._process_repetitions(message)
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:
         if message.embeds != old_message.embeds:
             log.info(f"<{message.id}> (edit, embed update) {message.author} -> {message.content}")
             return
-        try:
-            if self.config.guilds[message.channel.guild.id].ignored:
+        if self.config.guilds[message.channel.guild.id].ignored:
+            return
+        bc.message_buffer.push(message)
+        log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
+        if message.author.id == self.user.id:
+            return
+        if isinstance(message.channel, discord.DMChannel):
+            return
+        if message.channel.guild.id is None:
+            return
+        if self.config.guilds[message.channel.guild.id].is_whitelisted:
+            if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
                 return
-            bc.message_buffer.push(message)
-            log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
-            if message.author.id == self.user.id:
-                return
-            if isinstance(message.channel, discord.DMChannel):
-                return
-            if message.channel.guild.id is None:
-                return
-            if self.config.guilds[message.channel.guild.id].is_whitelisted:
-                if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
-                    return
-            if message.author.id not in self.config.users.keys():
-                self.config.users[message.author.id] = User(message.author.id)
-            if self.config.users[message.author.id].permission_level < 0:
-                return
-            if message.content.startswith(self.config.commands_prefix):
-                await self._process_command(message)
-        except Exception:
-            log.error("on_message_edit failed", exc_info=True)
+        if message.author.id not in self.config.users.keys():
+            self.config.users[message.author.id] = User(message.author.id)
+        if self.config.users[message.author.id].permission_level < 0:
+            return
+        if message.content.startswith(self.config.commands_prefix):
+            await self._process_command(message)
 
     async def _process_repetitions(self, message: discord.Message) -> None:
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
