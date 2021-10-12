@@ -124,7 +124,6 @@ class WalBot(discord.Client):
             self.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH)
             index += 1
 
-    @Mail.send_exception_info_to_admin_emails_async
     async def _process_reminders_iteration(self) -> None:
         log.debug3("Reminder processing iteration has started")
         now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
@@ -200,6 +199,7 @@ class WalBot(discord.Client):
             self.config.ids["reminder"] += 1
         log.debug3("Reminder processing iteration has finished")
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def _process_reminders(self) -> None:
         await self.wait_until_ready()
         while not self.is_closed():
