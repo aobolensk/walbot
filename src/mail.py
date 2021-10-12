@@ -1,7 +1,9 @@
+import functools
 import smtplib
-from typing import List
+import traceback
+from typing import Any, List
 
-from src.config import SecretConfig
+from src.config import SecretConfig, bc
 from src.log import log
 
 
@@ -45,3 +47,26 @@ class Mail:
             self.disconnect()
         except Exception as e:
             log.error(f"Send e-mail failed: {e}", exc_info=True)
+
+    @staticmethod
+    def send_exception_info_to_admin_emails_async(func) -> Any:
+        """Catches all exceptions and sends e-mail to admins if it happened.
+        It should be used as a decorator"""
+        @functools.wraps(func)
+        async def wrapped(*args, **kwargs):
+            try:
+                return await func(*args, **kwargs)
+            except Exception as e:
+                if bc.secret_config.admin_email_list:
+                    mail = Mail(bc.secret_config)
+                    mail.send(
+                        bc.secret_config.admin_email_list,
+                        f"WalBot {func.__name__} failed",
+                        f"{func.__name__} failed:\n"
+                        f"{e}\n"
+                        "\n"
+                        f"Backtrace:\n"
+                        f"{traceback.format_exc()}"
+                    )
+                log.error(f"{func.__name__} failed", exc_info=True)
+        return wrapped
