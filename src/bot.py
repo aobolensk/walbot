@@ -124,6 +124,7 @@ class WalBot(discord.Client):
             self.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH)
             index += 1
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def _process_reminders_iteration(self) -> None:
         log.debug3("Reminder processing iteration has started")
         now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
@@ -202,17 +203,7 @@ class WalBot(discord.Client):
     async def _process_reminders(self) -> None:
         await self.wait_until_ready()
         while not self.is_closed():
-            try:
-                await self._process_reminders_iteration()
-            except Exception as e:
-                if self.secret_config.admin_email_list:
-                    mail = Mail(self.secret_config)
-                    mail.send(
-                        self.secret_config.admin_email_list,
-                        "WalBot process_reminders_iteration failed",
-                        f"process_reminders_iteration failed:\n{e}")
-                log.error("process_reminders_iteration failed", exc_info=True)
-                break
+            await self._process_reminders_iteration()
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
     async def _repl_routine(self) -> None:
