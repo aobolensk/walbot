@@ -57,6 +57,11 @@ class Mail:
             try:
                 return await func(*args, **kwargs)
             except Exception as e:
+                try:
+                    bot_info = bc.info.get_full_info(2)
+                except Exception:
+                    log.warning("Failed to get bot info to attach to e-mail", exc_info=True)
+                    bot_info = ""
                 if bc.secret_config.admin_email_list:
                     mail = Mail(bc.secret_config)
                     mail.send(
@@ -66,7 +71,9 @@ class Mail:
                         f"{e}\n"
                         "\n"
                         f"Backtrace:\n"
-                        f"{traceback.format_exc()}"
+                        f"{traceback.format_exc()}\n"
+                        f"Details:\n"
+                        f"{bot_info}"
                     )
                 log.error(f"{func.__name__} failed", exc_info=True)
         return wrapped
