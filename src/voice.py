@@ -6,6 +6,7 @@ import discord
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
+from src.mail import Mail
 
 
 @dataclass
@@ -26,6 +27,7 @@ class VoiceRoutine:
             self.bot_cache.update({"do_not_update": current_autoupdate_flag})
             self.bot_cache.dump_to_file()
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def start(self) -> None:
         # Disconnect if bot is inactive in voice channel
         voice_client_queue_disconnect_counter = 0
