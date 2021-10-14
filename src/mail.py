@@ -61,7 +61,7 @@ class Mail:
                     bot_info = bc.info.get_full_info(2)
                 except Exception:
                     log.warning("Failed to get bot info to attach to e-mail", exc_info=True)
-                    bot_info = ""
+                    bot_info = "ERROR: Failed to retrieve details, please refer to log file"
                 if bc.secret_config.admin_email_list:
                     mail = Mail(bc.secret_config)
                     mail.send(
