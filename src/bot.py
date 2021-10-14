@@ -178,6 +178,7 @@ class WalBot(discord.Client):
                     to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
                     to_append[-1].prereminders_list = rem.prereminders_list
                     to_append[-1].used_prereminders_list = [False] * len(rem.prereminders_list)
+                    to_append[-1].notes = rem.notes
                     log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                 to_remove.append(key)
             elif rem < now:
