@@ -3,6 +3,7 @@ Contains definition of WalBot logger and instance of the logger
 """
 
 import functools
+import inspect
 import logging
 import logging.config
 import os
@@ -74,22 +75,21 @@ class Log:
 
     def trace_function(self, func) -> Any:
         """Tracing enter and exit events for functions. It should be used as a decorator"""
-        def inner(*args, **kwargs):
-            self.debug(f"Function '{func.__name__}' (ENTER)")
-            ret = func(*args, **kwargs)
-            self.debug(f"Function '{func.__name__}' (EXIT)")
-            return ret
-        return inner
-
-    def trace_async_function(self, func) -> Any:
-        """Tracing enter and exit events for async functions. It should be used as a decorator"""
-        @functools.wraps(func)
-        async def wrapped(*args):
-            self.debug(f"Function '{func.__name__}' (ENTER)")
-            ret = await func(*args)
-            self.debug(f"Function '{func.__name__}' (EXIT)")
-            return ret
-        return wrapped
+        if inspect.iscoroutinefunction(func):
+            @functools.wraps(func)
+            async def wrapped(*args):
+                self.debug(f"Function '{func.__name__}' (ENTER)")
+                ret = await func(*args)
+                self.debug(f"Function '{func.__name__}' (EXIT)")
+                return ret
+            return wrapped
+        else:
+            def inner(*args, **kwargs):
+                self.debug(f"Function '{func.__name__}' (ENTER)")
+                ret = func(*args, **kwargs)
+                self.debug(f"Function '{func.__name__}' (EXIT)")
+                return ret
+            return inner
 
     class trace_block:  # pylint: disable=invalid-name
         """Tracing enter and exit events for blocks of code. It should be used as a context manager"""
