@@ -802,30 +802,17 @@ class BuiltinCommands(BaseCmd):
             return
         if not hasattr(bc, "bot_user"):
             return null(await Msg.response(message, "Bot is not loaded yet!", silent))
-        result = (
-            f"{bc.bot_user} (WalBot instance)\n"
-            f"Source code: <{const.GIT_REPO_LINK}>\n"
-            f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} "
-            f"(updated at {bc.info.version_time})\n"
-            f"Uptime: {bc.info.uptime}\n"
-        )
-        if len(command) > 1 and command[1] in ("-v", "-vv"):
-            result += (
-                f"Deployment time: {bc.deployment_time}\n"
-                f"Commit name: {bc.info.commit_name}\n"
-                f"Branch name: {bc.info.branch_name}\n"
-                f"Python interpreter: {platform.python_implementation()} {platform.python_version()} "
-                f"({', '.join(platform.python_build())}) [{platform.python_compiler()}]\n"
-            )
-            # Dependencies info
-            result += "Dependencies:\n"
-            result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
-            if len(command) > 1 and command[1] == "-vv":
-                result += f"OS info: {' '.join(platform.uname())}\n"
-        elif len(command) > 1:
-            return null(
-                await Msg.response(
-                    message, f"Unknown argument '{command[1]}' for '{command[0]}' command", silent))
+        verbosity = 0
+        if len(command) > 1:
+            if command[1] == '-v':
+                verbosity = 1
+            if command[1] == '-vv':
+                verbosity = 2
+            else:
+                return null(
+                    await Msg.response(
+                        message, f"Unknown argument '{command[1]}' for '{command[0]}' command", silent))
+        result = bc.info.get_full_info(verbosity)
         await Msg.response(message, result, silent)
 
     @staticmethod

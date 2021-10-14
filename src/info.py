@@ -1,9 +1,11 @@
 import datetime
 import importlib
+import platform
 from typing import Dict, Optional
 
 import git
 
+from src import const
 from src.config import bc
 
 
@@ -82,3 +84,26 @@ class BotInfo:
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         return f"{days}:{hours:02}:{minutes:02}:{seconds:02}"
+
+    def get_full_info(self, verbosity) -> str:
+        result = (
+            f"{bc.bot_user} (WalBot instance)\n"
+            f"Source code: <{const.GIT_REPO_LINK}>\n"
+            f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} "
+            f"(updated at {bc.info.version_time})\n"
+            f"Uptime: {bc.info.uptime}\n"
+        )
+        if verbosity > 1:
+            result += (
+                f"Deployment time: {bc.deployment_time}\n"
+                f"Commit name: {bc.info.commit_name}\n"
+                f"Branch name: {bc.info.branch_name}\n"
+                f"Python interpreter: {platform.python_implementation()} {platform.python_version()} "
+                f"({', '.join(platform.python_build())}) [{platform.python_compiler()}]\n"
+            )
+            # Dependencies info
+            result += "Dependencies:\n"
+            result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
+        if verbosity > 2:
+            result += f"OS info: {' '.join(platform.uname())}\n"
+        return result
