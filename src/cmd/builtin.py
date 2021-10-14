@@ -5,7 +5,6 @@ import base64
 import datetime
 import imghdr
 import os
-import platform
 import random
 import re
 import shutil
