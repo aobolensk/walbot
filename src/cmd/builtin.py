@@ -805,7 +805,7 @@ class BuiltinCommands(BaseCmd):
         if len(command) > 1:
             if command[1] == '-v':
                 verbosity = 1
-            if command[1] == '-vv':
+            elif command[1] == '-vv':
                 verbosity = 2
             else:
                 return null(
