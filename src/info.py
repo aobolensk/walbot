@@ -93,7 +93,7 @@ class BotInfo:
             f"(updated at {bc.info.version_time})\n"
             f"Uptime: {bc.info.uptime}\n"
         )
-        if verbosity > 1:
+        if verbosity >= 1:
             result += (
                 f"Deployment time: {bc.deployment_time}\n"
                 f"Commit name: {bc.info.commit_name}\n"
@@ -104,6 +104,6 @@ class BotInfo:
             # Dependencies info
             result += "Dependencies:\n"
             result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
-        if verbosity > 2:
+        if verbosity >= 2:
             result += f"OS info: {' '.join(platform.uname())}\n"
         return result
