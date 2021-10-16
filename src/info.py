@@ -112,4 +112,7 @@ class BotInfo:
                 if os.path.isfile("/etc/lsb-release"):
                     with open("/etc/lsb-release") as f:
                         result += "Linux distro information:\n" + f.readlines()
+                elif os.path.isfile("/etc/issue"):
+                    with open("/etc/issue") as f:
+                        result += "Linux distro information:\n" + f.readlines()
         return result
