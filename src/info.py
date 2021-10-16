@@ -1,6 +1,8 @@
 import datetime
 import importlib
+import os
 import platform
+import sys
 from typing import Dict, Optional
 
 import git
@@ -106,4 +108,8 @@ class BotInfo:
             result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
         if verbosity >= 2:
             result += f"OS info: {' '.join(platform.uname())}\n"
+            if sys.platform == "linux":
+                if os.path.isfile("/etc/lsb-release"):
+                    with open("/etc/lsb-release") as f:
+                        result += "Linux distro information:\n" + f.readlines()
         return result
