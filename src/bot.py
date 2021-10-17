@@ -38,7 +38,7 @@ class WalBot(discord.Client):
     def __init__(self, name: str, config: Config, secret_config: SecretConfig, intents: discord.Intents) -> None:
         super().__init__(intents=intents)
         self.repl = None
-        self.instance_name = name
+        bc.instance_name = self.instance_name = name
         self.config = config
         self.secret_config = secret_config
         self.bot_cache = BotCache(True)

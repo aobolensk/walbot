@@ -36,3 +36,4 @@ class BotController:
         self.stopwatches = dict()
         self.plugin_manager = PluginManager()
         self.message_buffer = MessageBuffer()
+        self.instance_name = ""

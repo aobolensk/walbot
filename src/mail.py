@@ -66,7 +66,7 @@ class Mail:
                     mail = Mail(bc.secret_config)
                     mail.send(
                         bc.secret_config.admin_email_list,
-                        f"WalBot {func.__name__} failed",
+                        f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
                         f"{func.__name__} failed:\n"
                         f"{e}\n"
                         "\n"
