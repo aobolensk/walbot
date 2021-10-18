@@ -95,7 +95,7 @@ class BotInfo:
             f"(updated at {bc.info.version_time})\n"
             f"Uptime: {bc.info.uptime}\n"
         )
-        if verbosity >= 1:
+        if verbosity >= const.Verbosity.VERBOSE:
             result += (
                 f"Deployment time: {bc.deployment_time}\n"
                 f"Commit name: {bc.info.commit_name}\n"
@@ -106,7 +106,7 @@ class BotInfo:
             # Dependencies info
             result += "Dependencies:\n"
             result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
-        if verbosity >= 2:
+        if verbosity >= const.Verbosity.VERBOSE2:
             result += f"OS info: {' '.join(platform.uname())}\n"
             if sys.platform == "linux":
                 if os.path.isfile("/etc/lsb-release"):

@@ -110,3 +110,9 @@ class LogLevel(enum.IntEnum):
     DEBUG2 = 9
     DEBUG3 = 8
     NOTSET = 0
+
+
+class Verbosity(enum.IntEnum):
+    SILENT = 0
+    VERBOSE = 1
+    VERBOSE2 = 2
