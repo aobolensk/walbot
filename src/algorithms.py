@@ -1,8 +1,21 @@
-import numba
+import importlib
+from typing import Any
+
 import numpy as np
 
+from src.log import log
 
-@numba.njit(fastmath=True)
+
+def optional_numba_jit(func) -> Any:
+    try:
+        numba = importlib.import_module("numba")
+        return numba.njit(fastmath=True)(func)
+    except ImportError:
+        log.warning(f"Function {func.__name__} is missing numba package for better performance!")
+        return func
+
+
+@optional_numba_jit
 def levenshtein_distance(a: str, b: str):
     """
     Calculates Levenshtein distance between two strings using dynamic programming.
