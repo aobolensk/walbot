@@ -57,7 +57,7 @@ class Util:
         try:
             log.debug(f"Processing external command: '{cmd_line}'")
             process = subprocess.run(cmd_line, shell=True, check=True,
-                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=os.environ)
             log.debug(f"External command '{cmd_line}' finished execution with return code: {process.returncode}")
             result = process.stdout.decode("utf-8")
             await Msg.response(message, result, silent)
