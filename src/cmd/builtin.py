@@ -183,6 +183,8 @@ class BuiltinCommands(BaseCmd):
             "nick": dict(permission=const.Permission.MOD.value, subcommand=False),
             "reloadbotcommands": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
+            "addrole": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "delrole": dict(permission=const.Permission.MOD.value, subcommand=False),
             "echo": dict(message="@args@", permission=const.Permission.USER.value, subcommand=True),
             "code": dict(message="`@args@`", permission=const.Permission.USER.value, subcommand=True),
             "codeblock": dict(message="```\n@args@\n```", permission=const.Permission.USER.value, subcommand=True),
@@ -1436,3 +1438,47 @@ class BuiltinCommands(BaseCmd):
         else:
             result += "✅ No stopwatches are active\n"
         await Msg.response(message, result, silent)
+
+    @staticmethod
+    async def _addrole(message, command, silent=False):
+        """Assign a role to the user
+    Usage: !addrole @user role_name"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        user = command[1]
+        role_name = ' '.join(command[2:])
+        role = discord.utils.get(message.guild.roles, name=role_name)
+        if role is None:
+            return null(await Msg.response(message, f"Role '{role_name}' does not exist", silent))
+        member = await message.guild.fetch_member(message.mentions[0].id)
+        if member is None:
+            return null(await Msg.response(message, f"User '{user}' does not exist", silent))
+        try:
+            await member.add_roles(role)
+        except discord.HTTPException as e:
+            return await null(
+                Msg.response(
+                    message, f"Role '{role_name}' could not be assigned to user '{user}'. ERROR: '{e}'", silent))
+        await Msg.response(message, f"Successfully assigned role '{role_name}' to user '{user}'", silent)
+
+    @staticmethod
+    async def _delrole(message, command, silent=False):
+        """Unassign a role from the user
+    Usage: !delrole @user role_name"""
+        if not await Util.check_args_count(message, command, silent, min=3):
+            return
+        user = command[1]
+        role_name = ' '.join(command[2:])
+        role = discord.utils.get(message.guild.roles, name=role_name)
+        if role is None:
+            return null(await Msg.response(message, f"Role '{role_name}' does not exist", silent))
+        member = await message.guild.fetch_member(message.mentions[0].id)
+        if member is None:
+            return null(await Msg.response(message, f"User '{user}' does not exist", silent))
+        try:
+            await member.remove_roles(role)
+        except discord.HTTPException as e:
+            return await null(
+                Msg.response(
+                    message, f"Role '{role_name}' could not be assigned to user '{user}'. ERROR: '{e}'", silent))
+        await Msg.response(message, f"Successfully assigned role '{role_name}' to user '{user}'", silent)

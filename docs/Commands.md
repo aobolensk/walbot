@@ -39,6 +39,9 @@
 **addimg**: Add image for !img command \
     Example: !addimg name url
 
+**addrole**: Assign a role to the user \
+    Usage: !addrole @user role_name
+
 **avatar**: Change bot avatar \
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images
@@ -72,6 +75,9 @@
 
 **delimg**: Delete image for !img command \
     Example: !delimg name
+
+**delrole**: Unassign a role from the user \
+    Usage: !delrole @user role_name
 
 **demojify**: Demojify text \
     Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
