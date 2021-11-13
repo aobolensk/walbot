@@ -59,6 +59,7 @@ class VoiceCommands(BaseCmd):
             "vjoin": dict(permission=const.Permission.USER.value, subcommand=False),
             "vleave": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqpush": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vqfpush": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqskip": dict(permission=const.Permission.USER.value, subcommand=False),
             "vq": dict(permission=const.Permission.USER.value, subcommand=False),
             "ytinfo": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -143,6 +144,24 @@ class VoiceCommands(BaseCmd):
             else:
                 # Process YT video
                 await _VoiceInternals.push_video(message, yt_url, silent)
+
+    @staticmethod
+    async def _vqfpush(message, command, silent=False):
+        """Find and push YT video
+    Usage: !vqfpush <search query>"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        query = ' '.join(command[2:])
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+            }],
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            video_info = ydl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
+        await _VoiceInternals.push_video(message, video_info['webpage_url'], silent)
 
     @staticmethod
     async def _vqskip(message, command, silent=False):

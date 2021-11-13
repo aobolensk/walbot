@@ -594,6 +594,9 @@
 **vq**: List voice channel queue \
     Usage: !vq
 
+**vqfpush**: Find and push YT video \
+    Usage: !vqfpush &lt;search query&gt;
+
 **vqpush**: Push YT video or playlist to queue in voice channel \
     Usage: !vqpush &lt;youtube_url&gt;
 
