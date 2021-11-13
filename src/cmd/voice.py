@@ -197,8 +197,8 @@ class VoiceCommands(BaseCmd):
     Usage: !vqcurrent"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        if bc.current_song is not None:
-            video_url = f"https://youtu.be/{bc.current_song.id}"
+        if bc.current_video is not None:
+            video_url = f"https://youtu.be/{bc.current_video.id}"
             await _VoiceInternals.print_yt_info(message, video_url, silent)
         else:
             await Msg.response(message, "🔊 No current song", silent)

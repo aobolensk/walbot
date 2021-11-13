@@ -37,4 +37,4 @@ class BotController:
         self.plugin_manager = PluginManager()
         self.message_buffer = MessageBuffer()
         self.instance_name = ""
-        self.current_song = None
+        self.current_video = None

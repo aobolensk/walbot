@@ -22,7 +22,7 @@ class VoiceRoutine:
     def __init__(self, bot_cache) -> None:
         self.bot_cache = bot_cache
         self._voice_client_queue_disconnect_counter = 0
-        bc.current_song = None
+        bc.current_video = None
 
     async def _update_autoupdate_flag(self, current_autoupdate_flag: bool) -> None:
         if current_autoupdate_flag != self.bot_cache.get_state()["do_not_update"]:
@@ -35,8 +35,8 @@ class VoiceRoutine:
         @Mail.send_exception_info_to_admin_emails_async
         async def iteration():
             if bc.voice_client is not None and not bc.voice_client_queue and not bc.voice_client.is_playing():
-                if bc.current_song is not None:
-                    bc.current_song = None
+                if bc.current_video is not None:
+                    bc.current_video = None
                 self._voice_client_queue_disconnect_counter += 1
                 if self._voice_client_queue_disconnect_counter >= 10:
                     log.debug("Queue is empty. Disconnecting...")
@@ -58,7 +58,7 @@ class VoiceRoutine:
                 log.debug("Connecting voice channel (1/2)...")
             if not bc.voice_client.is_playing():
                 entry = bc.voice_client_queue.popleft()
-                bc.current_song = entry
+                bc.current_video = entry
                 try:
                     log.debug(f"Started to play {entry.file_name}")
                     bc.voice_client.play(discord.FFmpegPCMAudio(entry.file_name))
