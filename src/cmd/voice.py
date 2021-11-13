@@ -52,6 +52,33 @@ class _VoiceInternals:
             f"at position #{len(bc.voice_client_queue)}",
             silent)
 
+    @staticmethod
+    async def print_yt_info(message, video_url, silent, full_description=False):
+        r = const.YT_VIDEO_REGEX.match(video_url)
+        if r is None:
+            return null(await Msg.response(message, "Please, provide valid YT link", silent))
+        ydl_opts = {
+        }
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(video_url, download=False)
+        except Exception as e:
+            return null(await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent))
+        ud = info['upload_date']
+        e = DiscordEmbed()
+        e.title(info['title'])
+        e.title_url(info['webpage_url'])
+        e.description(info['description'][:2048] if full_description else '')
+        e.color(0xcc1818)
+        e.thumbnail(info['thumbnail'])
+        e.add_field("Views", str(info['view_count']), True)
+        e.add_field("Likes", str(info['like_count']), True)
+        e.add_field("Dislikes", str(info['dislike_count']), True)
+        e.add_field("Channel", f"[{info['uploader']}]({info['uploader_url']})", True)
+        e.add_field("Uploaded", f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", True)
+        e.add_field("Duration", f"{datetime.timedelta(seconds=info['duration'])}", True)
+        await Msg.response(message, None, silent, embed=e.get())
+
 
 class VoiceCommands(BaseCmd):
     def bind(self):
@@ -60,6 +87,7 @@ class VoiceCommands(BaseCmd):
             "vleave": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqpush": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqfpush": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vqcurrent": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqskip": dict(permission=const.Permission.USER.value, subcommand=False),
             "vq": dict(permission=const.Permission.USER.value, subcommand=False),
             "ytinfo": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -164,6 +192,18 @@ class VoiceCommands(BaseCmd):
         await _VoiceInternals.push_video(message, video_info['webpage_url'], silent)
 
     @staticmethod
+    async def _vqcurrent(message, command, silent=False):
+        """Show current video in queue
+    Usage: !vqcurrent"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        if bc.current_song is not None:
+            video_url = f"https://youtu.be/{bc.current_song.id}"
+            await _VoiceInternals.print_yt_info(message, video_url, silent)
+        else:
+            await Msg.response(message, "🔊 No current song", silent)
+
+    @staticmethod
     async def _vqskip(message, command, silent=False):
         """Skip current track in voice queue
     Usage: !vqskip"""
@@ -210,27 +250,4 @@ class VoiceCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         video_url = command[1]
-        r = const.YT_VIDEO_REGEX.match(video_url)
-        if r is None:
-            return null(await Msg.response(message, "Please, provide valid YT link", silent))
-        ydl_opts = {
-        }
-        try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(video_url, download=False)
-        except Exception as e:
-            return null(await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent))
-        ud = info['upload_date']
-        e = DiscordEmbed()
-        e.title(info['title'])
-        e.title_url(info['webpage_url'])
-        e.description(info['description'][:2048] if len(command) > 2 and command[2] == "-f" else "")
-        e.color(0xcc1818)
-        e.thumbnail(info['thumbnail'])
-        e.add_field("Views", str(info['view_count']), True)
-        e.add_field("Likes", str(info['like_count']), True)
-        e.add_field("Dislikes", str(info['dislike_count']), True)
-        e.add_field("Channel", f"[{info['uploader']}]({info['uploader_url']})", True)
-        e.add_field("Uploaded", f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", True)
-        e.add_field("Duration", f"{datetime.timedelta(seconds=info['duration'])}", True)
-        await Msg.response(message, None, silent, embed=e.get())
+        await _VoiceInternals.print_yt_info(message, video_url, silent, full_description=command[2] == "-f")

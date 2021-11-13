@@ -594,6 +594,9 @@
 **vq**: List voice channel queue \
     Usage: !vq
 
+**vqcurrent**: Show current video in queue \
+    Usage: !vqcurrent
+
 **vqfpush**: Find and push YT video \
     Usage: !vqfpush &lt;search query&gt;
 
