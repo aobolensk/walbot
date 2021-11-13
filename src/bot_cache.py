@@ -27,20 +27,21 @@ class BotCache:
             self._state[key] = value
 
     def parse(self) -> Optional[Dict]:
-        if os.path.exists(self.path):
-            cache = None
-            for _ in range(10):
-                try:
-                    with open(self.path, 'r') as f:
-                        cache = json.load(f)
-                    if cache is not None:
-                        if "pid" not in cache or not psutil.pid_exists(int(cache["pid"])):
-                            log.warning("Could validate pid from .bot_cache")
-                            os.remove(self.path)
-                            return
-                        return cache
-                except json.decoder.JSONDecodeError:
-                    time.sleep(0.5)
+        if not os.path.exists(self.path):
+            return
+        cache = None
+        for _ in range(10):
+            try:
+                with open(self.path, 'r') as f:
+                    cache = json.load(f)
+                if cache is not None:
+                    if "pid" not in cache or not psutil.pid_exists(int(cache["pid"])):
+                        log.warning("Could validate pid from .bot_cache")
+                        os.remove(self.path)
+                        return
+                    return cache
+            except json.decoder.JSONDecodeError:
+                time.sleep(0.5)
 
     def dump_to_file(self) -> None:
         with open(self.path, 'w') as f:
