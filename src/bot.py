@@ -5,8 +5,8 @@ import itertools
 import os
 import random
 import re
-import signal
 import shutil
+import signal
 import subprocess
 import sys
 import time
