@@ -70,7 +70,10 @@ class BotInfo:
         res["discord.py"] = importlib.import_module("discord").__version__
         res["numpy"] = importlib.import_module("numpy").__version__
         res["requests"] = importlib.import_module("requests").__version__
-        res["numba"] = importlib.import_module("numba").__version__
+        try:
+            res["numba"] = importlib.import_module("numba").__version__
+        except ImportError:
+            res["numba"] = "N/A"
         res["psutil"] = importlib.import_module("psutil").__version__
         res["dateutil"] = importlib.import_module("dateutil").__version__
         res["GitPython"] = importlib.import_module("git").__version__
