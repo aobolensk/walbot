@@ -250,4 +250,5 @@ class VoiceCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         video_url = command[1]
-        await _VoiceInternals.print_yt_info(message, video_url, silent, full_description=command[2] == "-f")
+        await _VoiceInternals.print_yt_info(
+            message, video_url, silent, full_description=len(command) > 2 and command[2] == "-f")
