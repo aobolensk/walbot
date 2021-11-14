@@ -9,6 +9,7 @@
 * [Module: quote](#module-quote): Interaction with WalBot quote database
 * [Module: reaction](#module-reaction): Management of bot reactions to user messages
 * [Module: reminder](#module-reminder): WalBot reminders
+* [Module: role](#module-role): Markov model commands
 * [Module: string](#module-string): Helper functions for working with strings
 * [Module: timer](#module-timer): Timer and stopwatch
 * [Module: voice](#module-voice): Connection to voice channel
@@ -38,9 +39,6 @@
 
 **addimg**: Add image for !img command \
     Example: !addimg name url
-
-**addrole**: Assign a role to the user \
-    Usage: !addrole @user role_name
 
 **avatar**: Change bot avatar \
     Example: !avatar &lt;image&gt; \
@@ -75,9 +73,6 @@
 
 **delimg**: Delete image for !img command \
     Example: !delimg name
-
-**delrole**: Unassign a role from the user \
-    Usage: !delrole @user role_name
 
 **demojify**: Demojify text \
     Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
@@ -476,6 +471,14 @@
         !updreminder 0 in 1w5d10h5m Test reminder \
         !updreminder 0 in 1w Test reminder 2 \
         !updreminder 0 in 5h10m Test reminder 3
+
+# Module: role
+
+**addrole**: Assign a role to the user \
+    Usage: !addrole @user role_name
+
+**delrole**: Unassign a role from the user \
+    Usage: !delrole @user role_name
 
 # Module: string
 
