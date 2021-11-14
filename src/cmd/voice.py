@@ -20,6 +20,7 @@ from src.voice import VoiceQueueEntry
 class _VoiceInternals:
     @staticmethod
     async def push_video(message, yt_video_url, silent):
+        """Push video by its URL to voice queue"""
         r = const.YT_VIDEO_REGEX.match(yt_video_url)
         if r is None:
             return
@@ -54,6 +55,7 @@ class _VoiceInternals:
 
     @staticmethod
     async def print_yt_info(message, video_url, silent, full_description=False):
+        """Print YT video info in embed"""
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
             return null(await Msg.response(message, "Please, provide valid YT link", silent))
