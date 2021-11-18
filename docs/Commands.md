@@ -256,11 +256,19 @@
 **addmarkovfilter**: Add regular expression filter for Markov model \
     Example: !addmarkovfilter regex
 
+**addmarkovignoredprefix**: Add message prefix that should be ignored by Markov model \
+    Example: !addmarkovignoredprefix $ \
+    *This command can be used as subcommand*
+
 **delmarkov**: Delete all words in Markov model by regex \
     Example: !delmarkov hello
 
 **delmarkovfilter**: Delete regular expression filter for Markov model by index \
     Example: !delmarkovfilter 0 \
+    *This command can be used as subcommand*
+
+**delmarkovignoredprefix**: Delete message prefix that should be ignored by Markov model by its index \
+    Example: !delquote 0 \
     *This command can be used as subcommand*
 
 **dropmarkov**: Drop Markov database \
@@ -282,6 +290,10 @@
 
 **listmarkovfilter**: Print list of regular expression filters for Markov model \
     Example: !listmarkovfilter \
+    *This command can be used as subcommand*
+
+**listmarkovignoredprefix**: List all prefixes that should be ignored by Markov model \
+    Example: !listmarkovignoredprefix \
     *This command can be used as subcommand*
 
 **markov**: Generate message using Markov chain \

@@ -49,6 +49,7 @@ class Markov:
         self.max_chars = 2000
         self.max_words = 500
         self.chains_generated = 0
+        self.ignored_prefixes = dict()
 
     def add_string(self, text):
         if len(text) < self.min_chars or len(text) > self.max_chars:
