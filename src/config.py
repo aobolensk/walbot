@@ -254,6 +254,7 @@ class Config:
             "quote": 1,
             "timer": 1,
             "stopwatch": 1,
+            "markov_ignored_prefix": 1,
         }
         self.saving = {
             "backup": {

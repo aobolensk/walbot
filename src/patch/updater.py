@@ -219,6 +219,9 @@ class Updater:
                 reminder.__dict__["notes"] = ""
             self._bump_version(config, "0.0.35")
         if config.version == "0.0.35":
+            config.ids["markov_ignored_prefix"] = 1
+            self._bump_version(config, "0.0.36")
+        if config.version == "0.0.36":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
@@ -244,6 +247,9 @@ class Updater:
                 config.__dict__["filters"][i] = re.compile(config.filters[i].pattern, re.DOTALL)
             self._bump_version(config, "0.0.6")
         if config.version == "0.0.6":
+            config.__dict__["ignored_prefixes"] = dict()
+            self._bump_version(config, "0.0.7")
+        if config.version == "0.0.7":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

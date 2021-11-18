@@ -307,7 +307,13 @@ class WalBot(discord.Client):
                 result = await self.config.disable_pings_in_response(message, bc.markov.generate())
                 await message.channel.send(message.author.mention + ' ' + result)
         elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
-            bc.markov.add_string(message.content)
+            needs_to_be_added = True
+            for ignored_prefix in bc.markov.ignored_prefixes.values():
+                if message.content.startswith(ignored_prefix):
+                    needs_to_be_added = False
+                    break
+            if needs_to_be_added:
+                bc.markov.add_string(message.content)
         if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
             responses_count = 0
             for response in self.config.responses.values():
