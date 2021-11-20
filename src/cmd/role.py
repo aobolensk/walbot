@@ -13,6 +13,7 @@ class MarkovCommands(BaseCmd):
     def bind(self):
         bc.commands.register_commands(__name__, self.get_classname(), {
             "addrole": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listrole": dict(permission=const.Permission.USER.value, subcommand=False),
             "delrole": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
 
@@ -37,6 +38,21 @@ class MarkovCommands(BaseCmd):
                 Msg.response(
                     message, f"Role '{role_name}' could not be assigned to user '{user}'. ERROR: '{e}'", silent))
         await Msg.response(message, f"Successfully assigned role '{role_name}' to user '{user}'", silent)
+
+    @staticmethod
+    async def _listrole(message, command, silent=False):
+        """Print list of all roles available on this server
+    Usage: !listrole"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        roles = await message.guild.fetch_roles()
+        result = ""
+        for role in roles:
+            result += f"{role.name}\n"
+        if result:
+            await Msg.response(message, await bc.config.disable_pings_in_response(message, result, force=True), silent)
+        else:
+            await Msg.response(message, "No roles available", silent)
 
     @staticmethod
     async def _delrole(message, command, silent=False):

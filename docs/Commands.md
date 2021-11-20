@@ -492,6 +492,9 @@
 **delrole**: Unassign a role from the user \
     Usage: !delrole @user role_name
 
+**listrole**: Print list of all roles available on this server \
+    Usage: !listrole
+
 # Module: string
 
 **countchars**: Calculate length of the message \
