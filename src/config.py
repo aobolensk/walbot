@@ -235,7 +235,7 @@ class User:
 
 class Config:
     def __init__(self):
-        commands = __import__("commands", globals(), locals(), level=1)
+        commands = importlib.import_module("src.commands")
         self.commands = commands.Commands()
         self.commands.update()
         self.version = const.CONFIG_VERSION
