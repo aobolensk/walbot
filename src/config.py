@@ -329,8 +329,8 @@ class Config:
             except Exception:
                 log.error("Saving of Markov module data is failed", exc_info=True)
 
-    async def disable_pings_in_response(self, message, response):
-        if not self.guilds[message.channel.guild.id].markov_pings:
+    async def disable_pings_in_response(self, message, response, force=False):
+        if force or not self.guilds[message.channel.guild.id].markov_pings:
             while True:
                 r = const.USER_ID_REGEX.search(response)
                 if r is None:
