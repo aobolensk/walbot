@@ -101,7 +101,7 @@ class BotInfo:
         if verbosity >= const.Verbosity.VERBOSE:
             result += (
                 f"Deployment time: {bc.deployment_time}\n"
-                f"Commit name: {bc.info.commit_name}\n"
+                f"Commit name: `{bc.info.commit_name}`\n"
                 f"Branch name: {bc.info.branch_name}\n"
                 f"Python interpreter: {platform.python_implementation()} {platform.python_version()} "
                 f"({', '.join(platform.python_build())}) [{platform.python_compiler()}]\n"
