@@ -39,7 +39,8 @@ class _VoiceInternals:
                 video_info = ydl.extract_info(yt_video_url, download=False)
                 if not os.path.exists(output_file_name):
                     log.debug(f"Downloading YT video {yt_video_url} ...")
-                    ydl.download([yt_video_url])
+                    loop = asyncio.get_event_loop()
+                    await loop.run_in_executor(None, ydl.download, [yt_video_url])
                     log.debug(f"Downloaded {yt_video_url}")
                 else:
                     log.debug(f"Found in cache: {yt_video_url}")
