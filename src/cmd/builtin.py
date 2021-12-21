@@ -255,7 +255,8 @@ class BuiltinCommands(BaseCmd):
         flags = ' '.join([str(flag[0]) for flag in info.public_flags if flag[1]])
         e = DiscordEmbed()
         e.title(title)
-        e.thumbnail(str(info.avatar_url))
+        if info.avatar:
+            e.thumbnail(str(info.avatar))
         e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
         e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
         e.add_field("Roles", roles, True)
@@ -1297,8 +1298,8 @@ class BuiltinCommands(BaseCmd):
         g = message.guild
         e = DiscordEmbed()
         e.title(g.name)
-        if g.icon_url:
-            e.thumbnail(str(g.icon_url))
+        if g.icon:
+            e.thumbnail(str(g.icon))
         e.add_field("Members", str(g.member_count), True)
         e.add_field("Region", str(g.region), True)
         e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
