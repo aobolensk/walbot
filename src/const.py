@@ -9,6 +9,8 @@ def _extract_discord_lib_version_from_requirements_txt():
         for line in f:
             if line.startswith("discord.py[voice]=="):
                 return line.split('==')[1].strip()
+            if line.startswith("git+git://github.com/Pycord-Development/pycord"):
+                return "2.0.0a"
     return "<unknown>"
 
 

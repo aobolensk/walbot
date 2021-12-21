@@ -1,5 +1,5 @@
 numpy==1.21.4
-discord.py[voice]==1.7.3
+git+git://github.com/Pycord-Development/pycord@1d65214
 requests==2.26.0
 numba==0.53.1;python_version<"3.10"
 psutil==5.8.0
