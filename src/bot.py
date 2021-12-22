@@ -300,13 +300,16 @@ class WalBot(discord.Client):
             await message.channel.send(m[0].content)
 
     async def _process_regular_message(self, message: discord.Message) -> None:
+        channel_id = message.channel.id
+        if isinstance(message.channel, discord.Thread):  # Inherit parent channel settings for threads
+            channel_id = message.channel.parent_id
         if (self.user.mentioned_in(message) or self.user.id in [
                 member.id for member in list(
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
-            if message.channel.id in self.config.guilds[message.channel.guild.id].markov_responses_whitelist:
+            if channel_id in self.config.guilds[message.channel.guild.id].markov_responses_whitelist:
                 result = await self.config.disable_pings_in_response(message, bc.markov.generate())
                 await message.channel.send(message.author.mention + ' ' + result)
-        elif message.channel.id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
+        elif channel_id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
             needs_to_be_added = True
             for ignored_prefix in bc.markov.ignored_prefixes.values():
                 if message.content.startswith(ignored_prefix):
@@ -314,7 +317,7 @@ class WalBot(discord.Client):
                     break
             if needs_to_be_added:
                 bc.markov.add_string(message.content)
-        if message.channel.id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+        if channel_id in self.config.guilds[message.channel.guild.id].responses_whitelist:
             responses_count = 0
             for response in self.config.responses.values():
                 if responses_count >= const.MAX_BOT_RESPONSES_ON_ONE_MESSAGE:
@@ -324,7 +327,7 @@ class WalBot(discord.Client):
                         response.text, message, self.config.users[message.author.id])
                     await Msg.reply(message, text, False)
                     responses_count += 1
-        if message.channel.id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+        if channel_id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
             for reaction in self.config.reactions.values():
                 if re.search(reaction.regex, message.content):
                     log.info("Added reaction " + reaction.emoji)
