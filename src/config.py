@@ -8,6 +8,7 @@ import sys
 import threading
 import zipfile
 
+import discord
 import yaml
 
 from src import const
@@ -118,7 +119,10 @@ class Command:
         if len(inspect.stack(0)) >= const.MAX_SUBCOMMAND_DEPTH:
             return null(await message.channel.send("ERROR: Maximum subcommand depth is reached!"))
         log.debug(f"Processing command: {message.content}")
-        if not self.is_available(message.channel.id):
+        channel_id = message.channel.id
+        if isinstance(message.channel, discord.Thread):  # Inherit command permissions for threads
+            channel_id = message.channel.parent_id
+        if not self.is_available(channel_id):
             return null(await message.channel.send(f"Command '{command[0]}' is not available in this channel"))
         if user is not None and self.permission > user.permission_level:
             return null(await message.channel.send(f"You don't have permission to call command '{command[0]}'"))
