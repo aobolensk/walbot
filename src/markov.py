@@ -10,7 +10,7 @@ from src.log import log
 
 
 class MarkovNode:
-    def __init__(self, node_type: 'NodeType', word: str = None):
+    def __init__(self, node_type, word: str = None):
         self.type = node_type
         self.word = word
         self.next = {None: 0}
