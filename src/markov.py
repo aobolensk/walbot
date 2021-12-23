@@ -1,5 +1,6 @@
 import random
 import re
+from typing import List, Optional, Set
 
 import yaml
 
@@ -9,25 +10,25 @@ from src.log import log
 
 
 class MarkovNode:
-    def __init__(self, node_type, word=None):
+    def __init__(self, node_type: 'NodeType', word: str = None):
         self.type = node_type
         self.word = word
         self.next = {None: 0}
         self.total_next = 0
 
-    def add_next(self, word):
+    def add_next(self, word: str) -> None:
         if word in self.next.keys():
             self.next[word] += 1
         else:
             self.next[word] = 1
         self.total_next += 1
 
-    def del_next(self, word):
+    def del_next(self, word: str) -> None:
         if word in self.next.keys():
             self.total_next -= self.next[word]
             del self.next[word]
 
-    def get_next(self, word):
+    def get_next(self, word: str) -> str:
         if word is not None:
             return bc.markov.model[word]
         return bc.markov.end_node
@@ -51,7 +52,7 @@ class Markov:
         self.chains_generated = 0
         self.ignored_prefixes = dict()
 
-    def add_string(self, text):
+    def add_string(self, text: str) -> None:
         if len(text) < self.min_chars or len(text) > self.max_chars:
             return
         words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
@@ -67,7 +68,7 @@ class Markov:
         if current_node != self.model[""]:
             current_node.add_next(None)
 
-    def del_words(self, regex):
+    def del_words(self, regex: str) -> List[str]:
         removed = []
         for word in [word for word in self.model if re.search(regex, word)]:
             removed.append(self.model[word].word)
@@ -77,15 +78,15 @@ class Markov:
                 node.del_next(word)
         return removed
 
-    def find_words(self, regex):
+    def find_words(self, regex: str) -> List[str]:
         return [self.model[word].word for word in self.model if re.search(regex, word)]
 
-    def get_next_words_list(self, word):
+    def get_next_words_list(self, word: str) -> List[str]:
         if word not in self.model.keys():
             return []
         return sorted(self.model[word].next.items(), key=lambda x: -x[1])
 
-    def generate(self, word=""):
+    def generate(self, word: str = "") -> str:
         if word not in self.model.keys():
             return "<Empty message was generated>"
         current_node = self.model[word]
@@ -112,7 +113,7 @@ class Markov:
         self.chains_generated += 1
         return result
 
-    def collect_garbage(self, node=None):
+    def collect_garbage(self, node: Optional[MarkovNode] = None) -> Set[str]:
         if not node:
             node = self.model[""]
         was = {node}
@@ -129,12 +130,12 @@ class Markov:
             return result
         return was
 
-    def serialize(self, filename, dumper=yaml.Dumper):
+    def serialize(self, filename: str, dumper: type = yaml.Dumper) -> None:
         with open(filename, 'wb') as markov_file:
             markov_file.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))
         log.info("Saving of Markov module data is finished")
 
-    def check(self):
+    def check(self) -> bool:
         for node in self.model.values():
             if sum(node.next.values()) != node.total_next:
                 node.total_next = sum(node.next.values())
