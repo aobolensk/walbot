@@ -19,6 +19,7 @@ from src import const
 from src.algorithms import levenshtein_distance
 from src.bc import DoNotUpdateFlag
 from src.bot_cache import BotCache
+from src.bot_instance import BotInstance
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
 from src.embed import DiscordEmbed
 from src.emoji import get_clock_emoji
@@ -378,146 +379,147 @@ class WalBot(discord.Client):
         log.info(f"<{payload.message_id}> (delete)")
 
 
-def start(args, main_bot=True):
-    # Check whether bot is already running
-    bot_cache = BotCache(main_bot).parse()
-    if bot_cache is not None:
-        pid = bot_cache["pid"]
-        if pid is not None and psutil.pid_exists(pid):
-            return log.error("Bot is already running!")
-    # Some variable initializations
-    config = None
-    secret_config = None
-    bc.restart_flag = False
-    bc.args = args
-    # Handle --nohup flag
-    if sys.platform in ("linux", "darwin") and args.nohup:
-        fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
-        log.info(f"Output is redirected to {const.NOHUP_FILE_PATH}")
-        os.dup2(fd, sys.stdout.fileno())
-        os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
-        os.close(fd)
-        signal.signal(signal.SIGHUP, signal.SIG_IGN)
-    # Selecting YAML parser
-    bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
-    # Saving application pd in order to safely stop it later
-    BotCache(main_bot).dump_to_file()
-    # Executing patch tool if it is necessary
-    if args.patch:
-        cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
-        log.info("Executing patch tool: " + cmd)
-        subprocess.call(cmd)
-    # Read configuration files
-    config = Util.read_config_file(const.CONFIG_PATH)
-    if config is None:
-        config = Config()
-    secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
-    if secret_config is None:
-        secret_config = SecretConfig()
-    bc.markov = Util.read_config_file(const.MARKOV_PATH)
-    if bc.markov is None and os.path.isdir("backup"):
-        # Check available backups
-        markov_backups = sorted([x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
-        if markov_backups:
-            # Restore Markov model from backup
-            with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
-                zip_ref.extractall(".")
-            log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
-            shutil.move(markov_backups[-1][:-4], "markov.yaml")
-            bc.markov = Util.read_config_file(const.MARKOV_PATH)
-            if bc.markov is None:
-                bc.markov = Markov()
-                log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
-    if bc.markov is None:
-        bc.markov = Markov()
-        log.info("Created empty Markov model")
-    # Check config versions
-    ok = True
-    ok &= Util.check_version(
-        "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
-        solutions=[
-            "execute: python -m pip install -r requirements.txt",
-        ])
-    ok &= Util.check_version(
-        "Config", config.version, const.CONFIG_VERSION,
-        solutions=[
-            "run patch tool",
-            "remove config.yaml (settings will be lost!)",
-        ])
-    ok &= Util.check_version(
-        "Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
-        solutions=[
-            "run patch tool",
-            "remove markov.yaml (Markov model will be lost!)",
-        ])
-    ok &= Util.check_version(
-        "Secret config", secret_config.version, const.SECRET_CONFIG_VERSION,
-        solutions=[
-            "run patch tool",
-            "remove secret.yaml (your Discord authentication token will be lost!)",
-        ])
-    if main_bot and not ok:
-        sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
-    config.commands.update()
-    # Checking authentication token
-    if secret_config.token is None:
-        secret_config = SecretConfig()
-        if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
-            secret_config.token = input("Enter your token: ")
-    # Constructing bot instance
-    if main_bot:
-        intents = discord.Intents.all()
-        walbot = WalBot(args.name, config, secret_config, intents=intents)
-    else:
-        walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
-    # Starting the bot
-    try:
-        walbot.run(secret_config.token)
-    except discord.errors.PrivilegedIntentsRequired:
-        log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
-    # After stopping the bot
-    log.info("Bot is disconnected!")
-    if main_bot:
-        config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
-    BotCache(main_bot).remove()
-    if bc.restart_flag:
-        cmd = f"'{sys.executable}' '{os.path.dirname(os.path.dirname(__file__)) + '/walbot.py'}' start"
-        log.info("Calling: " + cmd)
-        if sys.platform in ("linux", "darwin"):
-            fork = os.fork()
-            if fork == 0:
-                subprocess.call(cmd)
-            elif fork > 0:
-                log.info("Stopping current instance of the bot")
-                sys.exit(const.ExitStatus.NO_ERROR)
-        else:
+class DiscordBotInstance(BotInstance):
+    def start(self, args, main_bot=True):
+        # Check whether bot is already running
+        bot_cache = BotCache(main_bot).parse()
+        if bot_cache is not None:
+            pid = bot_cache["pid"]
+            if pid is not None and psutil.pid_exists(pid):
+                return log.error("Bot is already running!")
+        # Some variable initializations
+        config = None
+        secret_config = None
+        bc.restart_flag = False
+        bc.args = args
+        # Handle --nohup flag
+        if sys.platform in ("linux", "darwin") and args.nohup:
+            fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
+            log.info(f"Output is redirected to {const.NOHUP_FILE_PATH}")
+            os.dup2(fd, sys.stdout.fileno())
+            os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
+            os.close(fd)
+            signal.signal(signal.SIGHUP, signal.SIG_IGN)
+        # Selecting YAML parser
+        bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
+        # Saving application pd in order to safely stop it later
+        BotCache(main_bot).dump_to_file()
+        # Executing patch tool if it is necessary
+        if args.patch:
+            cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
+            log.info("Executing patch tool: " + cmd)
             subprocess.call(cmd)
-
-
-def stop(_, main_bot=True):
-    if not BotCache(main_bot).exists():
-        return log.error("Could not stop the bot (cache file does not exist)")
-    bot_cache = BotCache(main_bot).parse()
-    pid = bot_cache["pid"]
-    if pid is None:
-        return log.error("Could not stop the bot (cache file does not contain pid)")
-    if psutil.pid_exists(pid):
-        if sys.platform == "win32":
-            # Reference to the original solution:
-            # https://stackoverflow.com/a/64357453
-            import ctypes
-
-            kernel = ctypes.windll.kernel32
-            kernel.FreeConsole()
-            kernel.AttachConsole(pid)
-            kernel.SetConsoleCtrlHandler(None, 1)
-            kernel.GenerateConsoleCtrlEvent(0, 0)
+        # Read configuration files
+        config = Util.read_config_file(const.CONFIG_PATH)
+        if config is None:
+            config = Config()
+        secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
+        if secret_config is None:
+            secret_config = SecretConfig()
+        bc.markov = Util.read_config_file(const.MARKOV_PATH)
+        if bc.markov is None and os.path.isdir("backup"):
+            # Check available backups
+            markov_backups = sorted(
+                [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
+            if markov_backups:
+                # Restore Markov model from backup
+                with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
+                    zip_ref.extractall(".")
+                log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
+                shutil.move(markov_backups[-1][:-4], "markov.yaml")
+                bc.markov = Util.read_config_file(const.MARKOV_PATH)
+                if bc.markov is None:
+                    bc.markov = Markov()
+                    log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
+        if bc.markov is None:
+            bc.markov = Markov()
+            log.info("Created empty Markov model")
+        # Check config versions
+        ok = True
+        ok &= Util.check_version(
+            "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
+            solutions=[
+                "execute: python -m pip install -r requirements.txt",
+            ])
+        ok &= Util.check_version(
+            "Config", config.version, const.CONFIG_VERSION,
+            solutions=[
+                "run patch tool",
+                "remove config.yaml (settings will be lost!)",
+            ])
+        ok &= Util.check_version(
+            "Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
+            solutions=[
+                "run patch tool",
+                "remove markov.yaml (Markov model will be lost!)",
+            ])
+        ok &= Util.check_version(
+            "Secret config", secret_config.version, const.SECRET_CONFIG_VERSION,
+            solutions=[
+                "run patch tool",
+                "remove secret.yaml (your Discord authentication token will be lost!)",
+            ])
+        if main_bot and not ok:
+            sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+        config.commands.update()
+        # Checking authentication token
+        if secret_config.token is None:
+            secret_config = SecretConfig()
+            if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
+                secret_config.token = input("Enter your token: ")
+        # Constructing bot instance
+        if main_bot:
+            intents = discord.Intents.all()
+            walbot = WalBot(args.name, config, secret_config, intents=intents)
         else:
-            os.kill(pid, signal.SIGINT)
-        while psutil.pid_exists(pid):
-            log.debug("Bot is still running. Please, wait...")
-            time.sleep(0.5)
-        log.info("Bot is stopped!")
-    else:
-        log.error("Could not stop the bot (bot is not running)")
+            walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
+        # Starting the bot
+        try:
+            walbot.run(secret_config.token)
+        except discord.errors.PrivilegedIntentsRequired:
+            log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
+        # After stopping the bot
+        log.info("Bot is disconnected!")
+        if main_bot:
+            config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         BotCache(main_bot).remove()
+        if bc.restart_flag:
+            cmd = f"'{sys.executable}' '{os.path.dirname(os.path.dirname(__file__)) + '/walbot.py'}' start"
+            log.info("Calling: " + cmd)
+            if sys.platform in ("linux", "darwin"):
+                fork = os.fork()
+                if fork == 0:
+                    subprocess.call(cmd)
+                elif fork > 0:
+                    log.info("Stopping current instance of the bot")
+                    sys.exit(const.ExitStatus.NO_ERROR)
+            else:
+                subprocess.call(cmd)
+
+    def stop(self, _, main_bot=True):
+        if not BotCache(main_bot).exists():
+            return log.error("Could not stop the bot (cache file does not exist)")
+        bot_cache = BotCache(main_bot).parse()
+        pid = bot_cache["pid"]
+        if pid is None:
+            return log.error("Could not stop the bot (cache file does not contain pid)")
+        if psutil.pid_exists(pid):
+            if sys.platform == "win32":
+                # Reference to the original solution:
+                # https://stackoverflow.com/a/64357453
+                import ctypes
+
+                kernel = ctypes.windll.kernel32
+                kernel.FreeConsole()
+                kernel.AttachConsole(pid)
+                kernel.SetConsoleCtrlHandler(None, 1)
+                kernel.GenerateConsoleCtrlEvent(0, 0)
+            else:
+                os.kill(pid, signal.SIGINT)
+            while psutil.pid_exists(pid):
+                log.debug("Bot is still running. Please, wait...")
+                time.sleep(0.5)
+            log.info("Bot is stopped!")
+        else:
+            log.error("Could not stop the bot (bot is not running)")
+            BotCache(main_bot).remove()

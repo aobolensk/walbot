@@ -81,6 +81,7 @@ class Launcher:
         # Parse args
         self.args = self._parser.parse_args()
         self._list_env_var_flags()
+        self.bot = importlib.import_module("src.bot").DiscordBotInstance()
         if self.args.action is None:
             self._parser.print_help()
         else:
@@ -90,33 +91,29 @@ class Launcher:
         """Start the bot"""
         if self.args.autoupdate:
             return self.autoupdate()
-        importlib.import_module("src.bot").start(self.args)
+        self.bot.start(self.args)
 
     def stop(self):
         """Stop the bot"""
-        importlib.import_module("src.bot").stop(self.args)
+        self.bot.stop(self.args)
 
     def restart(self):
         """Restart the bot"""
-        bot = importlib.import_module("src.bot")
-        bot.stop(self.args)
-        bot.start(self.args)
+        self.bot.stop(self.args)
+        self.bot.start(self.args)
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
-        bot = importlib.import_module("src.bot")
-        bot.stop(self.args)
-        bot.start(self.args, main_bot=False)
+        self.bot.stop(self.args)
+        self.bot.start(self.args, main_bot=False)
 
     def startmini(self):
         """Start mini-bot"""
-        bot = importlib.import_module("src.bot")
-        bot.start(self.args, main_bot=False)
+        self.bot.start(self.args, main_bot=False)
 
     def stopmini(self):
         """Stop mini-bot"""
-        bot = importlib.import_module("src.bot")
-        bot.stop(self.args, main_bot=False)
+        self.bot.stop(self.args, main_bot=False)
 
     def test(self):
         """Launch tests"""
