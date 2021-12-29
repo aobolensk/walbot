@@ -31,7 +31,7 @@ from src.markov import Markov
 from src.message import Msg
 from src.reminder import Reminder
 from src.repl import Repl
-from src.utils import Util
+from src.utils import TimeoutStatus, Util
 from src.voice import VoiceRoutine
 
 
@@ -356,9 +356,13 @@ class WalBot(discord.Client):
             "timer",
             "stopwatch",
         ):
-            await Util.run_function_with_time_limit(
+            timeout_error, _ = await Util.run_function_with_time_limit(
                 self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id]),
                 const.MAX_COMMAND_EXECUTION_TIME)
+            if command[0] not in (
+                "silent",
+            ) and timeout_error:
+                await message.channel.send(f"Command '{' '.join(command)}' took too long to execute")
         else:
             await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
 

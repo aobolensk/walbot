@@ -4,12 +4,18 @@ import os
 import subprocess
 import sys
 import tempfile
-from typing import Any
+from enum import IntEnum
+from typing import Any, Coroutine, Optional, Tuple
 
 import yaml
 
 from src.log import log
 from src.message import Msg
+
+
+class TimeoutStatus(IntEnum):
+    OK = 0
+    TIMEOUT = 1
 
 
 class Util:
@@ -24,11 +30,11 @@ class Util:
         return True
 
     @staticmethod
-    async def run_function_with_time_limit(coro, timeout):
+    async def run_function_with_time_limit(coro: Coroutine, timeout: float) -> Tuple[TimeoutStatus, Optional[Any]]:
         try:
-            return await asyncio.wait_for(coro, timeout)
+            return TimeoutStatus.OK, await asyncio.wait_for(coro, timeout)
         except asyncio.TimeoutError:
-            return None
+            return TimeoutStatus.TIMEOUT, None
 
     @staticmethod
     async def parse_int(message, string, error_message, silent):
