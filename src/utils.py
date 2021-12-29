@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 import os
 import subprocess
@@ -21,6 +22,13 @@ class Util:
             await Msg.response(message, f"Too many arguments for command '{command[0]}'", silent)
             return False
         return True
+
+    @staticmethod
+    async def run_function_with_time_limit(coro, timeout):
+        try:
+            return await asyncio.wait_for(coro, timeout)
+        except asyncio.TimeoutError:
+            return None
 
     @staticmethod
     async def parse_int(message, string, error_message, silent):

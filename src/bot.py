@@ -351,7 +351,16 @@ class WalBot(discord.Client):
                     f"Unknown command '{command[0]}', "
                     f"probably you meant '{self._suggest_similar_command(command[0])}'")
                 return
-        await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
+        if command[0] not in (
+            "poll",
+            "timer",
+            "stopwatch",
+        ):
+            await Util.run_function_with_time_limit(
+                self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id]),
+                const.MAX_COMMAND_EXECUTION_TIME)
+        else:
+            await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
 
     def _suggest_similar_command(self, unknown_command: str) -> str:
         min_dist = 100000
