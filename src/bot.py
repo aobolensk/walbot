@@ -31,7 +31,7 @@ from src.markov import Markov
 from src.message import Msg
 from src.reminder import Reminder
 from src.repl import Repl
-from src.utils import TimeoutStatus, Util
+from src.utils import Util
 from src.voice import VoiceRoutine
 
 
