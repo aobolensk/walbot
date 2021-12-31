@@ -74,6 +74,8 @@ class WalBot(discord.Client):
     def run(self, *args, **kwargs):
         # Sightly patched implementation from discord.py discord.Client (parent) class
         # Reference: https://github.com/Rapptz/discord.py/blob/master/discord/client.py
+        if sys.platform == "win32":
+            return super().run(*args, **kwargs)
         loop = self.loop
         try:
             loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
@@ -490,7 +492,7 @@ class DiscordBotInstance(BotInstance):
         # Starting the bot
         try:
             walbot.run(secret_config.token)
-        except discord.errors.PrivilegedIntentsRequired:
+        except discord.PrivilegedIntentsRequired:
             log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
         # After stopping the bot
         log.info("Bot is disconnected!")
