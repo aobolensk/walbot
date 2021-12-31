@@ -305,10 +305,7 @@ class ReminderCommands(BaseCmd):
                 outstr += "Invalid reminder indexes: "
             else:
                 outstr += "Invalid reminder index: "
-            for i in range(len(errors)):
-                outstr += str(errors[i])
-                if i != len(errors) - 1:
-                    outstr += ", "
+            outstr += ', '.join(map(str, errors))
         await Msg.response(message, outstr, silent)
 
     @staticmethod
