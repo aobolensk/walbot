@@ -299,11 +299,7 @@ class ReminderCommands(BaseCmd):
                 outstr += "Successfully deleted reminders #"
             else:
                 outstr += "Successfully deleted reminder #"
-            for i in range(len(passed)):
-                outstr += str(passed[i])
-                if i != len(passed) - 1:
-                    outstr += ", "
-            outstr += "\n"
+            outstr += ', '.join(map(str, passed)) + '\n'
         if len(errors):
             if len(errors) > 1:
                 outstr += "Invalid reminder indexes: "
