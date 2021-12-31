@@ -301,7 +301,7 @@ class ReminderCommands(BaseCmd):
                 outstr += "Successfully deleted reminder #"
             for i in range(len(passed)):
                 outstr += str(passed[i])
-                if i != len(passed)-1:
+                if i != len(passed) - 1:
                     outstr += ", "
             outstr += "\n"
         if len(errors):
@@ -311,7 +311,7 @@ class ReminderCommands(BaseCmd):
                 outstr += "Invalid reminder index: "
             for i in range(len(errors)):
                 outstr += str(errors[i])
-                if i != len(errors)-1:
+                if i != len(errors) - 1:
                     outstr += ", "
         await Msg.response(message, outstr, silent)
 
