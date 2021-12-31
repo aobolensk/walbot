@@ -277,19 +277,43 @@ class ReminderCommands(BaseCmd):
 
     @staticmethod
     async def _delreminder(message, command, silent=False):
-        """Delete reminder by index
-    Example: !delreminder 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        """Delete reminders by index
+    Example: !delreminder 0 1 2"""
+        if not await Util.check_args_count(message, command, silent, min=2):
             return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index in bc.config.reminders.keys():
-            bc.config.reminders.pop(index)
-            await Msg.response(message, "Successfully deleted reminder!", silent)
-        else:
-            await Msg.response(message, "Invalid index of reminder!", silent)
+        errors = []
+        passed = []
+        for i in range(1, len(command)):
+            index = await Util.parse_int(
+                message, command[i], f"Parameters for '{command[0]}' should be indexes of reminder", silent)
+            if index is None:
+                return
+            if index in bc.config.reminders.keys():
+                passed.append(command[i])
+                bc.config.reminders.pop(index)
+            else:
+                errors.append(command[i])
+        outstr = ""
+        if len(passed):
+            if len(passed) > 1:
+                outstr += "Successfully deleted reminders #"
+            else:
+                outstr += "Successfully deleted reminder #"
+            for i in range(len(passed)):
+                outstr += str(passed[i])
+                if i != len(passed)-1:
+                    outstr += ", "
+            outstr += "\n"
+        if len(errors):
+            if len(errors) > 1:
+                outstr += "Invalid reminder indexes: "
+            else:
+                outstr += "Invalid reminder index: "
+            for i in range(len(errors)):
+                outstr += str(errors[i])
+                if i != len(errors)-1:
+                    outstr += ", "
+        await Msg.response(message, outstr, silent)
 
     @staticmethod
     async def _remindme(message, command, silent=False):

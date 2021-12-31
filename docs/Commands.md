@@ -416,8 +416,8 @@
 **addremindernotes**: Add reminder notes \
     Example: !addremindernotes 1 Some text
 
-**delreminder**: Delete reminder by index \
-    Example: !delreminder 0
+**delreminder**: Delete reminders by index \
+    Example: !delreminder 0 1 2
 
 **listreminder**: Print list of reminders \
     Examples: \
