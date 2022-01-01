@@ -355,8 +355,9 @@ class WalBot(discord.Client):
                 return
         if command[0] not in (
             "poll",
-            "timer",
             "stopwatch",
+            "timer",
+            "vqfpush",
             "vqpush",
         ):
             timeout_error, _ = await Util.run_function_with_time_limit(
