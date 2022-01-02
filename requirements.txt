@@ -7,3 +7,4 @@ python_dateutil==2.8.2
 GitPython==3.1.24
 PyYAML==6.0
 youtube_dl==2021.12.17
+pymongo==4.0.1
