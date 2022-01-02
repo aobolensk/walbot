@@ -7,6 +7,7 @@ class FF:
 
     _feature_flag_list = [
         "WALBOT_FEATURE_NEW_CONFIG",
+        "WALBOT_FEATURE_MARKOV_MONGO",
     ]
 
     @staticmethod

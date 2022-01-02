@@ -21,13 +21,14 @@ from src.bc import DoNotUpdateFlag
 from src.bot_cache import BotCache
 from src.bot_instance import BotInstance
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
+from src.db.walbot_db import WalbotDatabase
 from src.embed import DiscordEmbed
 from src.emoji import get_clock_emoji
 from src.ff import FF
 from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
-from src.markov import Markov
+from src.markov import Markov, MarkovV2
 from src.message import Msg
 from src.reminder import Reminder
 from src.repl import Repl
@@ -314,10 +315,11 @@ class WalBot(discord.Client):
                 await message.channel.send(message.author.mention + ' ' + result)
         elif channel_id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
             needs_to_be_added = True
-            for ignored_prefix in bc.markov.ignored_prefixes.values():
-                if message.content.startswith(ignored_prefix):
-                    needs_to_be_added = False
-                    break
+            if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
+                for ignored_prefix in bc.markov.ignored_prefixes.values():
+                    if message.content.startswith(ignored_prefix):
+                        needs_to_be_added = False
+                        break
             if needs_to_be_added:
                 bc.markov.add_string(message.content)
         if channel_id in self.config.guilds[message.channel.guild.id].responses_whitelist:
@@ -409,6 +411,8 @@ class DiscordBotInstance(BotInstance):
         secret_config = None
         bc.restart_flag = False
         bc.args = args
+        if FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
+            db = WalbotDatabase()
         # Handle --nohup flag
         if sys.platform in ("linux", "darwin") and args.nohup:
             fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
@@ -433,24 +437,27 @@ class DiscordBotInstance(BotInstance):
         secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
         if secret_config is None:
             secret_config = SecretConfig()
-        bc.markov = Util.read_config_file(const.MARKOV_PATH)
-        if bc.markov is None and os.path.isdir("backup"):
-            # Check available backups
-            markov_backups = sorted(
-                [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
-            if markov_backups:
-                # Restore Markov model from backup
-                with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
-                    zip_ref.extractall(".")
-                log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
-                shutil.move(markov_backups[-1][:-4], "markov.yaml")
-                bc.markov = Util.read_config_file(const.MARKOV_PATH)
-                if bc.markov is None:
-                    bc.markov = Markov()
-                    log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
-        if bc.markov is None:
-            bc.markov = Markov()
-            log.info("Created empty Markov model")
+        if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
+            bc.markov = Util.read_config_file(const.MARKOV_PATH)
+            if bc.markov is None and os.path.isdir("backup"):
+                # Check available backups
+                markov_backups = sorted(
+                    [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
+                if markov_backups:
+                    # Restore Markov model from backup
+                    with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
+                        zip_ref.extractall(".")
+                    log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
+                    shutil.move(markov_backups[-1][:-4], "markov.yaml")
+                    bc.markov = Util.read_config_file(const.MARKOV_PATH)
+                    if bc.markov is None:
+                        bc.markov = Markov()
+                        log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
+            if bc.markov is None:
+                bc.markov = Markov()
+                log.info("Created empty Markov model")
+        else:
+            bc.markov = MarkovV2(db.markov)
         # Check config versions
         ok = True
         ok &= Util.check_version(

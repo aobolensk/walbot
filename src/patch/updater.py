@@ -7,6 +7,7 @@ import sys
 import yaml
 
 from src import const
+from src.db.walbot_db import WalbotDatabase
 from src.ff import FF
 from src.log import log
 from src.utils import Util
@@ -251,6 +252,54 @@ class Updater:
             config.__dict__["ignored_prefixes"] = dict()
             self._bump_version(config, "0.0.7")
         if config.version == "0.0.7":
+            if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
+                db = WalbotDatabase()
+
+                def preprocess_key(key: str):
+                    return key.replace("$", "<__markov_dollar>").replace(".", "<__markov_dot>")
+
+                markov_model = dict()
+                for key, value in config.model.items():
+                    if key is None or key == "":
+                        key = "__markov_null"
+                    next_list = dict()
+                    for k, v in value.next.items():
+                        if k is None:
+                            k = "__markov_terminate"
+                        next_list[preprocess_key(k)] = v
+                    markov_model[preprocess_key(key)] = {
+                        "word": value.word,
+                        "next": next_list,
+                        "total_next": value.total_next,
+                        "type": value.type,
+                    }
+                markov_ignored_prefixes = dict()
+                for key, value in config.ignored_prefixes.items():
+                    markov_ignored_prefixes[str(key)] = value
+                db.markov.insert({
+                    "chains_generated": config.chains_generated,
+                    "end_node": {
+                        "word": None,
+                        "next": {
+                            "__markov_null": 0,
+                        },
+                        "total_next": 0,
+                        "type": 2,
+                    },
+                    "filters": config.filters,
+                    "ignored_prefixes": markov_ignored_prefixes,
+                    "max_chars": config.max_chars,
+                    "max_words": config.max_words,
+                    "min_chars": config.min_chars,
+                    "min_words": config.min_words,
+                    "model": markov_model,
+                    "version": "0.1.0",
+                })
+                self._bump_version(config, "0.1.0")
+                log.warning("Markov model has been moved to MongoDB!")
+            else:
+                log.info(f"Version of {self.config_name} is up to date!")
+        if config.version == "0.1.0":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
