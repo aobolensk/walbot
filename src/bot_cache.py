@@ -1,58 +1,38 @@
-import json
-import os
-import time
-from typing import Dict, Optional
-
-import psutil
-
-from src import const
-from src.log import log
+from src.db.walbot_db import WalbotDatabase
 
 
 class BotCache:
-    _state = {
-        "pid": os.getpid(),
-        "ready": False,
-        "do_not_update": False,
-    }
-
     def get_state(self) -> dict:
+        self._state = self._db.find_one({"type": self._bot_type})
         return self._state
 
-    def __init__(self, main_bot) -> None:
-        self.path = const.BOT_CACHE_FILE_PATH if main_bot else const.MINIBOT_CACHE_FILE_PATH
+    def __init__(self, main_bot: bool) -> None:
+        self._db = WalbotDatabase().bot_cache
+        self._bot_type = "main_bot" if main_bot else "mini_bot"
 
-    def update(self, upd_dict):
+    def update(self, upd_dict: dict) -> None:
+        self.get_state()
         for key, value in upd_dict.items():
             self._state[key] = value
+        self._db.update_one(
+            {"type": self._bot_type},
+            {"$set": self._state}
+        )
+        self._state = self._db.find_one({"type": self._bot_type})
 
-    def parse(self) -> Optional[Dict]:
-        if not os.path.exists(self.path):
-            return
-        cache = None
-        for _ in range(10):
-            try:
-                with open(self.path, 'r') as f:
-                    cache = json.load(f)
-                if cache is not None:
-                    if "pid" not in cache or not psutil.pid_exists(int(cache["pid"])):
-                        log.warning("Could validate pid from .bot_cache")
-                        os.remove(self.path)
-                        return
-                    return cache
-            except json.decoder.JSONDecodeError:
-                time.sleep(0.5)
+    def parse(self) -> dict:
+        return self.get_state()
 
     def dump_to_file(self) -> None:
-        with open(self.path, 'w') as f:
-            json.dump(self._state, f)
+        pass
 
     def remove(self) -> bool:
-        try:
-            os.remove(self.path)
-            return True
-        except FileNotFoundError:
-            return False
+        self.update({
+            "ready": False,
+            "pid": None,
+            "do_not_update": False,
+        })
+        return True
 
     def exists(self) -> bool:
-        return os.path.exists(self.path)
+        return True

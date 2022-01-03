@@ -401,11 +401,12 @@ class WalBot(discord.Client):
 class DiscordBotInstance(BotInstance):
     def start(self, args, main_bot=True):
         # Check whether bot is already running
-        bot_cache = BotCache(main_bot).parse()
+        bot_cache = BotCache(main_bot)
         if bot_cache is not None:
-            pid = bot_cache["pid"]
+            pid = bot_cache.get_state()["pid"]
             if pid is not None and psutil.pid_exists(pid):
                 return log.error("Bot is already running!")
+        bot_cache.update({"pid": os.getpid()})
         # Some variable initializations
         config = None
         secret_config = None
