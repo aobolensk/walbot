@@ -1,4 +1,4 @@
-numpy==1.22.0
+numpy==1.22.1
 git+git://github.com/Pycord-Development/pycord@1d65214
 requests==2.27.1
 numba==0.53.1;python_version<"3.10"
