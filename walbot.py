@@ -19,7 +19,8 @@ def main():
     if os.path.normpath(os.getcwd()) != os.path.normpath(os.path.dirname(os.path.abspath(__file__))):
         print("Start walbot.py from directory where it is located")
         sys.exit(1)
-    importlib.import_module("src.launcher").Launcher()
+    launcher = importlib.import_module("src.launcher").Launcher()
+    launcher.launch_bot()
 
 
 if __name__ == "__main__":

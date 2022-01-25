@@ -20,7 +20,7 @@ class Launcher:
         subparsers = {
             cmd: subparsers.add_parser(
                 cmd, help=getattr(self, cmd).__doc__, formatter_class=argparse.RawTextHelpFormatter)
-            for cmd in list(filter(lambda _: not _.startswith('_'), dir(self)))
+            for cmd in list(filter(lambda _: not _.startswith('_') and not _.startswith('launch_'), dir(self)))
         }
         # Common
         for option in subparsers.keys():
@@ -80,6 +80,9 @@ class Launcher:
         self._parser = self._get_argparser()
         # Parse args
         self.args = self._parser.parse_args()
+
+    def launch_bot(self):
+        """Launch Discord bot instance"""
         self._list_env_var_flags()
         self.bot = importlib.import_module("src.bot").DiscordBotInstance()
         if self.args.action is None:
