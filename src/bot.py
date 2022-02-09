@@ -272,7 +272,7 @@ class WalBot(discord.Client):
 
     @Mail.send_exception_info_to_admin_emails_async
     async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:
-        if message.embeds != old_message.embeds:
+        if message.content == old_message.content and message.embeds != old_message.embeds:
             log.info(f"<{message.id}> (edit, embed update) {message.author} -> {message.content}")
             return
         if self.config.guilds[message.channel.guild.id].ignored:
