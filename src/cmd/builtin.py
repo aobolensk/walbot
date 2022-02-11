@@ -1238,19 +1238,23 @@ class BuiltinCommands(BaseCmd):
                     # Not recognized source
                     break
                 os.makedirs(Util.tmp_dir(), exist_ok=True)
-                with tempfile.NamedTemporaryFile(dir=Util.tmp_dir()) as temp_image_file:
-                    try:
-                        with urllib.request.urlopen(rq) as response:
-                            temp_image_file.write(response.read())
-                    except Exception as e:
-                        log.error("Image downloading failed!", exc_info=True)
-                        return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
-                    try:
-                        with open(temp_image_file.name, "rb") as temp_image_file:
-                            await bc.bot_user.edit(avatar=temp_image_file.read())
-                    except Exception as e:
-                        log.error("Changing avatar failed!", exc_info=True)
-                        return null(await Msg.response(message, f"Changing avatar failed: {e}", silent))
+                temp_image_file = tempfile.NamedTemporaryFile(dir=Util.tmp_dir(), delete=False)
+                try:
+                    with urllib.request.urlopen(rq) as response:
+                        temp_image_file.write(response.read())
+                except Exception as e:
+                    log.error("Image downloading failed!", exc_info=True)
+                    return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
+                finally:
+                    temp_image_file.close()
+                try:
+                    with open(temp_image_file.name, "rb") as temp_image_file:
+                        await bc.bot_user.edit(avatar=temp_image_file.read())
+                except Exception as e:
+                    log.error("Changing avatar failed!", exc_info=True)
+                    return null(await Msg.response(message, f"Changing avatar failed: {e}", silent))
+                finally:
+                    os.unlink(temp_image_file.name)
                 return null(await Msg.response(message, f"Successfully changed bot avatar to {image}", silent))
         min_dist = 100000
         suggestion = ""
