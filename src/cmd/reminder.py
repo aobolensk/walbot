@@ -128,6 +128,7 @@ class ReminderCommands(BaseCmd):
             "timeuntilreminder": dict(permission=const.Permission.USER.value, subcommand=True),
             "setprereminders": dict(permission=const.Permission.USER.value, subcommand=False),
             "addremindernotes": dict(permission=const.Permission.USER.value, subcommand=False),
+            "setreminderchannel": dict(permission=const.Permission.USER.value, subcommand=False),
         })
 
     @staticmethod
@@ -545,3 +546,23 @@ class ReminderCommands(BaseCmd):
         rem = bc.config.reminders[index]
         rem.notes = ' '.join(command[2:])
         await Msg.response(message, f"Set notes for reminder {index}: {rem.notes}", silent)
+
+    @staticmethod
+    async def _setreminderchannel(message, command, silent=False):
+        """Set channel where reminder will be sent
+    Example: !setreminderchannel 1 <channel_id>"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        index = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return null(await Msg.response(message, "Invalid index of reminder!", silent))
+        rem = bc.config.reminders[index]
+        channel_id = await Util.parse_int(
+            message, command[2], f"Third parameter for '{command[0]}' should be channel id", silent)
+        if channel_id is None:
+            return
+        rem.channel_id = channel_id
+        await Msg.response(message, f"Set channel id {channel_id} for reminder {index}", silent)

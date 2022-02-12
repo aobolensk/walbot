@@ -460,6 +460,9 @@
         !setprereminders 1 10 \
         !setprereminders 2 5 10 15
 
+**setreminderchannel**: Set channel where reminder will be sent \
+    Example: !setreminderchannel 1 &lt;channel_id&gt;
+
 **skipreminder**: Skip next instance of recurring (repeating) reminder \
     Example: !skipreminder 1 \
     Note: only recurring (repeating) reminders are affected by this command
