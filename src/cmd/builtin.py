@@ -187,6 +187,7 @@ class BuiltinCommands(BaseCmd):
             "code": dict(message="`@args@`", permission=const.Permission.USER.value, subcommand=True),
             "codeblock": dict(message="```\n@args@\n```", permission=const.Permission.USER.value, subcommand=True),
             "donotupdatestate": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
 
     @staticmethod
@@ -1441,3 +1442,17 @@ class BuiltinCommands(BaseCmd):
         else:
             result += "✅ No stopwatches are active\n"
         await Msg.response(message, result, silent)
+
+    @staticmethod
+    async def _disabletl(message, command, silent=False):
+        """Disable time limit for command
+    Example: !disabletl ping"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        command = command[1:]
+        if command[0] not in bc.commands.data.keys():
+            await Msg.response(message, f"Unknown command '{command[0]}'", silent)
+        else:
+            cmd = bc.commands.data[command[0]]
+            message.content = message.content.split(' ', 1)[-1]
+            await cmd.run(message, command, bc.config.users[message.author.id])

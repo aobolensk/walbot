@@ -85,6 +85,9 @@
         !disablecmd ping guild \
         !disablecmd ping global
 
+**disabletl**: Disable time limit for command \
+    Example: !disabletl ping
+
 **donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
     Usage: !donotupdatestate
 
