@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 import inspect
 import os
@@ -105,3 +106,19 @@ class PluginManager:
     def get_plugins_list(self) -> KeysView[str]:
         """Get list of plugin names that were registered"""
         return self._plugins.keys()
+
+    async def load_plugins(self) -> None:
+        bc = importlib.import_module("src.config").bc
+        for plugin_name in self.get_plugins_list():
+            if plugin_name not in bc.config.plugins.keys():
+                bc.config.plugins[plugin_name] = {
+                    "autostart": False,
+                }
+        for plugin_name, plugin_state in bc.config.plugins.items():
+            if plugin_state["autostart"]:
+                asyncio.create_task(self.send_command(plugin_name, "init"))
+
+    async def unload_plugins(self) -> None:
+        for plugin_name in self.get_plugins_list():
+            if await self.send_command(plugin_name, "is_enabled"):
+                asyncio.create_task(self.send_command(plugin_name, "close"))

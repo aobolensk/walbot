@@ -218,7 +218,7 @@ class WalBot(discord.Client):
 
     @Mail.send_exception_info_to_admin_emails_async
     async def on_ready(self) -> None:
-        self._load_plugins()
+        await bc.plugin_manager.load_plugins()
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
@@ -233,16 +233,6 @@ class WalBot(discord.Client):
         bc.bot_user = self.user
         self.loop.create_task(self._config_autosave())
         self.loop.create_task(self._precompile())
-
-    def _load_plugins(self) -> None:
-        for plugin_name in bc.plugin_manager.get_plugins_list():
-            if plugin_name not in self.config.plugins.keys():
-                self.config.plugins[plugin_name] = {
-                    "autostart": False,
-                }
-        for plugin_name, plugin_state in self.config.plugins.items():
-            if plugin_state["autostart"]:
-                asyncio.create_task(bc.plugin_manager.send_command(plugin_name, "init"))
 
     @Mail.send_exception_info_to_admin_emails_async
     async def on_message(self, message: discord.Message) -> None:

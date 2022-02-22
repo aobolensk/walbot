@@ -53,7 +53,9 @@ class PluginCommands(BaseCmd):
     Usage: !reloadpluginmanager"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
+        await bc.plugin_manager.unload_plugins()
         bc.plugin_manager.register(reload=True)
+        await bc.plugin_manager.load_plugins()
         await Msg.response(message, "Plugin manager has been reloaded", silent)
 
     @staticmethod
