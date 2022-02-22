@@ -60,6 +60,7 @@ class PluginManager:
             f"{os.path.splitext(file)[0]}")
             for path, _, files in os.walk(private_plugin_directory) for file in files
             if os.path.isfile(os.path.join(private_plugin_directory, path, file)) and file.endswith(".py")]
+        importlib.invalidate_caches()
         for module in plugin_modules:
             log.debug2(f"Processing plugins from module: {module}")
             plugins_file = importlib.import_module(module)
