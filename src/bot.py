@@ -108,7 +108,7 @@ class WalBot(discord.Client):
         for event in bc.background_events:
             event.cancel()
         bc.background_loop = None
-        await bc.plugin_manager.broadcast_command("close")
+        await bc.plugin_manager.unload_plugins()
 
     @Mail.send_exception_info_to_admin_emails_async
     async def _precompile(self) -> None:
