@@ -4,7 +4,7 @@ requests==2.27.1
 numba==0.53.1;python_version<"3.10"
 psutil==5.9.0
 python_dateutil==2.8.2
-GitPython==3.1.26
+GitPython==3.1.27
 PyYAML==6.0
 youtube_dl==2021.12.17
 pymongo==4.0.1
