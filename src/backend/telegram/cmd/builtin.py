@@ -13,6 +13,7 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("ping", self._ping))
         dispatcher.add_handler(CommandHandler("markov", self._markov))
         dispatcher.add_handler(CommandHandler("about", self._about))
+        dispatcher.add_handler(CommandHandler("poll", self._poll))
 
     @Mail.send_exception_info_to_admin_emails
     def _ping(self, update: Update, context: CallbackContext):
@@ -32,3 +33,15 @@ class BuiltinCommands:
         elif cmd_txt == "-vv":
             verbosity = 2
         update.message.reply_text(bc.info.get_full_info(verbosity))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _poll(self, update: Update, context: CallbackContext):
+        if len(context.args) < 2:
+            update.message.reply_text("Usage: /poll option 1;option 2;option 3")
+            return
+        options = ' '.join(context.args).split(';')
+        context.bot.send_poll(
+            update.effective_chat.id,
+            "Poll",
+            options,
+        )
