@@ -52,4 +52,3 @@ class BuiltinCommands:
         elif cmd_txt == "-vv":
             verbosity = 2
         update.message.reply_text(bc.info.get_full_info(verbosity))
-        raise Exception("123")
