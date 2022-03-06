@@ -12,6 +12,7 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("ping", self._ping))
         dispatcher.add_handler(CommandHandler("markov", self._markov))
         dispatcher.add_handler(CommandHandler("listreminder", self._listreminder))
+        dispatcher.add_handler(CommandHandler("about", self._about))
 
     def _ping(self, update: Update, context: CallbackContext):
         update.message.reply_text('Pong!')
@@ -37,3 +38,13 @@ class BuiltinCommands:
         for reminder in reminder_list:
             result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
         update.message.reply_text(result if result else "No reminders")
+
+    def _about(self, update: Update, context: CallbackContext):
+        cmd_txt = context.args[0] if context.args else ""
+        verbosity = 0
+        if cmd_txt == "-v":
+            verbosity = 1
+        elif cmd_txt == "-vv":
+            verbosity = 2
+        update.message.reply_text(bc.info.get_full_info(verbosity))
+        raise Exception("123")
