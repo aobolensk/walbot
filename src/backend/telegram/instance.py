@@ -39,8 +39,12 @@ class TelegramBotInstance(BotInstance):
         updater = Updater(bc.secret_config.telegram["token"])
         cmds = BuiltinCommands()
         cmds.add_handlers(updater.dispatcher)
-        updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command & Filters.entity(MessageEntity.MENTION), self._handle_mentions))
-        updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command & ~Filters.entity(MessageEntity.MENTION), self._handle_messages))
+        updater.dispatcher.add_handler(
+            MessageHandler(
+                Filters.text & ~Filters.command & Filters.entity(MessageEntity.MENTION), self._handle_mentions))
+        updater.dispatcher.add_handler(
+            MessageHandler(
+                Filters.text & ~Filters.command & ~Filters.entity(MessageEntity.MENTION), self._handle_messages))
 
         log.info("Telegram instance is started!")
         updater.start_polling()
