@@ -4,6 +4,7 @@ from src.mail import Mail
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
 
+
 class ReminderCommands:
     def __init__(self) -> None:
         pass
