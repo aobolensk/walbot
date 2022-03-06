@@ -85,6 +85,7 @@ class Launcher:
         """Launch Discord bot instance"""
         self._list_env_var_flags()
         self.bot = importlib.import_module("src.bot").DiscordBotInstance()
+        self.telegram_bot = importlib.import_module("src.backend.telegram.instance").TelegramBotInstance()
         if self.args.action is None:
             self._parser.print_help()
         else:
@@ -94,7 +95,9 @@ class Launcher:
         """Start the bot"""
         if self.args.autoupdate:
             return self.autoupdate()
-        self.bot.start(self.args)
+        self.telegram_bot.start(self.args)  # Async
+        self.bot.start(self.args)  # Sync (includes stop)
+        self.telegram_bot.stop(self.args)
 
     def stop(self):
         """Stop the bot"""

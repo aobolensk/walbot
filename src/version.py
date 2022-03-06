@@ -8,4 +8,4 @@ else:
 if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
     SECRET_CONFIG_VERSION = '0.1.0'
 else:
-    SECRET_CONFIG_VERSION = '0.0.2'
+    SECRET_CONFIG_VERSION = '0.0.3'

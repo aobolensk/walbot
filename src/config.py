@@ -373,4 +373,7 @@ class SecretConfig:
             "email": None,
             "password": None,
         }
+        self.telegram = {
+            "token": None,
+        }
         self.admin_email_list = list()

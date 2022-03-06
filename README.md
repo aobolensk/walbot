@@ -2,7 +2,9 @@
 [![CI Status](https://github.com/aobolensk/walbot/workflows/Test/badge.svg)](https://github.com/aobolensk/walbot/actions)
 
 # walbot
-Discord bot in Python
+Discord bot in Python*
+
+\* It also has Telegram backend which is under development.
 
 ### Requirements:
 - [ffmpeg](https://www.ffmpeg.org/)

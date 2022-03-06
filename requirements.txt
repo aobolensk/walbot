@@ -8,3 +8,4 @@ GitPython==3.1.27
 PyYAML==6.0
 youtube_dl==2021.12.17
 pymongo==4.0.1
+python-telegram-bot==13.11
