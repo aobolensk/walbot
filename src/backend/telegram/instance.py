@@ -8,6 +8,7 @@ from telegram.messageentity import MessageEntity
 from src.config import bc
 from src.bot_instance import BotInstance
 from src.log import log
+from src.mail import Mail
 from src.backend.telegram.cmd.builtin import BuiltinCommands
 
 
@@ -18,11 +19,13 @@ class TelegramBotInstance(BotInstance):
     def start(self, args) -> None:
         threading.Thread(target=self._run, args=(args,)).start()
 
+    @Mail.send_exception_info_to_admin_emails
     def _handle_messages(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
         log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
         bc.markov.add_string(text)
 
+    @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
         log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
