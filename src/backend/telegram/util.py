@@ -14,6 +14,7 @@ def check_auth(update: Update) -> bool:
         return False
     return True
 
+
 def reply(update: Update, text: str):
     title = update.message.chat.title or "<DM>"
     log.info("(" + title + ") " + update.message.from_user.username + ": " + text)
