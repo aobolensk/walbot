@@ -1,6 +1,6 @@
 from src.config import bc
 from src.mail import Mail
-from src.backend.telegram.util import log_command
+from src.backend.telegram.util import check_auth, log_command
 
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
@@ -19,17 +19,23 @@ class BuiltinCommands:
     @Mail.send_exception_info_to_admin_emails
     def _ping(self, update: Update, context: CallbackContext):
         log_command(update)
+        if not check_auth(update):
+            return
         update.message.reply_text('Pong!')
 
     @Mail.send_exception_info_to_admin_emails
     def _markov(self, update: Update, context: CallbackContext):
         log_command(update)
+        if not check_auth(update):
+            return
         result = bc.markov.generate()
         update.message.reply_text(result)
 
     @Mail.send_exception_info_to_admin_emails
     def _about(self, update: Update, context: CallbackContext):
         log_command(update)
+        if not check_auth(update):
+            return
         cmd_txt = context.args[0] if context.args else ""
         verbosity = 0
         if cmd_txt == "-v":
@@ -41,6 +47,8 @@ class BuiltinCommands:
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: Update, context: CallbackContext):
         log_command(update)
+        if not check_auth(update):
+            return
         if len(context.args) < 2:
             update.message.reply_text("Usage: /poll option 1;option 2;option 3")
             return

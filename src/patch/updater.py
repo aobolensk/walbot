@@ -3,6 +3,7 @@ import importlib
 import os
 import re
 import sys
+import uuid
 
 import yaml
 
@@ -224,6 +225,12 @@ class Updater:
             config.ids["markov_ignored_prefix"] = 1
             self._bump_version(config, "0.0.36")
         if config.version == "0.0.36":
+            config.__dict__["telegram"] = {
+                "channel_whitelist": set(),
+                "passphrase": uuid.uuid4().hex,
+            }
+            self._bump_version(config, "0.0.37")
+        if config.version == "0.0.37":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

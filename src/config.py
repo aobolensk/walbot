@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import threading
+import uuid
 import zipfile
 
 import discord
@@ -269,6 +270,10 @@ class Config:
         }
         self.repl = {
             "port": 8080,
+        }
+        self.telegram = {
+            "channel_whitelist": set(),
+            "passphrase": uuid.uuid4().hex,
         }
 
     def backup(self, *files):

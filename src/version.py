@@ -1,6 +1,6 @@
 from src.ff import FF
 
-CONFIG_VERSION = '0.0.36'
+CONFIG_VERSION = '0.0.37'
 if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
     MARKOV_CONFIG_VERSION = '0.1.0'
 else:

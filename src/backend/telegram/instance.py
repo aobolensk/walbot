@@ -10,6 +10,9 @@ from src.bot_instance import BotInstance
 from src.log import log
 from src.mail import Mail
 from src.backend.telegram.cmd.builtin import BuiltinCommands
+from src.backend.telegram.cmd.auth import AuthCommands
+from src.backend.telegram.cmd.reminder import ReminderCommands
+from src.backend.telegram.util import check_auth
 
 
 class TelegramBotInstance(BotInstance):
@@ -23,12 +26,16 @@ class TelegramBotInstance(BotInstance):
     def _handle_messages(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
         log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
+        if not check_auth(update):
+            return
         bc.markov.add_string(text)
 
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
         log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
+        if not check_auth(update):
+            return
         result = bc.markov.generate()
         update.message.reply_text(result)
 
@@ -43,8 +50,12 @@ class TelegramBotInstance(BotInstance):
             return
         log.info("Starting Telegram instance...")
         updater = Updater(bc.secret_config.telegram["token"])
-        cmds = BuiltinCommands()
-        cmds.add_handlers(updater.dispatcher)
+        builtin_cmds = BuiltinCommands()
+        builtin_cmds.add_handlers(updater.dispatcher)
+        reminder_cmds = ReminderCommands()
+        reminder_cmds.add_handlers(updater.dispatcher)
+        auth_cmds = AuthCommands()
+        auth_cmds.add_handlers(updater.dispatcher)
         updater.dispatcher.add_handler(
             MessageHandler(
                 Filters.text & ~Filters.command & Filters.entity(MessageEntity.MENTION), self._handle_mentions))
