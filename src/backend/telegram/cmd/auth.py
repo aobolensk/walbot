@@ -26,7 +26,6 @@ class AuthCommands:
         else:
             update.message.reply_text("Wrong passphrase!")
 
-
     @Mail.send_exception_info_to_admin_emails
     def _resetpass(self, update: Update, context: CallbackContext):
         log_command(update)
