@@ -1,5 +1,6 @@
 from src.config import bc
 from src.mail import Mail
+from src.backend.telegram.util import log_command
 
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
@@ -14,6 +15,7 @@ class ReminderCommands:
 
     @Mail.send_exception_info_to_admin_emails
     def _listreminder(self, update: Update, context: CallbackContext):
+        log_command(update)
         reminder_list = []
         for index, reminder in bc.config.reminders.items():
             rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
