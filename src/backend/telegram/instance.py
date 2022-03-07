@@ -20,9 +20,12 @@ class TelegramBotInstance(BotInstance):
 
     def _handle_messages(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
+        log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
         bc.markov.add_string(text)
 
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
+        text = update.message.text
+        log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
         result = bc.markov.generate()
         update.message.reply_text(result)
 
