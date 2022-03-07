@@ -1,6 +1,6 @@
 from src.config import bc
 from src.mail import Mail
-from src.backend.telegram.util import check_auth, log_command
+from src.backend.telegram.util import check_auth, log_command, reply
 
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
@@ -21,7 +21,7 @@ class BuiltinCommands:
         log_command(update)
         if not check_auth(update):
             return
-        update.message.reply_text('Pong!')
+        reply('Pong!')
 
     @Mail.send_exception_info_to_admin_emails
     def _markov(self, update: Update, context: CallbackContext):
@@ -29,7 +29,7 @@ class BuiltinCommands:
         if not check_auth(update):
             return
         result = bc.markov.generate()
-        update.message.reply_text(result)
+        reply(result)
 
     @Mail.send_exception_info_to_admin_emails
     def _about(self, update: Update, context: CallbackContext):
@@ -42,7 +42,7 @@ class BuiltinCommands:
             verbosity = 1
         elif cmd_txt == "-vv":
             verbosity = 2
-        update.message.reply_text(bc.info.get_full_info(verbosity))
+        reply(bc.info.get_full_info(verbosity))
 
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: Update, context: CallbackContext):
@@ -50,7 +50,7 @@ class BuiltinCommands:
         if not check_auth(update):
             return
         if len(context.args) < 2:
-            update.message.reply_text("Usage: /poll option 1;option 2;option 3")
+            reply("Usage: /poll option 1;option 2;option 3")
             return
         options = ' '.join(context.args).split(';')
         context.bot.send_poll(

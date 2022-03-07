@@ -12,7 +12,7 @@ from src.mail import Mail
 from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.auth import AuthCommands
 from src.backend.telegram.cmd.reminder import ReminderCommands
-from src.backend.telegram.util import check_auth
+from src.backend.telegram.util import check_auth, reply
 
 
 class TelegramBotInstance(BotInstance):
@@ -37,7 +37,7 @@ class TelegramBotInstance(BotInstance):
         if not check_auth(update):
             return
         result = bc.markov.generate()
-        update.message.reply_text(result)
+        reply(result)
 
     def _run(self, args) -> None:
         while True:

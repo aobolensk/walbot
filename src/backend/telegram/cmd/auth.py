@@ -2,7 +2,7 @@ import uuid
 from src.config import bc
 from src.log import log
 from src.mail import Mail
-from src.backend.telegram.util import check_auth, log_command
+from src.backend.telegram.util import check_auth, log_command, reply
 
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
@@ -22,9 +22,9 @@ class AuthCommands:
         passphrase = context.args[0] if context.args else ""
         if passphrase == bc.config.telegram["passphrase"]:
             bc.config.telegram["channel_whitelist"].add(update.effective_chat.id)
-            update.message.reply_text("Channel has been added to whitelist")
+            reply("Channel has been added to whitelist")
         else:
-            update.message.reply_text("Wrong passphrase!")
+            reply("Wrong passphrase!")
 
     @Mail.send_exception_info_to_admin_emails
     def _resetpass(self, update: Update, context: CallbackContext):
@@ -33,4 +33,4 @@ class AuthCommands:
             return
         bc.config.telegram["passphrase"] = uuid.uuid4().hex
         log.warning("New passphrase: " + bc.config.telegram["passphrase"])
-        update.message.reply_text('Passphrase has been reset!')
+        reply('Passphrase has been reset!')

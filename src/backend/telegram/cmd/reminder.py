@@ -1,6 +1,6 @@
 from src.config import bc
 from src.mail import Mail
-from src.backend.telegram.util import check_auth, log_command
+from src.backend.telegram.util import check_auth, log_command, reply
 
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
@@ -33,4 +33,4 @@ class ReminderCommands:
         result = ""
         for reminder in reminder_list:
             result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
-        update.message.reply_text(result if result else "No reminders")
+        reply(result if result else "No reminders")
