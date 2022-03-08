@@ -33,4 +33,4 @@ class ReminderCommands:
         result = ""
         for reminder in reminder_list:
             result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
-        reply(result if result else "No reminders")
+        reply(update, result if result else "No reminders")

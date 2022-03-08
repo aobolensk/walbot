@@ -22,9 +22,9 @@ class AuthCommands:
         passphrase = context.args[0] if context.args else ""
         if passphrase == bc.config.telegram["passphrase"]:
             bc.config.telegram["channel_whitelist"].add(update.effective_chat.id)
-            reply("Channel has been added to whitelist")
+            reply(update, "Channel has been added to whitelist")
         else:
-            reply("Wrong passphrase!")
+            reply(update, "Wrong passphrase!")
 
     @Mail.send_exception_info_to_admin_emails
     def _resetpass(self, update: Update, context: CallbackContext):
@@ -33,4 +33,4 @@ class AuthCommands:
             return
         bc.config.telegram["passphrase"] = uuid.uuid4().hex
         log.warning("New passphrase: " + bc.config.telegram["passphrase"])
-        reply('Passphrase has been reset!')
+        reply(update, 'Passphrase has been reset!')

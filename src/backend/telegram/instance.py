@@ -37,7 +37,7 @@ class TelegramBotInstance(BotInstance):
         if not check_auth(update):
             return
         result = bc.markov.generate()
-        reply(result)
+        reply(update, result)
 
     def _run(self, args) -> None:
         while True:
