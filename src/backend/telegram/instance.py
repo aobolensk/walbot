@@ -2,17 +2,17 @@ import threading
 import time
 
 from telegram import Update
-from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
+from telegram.ext import CallbackContext, Filters, MessageHandler, Updater
 from telegram.messageentity import MessageEntity
 
-from src.config import bc
-from src.bot_instance import BotInstance
-from src.log import log
-from src.mail import Mail
-from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.auth import AuthCommands
+from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.reminder import ReminderCommands
 from src.backend.telegram.util import check_auth, reply
+from src.bot_instance import BotInstance
+from src.config import bc
+from src.log import log
+from src.mail import Mail
 
 
 class TelegramBotInstance(BotInstance):

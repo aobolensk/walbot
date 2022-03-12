@@ -1,9 +1,9 @@
+from telegram import Update
+from telegram.ext import CallbackContext, CommandHandler
+
+from src.backend.telegram.util import check_auth, log_command, reply
 from src.config import bc
 from src.mail import Mail
-from src.backend.telegram.util import check_auth, log_command, reply
-
-from telegram import Update
-from telegram.ext import CommandHandler, CallbackContext
 
 
 class ReminderCommands:
