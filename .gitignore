@@ -4,6 +4,9 @@
 # Python cache
 __pycache__
 
+# venv
+venv
+
 # Bot config
 config.yaml
 markov.yaml
