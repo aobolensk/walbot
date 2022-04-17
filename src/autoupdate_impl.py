@@ -71,10 +71,6 @@ def check_updates(context: AutoUpdateContext) -> bool:
         return log.error("Failed to read secret config file")
     mail = Mail(secret_config)
     old_sha = context.repo.head.object.hexsha
-    mail.send(
-        secret_config.admin_email_list,
-        "Autoupdate error",
-        get_autoupdate_error_message("Test notification\n"))
     try:
         context.repo.remotes.origin.fetch()
     except Exception as e:
