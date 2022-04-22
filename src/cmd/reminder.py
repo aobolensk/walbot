@@ -258,7 +258,7 @@ class ReminderCommands(BaseCmd):
         for index, reminder in bc.config.reminders.items():
             rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
             prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
-            notes = "Notes: " + (reminder.notes if len(reminder.notes) < 200 else reminder.notes[:200] + "...") + "\n"
+            notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
             reminder_list.append(
                 (reminder.time,
                  reminder.message,

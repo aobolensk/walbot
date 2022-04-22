@@ -129,6 +129,13 @@ class Util:
         """Get walbot temporary directory path inside system temporary directory"""
         return tempfile.gettempdir() + os.sep + "walbot"
 
+    @staticmethod
+    def cut_string(string: str, length: int) -> str:
+        """Cut string to specified length"""
+        if len(string) > length:
+            return string[:length - 3] + "..."
+        return string
+
 
 def null(*args, **kwargs):
     """Drop return value"""

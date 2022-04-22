@@ -310,8 +310,7 @@ class BuiltinCommands(BaseCmd):
                     for cmd in chunk:
                         cmd_name = cmd[0]
                         description = cmd[1]
-                        if len(description) > 1024:
-                            description = description[:1021] + "..."
+                        description = Util.cut_string(description, 1024)
                         embed.add_field(name=cmd_name, value=description, inline=False)
                     await Msg.response(message, None, silent, embed=embed)
         elif len(command) == 2:
