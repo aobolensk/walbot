@@ -9,7 +9,7 @@ from src.message import Msg
 from src.utils import Util, null
 
 
-class MarkovCommands(BaseCmd):
+class RoleCommands(BaseCmd):
     def bind(self):
         bc.commands.register_commands(__name__, self.get_classname(), {
             "addrole": dict(permission=const.Permission.MOD.value, subcommand=False),
