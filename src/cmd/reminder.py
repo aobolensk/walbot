@@ -261,7 +261,7 @@ class ReminderCommands(BaseCmd):
             notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
             reminder_list.append(
                 (reminder.time,
-                 reminder.message,
+                 Util.cut_string(reminder.message, 256),
                  f"{notes if reminder.notes else ''}"
                  f"{index} at {reminder.time} "
                  f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
