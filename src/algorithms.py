@@ -5,18 +5,12 @@ import numpy as np
 
 from src.log import log
 
-_optional_numba_jit_warning_printed = False
-
-
 def optional_numba_jit(func) -> Any:
     try:
         numba = importlib.import_module("numba")
         return numba.njit(fastmath=True)(func)
     except ImportError:
-        global _optional_numba_jit_warning_printed
-        if not _optional_numba_jit_warning_printed:
-            log.warning(f"Function {func.__name__} is missing numba package for better performance!")
-            _optional_numba_jit_warning_printed = True
+        log.warning(f"Function {func.__name__} is missing numba package for better performance!")
         return func
 
 
