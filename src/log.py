@@ -25,6 +25,12 @@ class Log:
         """Log with severity 'DEBUG3'."""
         self.log.log(const.LogLevel.DEBUG3, msg, *args, **kwargs)
 
+    def _log_once(self, verbosity: int, msg: str, *args, **kwargs) -> None:
+        """Logs message only once"""
+        if msg not in self._log_once_cache:
+            self.log.log(verbosity, msg, *args, **kwargs)
+            self._log_once_cache.add(msg)
+
     def __new__(cls):
         if not hasattr(cls, '_instance'):
             cls._instance = super().__new__(cls)
@@ -35,6 +41,7 @@ class Log:
             'version': 1,
             'disable_existing_loggers': True,
         })
+        self._log_once_cache = set()
         # Add new logging levels
         logging.addLevelName(const.LogLevel.DEBUG2, "DEBUG2")
         logging.addLevelName(const.LogLevel.DEBUG3, "DEBUG3")
@@ -71,6 +78,12 @@ class Log:
         self.info = self.log.info
         self.error = self.log.error
         self.warning = self.log.warning
+        self.debug_once = functools.partial(self._log_once, const.LogLevel.DEBUG)
+        self.info_once = functools.partial(self._log_once, const.LogLevel.INFO)
+        self.error_once = functools.partial(self._log_once, const.LogLevel.ERROR)
+        self.warning_once = functools.partial(self._log_once, const.LogLevel.WARNING)
+        self.debug2_once = functools.partial(self._log_once, const.LogLevel.DEBUG2)
+        self.debug3_once = functools.partial(self._log_once, const.LogLevel.DEBUG3)
         self.info("Logging system is set up")
 
     def trace_function(self, func) -> Any:
