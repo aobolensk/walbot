@@ -9,7 +9,7 @@
 * [Module: quote](#module-quote): Interaction with WalBot quote database
 * [Module: reaction](#module-reaction): Management of bot reactions to user messages
 * [Module: reminder](#module-reminder): WalBot reminders
-* [Module: role](#module-role): Markov model commands
+* [Module: role](#module-role): Role commands
 * [Module: string](#module-string): Helper functions for working with strings
 * [Module: timer](#module-timer): Timer and stopwatch
 * [Module: voice](#module-voice): Connection to voice channel

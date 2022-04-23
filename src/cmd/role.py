@@ -1,4 +1,4 @@
-"""Markov model commands"""
+"""Role commands"""
 
 import discord
 
