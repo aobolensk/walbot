@@ -5,6 +5,7 @@ import numpy as np
 
 from src.log import log
 
+
 def optional_numba_jit(func) -> Any:
     try:
         numba = importlib.import_module("numba")
