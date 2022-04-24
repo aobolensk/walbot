@@ -212,6 +212,7 @@ class WalBot(discord.Client):
             await self._process_reminders_iteration()
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
+    @Mail.send_exception_info_to_admin_emails_async
     async def _repl_routine(self) -> None:
         self.repl = Repl(self.config.repl["port"])
         await self.repl.start()
