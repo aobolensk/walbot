@@ -11,6 +11,8 @@ def _extract_discord_lib_version_from_requirements_txt():
                 return (line.split('==')[1].strip(), "<unknown>")
             if line.startswith("git+https://github.com/Pycord-Development/pycord"):
                 return ("2.0.0a", line.split('@')[1].strip())
+            if line.startswith("py-cord=="):
+                return (line.split('==')[1].strip(), "<unknown>")
     return ("<unknown>", "<unknown>")
 
 
