@@ -67,9 +67,9 @@ class BotInfo:
     def query_dependencies_info(self) -> Dict[str, str]:
         """Get dict with walbot dependencies versions"""
         res = {}
-        res["discord.py"] = importlib.import_module("discord").__version__
+        res["py-cord (former discord.py)"] = importlib.import_module("discord").__version__
         if const.DISCORD_LIB_COMMIT != "<unknown>":
-            res["discord.py"] += " (" + const.DISCORD_LIB_COMMIT + ")"
+            res["py-cord (former discord.py)"] += " (" + const.DISCORD_LIB_COMMIT + ")"
         res["numpy"] = importlib.import_module("numpy").__version__
         res["requests"] = importlib.import_module("requests").__version__
         try:
