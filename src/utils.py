@@ -133,7 +133,7 @@ class Util:
     def cut_string(string: str, length: int) -> str:
         """Cut string to specified length"""
         if len(string) > length:
-            return string[:length - 3] + "..."
+            return string[:(length - 3 if length > 3 else 0)] + "..."
         return string
 
 
