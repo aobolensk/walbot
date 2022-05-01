@@ -77,5 +77,5 @@ class RoleCommands(BaseCmd):
         except discord.HTTPException as e:
             return await null(
                 Msg.response(
-                    message, f"Role '{role_name}' could not be assigned to user '{user}'. ERROR: '{e}'", silent))
-        await Msg.response(message, f"Successfully assigned role '{role_name}' to user '{user}'", silent)
+                    message, f"Role '{role_name}' could not be deleted from user '{user}'. ERROR: '{e}'", silent))
+        await Msg.response(message, f"Successfully deleted role '{role_name}' from user '{user}'", silent)
