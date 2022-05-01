@@ -28,6 +28,8 @@ class RoleCommands(BaseCmd):
         role = discord.utils.get(message.guild.roles, name=role_name)
         if role is None:
             return null(await Msg.response(message, f"Role '{role_name}' does not exist", silent))
+        if not message.mentions:
+            return null(await Msg.response(message, "You must mention a user to assign role", silent))
         member = await message.guild.fetch_member(message.mentions[0].id)
         if member is None:
             return null(await Msg.response(message, f"User '{user}' does not exist", silent))
@@ -65,6 +67,8 @@ class RoleCommands(BaseCmd):
         role = discord.utils.get(message.guild.roles, name=role_name)
         if role is None:
             return null(await Msg.response(message, f"Role '{role_name}' does not exist", silent))
+        if not message.mentions:
+            return null(await Msg.response(message, "You must mention a user to delete role", silent))
         member = await message.guild.fetch_member(message.mentions[0].id)
         if member is None:
             return null(await Msg.response(message, f"User '{user}' does not exist", silent))
