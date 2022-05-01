@@ -19,11 +19,13 @@ class Log:
 
     def debug2(self, msg: str, *args, **kwargs) -> None:
         """Log with severity 'DEBUG2'."""
-        self.log.log(const.LogLevel.DEBUG2, msg, *args, **kwargs)
+        if self.log.isEnabledFor(const.LogLevel.DEBUG2):
+            self.log._log(const.LogLevel.DEBUG2, msg, args, **kwargs)
 
     def debug3(self, msg: str, *args, **kwargs) -> None:
         """Log with severity 'DEBUG3'."""
-        self.log.log(const.LogLevel.DEBUG3, msg, *args, **kwargs)
+        if self.log.isEnabledFor(const.LogLevel.DEBUG3):
+            self.log._log(const.LogLevel.DEBUG3, msg, args, **kwargs)
 
     def __new__(cls):
         if not hasattr(cls, '_instance'):
