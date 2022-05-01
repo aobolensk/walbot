@@ -1,6 +1,5 @@
 """Role commands"""
 
-from builtins import sorted
 import discord
 
 from src import const
