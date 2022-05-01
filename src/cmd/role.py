@@ -1,5 +1,6 @@
 """Role commands"""
 
+from builtins import sorted
 import discord
 
 from src import const
@@ -48,9 +49,7 @@ class RoleCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         roles = await message.guild.fetch_roles()
-        result = ""
-        for role in roles:
-            result += f"{role.name}\n"
+        result = '\n'.join(sorted((role.name for role in roles)))
         if result:
             await Msg.response(message, await bc.config.disable_pings_in_response(message, result, force=True), silent)
         else:
