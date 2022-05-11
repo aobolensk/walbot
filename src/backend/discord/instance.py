@@ -9,7 +9,6 @@ import shutil
 import signal
 import subprocess
 import sys
-import time
 import zipfile
 
 import discord
@@ -78,11 +77,6 @@ class WalBot(discord.Client):
         if sys.platform == "win32":
             return super().run(*args, **kwargs)
         loop = self.loop
-        try:
-            loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
-            loop.add_signal_handler(signal.SIGTERM, lambda: loop.stop())
-        except NotImplementedError:
-            pass
         asyncio.ensure_future(self._bot_runner_task(*args, *kwargs), loop=loop)
         try:
             loop.run_forever()
@@ -423,9 +417,9 @@ class DiscordBotInstance(BotInstance):
             log.info("Executing patch tool: " + cmd)
             subprocess.call(cmd)
         # Read configuration files
-        config = Util.read_config_file(const.CONFIG_PATH)
-        if config is None:
-            config = Config()
+        self._config = Util.read_config_file(const.CONFIG_PATH)
+        if self._config is None:
+            self._config = Config()
         secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
         if secret_config is None:
             secret_config = SecretConfig()
@@ -458,7 +452,7 @@ class DiscordBotInstance(BotInstance):
                 "execute: python -m pip install -r requirements.txt",
             ])
         ok &= Util.check_version(
-            "Config", config.version, const.CONFIG_VERSION,
+            "Config", self._config.version, const.CONFIG_VERSION,
             solutions=[
                 "run patch tool",
                 "remove config.yaml (settings will be lost!)",
@@ -477,27 +471,30 @@ class DiscordBotInstance(BotInstance):
             ])
         if main_bot and not ok:
             sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
-        config.commands.update()
+        self._config.commands.update()
         # Checking authentication token
         if secret_config.token is None:
             secret_config = SecretConfig()
             if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
                 secret_config.token = input("Enter your token: ")
         # Constructing bot instance
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         if main_bot:
             intents = discord.Intents.all()
-            walbot = WalBot(args.name, config, secret_config, intents=intents)
+            walbot = WalBot(args.name, self._config, secret_config, intents=intents)
         else:
-            walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, config, secret_config, args.message)
+            walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, self._config, secret_config, args.message)
         # Starting the bot
         try:
             walbot.run(secret_config.token)
         except discord.PrivilegedIntentsRequired:
             log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
-        # After stopping the bot
+
+    def stop(self, args, main_bot=True):
         log.info("Bot is disconnected!")
         if main_bot:
-            config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
+            self._config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         BotCache(main_bot).remove()
         if bc.restart_flag:
             cmd = f"'{sys.executable}' '{os.path.dirname(os.path.dirname(__file__)) + '/walbot.py'}' start"
@@ -511,31 +508,3 @@ class DiscordBotInstance(BotInstance):
                     sys.exit(const.ExitStatus.NO_ERROR)
             else:
                 subprocess.call(cmd)
-
-    def stop(self, _, main_bot=True):
-        if not BotCache(main_bot).exists():
-            return log.error("Could not stop the bot (cache file does not exist)")
-        bot_cache = BotCache(main_bot).parse()
-        pid = bot_cache["pid"]
-        if pid is None:
-            return log.error("Could not stop the bot (cache file does not contain pid)")
-        if psutil.pid_exists(pid):
-            if sys.platform == "win32":
-                # Reference to the original solution:
-                # https://stackoverflow.com/a/64357453
-                import ctypes
-
-                kernel = ctypes.windll.kernel32
-                kernel.FreeConsole()
-                kernel.AttachConsole(pid)
-                kernel.SetConsoleCtrlHandler(None, 1)
-                kernel.GenerateConsoleCtrlEvent(0, 0)
-            else:
-                os.kill(pid, signal.SIGINT)
-            while psutil.pid_exists(pid):
-                log.debug("Bot is still running. Please, wait...")
-                time.sleep(0.5)
-            log.info("Bot is stopped!")
-        else:
-            log.error("Could not stop the bot (bot is not running)")
-            BotCache(main_bot).remove()

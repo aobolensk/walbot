@@ -20,7 +20,7 @@ class TelegramBotInstance(BotInstance):
         self._is_stopping = False
 
     def start(self, args) -> None:
-        threading.Thread(target=self._run, args=(args,)).start()
+        self._run(args)
 
     @Mail.send_exception_info_to_admin_emails
     def _handle_messages(self, update: Update, context: CallbackContext) -> None:

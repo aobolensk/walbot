@@ -4,9 +4,16 @@ WalBot launcher
 
 import argparse
 import importlib
+import os
+import signal
 import sys
+import threading
+import time
+
+import psutil
 
 from src import const
+from src.bot_cache import BotCache
 from src.ff import FF
 from src.log import log
 
@@ -91,26 +98,65 @@ class Launcher:
         else:
             getattr(self, self.args.action)()
 
+    def _stop_signal_handler(self, sig, frame):
+        self.bot.stop(self.args)
+        self.telegram_bot.stop(self.args)
+        log.info('Stopped the bot!')
+        sys.exit(0)
+
     def start(self):
         """Start the bot"""
         if self.args.autoupdate:
             return self.autoupdate()
-        self.telegram_bot.start(self.args)  # Async
-        self.bot.start(self.args)  # Sync (includes stop)
-        self.telegram_bot.stop(self.args)
+        discord_thread = threading.Thread(target=self.bot.start, args=(self.args,))
+        discord_thread.setDaemon(True)
+        discord_thread.start()
+        telegram_thread = threading.Thread(target=self.telegram_bot.start, args=(self.args,))
+        telegram_thread.setDaemon(True)
+        telegram_thread.start()
+        signal.signal(signal.SIGINT, self._stop_signal_handler)
+        signal.pause()
+
+    def _stop_bot_process(self, _, main_bot=True):
+        if not BotCache(main_bot).exists():
+            return log.error("Could not stop the bot (cache file does not exist)")
+        bot_cache = BotCache(main_bot).parse()
+        pid = bot_cache["pid"]
+        if pid is None:
+            return log.error("Could not stop the bot (cache file does not contain pid)")
+        if psutil.pid_exists(pid):
+            if sys.platform == "win32":
+                # Reference to the original solution:
+                # https://stackoverflow.com/a/64357453
+                import ctypes
+
+                kernel = ctypes.windll.kernel32
+                kernel.FreeConsole()
+                kernel.AttachConsole(pid)
+                kernel.SetConsoleCtrlHandler(None, 1)
+                kernel.GenerateConsoleCtrlEvent(0, 0)
+            else:
+                os.kill(pid, signal.SIGINT)
+            while psutil.pid_exists(pid):
+                log.debug("Bot is still running. Please, wait...")
+                time.sleep(0.5)
+            log.info("Bot is stopped!")
+        else:
+            log.error("Could not stop the bot (bot is not running)")
+            BotCache(main_bot).remove()
 
     def stop(self):
         """Stop the bot"""
-        self.bot.stop(self.args)
+        self._stop_bot_process(self.args)
 
     def restart(self):
         """Restart the bot"""
-        self.bot.stop(self.args)
+        self._stop_bot_process(self.args)
         self.bot.start(self.args)
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
-        self.bot.stop(self.args)
+        self._stop_bot_process(self.args)
         self.bot.start(self.args, main_bot=False)
 
     def startmini(self):
@@ -119,7 +165,7 @@ class Launcher:
 
     def stopmini(self):
         """Stop mini-bot"""
-        self.bot.stop(self.args, main_bot=False)
+        self._stop_bot_process(self.args, main_bot=False)
 
     def test(self):
         """Launch tests"""
