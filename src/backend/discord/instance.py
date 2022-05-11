@@ -393,7 +393,7 @@ class DiscordBotInstance(BotInstance):
             if pid is not None and psutil.pid_exists(pid):
                 return log.error("Bot is already running!")
         # Some variable initializations
-        config = None
+        self._config = None
         secret_config = None
         bc.restart_flag = False
         bc.args = args
@@ -484,7 +484,8 @@ class DiscordBotInstance(BotInstance):
             intents = discord.Intents.all()
             walbot = WalBot(args.name, self._config, secret_config, intents=intents)
         else:
-            walbot = importlib.import_module("src.minibot").MiniWalBot(args.name, self._config, secret_config, args.message)
+            walbot = importlib.import_module("src.minibot").MiniWalBot(
+                args.name, self._config, secret_config, args.message)
         # Starting the bot
         try:
             walbot.run(secret_config.token)
