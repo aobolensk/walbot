@@ -18,7 +18,6 @@ from src.bot_cache import BotCache
 from src.bot_instance import BotInstance
 from src.ff import FF
 from src.log import log
-from src.utils import Util
 
 
 class Launcher:
@@ -118,7 +117,7 @@ class Launcher:
                     os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):
                 module = importlib.import_module(f"src.backend.{backend}.instance")
                 instances = [obj[1] for obj in inspect.getmembers(module, inspect.isclass)
-                         if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
+                             if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
                 instance = instances[0]()
                 self.backends.append(instance)
                 log.debug2("Detected backend: " + instance.__class__.__name__)
