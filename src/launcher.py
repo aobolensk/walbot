@@ -4,6 +4,7 @@ WalBot launcher
 
 import argparse
 import importlib
+import inspect
 import os
 import signal
 import sys
@@ -14,8 +15,10 @@ import psutil
 
 from src import const
 from src.bot_cache import BotCache
+from src.bot_instance import BotInstance
 from src.ff import FF
 from src.log import log
+from src.utils import Util
 
 
 class Launcher:
@@ -99,8 +102,9 @@ class Launcher:
             getattr(self, self.args.action)()
 
     def _stop_signal_handler(self, sig, frame):
-        self.bot.stop(self.args)
-        self.telegram_bot.stop(self.args)
+        for backend in self.backends:
+            backend.stop(self.args)
+            log.debug2("Stopped backend: " + backend.__class__.__name__)
         log.info('Stopped the bot!')
         sys.exit(0)
 
@@ -108,12 +112,21 @@ class Launcher:
         """Start the bot"""
         if self.args.autoupdate:
             return self.autoupdate()
-        discord_thread = threading.Thread(target=self.bot.start, args=(self.args,))
-        discord_thread.setDaemon(True)
-        discord_thread.start()
-        telegram_thread = threading.Thread(target=self.telegram_bot.start, args=(self.args,))
-        telegram_thread.setDaemon(True)
-        telegram_thread.start()
+        self.backends = []
+        for backend in os.listdir(const.BOT_BACKENDS_PATH):
+            if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
+                    os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):
+                module = importlib.import_module(f"src.backend.{backend}.instance")
+                instances = [obj[1] for obj in inspect.getmembers(module, inspect.isclass)
+                         if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
+                instance = instances[0]()
+                self.backends.append(instance)
+                log.debug2("Detected backend: " + instance.__class__.__name__)
+        for backend in self.backends:
+            thread = threading.Thread(target=backend.start, args=(self.args,))
+            thread.setDaemon(True)
+            thread.start()
+            log.debug2("Started backend: " + backend.__class__.__name__)
         signal.signal(signal.SIGINT, self._stop_signal_handler)
         signal.pause()
 
