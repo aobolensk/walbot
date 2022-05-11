@@ -19,7 +19,7 @@
 
 ### How to add new commands module
 
-1. Create .py file in `src/cmd` directory
+1. Create .py file in `src/backend/discord/cmd` directory
 1. Create class that is inherited from `BaseCmd` using the following example:
 
 ```py
@@ -40,4 +40,4 @@ class NewTestCommands(BaseCmd):
         return result
 ```
 
-Note: if you want to create private command module you need to create in in `src/cmd/private`. Private commands are fully functional but they are separated from public ones and automatically gitignored.
+Note: if you want to create private command module you need to create in in `src/backend/discord/cmd/private`. Private commands are fully functional but they are separated from public ones and automatically gitignored.
