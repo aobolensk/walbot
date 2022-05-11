@@ -17,16 +17,6 @@ class Log:
     Proper usage: the single object of this class defined below class definition
     """
 
-    def debug2(self, msg: str, *args, **kwargs) -> None:
-        """Log with severity 'DEBUG2'."""
-        if self.log.isEnabledFor(const.LogLevel.DEBUG2):
-            self.log._log(const.LogLevel.DEBUG2, msg, args, **kwargs)
-
-    def debug3(self, msg: str, *args, **kwargs) -> None:
-        """Log with severity 'DEBUG3'."""
-        if self.log.isEnabledFor(const.LogLevel.DEBUG3):
-            self.log._log(const.LogLevel.DEBUG3, msg, args, **kwargs)
-
     def __new__(cls):
         if not hasattr(cls, '_instance'):
             cls._instance = super().__new__(cls)
@@ -73,6 +63,8 @@ class Log:
         self.info = self.log.info
         self.error = self.log.error
         self.warning = self.log.warning
+        self.debug2 = functools.partial(self.log.log, const.LogLevel.DEBUG2)
+        self.debug3 = functools.partial(self.log.log, const.LogLevel.DEBUG3)
         self.info("Logging system is set up")
 
     def trace_function(self, func) -> Any:
