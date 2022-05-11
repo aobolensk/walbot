@@ -406,7 +406,8 @@ class DiscordBotInstance(BotInstance):
             os.dup2(fd, sys.stdout.fileno())
             os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
             os.close(fd)
-            signal.signal(signal.SIGHUP, signal.SIG_IGN)
+            # NOTE: Does not work when not in main thread
+            # signal.signal(signal.SIGHUP, signal.SIG_IGN)
         # Selecting YAML parser
         bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
         # Saving application pd in order to safely stop it later
