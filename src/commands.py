@@ -32,12 +32,12 @@ class Commands:
         Private commands: src/private/*.py
         """
         bc.commands = self
-        cmd_directory = os.path.join(os.path.dirname(__file__), "cmd")
-        cmd_modules = ['src.cmd.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
+        cmd_directory = os.path.join(os.path.dirname(__file__), "backend", "discord", "cmd")
+        cmd_modules = ['src.backend.discord.cmd.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
                        if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
-        private_cmd_directory = os.path.join(os.path.dirname(__file__), "cmd", "private")
+        private_cmd_directory = os.path.join(os.path.dirname(__file__), "backend", "discord", "cmd", "private")
         cmd_modules += [Util.path_to_module(
-            f"src.cmd.private.{os.path.relpath(path, private_cmd_directory)}."
+            f"src.backend.discord.cmd.private.{os.path.relpath(path, private_cmd_directory)}."
             f"{os.path.splitext(file)[0]}")
             for path, _, files in os.walk(private_cmd_directory) for file in files
             if os.path.isfile(os.path.join(private_cmd_directory, path, file)) and file.endswith(".py")]
