@@ -84,7 +84,7 @@ class Launcher:
     def launch_bot(self):
         """Launch Discord bot instance"""
         self._list_env_var_flags()
-        self.bot = importlib.import_module("src.bot").DiscordBotInstance()
+        self.bot = importlib.import_module("src.backend.discord.instance").DiscordBotInstance()
         self.telegram_bot = importlib.import_module("src.backend.telegram.instance").TelegramBotInstance()
         if self.args.action is None:
             self._parser.print_help()
