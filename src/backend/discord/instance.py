@@ -484,7 +484,7 @@ class DiscordBotInstance(BotInstance):
             intents = discord.Intents.all()
             walbot = WalBot(args.name, self._config, secret_config, intents=intents)
         else:
-            walbot = importlib.import_module("src.minibot").MiniWalBot(
+            walbot = importlib.import_module("src.backend.discord.minibot").MiniWalBot(
                 args.name, self._config, secret_config, args.message)
         # Starting the bot
         try:
