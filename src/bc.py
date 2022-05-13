@@ -2,7 +2,7 @@ import datetime
 from collections import deque
 from enum import IntEnum
 
-from src.message_buffer import MessageBuffer
+from src.backend.discord.message_buffer import MessageBuffer
 from src.plugin import PluginManager
 
 
