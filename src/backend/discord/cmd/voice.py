@@ -14,7 +14,7 @@ from src.embed import DiscordEmbed
 from src.log import log
 from src.message import Msg
 from src.utils import Util, null
-from src.voice import VoiceQueueEntry
+from src.backend.discord.voice import VoiceQueueEntry
 
 
 class _VoiceInternals:

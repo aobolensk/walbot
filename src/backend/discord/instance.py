@@ -31,7 +31,7 @@ from src.message import Msg
 from src.reminder import Reminder
 from src.repl import Repl
 from src.utils import Util
-from src.voice import VoiceRoutine
+from src.backend.discord.voice import VoiceRoutine
 
 
 class WalBot(discord.Client):
