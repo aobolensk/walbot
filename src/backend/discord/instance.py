@@ -20,7 +20,7 @@ from src.bot_cache import BotCache
 from src.bot_instance import BotInstance
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
 from src.db.walbot_db import WalbotDatabase
-from src.embed import DiscordEmbed
+from src.backend.discord.embed import DiscordEmbed
 from src.emoji import get_clock_emoji
 from src.ff import FF
 from src.info import BotInfo

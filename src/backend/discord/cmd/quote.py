@@ -2,7 +2,7 @@
 
 import datetime
 import random
-from src.embed import DiscordEmbed
+from src.backend.discord.embed import DiscordEmbed
 
 from src import const
 from src.commands import BaseCmd

@@ -8,7 +8,7 @@ import dateutil.relativedelta
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
-from src.embed import DiscordEmbed
+from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.reminder import Reminder
 from src.utils import Util, null
