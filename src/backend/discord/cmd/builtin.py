@@ -22,7 +22,7 @@ from src.bc import DoNotUpdateFlag
 from src.commands import BaseCmd
 from src.config import BackgroundEvent, Command, bc, log
 from src.embed import DiscordEmbed
-from src.message import Msg
+from src.backend.discord.message import Msg
 from src.utils import Util, null
 
 

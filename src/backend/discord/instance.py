@@ -27,7 +27,7 @@ from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
 from src.markov import Markov, MarkovV2
-from src.message import Msg
+from src.backend.discord.message import Msg
 from src.reminder import Reminder
 from src.repl import Repl
 from src.utils import Util

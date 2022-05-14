@@ -10,7 +10,7 @@ from typing import Any, Coroutine, Optional, Tuple
 import yaml
 
 from src.log import log
-from src.message import Msg
+from src.backend.discord.message import Msg
 
 
 class TimeoutStatus(IntEnum):

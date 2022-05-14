@@ -6,7 +6,7 @@ import operator as op
 from src import const
 from src.commands import BaseCmd
 from src.config import bc
-from src.message import Msg
+from src.backend.discord.message import Msg
 from src.utils import Util, null
 
 
