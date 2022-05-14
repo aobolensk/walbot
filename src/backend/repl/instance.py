@@ -2,7 +2,9 @@ import asyncio
 import inspect
 import itertools
 import socket
+import time
 
+from src.bot_instance import BotInstance
 from src.config import bc
 from src.log import log
 
@@ -66,11 +68,10 @@ class REPLCommands:
         await self._current_channel.send(text)
 
 
-class Repl:
-    def __init__(self, port) -> None:
+class ReplBotInstance(BotInstance):
+    def __init__(self) -> None:
         self.channel = None
         self.sock = None
-        self.port = port
 
     async def parse_command(self, commands, message) -> str:
         args = message.split(' ')
@@ -83,7 +84,18 @@ class Repl:
             return result
         return ""
 
-    async def start(self) -> None:
+    def start(self, args) -> None:
+        while True:
+            if bc is None or bc.secret_config is None:
+                time.sleep(2)
+            else:
+                break
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self._run())
+
+    async def _run(self) -> None:
+        self.port = bc.config.repl["port"]
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR or socket.SO_REUSEPORT, 1)
         self.sock.bind((REPL_HOST, self.port))
@@ -108,6 +120,6 @@ class Repl:
             except OSError as e:
                 log.warning(f"REPL: {e}")
 
-    def stop(self):
+    def stop(self, args) -> None:
         if self.sock:
             self.sock.close()

@@ -29,7 +29,6 @@ from src.mail import Mail
 from src.markov import Markov, MarkovV2
 from src.backend.discord.message import Msg
 from src.reminder import Reminder
-from src.repl import Repl
 from src.utils import Util
 from src.backend.discord.voice import VoiceRoutine
 
@@ -44,7 +43,6 @@ class WalBot(discord.Client):
         self.bot_cache = BotCache(True)
         self.loop.create_task(self._process_reminders())
         self.loop.create_task(VoiceRoutine(self.bot_cache).start())
-        self.loop.create_task(self._repl_routine())
         bc.config = self.config
         bc.commands = self.config.commands
         bc.background_loop = self.loop
@@ -204,11 +202,6 @@ class WalBot(discord.Client):
         while not self.is_closed():
             await self._process_reminders_iteration()
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
-
-    @Mail.send_exception_info_to_admin_emails_async
-    async def _repl_routine(self) -> None:
-        self.repl = Repl(self.config.repl["port"])
-        await self.repl.start()
 
     @Mail.send_exception_info_to_admin_emails_async
     async def on_ready(self) -> None:
