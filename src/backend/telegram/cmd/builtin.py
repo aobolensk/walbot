@@ -17,14 +17,14 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("poll", self._poll))
 
     @Mail.send_exception_info_to_admin_emails
-    def _ping(self, update: Update, context: CallbackContext):
+    def _ping(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return
         reply(update, 'Pong!')
 
     @Mail.send_exception_info_to_admin_emails
-    def _markov(self, update: Update, context: CallbackContext):
+    def _markov(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return
@@ -32,7 +32,7 @@ class BuiltinCommands:
         reply(update, result)
 
     @Mail.send_exception_info_to_admin_emails
-    def _about(self, update: Update, context: CallbackContext):
+    def _about(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return
@@ -45,7 +45,7 @@ class BuiltinCommands:
         reply(update, bc.info.get_full_info(verbosity))
 
     @Mail.send_exception_info_to_admin_emails
-    def _poll(self, update: Update, context: CallbackContext):
+    def _poll(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return

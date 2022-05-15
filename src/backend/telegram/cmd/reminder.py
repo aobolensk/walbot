@@ -14,7 +14,7 @@ class ReminderCommands:
         dispatcher.add_handler(CommandHandler("listreminder", self._listreminder))
 
     @Mail.send_exception_info_to_admin_emails
-    def _listreminder(self, update: Update, context: CallbackContext):
+    def _listreminder(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return

@@ -18,7 +18,7 @@ class AuthCommands:
         dispatcher.add_handler(CommandHandler("resetpass", self._resetpass))
 
     @Mail.send_exception_info_to_admin_emails
-    def _authorize(self, update: Update, context: CallbackContext):
+    def _authorize(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         passphrase = context.args[0] if context.args else ""
         if passphrase == bc.config.telegram["passphrase"]:
@@ -28,7 +28,7 @@ class AuthCommands:
             reply(update, "Wrong passphrase!")
 
     @Mail.send_exception_info_to_admin_emails
-    def _resetpass(self, update: Update, context: CallbackContext):
+    def _resetpass(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return
