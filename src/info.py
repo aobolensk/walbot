@@ -81,6 +81,7 @@ class BotInfo:
         res["GitPython"] = importlib.import_module("git").__version__
         res["PyYAML"] = importlib.import_module("yaml").__version__
         res["youtube_dl"] = importlib.import_module("youtube_dl.update").__version__
+        res["python-telegram-bot"] = importlib.import_module("telegram").__version__
         return res
 
     @property
