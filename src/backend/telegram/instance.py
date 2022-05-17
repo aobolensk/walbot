@@ -18,7 +18,7 @@ class TelegramBotInstance(BotInstance):
     def __init__(self) -> None:
         self._is_stopping = False
 
-    def start(self, args) -> None:
+    def start(self, args, *rest, **kwargs) -> None:
         self._run(args)
 
     @Mail.send_exception_info_to_admin_emails

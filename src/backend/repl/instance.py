@@ -27,7 +27,7 @@ class ReplBotInstance(BotInstance):
             return result
         return ""
 
-    def start(self, args) -> None:
+    def start(self, args, *rest, **kwargs) -> None:
         while True:
             if bc is None or bc.secret_config is None:
                 time.sleep(2)

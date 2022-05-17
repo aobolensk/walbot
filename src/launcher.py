@@ -87,14 +87,11 @@ class Launcher:
 
     def __init__(self):
         self._parser = self._get_argparser()
-        # Parse args
         self.args = self._parser.parse_args()
 
     def launch_bot(self):
         """Launch Discord bot instance"""
         self._list_env_var_flags()
-        self.bot = importlib.import_module("src.backend.discord.instance").DiscordBotInstance()
-        self.telegram_bot = importlib.import_module("src.backend.telegram.instance").TelegramBotInstance()
         if self.args.action is None:
             self._parser.print_help()
         else:
@@ -105,11 +102,11 @@ class Launcher:
             backend.stop(self.args)
             log.debug2("Stopped backend: " + backend.__class__.__name__)
         log.info('Stopped the bot!')
-        sys.exit(0)
+        sys.exit(const.ExitStatus.NO_ERROR)
 
-    def start(self):
+    def start(self, main_bot=True):
         """Start the bot"""
-        if self.args.autoupdate:
+        if main_bot and self.args.autoupdate:
             return self.autoupdate()
         self.backends = []
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
@@ -122,7 +119,7 @@ class Launcher:
                 self.backends.append(instance)
                 log.debug2("Detected backend: " + instance.__class__.__name__)
         for backend in self.backends:
-            thread = threading.Thread(target=backend.start, args=(self.args,))
+            thread = threading.Thread(target=backend.start, args=(self.args, main_bot))
             thread.setDaemon(True)
             thread.start()
             log.debug2("Started backend: " + backend.__class__.__name__)
@@ -164,16 +161,16 @@ class Launcher:
     def restart(self):
         """Restart the bot"""
         self._stop_bot_process(self.args)
-        self.bot.start(self.args)
+        self.start()
 
     def suspend(self):
         """Stop the main bot and start mini-bot"""
         self._stop_bot_process(self.args)
-        self.bot.start(self.args, main_bot=False)
+        self.start(main_bot=False)
 
     def startmini(self):
         """Start mini-bot"""
-        self.bot.start(self.args, main_bot=False)
+        self.start(main_bot=False)
 
     def stopmini(self):
         """Stop mini-bot"""
