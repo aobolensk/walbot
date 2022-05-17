@@ -16,7 +16,7 @@ secret.yaml
 backup/
 images/
 
-# Private user iles
+# Private user files
 src/cmd/private/**
 src/plugins/private/**
 
