@@ -473,12 +473,12 @@ class DiscordBotInstance(BotInstance):
         # Constructing bot instance
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        intents = discord.Intents.all()
         if main_bot:
-            intents = discord.Intents.all()
             walbot = WalBot(args.name, self._config, secret_config, intents=intents)
         else:
             walbot = importlib.import_module("src.backend.discord.minibot").MiniWalBot(
-                args.name, self._config, secret_config, args.message)
+                args.name, self._config, secret_config, args.message, intents=intents)
         # Starting the bot
         try:
             walbot.run(secret_config.token)
