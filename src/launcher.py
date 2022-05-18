@@ -15,7 +15,7 @@ import psutil
 
 from src import const
 from src.bot_cache import BotCache
-from src.bot_instance import BotInstance
+from src.api.bot_instance import BotInstance
 from src.ff import FF
 from src.log import log
 

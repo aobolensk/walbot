@@ -3,7 +3,7 @@ import inspect
 import socket
 import time
 
-from src.bot_instance import BotInstance
+from src.api.bot_instance import BotInstance
 from src.config import bc
 from src.log import log
 from src.backend.repl.cmd.builtin import REPLCommands

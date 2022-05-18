@@ -17,7 +17,7 @@ from src import const
 from src.algorithms import levenshtein_distance
 from src.bc import DoNotUpdateFlag
 from src.bot_cache import BotCache
-from src.bot_instance import BotInstance
+from src.api.bot_instance import BotInstance
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
 from src.db.walbot_db import WalbotDatabase
 from src.backend.discord.embed import DiscordEmbed
