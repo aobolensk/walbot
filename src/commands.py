@@ -5,17 +5,9 @@ from collections import defaultdict
 from typing import Any, Dict
 
 from src import const
+from src.api.command import BaseCmd
 from src.config import Command, bc, log
 from src.utils import Util
-
-
-class BaseCmd:
-    @classmethod
-    def get_classname(cls) -> str:
-        return cls.__name__
-
-    def bind(self) -> None:
-        raise NotImplementedError(f"Class {self.get_classname()} does not have bind() function")
 
 
 class Commands:
