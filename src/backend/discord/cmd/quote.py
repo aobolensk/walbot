@@ -8,7 +8,7 @@ from src import const
 from src.commands import BaseCmd
 from src.config import bc
 from src.backend.discord.message import Msg
-from src.api.quote import Quote
+from src.quote import Quote
 from src.utils import Util, null
 
 
