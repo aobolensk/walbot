@@ -1,1 +1,1 @@
-from src.api.quote import Quote
+from src.api.quote import Quote  # noqa: F401
