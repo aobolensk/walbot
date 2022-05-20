@@ -107,6 +107,7 @@ class ExitStatus(enum.IntEnum):
     CONFIG_FILE_ERROR = 2
 
 
+@enum.unique
 class LogLevel(enum.IntEnum):
     # Logging levels: https://docs.python.org/3/library/logging.html#logging-levels
     CRITICAL = 50
@@ -119,6 +120,7 @@ class LogLevel(enum.IntEnum):
     NOTSET = 0
 
 
+@enum.unique
 class Verbosity(enum.IntEnum):
     SILENT = 0
     VERBOSE = 1
