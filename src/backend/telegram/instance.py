@@ -63,7 +63,7 @@ class TelegramBotInstance(BotInstance):
                 Filters.text & ~Filters.command & ~Filters.entity(MessageEntity.MENTION), self._handle_messages))
 
         log.info("Telegram instance is started!")
-        updater.start_polling()
+        updater.start_polling(timeout=600)
         while True:
             time.sleep(1)
             if self._is_stopping:
