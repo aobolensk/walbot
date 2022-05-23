@@ -18,6 +18,4 @@ $ python walbot.py patch config.yaml   # Patch config
 $ python walbot.py patch markov.yaml   # Patch Markov model config
 $ python walbot.py patch secret.yaml   # Patch secret config
 $ python walbot.py patch -h            # Get help for patch tool
-
-$ python walbot.py start --patch  # Start the bot and patch all config files
 ```
