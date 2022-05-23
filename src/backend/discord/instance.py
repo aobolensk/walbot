@@ -406,9 +406,7 @@ class DiscordBotInstance(BotInstance):
         BotCache(main_bot).dump_to_file()
         # Executing patch tool if it is necessary
         if args.patch:
-            cmd = f"'{sys.executable}' '{os.path.dirname(__file__) + '/../tools/patch.py'}' all"
-            log.info("Executing patch tool: " + cmd)
-            subprocess.call(cmd)
+            log.warning("Patching the bot using --patch flag is disabled. Use `python3 walbot.py patch` instead.")
         # Read configuration files
         self._config = Util.read_config_file(const.CONFIG_PATH)
         if self._config is None:
