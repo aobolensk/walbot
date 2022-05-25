@@ -46,9 +46,6 @@ class Launcher:
                 help=("Make bot start faster by disabling some optional checks:\n"
                       "- Disable Markov model check on start\n"
                       ))
-            subparsers[option].add_argument(
-                "--patch", action="store_true",
-                help="Call script for patching config files before starting the bot")
             if sys.platform in ("linux", "darwin"):
                 subparsers[option].add_argument(
                     "--nohup", action="store_true",

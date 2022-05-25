@@ -404,9 +404,6 @@ class DiscordBotInstance(BotInstance):
         bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
         # Saving application pd in order to safely stop it later
         BotCache(main_bot).dump_to_file()
-        # Executing patch tool if it is necessary
-        if args.patch:
-            log.warning("Patching the bot using --patch flag is disabled. Use `python3 walbot.py patch` instead.")
         # Read configuration files
         self._config = Util.read_config_file(const.CONFIG_PATH)
         if self._config is None:
