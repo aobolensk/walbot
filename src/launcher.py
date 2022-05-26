@@ -86,9 +86,19 @@ class Launcher:
         self._parser = self._get_argparser()
         self.args = self._parser.parse_args()
 
+    def _prepare_args(self):
+        if self.args.action in ("start", "restart", "suspend", "startmini", "stopmini"):
+            if sys.platform in ("linux", "darwin"):
+                if self.args.nohup:
+                    log.warning(
+                        "You are using --nohup option. "
+                        "Please note that currently SIGHUP signal is not ignored, "
+                        "but output is redirected to nohup.out")
+
     def launch_bot(self):
         """Launch Discord bot instance"""
         self._list_env_var_flags()
+        self._prepare_args()
         if self.args.action is None:
             self._parser.print_help()
         else:
