@@ -209,4 +209,18 @@ class Launcher:
 
     def autocomplete(self):
         """Update shell autocompletion scripts (requires `shtab` dependency)"""
-        importlib.import_module("src.utils").dump_autocomplete_script(next(iter(self.args.type), None), self._parser)
+        shell = next(iter(self.args.type), None)
+        if shell == "bash":
+            try:
+                shtab = importlib.import_module("shtab")
+            except ImportError:
+                log.error("Shell autocompletion scripts update failed.")
+                log.error(f"    Install `shtab`: {sys.executable} -m pip install shtab")
+                return
+            result = shtab.complete(self._parser, shell="bash").replace("walbot.py", "./walbot.py")
+            script_path = os.path.join(os.getcwd(), "tools", "autocomplete", "walbot-completion.bash")
+            with open(script_path, "w") as f:
+                print(result, file=f)
+            log.info("bash autocompletion script has been updated: " + script_path)
+        else:
+            log.error("Unsupported shell type")
