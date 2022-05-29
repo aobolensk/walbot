@@ -1,7 +1,6 @@
 import asyncio
 import inspect
 import socket
-import time
 
 from src.api.bot_instance import BotInstance
 from src.config import bc
@@ -28,11 +27,6 @@ class ReplBotInstance(BotInstance):
         return ""
 
     def start(self, args, *rest, **kwargs) -> None:
-        while True:
-            if bc is None or bc.secret_config is None:
-                time.sleep(2)
-            else:
-                break
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self._run())

@@ -39,11 +39,6 @@ class TelegramBotInstance(BotInstance):
         reply(update, result)
 
     def _run(self, args) -> None:
-        while True:
-            if bc is None or bc.secret_config is None:
-                time.sleep(2)
-            else:
-                break
         if bc.secret_config.telegram["token"] is None:
             log.warning("Telegram backend is not configured. Missing token in secret config")
             return
