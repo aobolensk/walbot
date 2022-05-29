@@ -12,3 +12,7 @@ class BotInstance:
     @abstractmethod
     def stop(self, args) -> None:
         pass
+
+    @property
+    def name(self) -> str:
+        return self.__class__.__name__

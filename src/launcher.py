@@ -107,7 +107,7 @@ class Launcher:
     def _stop_signal_handler(self, sig, frame):
         for backend in self.backends:
             backend.stop(self.args)
-            log.debug2("Stopped backend: " + backend.__class__.__name__)
+            log.debug2("Stopped backend: " + backend.name)
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
@@ -124,12 +124,12 @@ class Launcher:
                              if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
                 instance = instances[0]()
                 self.backends.append(instance)
-                log.debug2("Detected backend: " + instance.__class__.__name__)
+                log.debug2("Detected backend: " + instance.name)
         for backend in self.backends:
             thread = threading.Thread(target=backend.start, args=(self.args, main_bot))
             thread.setDaemon(True)
             thread.start()
-            log.debug2("Started backend: " + backend.__class__.__name__)
+            log.debug2("Started backend: " + backend.name)
         signal.signal(signal.SIGINT, self._stop_signal_handler)
         signal.pause()
 
