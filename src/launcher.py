@@ -12,8 +12,8 @@ import sys
 import threading
 import time
 import zipfile
-import discord
 
+import discord
 import psutil
 
 from src import const

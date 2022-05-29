@@ -3,9 +3,9 @@ import inspect
 import socket
 
 from src.api.bot_instance import BotInstance
+from src.backend.repl.cmd.builtin import REPLCommands
 from src.config import bc
 from src.log import log
-from src.backend.repl.cmd.builtin import REPLCommands
 
 REPL_HOST = ''
 
