@@ -6,18 +6,25 @@ import argparse
 import importlib
 import inspect
 import os
+import shutil
 import signal
 import sys
 import threading
 import time
+import zipfile
+import discord
 
 import psutil
 
 from src import const
-from src.bot_cache import BotCache
 from src.api.bot_instance import BotInstance
+from src.bot_cache import BotCache
+from src.config import Config, SecretConfig, bc
+from src.db.walbot_db import WalbotDatabase
 from src.ff import FF
 from src.log import log
+from src.markov import Markov, MarkovV2
+from src.utils import Util
 
 
 class Launcher:
@@ -111,11 +118,78 @@ class Launcher:
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
+    def _read_configs(self, main_bot=True):
+        # Selecting YAML parser
+        bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
+        # Read configuration files
+        bc.config = Util.read_config_file(const.CONFIG_PATH)
+        if bc.config is None:
+            bc.config = Config()
+        bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
+        if bc.secret_config is None:
+            bc.secret_config = SecretConfig()
+        if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
+            bc.markov = Util.read_config_file(const.MARKOV_PATH)
+            if bc.markov is None and os.path.isdir("backup"):
+                # Check available backups
+                markov_backups = sorted(
+                    [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
+                if markov_backups:
+                    # Restore Markov model from backup
+                    with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
+                        zip_ref.extractall(".")
+                    log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
+                    shutil.move(markov_backups[-1][:-4], "markov.yaml")
+                    bc.markov = Util.read_config_file(const.MARKOV_PATH)
+                    if bc.markov is None:
+                        bc.markov = Markov()
+                        log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
+            if bc.markov is None:
+                bc.markov = Markov()
+                log.info("Created empty Markov model")
+        else:
+            db = WalbotDatabase()
+            bc.markov = MarkovV2(db.markov)
+        # Check config versions
+        ok = True
+        ok &= Util.check_version(
+            "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
+            solutions=[
+                "execute: python -m pip install -r requirements.txt",
+            ])
+        ok &= Util.check_version(
+            "Config", bc.config.version, const.CONFIG_VERSION,
+            solutions=[
+                "run patch tool",
+                "remove config.yaml (settings will be lost!)",
+            ])
+        ok &= Util.check_version(
+            "Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
+            solutions=[
+                "run patch tool",
+                "remove markov.yaml (Markov model will be lost!)",
+            ])
+        ok &= Util.check_version(
+            "Secret config", bc.secret_config.version, const.SECRET_CONFIG_VERSION,
+            solutions=[
+                "run patch tool",
+                "remove secret.yaml (your Discord authentication token will be lost!)",
+            ])
+        if main_bot and not ok:
+            sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+        bc.config.commands.update()
+        # Checking authentication token
+        if bc.secret_config.token is None:
+            bc.secret_config = SecretConfig()
+            if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
+                bc.secret_config.token = input("Enter your token: ")
+
     def start(self, main_bot=True):
         """Start the bot"""
         if main_bot and self.args.autoupdate:
             return self.autoupdate()
         self.backends = []
+        self._read_configs(main_bot)
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
             if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
                     os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):

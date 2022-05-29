@@ -5,32 +5,28 @@ import itertools
 import os
 import random
 import re
-import shutil
 import subprocess
 import sys
-import zipfile
 
 import discord
 import psutil
 
 from src import const
 from src.algorithms import levenshtein_distance
+from src.api.bot_instance import BotInstance
+from src.backend.discord.embed import DiscordEmbed
+from src.backend.discord.message import Msg
+from src.backend.discord.voice import VoiceRoutine
 from src.bc import DoNotUpdateFlag
 from src.bot_cache import BotCache
-from src.api.bot_instance import BotInstance
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
-from src.db.walbot_db import WalbotDatabase
-from src.backend.discord.embed import DiscordEmbed
 from src.emoji import get_clock_emoji
 from src.ff import FF
 from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
-from src.markov import Markov, MarkovV2
-from src.backend.discord.message import Msg
 from src.reminder import Reminder
 from src.utils import Util
-from src.backend.discord.voice import VoiceRoutine
 
 
 class WalBot(discord.Client):
@@ -385,12 +381,8 @@ class DiscordBotInstance(BotInstance):
             if pid is not None and psutil.pid_exists(pid):
                 return log.error("Bot is already running!")
         # Some variable initializations
-        self._config = None
-        secret_config = None
         bc.restart_flag = False
         bc.args = args
-        if FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
-            db = WalbotDatabase()
         # Handle --nohup flag
         if sys.platform in ("linux", "darwin") and args.nohup:
             fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
@@ -400,90 +392,27 @@ class DiscordBotInstance(BotInstance):
             os.close(fd)
             # NOTE: Does not work when not in main thread
             # signal.signal(signal.SIGHUP, signal.SIG_IGN)
-        # Selecting YAML parser
-        bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
         # Saving application pd in order to safely stop it later
         BotCache(main_bot).dump_to_file()
-        # Read configuration files
-        self._config = Util.read_config_file(const.CONFIG_PATH)
-        if self._config is None:
-            self._config = Config()
-        secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
-        if secret_config is None:
-            secret_config = SecretConfig()
-        if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
-            bc.markov = Util.read_config_file(const.MARKOV_PATH)
-            if bc.markov is None and os.path.isdir("backup"):
-                # Check available backups
-                markov_backups = sorted(
-                    [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
-                if markov_backups:
-                    # Restore Markov model from backup
-                    with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
-                        zip_ref.extractall(".")
-                    log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
-                    shutil.move(markov_backups[-1][:-4], "markov.yaml")
-                    bc.markov = Util.read_config_file(const.MARKOV_PATH)
-                    if bc.markov is None:
-                        bc.markov = Markov()
-                        log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
-            if bc.markov is None:
-                bc.markov = Markov()
-                log.info("Created empty Markov model")
-        else:
-            bc.markov = MarkovV2(db.markov)
-        # Check config versions
-        ok = True
-        ok &= Util.check_version(
-            "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
-            solutions=[
-                "execute: python -m pip install -r requirements.txt",
-            ])
-        ok &= Util.check_version(
-            "Config", self._config.version, const.CONFIG_VERSION,
-            solutions=[
-                "run patch tool",
-                "remove config.yaml (settings will be lost!)",
-            ])
-        ok &= Util.check_version(
-            "Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
-            solutions=[
-                "run patch tool",
-                "remove markov.yaml (Markov model will be lost!)",
-            ])
-        ok &= Util.check_version(
-            "Secret config", secret_config.version, const.SECRET_CONFIG_VERSION,
-            solutions=[
-                "run patch tool",
-                "remove secret.yaml (your Discord authentication token will be lost!)",
-            ])
-        if main_bot and not ok:
-            sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
-        self._config.commands.update()
-        # Checking authentication token
-        if secret_config.token is None:
-            secret_config = SecretConfig()
-            if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
-                secret_config.token = input("Enter your token: ")
         # Constructing bot instance
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         intents = discord.Intents.all()
         if main_bot:
-            walbot = WalBot(args.name, self._config, secret_config, intents=intents)
+            walbot = WalBot(args.name, bc.config, bc.secret_config, intents=intents)
         else:
             walbot = importlib.import_module("src.backend.discord.minibot").MiniWalBot(
-                args.name, self._config, secret_config, args.message, intents=intents)
+                args.name, bc.config, bc.secret_config, args.message, intents=intents)
         # Starting the bot
         try:
-            walbot.run(secret_config.token)
+            walbot.run(bc.secret_config.token)
         except discord.PrivilegedIntentsRequired:
             log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
 
     def stop(self, args, main_bot=True):
         log.info("Bot is disconnected!")
         if main_bot:
-            self._config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
+            bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         BotCache(main_bot).remove()
         if bc.restart_flag:
             cmd = f"'{sys.executable}' '{os.path.dirname(os.path.dirname(__file__)) + '/walbot.py'}' start"
