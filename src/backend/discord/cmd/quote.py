@@ -76,10 +76,7 @@ class QuoteCommands(BaseCmd):
         result = ""
         for index, quote in bc.config.quotes.items():
             result += f"{index} -> {quote.quote()}\n"
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "<Quotes database is empty>", silent)
+        await Msg.response(message, result or "<Quotes database is empty>", silent)
         return result
 
     @staticmethod

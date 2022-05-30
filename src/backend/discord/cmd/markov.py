@@ -198,10 +198,7 @@ class MarkovCommands(BaseCmd):
         result = ""
         for index, regex in enumerate(bc.markov.filters):
             result += f"{index} -> `{regex.pattern}`\n"
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "No filters for Markov model found!", silent)
+        await Msg.response(message, result or "No filters for Markov model found!", silent)
         return result
 
     @staticmethod
@@ -241,10 +238,7 @@ class MarkovCommands(BaseCmd):
         result = ""
         for index, prefix in bc.markov.ignored_prefixes.items():
             result += f"{index} -> `{prefix}`\n"
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "No ignored prefixes for Markov model found!", silent)
+        await Msg.response(message, result or "No ignored prefixes for Markov model found!", silent)
 
     @staticmethod
     async def _delmarkovignoredprefix(message, command, silent=False):

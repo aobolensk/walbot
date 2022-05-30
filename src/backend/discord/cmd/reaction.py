@@ -73,10 +73,7 @@ class ReactionCommands(BaseCmd):
         result = ""
         for index, reaction in bc.config.reactions.items():
             result += f"{index} - {reaction.emoji}: `{reaction.regex}`\n"
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "No reactions found!", silent)
+        await Msg.response(message, result or "No reactions found!", silent)
         return result
 
     @staticmethod
@@ -143,8 +140,5 @@ class ReactionCommands(BaseCmd):
         result = ""
         for index, response in bc.config.responses.items():
             result += f"{index} - `{response.regex}`: {response.text}\n"
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "No responses found!", silent)
+        await Msg.response(message, result or "No responses found!", silent)
         return result

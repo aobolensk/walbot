@@ -846,10 +846,7 @@ class BuiltinCommands(BaseCmd):
         for index, event in enumerate(bc.background_events):
             result += (f"{index}: '{event.message.content}' every {event.period} seconds,"
                        f"channel: <#{event.channel.id}>\n")
-        if result:
-            await Msg.response(message, result, silent)
-        else:
-            await Msg.response(message, "No background events found!", silent)
+        await Msg.response(message, result or "No background events found!", silent)
         return result
 
     @staticmethod
