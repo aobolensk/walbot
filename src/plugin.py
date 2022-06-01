@@ -19,10 +19,10 @@ class PluginManager:
 
     def register(self, reload: bool = False) -> None:
         """Find plugins in plugins directory and register them"""
-        plugin_directory = os.path.join(os.path.dirname(__file__), "plugins")
+        plugin_directory = os.path.join(os.getcwd(), "src", "plugins")
         plugin_modules = ['src.plugins.' + os.path.splitext(path)[0] for path in os.listdir(plugin_directory)
                           if os.path.isfile(os.path.join(plugin_directory, path)) and path.endswith(".py")]
-        private_plugin_directory = os.path.join(os.path.dirname(__file__), "plugins", "private")
+        private_plugin_directory = os.path.join(os.getcwd(), "src", "plugins", "private")
         plugin_modules += [Util.path_to_module(
             f"src.plugins.private.{os.path.relpath(path, private_plugin_directory)}."
             f"{os.path.splitext(file)[0]}")
