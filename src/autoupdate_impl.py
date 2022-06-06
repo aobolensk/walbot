@@ -12,6 +12,7 @@ import psutil
 
 from src import const
 from src.bot_cache import BotCache
+from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
 from src.utils import Util
@@ -59,8 +60,8 @@ def get_autoupdate_error_message(error_string: str) -> str:
         "\n"
         f"Backtrace:\n"
         f"{''.join(traceback.format_stack())}\n"
-        f"Details:\n"
-        f"N/A\n"
+        f"Details:\n" +
+        BotInfo().get_full_info(2) + "\n"
     )
 
 
