@@ -97,21 +97,21 @@ class BotInfo:
         result = (
             f"{bc.bot_user} (WalBot instance)\n"
             f"Source code: <{const.GIT_REPO_LINK}>\n"
-            f"Version: {bc.info.version}{'-dirty' if bc.info.is_version_dirty else ''} "
-            f"(updated at {bc.info.version_time})\n"
-            f"Uptime: {bc.info.uptime}\n"
+            f"Version: {self.version}{'-dirty' if self.is_version_dirty else ''} "
+            f"(updated at {self.version_time})\n"
+            f"Uptime: {self.uptime}\n"
         )
         if verbosity >= const.Verbosity.VERBOSE:
             result += (
                 f"Deployment time: {bc.deployment_time}\n"
-                f"Commit name: `{bc.info.commit_name}`\n"
-                f"Branch name: {bc.info.branch_name}\n"
+                f"Commit name: `{self.commit_name}`\n"
+                f"Branch name: {self.branch_name}\n"
                 f"Python interpreter: {platform.python_implementation()} {platform.python_version()} "
                 f"({', '.join(platform.python_build())}) [{platform.python_compiler()}]\n"
             )
             # Dependencies info
             result += "Dependencies:\n"
-            result += '\n'.join(f"    {name}: {ver}" for name, ver in bc.info.query_dependencies_info().items()) + '\n'
+            result += '\n'.join(f"    {name}: {ver}" for name, ver in self.query_dependencies_info().items()) + '\n'
         if verbosity >= const.Verbosity.VERBOSE2:
             result += f"OS info: {' '.join(platform.uname())}\n"
             if sys.platform == "linux":
