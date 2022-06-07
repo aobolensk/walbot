@@ -201,6 +201,7 @@ class WalBot(discord.Client):
 
     @Mail.send_exception_info_to_admin_emails_async
     async def on_ready(self) -> None:
+        bc.backends["discord"] = True
         await bc.plugin_manager.load_plugins()
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "

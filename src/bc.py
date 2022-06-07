@@ -38,3 +38,7 @@ class BotController:
         self.message_buffer = MessageBuffer()
         self.instance_name = ""
         self.current_video = None
+        self.backends = {
+            "discord": False,
+            "telegram": False,
+        }
