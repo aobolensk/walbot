@@ -800,7 +800,7 @@ class BuiltinCommands(BaseCmd):
 """
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
-        if not hasattr(bc, "bot_user"):
+        if not hasattr(bc, "discord_bot_user"):
             return null(await Msg.response(message, "Bot is not loaded yet!", silent))
         verbosity = 0
         if len(command) > 1:
@@ -1211,7 +1211,7 @@ class BuiltinCommands(BaseCmd):
                 if os.path.splitext(os.path.basename(file))[0].lower() == image.lower():
                     try:
                         with open(os.path.join(const.IMAGES_DIRECTORY, file), "rb") as f:
-                            await bc.bot_user.edit(avatar=f.read())
+                            await bc.discord_bot_user.edit(avatar=f.read())
                         await Msg.response(
                             message, f"Successfully changed bot avatar to {image}", silent)
                     except discord.HTTPException as e:
@@ -1246,7 +1246,7 @@ class BuiltinCommands(BaseCmd):
                     temp_image_file.close()
                 try:
                     with open(temp_image_file.name, "rb") as temp_image_file:
-                        await bc.bot_user.edit(avatar=temp_image_file.read())
+                        await bc.discord_bot_user.edit(avatar=temp_image_file.read())
                 except Exception as e:
                     log.error("Changing avatar failed!", exc_info=True)
                     return null(await Msg.response(message, f"Changing avatar failed: {e}", silent))

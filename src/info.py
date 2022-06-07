@@ -95,7 +95,7 @@ class BotInfo:
 
     def get_full_info(self, verbosity) -> str:
         result = (
-            f"{bc.bot_user if hasattr(bc, 'bot_user') else '<None>'} (WalBot instance)\n"
+            f"{bc.discord_bot_user if hasattr(bc, 'discord_bot_user') else '<None>'} (WalBot instance)\n"
             f"Source code: <{const.GIT_REPO_LINK}>\n"
             f"Version: {self.version}{'-dirty' if self.is_version_dirty else ''} "
             f"(updated at {self.version_time})\n"

@@ -213,7 +213,7 @@ class WalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.guilds.keys():
                 self.config.guilds[guild.id] = GuildSettings(guild.id)
-        bc.bot_user = self.user
+        bc.discord_bot_user = self.user
         self.loop.create_task(self._config_autosave())
         self.loop.create_task(self._precompile())
 
