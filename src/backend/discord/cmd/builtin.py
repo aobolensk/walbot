@@ -1052,7 +1052,10 @@ class BuiltinCommands(BaseCmd):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
         if len(command) == 1:
-            list_images = os.listdir(const.IMAGES_DIRECTORY)
+            try:
+                list_images = os.listdir(const.IMAGES_DIRECTORY)
+            except FileNotFoundError:
+                return null(await Msg.response(message, "Images directory does not exist", silent))
             if len(list_images) == 0:
                 return null(await Msg.response(message, "No images found!", silent))
             result = random.randint(0, len(list_images) - 1)  # integer random
