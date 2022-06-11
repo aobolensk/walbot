@@ -5,7 +5,7 @@ import datetime
 import os
 import urllib.parse
 
-import youtube_dl
+import yt_dlp
 
 from src import const
 from src.commands import BaseCmd
@@ -35,7 +35,7 @@ class _VoiceInternals:
             }],
         }
         try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 video_info = ydl.extract_info(yt_video_url, download=False)
                 if not os.path.exists(output_file_name):
                     log.debug(f"Downloading YT video {yt_video_url} ...")
@@ -63,7 +63,7 @@ class _VoiceInternals:
         ydl_opts = {
         }
         try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(video_url, download=False)
         except Exception as e:
             return null(await Msg.response(message, f"ERROR: Getting YT video info failed: {e}", silent))
@@ -160,7 +160,7 @@ class VoiceCommands(BaseCmd):
                     'extract_flat': True,
                 }
                 try:
-                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         yt_playlist_data = ydl.extract_info(yt_url, download=False)
                 except Exception as e:
                     return null(await Msg.response(message, f"🔊 ERROR: Fetching YT playlist data failed: {e}", silent))
@@ -189,7 +189,7 @@ class VoiceCommands(BaseCmd):
                 'preferredcodec': 'mp3',
             }],
         }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             video_info = ydl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
         await _VoiceInternals.push_video(message, video_info['webpage_url'], silent)
 
