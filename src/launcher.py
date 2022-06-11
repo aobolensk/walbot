@@ -20,7 +20,6 @@ from src import const
 from src.api.bot_instance import BotInstance
 from src.bot_cache import BotCache
 from src.config import Config, SecretConfig, bc
-from src.db.walbot_db import WalbotDatabase
 from src.ff import FF
 from src.log import log
 from src.markov import Markov, MarkovV2
@@ -148,6 +147,7 @@ class Launcher:
                 bc.markov = Markov()
                 log.info("Created empty Markov model")
         else:
+            from src.db.walbot_db import WalbotDatabase
             db = WalbotDatabase()
             bc.markov = MarkovV2(db.markov)
         # Check config versions

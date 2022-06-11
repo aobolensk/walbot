@@ -8,7 +8,6 @@ import uuid
 import yaml
 
 from src import const
-from src.db.walbot_db import WalbotDatabase
 from src.ff import FF
 from src.log import log
 from src.utils import Util
@@ -260,6 +259,7 @@ class Updater:
             self._bump_version(config, "0.0.7")
         if config.version == "0.0.7":
             if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
+                from src.db.walbot_db import WalbotDatabase
                 db = WalbotDatabase()
 
                 def preprocess_key(key: str):
