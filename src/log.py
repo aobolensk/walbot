@@ -25,7 +25,7 @@ class Log:
     def __init__(self) -> None:
         logging.config.dictConfig({
             'version': 1,
-            'disable_existing_loggers': True,
+            'disable_existing_loggers': False,
         })
         # Add new logging levels
         logging.addLevelName(const.LogLevel.DEBUG2, "DEBUG2")
