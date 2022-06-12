@@ -134,6 +134,21 @@ class Util:
             return string[:(length - 3 if length > 3 else 0)] + "..."
         return string
 
+    class Proxy:
+        def http() -> Optional[str]:
+            """Get HTTP proxy from environment"""
+            return (
+                os.environ.get("http_proxy") or
+                os.environ.get("HTTP_PROXY")
+            )
+
+        def https() -> Optional[str]:
+            """Get HTTPS proxy from environment"""
+            return (
+                os.environ.get("https_proxy") or
+                os.environ.get("HTTPS_PROXY")
+            )
+
 
 def null(*args, **kwargs):
     """Drop return value"""
