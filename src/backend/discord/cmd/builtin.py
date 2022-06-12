@@ -1363,10 +1363,13 @@ class BuiltinCommands(BaseCmd):
             "http": Util.Proxy.http(),
             "https": Util.Proxy.https(),
         }
-        r = requests.get(url, proxies=proxies)
-        result = r.text
-        await Msg.response(message, result, silent)
-        return result
+        try:
+            r = requests.get(url, proxies=proxies)
+            result = r.text
+            await Msg.response(message, result, silent)
+            return result
+        except Exception as e:
+            await Msg.response(message, f"Request failed: {e}", silent)
 
     @staticmethod
     async def _nick(message, command, silent=False):
