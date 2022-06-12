@@ -1359,7 +1359,11 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         url = command[1]
-        r = requests.get(url)
+        proxies = {
+            "http": Util.Proxy.http(),
+            "https": Util.Proxy.https(),
+        }
+        r = requests.get(url, proxies=proxies)
         result = r.text
         await Msg.response(message, result, silent)
         return result
