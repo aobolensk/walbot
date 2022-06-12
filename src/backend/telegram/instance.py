@@ -12,6 +12,7 @@ from src.backend.telegram.util import check_auth, reply
 from src.config import bc
 from src.log import log
 from src.mail import Mail
+from src.utils import Util
 
 
 class TelegramBotInstance(BotInstance):
@@ -43,7 +44,11 @@ class TelegramBotInstance(BotInstance):
             log.warning("Telegram backend is not configured. Missing token in secret config")
             return
         log.info("Starting Telegram instance...")
-        updater = Updater(bc.secret_config.telegram["token"])
+        updater = Updater(bc.secret_config.telegram["token"], request_kwargs={
+            "proxy_url": Util.Proxy.http(),
+        })
+        if Util.Proxy.http() is not None:
+            log.info("Telegram instance is using proxy: " + Util.Proxy.http())
         builtin_cmds = BuiltinCommands()
         builtin_cmds.add_handlers(updater.dispatcher)
         reminder_cmds = ReminderCommands()
