@@ -134,7 +134,7 @@ class Util:
             return string[:(length - 3 if length > 3 else 0)] + "..."
         return string
 
-    class Proxy:
+    class proxy:
         def http() -> Optional[str]:
             """Get HTTP proxy from environment"""
             return (

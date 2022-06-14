@@ -1360,8 +1360,8 @@ class BuiltinCommands(BaseCmd):
             return
         url = command[1]
         proxies = {
-            "http": Util.Proxy.http(),
-            "https": Util.Proxy.https(),
+            "http": Util.proxy.http(),
+            "https": Util.proxy.https(),
         }
         try:
             r = requests.get(url, proxies=proxies)

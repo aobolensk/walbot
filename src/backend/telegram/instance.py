@@ -45,10 +45,10 @@ class TelegramBotInstance(BotInstance):
             return
         log.info("Starting Telegram instance...")
         updater = Updater(bc.secret_config.telegram["token"], request_kwargs={
-            "proxy_url": Util.Proxy.http(),
+            "proxy_url": Util.proxy.http(),
         })
-        if Util.Proxy.http() is not None:
-            log.info("Telegram instance is using proxy: " + Util.Proxy.http())
+        if Util.proxy.http() is not None:
+            log.info("Telegram instance is using proxy: " + Util.proxy.http())
         builtin_cmds = BuiltinCommands()
         builtin_cmds.add_handlers(updater.dispatcher)
         reminder_cmds = ReminderCommands()
