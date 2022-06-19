@@ -117,6 +117,13 @@ class Launcher:
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
+    def _stop_signal_handler_mini(self, sig, frame):
+        for backend in self.backends:
+            backend.stop(self.args, main_bot=False)
+            log.debug2("Stopped backend: " + backend.name)
+        log.info('Stopped the minibot!')
+        sys.exit(const.ExitStatus.NO_ERROR)
+
     def _read_configs(self, main_bot=True):
         # Selecting YAML parser
         bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
@@ -204,7 +211,10 @@ class Launcher:
             thread.setDaemon(True)
             thread.start()
             log.debug2("Started backend: " + backend.name)
-        signal.signal(signal.SIGINT, self._stop_signal_handler)
+        if main_bot:
+            signal.signal(signal.SIGINT, self._stop_signal_handler)
+        else:
+            signal.signal(signal.SIGINT, self._stop_signal_handler_mini)
         signal.pause()
 
     def _stop_bot_process(self, _, main_bot=True):
