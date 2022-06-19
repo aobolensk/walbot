@@ -527,12 +527,13 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(
                     message, f"Second argument of command '{command[0]}' should be user ping", silent))
         user_id = int(r.group(1))
-        for user in bc.config.users.keys():
-            if bc.config.users[user].id == user_id:
-                bc.config.users[user].permission_level = perm
-                return null(
-                    await Msg.response(message, f"User permissions are set to {command[2]}", silent))
-        await Msg.response(message, f"User '{command[1]}' is not found", silent)
+        if user_id in bc.config.users.keys():
+            bc.config.users[user_id].permission_level = perm
+            return null(
+                await Msg.response(message, f"Set permission level {command[2]} for user '{command[1]}'", silent))
+        else:
+            return null(
+                await Msg.response(message, f"User '{command[1]}' is not found", silent))
 
     @staticmethod
     async def _extexec(message, command, silent=False):
