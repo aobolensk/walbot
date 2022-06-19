@@ -8,9 +8,7 @@ Discord bot in Python*
 
 ### Requirements:
 - [ffmpeg](https://www.ffmpeg.org/)
-- [Python](https://www.python.org/) 3.8-3.10*
-
-\* `numba` package is unavailable on Python 3.10, note that some functionality may be slower.
+- [Python](https://www.python.org/) 3.8-3.10
 
 ### Quick start:
 ```shell
