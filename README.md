@@ -39,8 +39,11 @@ $ python walbot.py help           # Get help
 ### Documentation
 
 Patch tool docs: [Read](docs/Patch.md) \
-Builtin commands list: [Read](docs/DiscordCommands.md) \
 Commands tutorial: [Read](docs/CommandsTutorial.md)
+
+#### Commands
+
+Discord commands help: [Read](docs/DiscordCommands.md)
 
 ### How to setup fast YAML loader and dumper?
 
