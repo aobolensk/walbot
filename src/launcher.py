@@ -211,10 +211,7 @@ class Launcher:
             thread.setDaemon(True)
             thread.start()
             log.debug2("Started backend: " + backend.name)
-        if main_bot:
-            signal.signal(signal.SIGINT, self._stop_signal_handler)
-        else:
-            signal.signal(signal.SIGINT, self._stop_signal_handler_mini)
+        signal.signal(signal.SIGINT, self._stop_signal_handler if main_bot else self._stop_signal_handler_mini)
         signal.pause()
 
     def _stop_bot_process(self, _, main_bot=True):
