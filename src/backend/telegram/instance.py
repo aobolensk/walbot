@@ -73,5 +73,5 @@ class TelegramBotInstance(BotInstance):
                 log.info("Telegram instance is stopped!")
                 break
 
-    def stop(self, args) -> None:
+    def stop(self, args, main_bot=True) -> None:
         self._is_stopping = True
