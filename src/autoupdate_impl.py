@@ -111,7 +111,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
         mail.send(
             secret_config.admin_email_list,
             "Autoupdate error",
-            get_autoupdate_error_message("Failed to fetch requirements.txt"))
+            get_autoupdate_error_message(f"Failed to fetch requirements.txt. Return code: {p.returncode}"))
     minibot_response = "WalBot automatic update is in progress. Please, wait..."
     subprocess.call(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &", shell=True)
     p = subprocess.run(f"{sys.executable} walbot.py stop", shell=True)
@@ -119,7 +119,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
         mail.send(
             secret_config.admin_email_list,
             "Autoupdate error",
-            get_autoupdate_error_message("Failed to stop the bot"))
+            get_autoupdate_error_message(f"Failed to stop the bot. Return code: {p.returncode}"))
     if context.check_versions():
         subprocess.call(f"{sys.executable} walbot.py patch", shell=True)
     subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
@@ -132,7 +132,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
                 mail.send(
                     secret_config.admin_email_list,
                     "Autoupdate error",
-                    get_autoupdate_error_message("Failed to stop minibot"))
+                    get_autoupdate_error_message(f"Failed to stop minibot. Return code: {p.returncode}"))
             log.info("Bot is fully loaded. MiniWalBot is stopped.")
             break
         log.debug("Bot is not fully loaded yet. Waiting...")
