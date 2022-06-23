@@ -188,8 +188,7 @@ class Launcher:
         # Checking authentication token
         if bc.secret_config.token is None:
             bc.secret_config = SecretConfig()
-            if not FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
-                bc.secret_config.token = input("Enter your token: ")
+            bc.secret_config.token = input("Enter your token: ")
 
     def start(self, main_bot=True):
         """Start the bot"""

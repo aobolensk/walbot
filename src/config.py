@@ -361,16 +361,6 @@ class Config:
 
 class SecretConfig:
     def __init__(self):
-        if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG"):
-            sqlite3 = importlib.import_module("sqlite3")
-            con = sqlite3.connect(os.path.join("db", "secret.db"))
-            cur = con.cursor()
-            cur.execute("SELECT value FROM tokens WHERE key = 'discord'")
-            self.token = cur.fetchone()[0]
-            cur.execute("SELECT value FROM db_info WHERE key = 'version'")
-            self.version = cur.fetchone()[0]
-            con.close()
-            return
         self.token = None
         self.version = const.SECRET_CONFIG_VERSION
         self.mail = {

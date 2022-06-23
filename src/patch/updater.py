@@ -32,11 +32,8 @@ class Updater:
             config = Util.read_config_file(yaml_path)
             getattr(self, self.config_name + "_yaml")(config)
         else:
-            if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
-                getattr(self, self.config_name + "_db")()
-            else:
-                log.error(f"File '{self.config_name}.yaml' does not exist")
-                sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+            log.error(f"File '{self.config_name}.yaml' does not exist")
+            sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
         if self.modified:
             self._save_yaml_file(yaml_path, config)
 
@@ -258,7 +255,7 @@ class Updater:
             config.__dict__["ignored_prefixes"] = dict()
             self._bump_version(config, "0.0.7")
         if config.version == "0.0.7":
-            if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
+            if FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO") == "1":
                 from src.db.walbot_db import WalbotDatabase
                 db = WalbotDatabase()
 
@@ -314,27 +311,13 @@ class Updater:
     def secret_yaml(self, config):
         """Update secret.yaml"""
         if config.version == "0.0.1":
-            if FF.is_enabled("WALBOT_FEATURE_NEW_CONFIG") == "1":
-                os.makedirs("db", exist_ok=True)
-                sqlite3 = importlib.import_module("sqlite3")
-                con = sqlite3.connect(os.path.join("db", "secret.db"))
-                cur = con.cursor()
-                cur.execute("CREATE TABLE db_info (key text, value text)")
-                cur.execute("INSERT INTO db_info VALUES ('version', '0.1.0')")
-                cur.execute("CREATE TABLE tokens (key text, value text)")
-                cur.execute("INSERT INTO tokens VALUES ('discord', ?)", (config.token,))
-                con.commit()
-                con.close()
-                os.remove(self.config_name + '.yaml')
-                log.info("Successfully migrated contig.yaml to db/config.db!")
-            else:
-                config.__dict__["mail"] = {
-                    "smtp_server": None,
-                    "email": None,
-                    "password": None,
-                }
-                config.__dict__["admin_email_list"] = list()
-                self._bump_version(config, "0.0.2")
+            config.__dict__["mail"] = {
+                "smtp_server": None,
+                "email": None,
+                "password": None,
+            }
+            config.__dict__["admin_email_list"] = list()
+            self._bump_version(config, "0.0.2")
         if config.version == "0.0.2":
             config.__dict__["telegram"] = dict()
             config.__dict__["telegram"]["token"] = None
