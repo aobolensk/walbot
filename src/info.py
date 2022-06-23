@@ -99,6 +99,7 @@ class BotInfo:
             "Backends:\n"
             f"    Discord: {'on' if bc.backends['discord'] else 'off'}\n"
             f"    Telegram: {'on' if bc.backends['telegram'] else 'off'}\n"
+            f"    REPL: {'on' if bc.backends['repl'] else 'off'}\n"
             f"Source code: <{const.GIT_REPO_LINK}>\n"
             f"Version: {self.version}{'-dirty' if self.is_version_dirty else ''} (updated at {self.version_time})\n"
             f"Uptime: {self.uptime}\n"

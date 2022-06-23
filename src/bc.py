@@ -41,4 +41,5 @@ class BotController:
         self.backends = {
             "discord": False,
             "telegram": False,
+            "repl": False,
         }

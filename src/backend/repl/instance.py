@@ -40,6 +40,7 @@ class ReplBotInstance(BotInstance):
         self.sock.listen()
         loop = asyncio.get_event_loop()
         log.debug(f"REPL initialized on port {self.port}")
+        bc.backends["repl"] = True
         while True:
             try:
                 conn, addr = await loop.sock_accept(self.sock)
