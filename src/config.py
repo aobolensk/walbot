@@ -14,7 +14,6 @@ import yaml
 
 from src import const
 from src.bc import DoNotUpdateFlag, BotController
-from src.ff import FF
 from src.log import log
 from src.backend.discord.message import Msg
 from src.utils import Util, null
