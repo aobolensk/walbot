@@ -336,6 +336,7 @@ class WalBot(discord.Client):
             "vqfpush",
             "vqpush",
             "disabletl",
+            "img",
         ):
             timeout_error, _ = await Util.run_function_with_time_limit(
                 self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id]),
