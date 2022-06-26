@@ -1052,6 +1052,13 @@ class BuiltinCommands(BaseCmd):
     async def _img(message, command, silent=False):
         """Send image (use !listimg for list of available images)
     Example: !img <image_name>"""
+        if len(command) > 1 + const.MAX_IMAGES_AMOUNT_FOR_IMG_COMMAND:
+            return null(
+                await Msg.response(
+                    message,
+                    "ERROR: Too many images were provided "
+                    f"({len(command) - 1} > {const.MAX_IMAGES_AMOUNT_FOR_IMG_COMMAND})",
+                    silent))
         if len(command) == 1:
             try:
                 list_images = os.listdir(const.IMAGES_DIRECTORY)
