@@ -1306,7 +1306,6 @@ class BuiltinCommands(BaseCmd):
         if g.icon:
             e.thumbnail(str(g.icon))
         e.add_field("Members", str(g.member_count), True)
-        e.add_field("Region", str(g.region), True)
         e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
         if g.owner is not None:
             e.add_field("Owner", str(g.owner).split('#', 1)[0], True)
