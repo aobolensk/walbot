@@ -338,9 +338,12 @@ class WalBot(discord.Client):
             "disabletl",
             "img",
         ):
+            max_exec_time = const.MAX_COMMAND_EXECUTION_TIME
+            if command[0] == "translate":
+                max_exec_time = 10
             timeout_error, _ = await Util.run_function_with_time_limit(
                 self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id]),
-                const.MAX_COMMAND_EXECUTION_TIME)
+                max_exec_time)
             if command[0] not in (
                 "silent",
             ) and timeout_error:
