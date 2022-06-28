@@ -190,6 +190,14 @@ class Launcher:
             bc.secret_config = SecretConfig()
             bc.secret_config.token = input("Enter your token: ")
 
+    def _append_backend(self, backend):
+        module = importlib.import_module(f"src.backend.{backend}.instance")
+        instances = [obj[1] for obj in inspect.getmembers(module, inspect.isclass)
+                        if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
+        instance = instances[0]()
+        self.backends.append(instance)
+        log.debug2("Detected backend: " + self.backends[-1].name)
+
     def start(self, main_bot=True):
         """Start the bot"""
         if main_bot and self.args.autoupdate:
@@ -199,12 +207,11 @@ class Launcher:
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
             if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
                     os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):
-                module = importlib.import_module(f"src.backend.{backend}.instance")
-                instances = [obj[1] for obj in inspect.getmembers(module, inspect.isclass)
-                             if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
-                instance = instances[0]()
-                self.backends.append(instance)
-                log.debug2("Detected backend: " + instance.name)
+                if main_bot:
+                    self._append_backend(backend)
+                else:
+                    if backend == "discord":
+                        self._append_backend(backend)
         for backend in self.backends:
             thread = threading.Thread(target=backend.start, args=(self.args, main_bot))
             thread.setDaemon(True)
