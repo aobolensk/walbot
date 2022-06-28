@@ -22,5 +22,8 @@ class TranslateCommands(BaseCmd):
         translator = Translator()
         dst_language = command[1]
         text = " ".join(command[2:])
-        translation = translator.translate(text, dest=dst_language)
-        await Msg.response(message, translation.text, silent)
+        try:
+            translation = translator.translate(text, dest=dst_language)
+            await Msg.response(message, translation.text, silent)
+        except Exception as e:
+            await Msg.response(message, f"ERROR! Could not translate text: {e}", silent)
