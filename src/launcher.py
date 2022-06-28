@@ -193,7 +193,7 @@ class Launcher:
     def _append_backend(self, backend):
         module = importlib.import_module(f"src.backend.{backend}.instance")
         instances = [obj[1] for obj in inspect.getmembers(module, inspect.isclass)
-                        if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
+                     if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
         instance = instances[0]()
         self.backends.append(instance)
         log.debug2("Detected backend: " + self.backends[-1].name)
