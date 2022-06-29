@@ -26,8 +26,8 @@ class TranslateCommands(BaseCmd):
         if Util.proxy.http():
             http_parse_res = urlparse(Util.proxy.http())
             proxy["http"] = SyncHTTPProxy((
-                 http_parse_res.scheme.encode("utf-8"), http_parse_res.hostname.encode("utf-8"),
-                 int(http_parse_res.port)))
+                http_parse_res.scheme.encode("utf-8"), http_parse_res.hostname.encode("utf-8"),
+                int(http_parse_res.port)))
         if Util.proxy.https():
             https_parse_res = urlparse(Util.proxy.https())
             proxy["https"] = SyncHTTPProxy((
