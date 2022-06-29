@@ -1,9 +1,12 @@
+from urllib.parse import urlparse
+
 from googletrans import Translator
+from httpcore import SyncHTTPProxy
 
 from src import const
+from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
-from src.backend.discord.message import Msg
 from src.utils import Util
 
 
@@ -19,7 +22,18 @@ class TranslateCommands(BaseCmd):
     Usage: !translate <lang> <text>"""
         if not await Util.check_args_count(message, command, silent, min=3):
             return
-        translator = Translator()
+        proxy = dict()
+        if Util.proxy.http():
+            http_parse_res = urlparse(Util.proxy.http())
+            proxy["http"] = SyncHTTPProxy((
+                 http_parse_res.scheme.encode("utf-8"), http_parse_res.hostname.encode("utf-8"),
+                 int(http_parse_res.port)))
+        if Util.proxy.https():
+            https_parse_res = urlparse(Util.proxy.https())
+            proxy["https"] = SyncHTTPProxy((
+                https_parse_res.scheme.encode("utf-8"), https_parse_res.hostname.encode("utf-8"),
+                int(https_parse_res.port)))
+        translator = Translator(proxies=proxy)
         dst_language = command[1]
         text = " ".join(command[2:])
         try:
