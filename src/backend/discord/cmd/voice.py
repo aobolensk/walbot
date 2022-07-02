@@ -48,11 +48,19 @@ class _VoiceInternals:
             return null(await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent))
         bc.voice_client_queue.append(VoiceQueueEntry(
             message.channel, video_info['title'], video_info['id'], output_file_name, message.author.name))
-        await Msg.response(
-            message,
-            f"🔊 Added {video_info['title']} (YT: {video_info['id']}) to the queue "
-            f"at position #{len(bc.voice_client_queue)}",
-            silent)
+        e = DiscordEmbed()
+        e.title(f"🔊 Added to queue '{video_info['title']}' at position {len(bc.voice_client_queue)}")
+        e.title_url(video_info['webpage_url'])
+        e.color(0xcc1818)
+        e.thumbnail(video_info['thumbnail'])
+        e.add_field("YouTube ID", video_info['id'], True)
+        e.add_field("Duration", str(datetime.timedelta(seconds=video_info['duration'])), True)
+        e.add_field("Uploader", video_info['uploader'], True)
+        ud = video_info['upload_date']
+        e.add_field("Upload date", f"{datetime.date(int(ud[0:4]), int(ud[4:6]), int(ud[6:8]))}", True)
+        e.add_field("Views", video_info['view_count'], True)
+        e.add_field("Likes", video_info['like_count'], True)
+        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def print_yt_info(message, video_url, silent, full_description=False):
