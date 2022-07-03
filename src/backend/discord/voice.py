@@ -52,7 +52,7 @@ class VoiceRoutine:
                 await bc.voice_client.connect()
             except Exception as e:
                 log.error(f"Failed to connect: {e}")
-            log.debug("Connecting voice channel (1/2)...")
+            log.debug("Connecting voice channel (2/2)...")
         if not bc.voice_client.is_playing():
             entry = bc.voice_client_queue.popleft()
             bc.current_video = entry
