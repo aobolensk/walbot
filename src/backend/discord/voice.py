@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 import discord
 
+from src.backend.discord.embed import DiscordEmbed
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
@@ -61,8 +62,10 @@ class VoiceRoutine:
                 bc.voice_client.play(discord.FFmpegPCMAudio(entry.file_name))
             except Exception as e:
                 await entry.channel.send(f"ERROR: Failed to play: {e}")
-            await entry.channel.send(
-                f"🔊 Now playing: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}")
+            e = DiscordEmbed()
+            e.title(f"🔊 Now playing: {entry.title} (YT: {entry.id}) requested by {entry.requested_by}")
+            e.color(0xcc1818)
+            await entry.channel.send(None, embed=e.get())
 
     async def start(self) -> None:
         # Disconnect if bot is inactive in voice channel
