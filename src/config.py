@@ -34,6 +34,7 @@ class Command:
         self.is_global = False
         self.channels = []
         self.times_called = 0
+        self.max_execution_time = const.MAX_COMMAND_EXECUTION_TIME
 
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)

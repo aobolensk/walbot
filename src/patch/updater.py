@@ -226,6 +226,22 @@ class Updater:
             }
             self._bump_version(config, "0.0.37")
         if config.version == "0.0.37":
+            for key in config.commands.data.keys():
+                if not hasattr(config.commands.data[key], "max_execution_time"):
+                    config.commands.data[key].max_execution_time = const.MAX_COMMAND_EXECUTION_TIME
+            for cmd in (
+                "poll",
+                "stopwatch",
+                "timer",
+                "vqfpush",
+                "vqpush",
+                "disabletl",
+                "img",
+            ):
+                config.commands.data[cmd].max_execution_time = -1
+            config.commands.data["translate"].max_execution_time = 10
+            self._bump_version(config, "0.0.38")
+        if config.version == "0.0.38":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

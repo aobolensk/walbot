@@ -329,18 +329,8 @@ class WalBot(discord.Client):
                     f"Unknown command '{command[0]}', "
                     f"probably you meant '{self._suggest_similar_command(command[0])}'")
                 return
-        if command[0] not in (
-            "poll",
-            "stopwatch",
-            "timer",
-            "vqfpush",
-            "vqpush",
-            "disabletl",
-            "img",
-        ):
-            max_exec_time = const.MAX_COMMAND_EXECUTION_TIME
-            if command[0] == "translate":
-                max_exec_time = 10
+        max_exec_time = self.config.commands.data[command[0]].max_execution_time
+        if max_exec_time != -1:
             timeout_error, _ = await Util.run_function_with_time_limit(
                 self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id]),
                 max_exec_time)
