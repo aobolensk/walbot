@@ -189,6 +189,9 @@
 **server**: Print information about current server \
     Example: !server
 
+**setmaxexeccmdtime**: Print how many times command was invoked \
+    Example: !setmaxexeccmdtime echo 3
+
 **shutdown**: Shutdown the bot \
     Example: !shutdown
 

@@ -141,6 +141,7 @@ class BuiltinCommands(BaseCmd):
             "disablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permcmd": dict(permission=const.Permission.ADMIN.value, subcommand=False),
             "timescmd": dict(permission=const.Permission.USER.value, subcommand=True),
+            "setmaxexeccmdtime": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permuser": dict(permission=const.Permission.ADMIN.value, subcommand=False),
             "extexec": dict(permission=const.Permission.ADMIN.value, subcommand=True),
             "whitelist": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -510,6 +511,23 @@ class BuiltinCommands(BaseCmd):
             result = f"Command '{command[1]}' was invoked {times} times"
         await Msg.response(message, result, silent)
         return result
+
+    @staticmethod
+    async def _setmaxexeccmdtime(message, command, silent=False):
+        """Print how many times command was invoked
+    Example: !setmaxexeccmdtime echo 3"""
+        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+            return
+        if command[1] in bc.config.commands.aliases.keys():
+            command[1] = bc.config.commands.aliases[command[1]]
+        if command[1] not in bc.commands.data.keys():
+            return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
+        com = bc.commands.data[command[1]]
+        max_exec_time = await Util.parse_int(
+            message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
+        com.max_execution_time = max_exec_time
+        await Msg.response(
+            message, f"Set maximal execution time for command '{command[1]}' to {max_exec_time}", silent)
 
     @staticmethod
     async def _permuser(message, command, silent=False):
