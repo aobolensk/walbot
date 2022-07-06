@@ -285,7 +285,15 @@ class WalBot(discord.Client):
                 member.id for member in list(
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
             if channel_id in self.config.guilds[message.channel.guild.id].markov_responses_whitelist:
-                result = await self.config.disable_pings_in_response(message, bc.markov.generate())
+                msg_content = message.content
+                cmd = bc.config.commands_prefix + bc.config.on_mention_command
+                message.content = cmd
+                result = await self._process_command(
+                    message,
+                    command=cmd.split(" "),
+                    silent=True)
+                message.content = msg_content
+                result = (await self.config.disable_pings_in_response(message, result)) or ""
                 await message.channel.send(message.author.mention + ' ' + result)
         elif channel_id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
             needs_to_be_added = True
@@ -315,8 +323,9 @@ class WalBot(discord.Client):
                     except discord.HTTPException:
                         pass
 
-    async def _process_command(self, message: discord.Message) -> None:
-        command = message.content.split(' ')
+    async def _process_command(self, message: discord.Message, command=None, silent=False) -> None:
+        if command is None:
+            command = message.content.split(' ')
         command = list(filter(None, command))
         command[0] = command[0][1:]
         if not command[0]:
@@ -331,15 +340,18 @@ class WalBot(discord.Client):
                 return
         max_exec_time = self.config.commands.data[command[0]].max_execution_time
         if max_exec_time != -1:
-            timeout_error, _ = await Util.run_function_with_time_limit(
-                self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id]),
+            timeout_error, result = await Util.run_function_with_time_limit(
+                self.config.commands.data[command[0]].run(
+                    message, command, self.config.users[message.author.id], silent=silent),
                 max_exec_time)
             if command[0] not in (
                 "silent",
             ) and timeout_error:
                 await message.channel.send(f"Command '{' '.join(command)}' took too long to execute")
+            return result
         else:
-            await self.config.commands.data[command[0]].run(message, command, self.config.users[message.author.id])
+            return await self.config.commands.data[command[0]].run(
+                message, command, self.config.users[message.author.id], silent=silent)
 
     def _suggest_similar_command(self, unknown_command: str) -> str:
         min_dist = 100000

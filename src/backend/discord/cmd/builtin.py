@@ -189,6 +189,8 @@ class BuiltinCommands(BaseCmd):
             "codeblock": dict(message="```\n@args@\n```", permission=const.Permission.USER.value, subcommand=True),
             "donotupdatestate": dict(permission=const.Permission.MOD.value, subcommand=False),
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "getmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=True),
+            "setmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
 
     @staticmethod
@@ -1487,3 +1489,23 @@ class BuiltinCommands(BaseCmd):
             cmd = bc.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, bc.config.users[message.author.id])
+
+    @staticmethod
+    async def _getmentioncmd(message, command, silent=False):
+        """Get current command which is executed on bot ping
+    Example: !getmentioncmd"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        await Msg.response(message, bc.config.on_mention_command, silent)
+
+    @staticmethod
+    async def _setmentioncmd(message, command, silent=False):
+        """Set current command which is executed on bot ping
+    Examples:
+        !setmentioncmd ping
+        !setmentioncmd markov"""
+        if not await Util.check_args_count(message, command, silent, min=2):
+            return
+        command = ' '.join(command[1:])
+        bc.config.on_mention_command = command
+        await Msg.response(message, f"Command '{command}' was set on bot mention", silent)

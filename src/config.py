@@ -252,6 +252,7 @@ class Config:
         self.quotes = dict()
         self.plugins = dict()
         self.commands_prefix = "!"
+        self.on_mention_command = "markov"
         self.ids = {
             "reminder": 1,
             "reaction": 1,

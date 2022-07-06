@@ -242,6 +242,9 @@ class Updater:
             config.commands.data["translate"].max_execution_time = 10
             self._bump_version(config, "0.0.38")
         if config.version == "0.0.38":
+            config.__dict__["on_mention_command"] = "markov"
+            self._bump_version(config, "0.0.39")
+        if config.version == "0.0.39":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

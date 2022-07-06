@@ -108,6 +108,10 @@
     Example: !extexec uname -a \
     *This command can be used as subcommand*
 
+**getmentioncmd**: Get current command which is executed on bot ping \
+    Example: !getmentioncmd \
+    *This command can be used as subcommand*
+
 **help**: Print list of commands and get examples \
     Examples: \
         !help \
@@ -191,6 +195,11 @@
 
 **setmaxexeccmdtime**: Print how many times command was invoked \
     Example: !setmaxexeccmdtime echo 3
+
+**setmentioncmd**: Set current command which is executed on bot ping \
+    Examples: \
+        !setmentioncmd ping \
+        !setmentioncmd markov
 
 **shutdown**: Shutdown the bot \
     Example: !shutdown
