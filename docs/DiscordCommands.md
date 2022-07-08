@@ -637,6 +637,11 @@
 **vq**: List voice channel queue \
     Usage: !vq
 
+**vqautorejoin**: Set/unset automatic rejoin to voice channel when queue is not empty \
+    Usage: \
+        !vqautorejoin &lt;voice_channel_id&gt;  &lt;- set \
+        !vqautorejoin                     &lt;- unset
+
 **vqcurrent**: Show current video in queue \
     Usage: !vqcurrent
 

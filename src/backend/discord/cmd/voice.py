@@ -102,6 +102,7 @@ class VoiceCommands(BaseCmd):
             "vqskip": dict(permission=const.Permission.USER.value, subcommand=False),
             "vq": dict(permission=const.Permission.USER.value, subcommand=False),
             "ytinfo": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vqautorejoin": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
 
     @staticmethod
@@ -263,3 +264,31 @@ class VoiceCommands(BaseCmd):
         video_url = command[1]
         await _VoiceInternals.print_yt_info(
             message, video_url, silent, full_description=len(command) > 2 and command[2] == "-f")
+
+    @staticmethod
+    async def _vqautorejoin(message, command, silent=False):
+        """Set/unset automatic rejoin to voice channel when queue is not empty
+    Usage:
+        !vqautorejoin <voice_channel_id>  <- set
+        !vqautorejoin                     <- unset"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+            return
+        if len(command) == 1:
+            if bc.voice_auto_rejoin_channel is not None:
+                bc.voice_client.auto_rejoin = False
+                await Msg.response(message, "Automatic rejoin is disabled", silent)
+            else:
+                await Msg.response(message, "Automatic rejoin is not set", silent)
+            return
+        voice_channel_id = await Util.parse_int(
+            message, command[1], f"Second parameter for '{command[0]}' should be an id of voice channel", silent)
+        if voice_channel_id is None:
+            return
+        voice_channels = message.guild.voice_channels
+        for v in voice_channels:
+            if v.id == voice_channel_id:
+                bc.voice_auto_rejoin_channel = v
+                await Msg.response(message, f"Automatic rejoin is enabled to {v.name}", silent)
+                return
+        else:
+            return null(await Msg.response(message, f"Voice channel with id {voice_channel_id} is not found", silent))

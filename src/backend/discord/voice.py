@@ -45,6 +45,11 @@ class VoiceRoutine:
                 return
         else:
             self._voice_client_queue_disconnect_counter = 0
+        if bc.voice_client is None and bc.voice_client_queue and bc.voice_auto_rejoin_channel is not None:
+            log.debug("Joining saved voice channel...")
+            bc.voice_client = await bc.voice_auto_rejoin_channel.connect()
+            log.debug("Automatically joined saved voice channel")
+            return
         if bc.voice_client is None or not bc.voice_client_queue or bc.voice_client.is_playing():
             return
         if not bc.voice_client.is_connected():

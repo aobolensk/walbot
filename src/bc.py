@@ -31,6 +31,7 @@ class BotController:
         self.yaml_dumper = None
         self.voice_client = None
         self.voice_client_queue = deque()
+        self.voice_auto_rejoin_channel = None
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
         self.stopwatches = dict()
