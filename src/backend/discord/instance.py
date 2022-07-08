@@ -268,6 +268,11 @@ class WalBot(discord.Client):
             self.config.users[message.author.id] = User(message.author.id)
         if self.config.users[message.author.id].permission_level < 0:
             return
+        if (datetime.datetime.now().astimezone() - message.created_at >
+                datetime.timedelta(seconds=const.MAX_MESSAGE_TIMEDELTA_FOR_RECALCULATION)):
+            return
+        if message.content.startswith(self.config.commands_prefix):
+            await self._process_command(message)
 
     async def _process_repetitions(self, message: discord.Message) -> None:
         m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))

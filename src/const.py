@@ -52,6 +52,7 @@ MAX_COMMAND_EXECUTION_TIME = 3
 
 REMINDER_POLLING_INTERVAL = 30  # seconds
 AUTOUPDATE_CHECK_INTERVAL = 10 * 60  # seconds
+MAX_MESSAGE_TIMEDELTA_FOR_RECALCULATION = 60  # seconds
 
 ALNUM_STRING_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9 ]+$')
 FILENAME_REGEX = re.compile('^[A-Za-zА-Яа-яЁё0-9_-]+$')
