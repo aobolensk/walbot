@@ -1382,14 +1382,20 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _curl(message, command, silent=False):
         """Perform HTTP request
-    Usage: !curl <url>"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+    Usage:
+        !curl <url>
+        !curl <url> --no-proxy
+    """
+        if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         url = command[1]
         proxies = {
             "http": Util.proxy.http(),
             "https": Util.proxy.https(),
         }
+        if len(command) == 3:
+            if command[2] == "--no-proxy":
+                proxies = None
         try:
             r = requests.get(url, proxies=proxies)
             result = r.text
