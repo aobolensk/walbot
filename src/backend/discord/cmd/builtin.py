@@ -326,7 +326,10 @@ class BuiltinCommands(BaseCmd):
                 return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
             result = name + ": "
             if command.perform is not None:
-                result += command.get_actor().__doc__ or "*<No docs provided>*"
+                if command.get_actor().__doc__ is not None:
+                    result += command.get_actor().__doc__.strip()
+                else:
+                    result += "*<No docs provided>*"
             elif command.message is not None:
                 result += "`" + command.message + "`"
             elif command.cmd_line is not None:
