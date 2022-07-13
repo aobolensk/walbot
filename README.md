@@ -39,7 +39,8 @@ $ python walbot.py help           # Get help
 ### Documentation
 
 Patch tool docs: [Read](docs/Patch.md) \
-Commands tutorial: [Read](docs/CommandsTutorial.md)
+Commands tutorial: [Read](docs/CommandsTutorial.md) \
+FAQ: [Read](docs/FAQ.rst)
 
 #### Commands
 
