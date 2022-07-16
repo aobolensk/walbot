@@ -91,7 +91,7 @@ class QuoteCommands(BaseCmd):
             return
         if index in bc.config.quotes.keys():
             bc.config.quotes.pop(index)
-            await Msg.response(message, "Successfully deleted quote!", silent)
+            await Msg.response(message, f"Successfully deleted quote {index}!", silent)
         else:
             await Msg.response(message, "Invalid index of quote!", silent)
 
