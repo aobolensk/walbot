@@ -6,6 +6,7 @@ class FF:
     """Feature flag"""
 
     _feature_flag_list = [
+        "WALBOT_TEST_AUTO_UPDATE",
         "WALBOT_FEATURE_MARKOV_MONGO",
     ]
 
