@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, List
 
 
 class FF:
@@ -22,3 +22,11 @@ class FF:
     def get_list() -> Dict[str, str]:
         """Get whole list of feature flags"""
         return {key: os.getenv(key) for key in FF._feature_flag_list}
+
+    @staticmethod
+    def get_invalid_flags() -> List[str]:
+        """Get invalid feature flags"""
+        return [
+            key for key, value in os.environ.items()
+            if key.startswith("WALBOT_") and key not in FF._feature_flag_list
+        ]

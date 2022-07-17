@@ -87,6 +87,9 @@ class Launcher:
         for key, value in FF.get_list().items():
             log.debug2(f"{key}: {value}")
         log.debug2("--- End of environment variable flags: ---")
+        invalid_flags = FF.get_invalid_flags()
+        if invalid_flags:
+            log.warning(f"Invalid feature flags: {invalid_flags}")
 
     def __init__(self):
         self._parser = self._get_argparser()
