@@ -3,6 +3,7 @@ import signal
 import time
 
 from src import const
+from src.ff import FF
 from src.log import log
 
 
@@ -13,7 +14,10 @@ def start(args) -> None:
     au.at_start()
     try:
         while True:
-            time.sleep(const.AUTOUPDATE_CHECK_INTERVAL)
+            time.sleep(
+                const.AUTOUPDATE_CHECK_INTERVAL
+                if not FF.is_enabled("WALBOT_TEST_AUTO_UPDATE")
+                else const.AUTOUPDATE_CHECK_INTERVAL_TEST)
             is_updated = au.check_updates(context)
             if is_updated:
                 au = importlib.reload(au)

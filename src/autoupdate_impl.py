@@ -12,6 +12,7 @@ import psutil
 
 from src import const
 from src.bot_cache import BotCache
+from src.ff import FF
 from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
@@ -82,7 +83,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
         return log.error(f"Fetch failed: {e}. Skipping this cycle, will try to update on the next one")
     new_sha = context.repo.remotes.origin.refs['master'].object.name_rev.split()[0]
     log.debug(f"{old_sha} {new_sha}")
-    if old_sha == new_sha:
+    if not FF.is_enabled("WALBOT_TEST_AUTO_UPDATE") and old_sha == new_sha:
         return log.debug("No new updates")
     bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
     if bot_cache is None:
