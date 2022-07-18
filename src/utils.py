@@ -165,7 +165,11 @@ class Util:
 
         def get(self) -> str:
             """Get request"""
-            return requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies).text
+            return requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies)
+
+        def get_text(self) -> str:
+            """Get request text"""
+            return self.get().text
 
         def get_file(self, extension='') -> str:
             """Get file request. Returns path to temporary file"""

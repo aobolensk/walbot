@@ -27,7 +27,7 @@ class TimerCommands(BaseCmd):
         city = "'" + ' '.join(command[1:]) + "'"
         try:
             r = Util.request(f"https://wttr.in/{city}?format=4", use_proxy=True)
-            result = r.get()
+            result = r.get_text()
             await Msg.response(message, result, silent)
             return result
         except Exception as e:
