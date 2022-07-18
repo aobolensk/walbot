@@ -1392,16 +1392,9 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         url = command[1]
-        proxies = {
-            "http": Util.proxy.http(),
-            "https": Util.proxy.https(),
-        }
-        if len(command) == 3:
-            if command[2] == "--no-proxy":
-                proxies = None
+        use_proxy = True if len(command) == 3 and command[2] == "--no-proxy" else False
         try:
-            r = requests.get(url, proxies=proxies)
-            result = r.text
+            result = Util.request.get(url, use_proxy=use_proxy)
             await Msg.response(message, result, silent)
             return result
         except Exception as e:

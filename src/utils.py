@@ -5,6 +5,7 @@ import tempfile
 from enum import IntEnum
 from typing import Any, Coroutine, Optional, Tuple
 
+import requests
 import yaml
 
 from src.log import log
@@ -148,6 +149,23 @@ class Util:
                 os.environ.get("https_proxy") or
                 os.environ.get("HTTPS_PROXY")
             )
+
+    class request:
+        def __init__(self, url: str, timeout: float = 10, headers: dict = None, use_proxy: bool = False):
+            self.url = url
+            self.timeout = timeout
+            self.headers = headers
+            if use_proxy:
+                self.proxies = {
+                    "http": Util.proxy.http(),
+                    "https": Util.proxy.https()
+                }
+            else:
+                self.proxies = None
+
+        def get(self) -> str:
+            """Get request"""
+            return requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies).text
 
 
 def null(*args, **kwargs):
