@@ -6,7 +6,6 @@ from typing import List, Optional, Set
 import yaml
 
 from src import const
-from src.config import bc
 from src.ff import FF
 
 
@@ -32,14 +31,14 @@ class MarkovNode:
             self.total_next -= self.next[word]
             del self.next[word]
 
-    def get_next(self, word: str) -> str:
+    def get_next(self, model: 'Markov', word: str) -> str:
         if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
             if word is not None:
-                return bc.markov.model[word]
+                return model.model[word]
         else:
             if word != "__markov_null":
-                return bc.markov.model[word]
-        return bc.markov.end_node
+                return model.model[word]
+        return model.end_node
 
 
 class Markov:
@@ -70,7 +69,7 @@ class Markov:
         for word in words:
             current_node.add_next(word)
             if word in self.model.keys():
-                current_node = current_node.get_next(word)
+                current_node = current_node.get_next(self, word)
             else:
                 current_node = self.model[word] = MarkovNode(self.NodeType.word, word=word)
         if current_node != self.model[""]:
@@ -106,7 +105,7 @@ class Markov:
                 count += next_count
                 if count > index:
                     result += (word if word is not None else "") + ' '
-                    next_node = current_node.get_next(word)
+                    next_node = current_node.get_next(self, word)
                     if current_node == self.model[""] and next_node == self.end_node:
                         continue
                     current_node = next_node
