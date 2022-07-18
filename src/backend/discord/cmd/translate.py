@@ -13,7 +13,7 @@ from src.utils import Util
 class TranslateCommands(BaseCmd):
     def bind(self):
         bc.commands.register_commands(__name__, self.get_classname(), {
-            "translate": dict(permission=const.Permission.USER.value, subcommand=True),
+            "translate": dict(permission=const.Permission.USER.value, subcommand=True, max_execution_time=10),
         })
 
     @staticmethod

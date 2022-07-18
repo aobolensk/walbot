@@ -96,8 +96,8 @@ class VoiceCommands(BaseCmd):
         bc.commands.register_commands(__name__, self.get_classname(), {
             "vjoin": dict(permission=const.Permission.USER.value, subcommand=False),
             "vleave": dict(permission=const.Permission.USER.value, subcommand=False),
-            "vqpush": dict(permission=const.Permission.USER.value, subcommand=False),
-            "vqfpush": dict(permission=const.Permission.USER.value, subcommand=False),
+            "vqpush": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
+            "vqfpush": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
             "vqcurrent": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqskip": dict(permission=const.Permission.USER.value, subcommand=False),
             "vq": dict(permission=const.Permission.USER.value, subcommand=False),
