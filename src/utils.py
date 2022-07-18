@@ -169,14 +169,23 @@ class Util:
 
         def get_text(self) -> str:
             """Get request text"""
-            return self.get().text
+            response = self.get()
+            if response.status_code == 200:
+                return response.text
+            else:
+                log.error(f"Request failed with status code {response.status_code}")
+                raise Exception(f"Request failed with status code {response.status_code}")
 
         def get_file(self, extension='') -> str:
             """Get file request. Returns path to temporary file"""
             response = requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies)
-            with tempfile.NamedTemporaryFile(dir=Util.tmp_dir(), suffix=extension, delete=False) as tmp_file:
-                tmp_file.write(response.content)
-                return tmp_file.name
+            if response.status_code == 200:
+                with tempfile.NamedTemporaryFile(dir=Util.tmp_dir(), suffix=extension, delete=False) as tmp_file:
+                    tmp_file.write(response.content)
+                    return tmp_file.name
+            else:
+                log.error(f"Request failed with status code {response.status_code}")
+                raise Exception(f"Request failed with status code {response.status_code}")
 
 
 def null(*args, **kwargs):
