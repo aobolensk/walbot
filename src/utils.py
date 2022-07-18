@@ -8,8 +8,9 @@ from typing import Any, Coroutine, Optional, Tuple
 import requests
 import yaml
 
-from src.log import log
 from src.backend.discord.message import Msg
+from src.exception import HTTPRequestException
+from src.log import log
 
 
 class TimeoutStatus(IntEnum):
@@ -174,7 +175,7 @@ class Util:
                 return response.text
             else:
                 log.error(f"Request failed with status code {response.status_code}")
-                raise Exception(f"Request failed with status code {response.status_code}")
+                raise HTTPRequestException(response)
 
         def get_file(self, extension='') -> str:
             """Get file request. Returns path to temporary file"""
@@ -185,7 +186,7 @@ class Util:
                     return tmp_file.name
             else:
                 log.error(f"Request failed with status code {response.status_code}")
-                raise Exception(f"Request failed with status code {response.status_code}")
+                raise HTTPRequestException(response)
 
 
 def null(*args, **kwargs):
