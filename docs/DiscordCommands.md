@@ -522,6 +522,9 @@
 **weather**: Get current weather using wttr.in \
     Usage: !weather &lt;city&gt;
 
+**weatherforecast**: Get weather forecast using wttr.in \
+    Usage: !weatherforecast &lt;city&gt;
+
 # Module: string
 
 **countchars**: Calculate length of the message \
