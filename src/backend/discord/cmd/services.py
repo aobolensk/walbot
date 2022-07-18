@@ -31,7 +31,10 @@ class TimerCommands(BaseCmd):
             await Msg.response(message, result, silent)
             return result
         except Exception as e:
-            return null(await Msg.response(message, f"Error while getting weather: {e}", silent))
+            if e.status_code == 404:
+                await Msg.response(message, f"City not found: {city}", silent)
+            else:
+                return null(await Msg.response(message, f"Error while getting weather: {e}", silent))
 
     @staticmethod
     async def _weatherforecast(message, command, silent=False):
@@ -46,4 +49,7 @@ class TimerCommands(BaseCmd):
             await Msg.response(message, None, silent, files=[discord.File(file_name)])
             os.unlink(file_name)
         except Exception as e:
-            return null(await Msg.response(message, f"Error while getting weather: {e}", silent))
+            if e.status_code == 404:
+                await Msg.response(message, f"City not found: {city}", silent)
+            else:
+                return null(await Msg.response(message, f"Error while getting weather: {e}", silent))
