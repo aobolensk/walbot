@@ -14,8 +14,8 @@ from src.utils import Util, null
 class TimerCommands(BaseCmd):
     def bind(self):
         bc.commands.register_commands(__name__, self.get_classname(), {
-            "weather": dict(permission=const.Permission.USER.value, subcommand=False),
-            "weatherforecast": dict(permission=const.Permission.USER.value, subcommand=False),
+            "weather": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=15),
+            "weatherforecast": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=15),
         })
 
     @staticmethod
