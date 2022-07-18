@@ -249,6 +249,9 @@ class Updater:
             config.commands.data["weatherforecast"].max_execution_time = 15
             self._bump_version(config, "0.0.40")
         if config.version == "0.0.40":
+            config.commands.data["weather"].subcommand = True
+            self._bump_version(config, "0.0.41")
+        if config.version == "0.0.41":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

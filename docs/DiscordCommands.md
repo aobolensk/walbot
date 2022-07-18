@@ -520,7 +520,8 @@
 # Module: services
 
 **weather**: Get current weather using wttr.in \
-    Usage: !weather &lt;city&gt;
+    Usage: !weather &lt;city&gt; \
+    *This command can be used as subcommand*
 
 **weatherforecast**: Get weather forecast using wttr.in \
     Usage: !weatherforecast &lt;city&gt;
