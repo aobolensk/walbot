@@ -1394,7 +1394,8 @@ class BuiltinCommands(BaseCmd):
         url = command[1]
         use_proxy = True if len(command) == 3 and command[2] == "--no-proxy" else False
         try:
-            result = Util.request.get(url, use_proxy=use_proxy)
+            r = Util.request(url, use_proxy=use_proxy)
+            result = r.get()
             await Msg.response(message, result, silent)
             return result
         except Exception as e:
