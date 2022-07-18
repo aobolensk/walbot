@@ -23,7 +23,8 @@ bc = BotController()
 
 class Command:
     def __init__(self, module_name=None, class_name=None,
-                 perform=None, message=None, cmd_line=None, permission=0, subcommand=False):
+                 perform=None, message=None, cmd_line=None, permission=0, subcommand=False,
+                 max_execution_time=None):
         self.module_name = module_name
         self.class_name = class_name
         self.perform = perform
@@ -34,7 +35,7 @@ class Command:
         self.is_global = False
         self.channels = []
         self.times_called = 0
-        self.max_execution_time = const.MAX_COMMAND_EXECUTION_TIME
+        self.max_execution_time = max_execution_time or const.MAX_COMMAND_EXECUTION_TIME
 
     def is_available(self, channel_id):
         return self.is_global or (channel_id in self.channels)
