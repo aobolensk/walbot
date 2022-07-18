@@ -7,7 +7,6 @@ import yaml
 
 from src import const
 from src.config import bc
-from src.log import log
 from src.ff import FF
 
 
@@ -142,7 +141,6 @@ class Markov:
     def serialize(self, filename: str, dumper: type = yaml.Dumper) -> None:
         with open(filename, 'wb') as markov_file:
             markov_file.write(yaml.dump(self, Dumper=dumper, encoding='utf-8', allow_unicode=True))
-        log.info("Saving of Markov module data is finished")
 
     def check(self) -> bool:
         for node in self.model.values():

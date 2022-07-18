@@ -335,7 +335,7 @@ class Config:
                 if wait:
                     log.info("Waiting for saving of Markov module data...")
                     thread.join()
-                    log.info("Saving of Markov is waited")
+                    log.info("Saving of Markov module data is finished")
             except Exception:
                 log.error("Saving of Markov module data is failed", exc_info=True)
 
