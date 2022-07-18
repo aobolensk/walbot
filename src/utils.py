@@ -167,6 +167,13 @@ class Util:
             """Get request"""
             return requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies).text
 
+        def get_file(self, extension='') -> str:
+            """Get file request. Returns path to temporary file"""
+            response = requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies)
+            with tempfile.NamedTemporaryFile(dir=Util.tmp_dir(), suffix=extension, delete=False) as tmp_file:
+                tmp_file.write(response.content)
+                return tmp_file.name
+
 
 def null(*args, **kwargs):
     """Drop return value"""
