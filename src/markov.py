@@ -125,7 +125,7 @@ class Markov:
             node = self.model[""]
         was = {node}
         for key in node.next.keys():
-            next_node = node.get_next(key)
+            next_node = node.get_next(self, key)
             if next_node not in was:
                 was |= self.collect_garbage(next_node)
         if node == self.model[""]:
