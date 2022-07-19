@@ -126,7 +126,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
     subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
     while True:
         time.sleep(1)
-        bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
+        bot_cache = importlib.import_module("src.bot_cache").BotCache(False).parse()
         if bot_cache is not None and bot_cache["ready"]:
             p = subprocess.run(f"{sys.executable} walbot.py stopmini", shell=True)
             if p.returncode != 0:
