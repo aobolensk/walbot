@@ -10,4 +10,4 @@ class HTTPRequestException(Exception):
         self.status_code = response.status_code
         super().__init__(
             f"HTTP request failed with status code: {response.status_code} "
-            f"({http.HTTPStatus(response.status_code).phrase})"})")
+            f"({http.HTTPStatus(response.status_code).phrase})")
