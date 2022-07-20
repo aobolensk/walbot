@@ -1,9 +1,9 @@
 """Helper functions for working with strings"""
 
 from src import const
+from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
-from src.backend.discord.message import Msg
 from src.utils import Util, null
 
 

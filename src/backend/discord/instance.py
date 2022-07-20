@@ -14,6 +14,7 @@ import psutil
 from src import const
 from src.algorithms import levenshtein_distance
 from src.api.bot_instance import BotInstance
+from src.api.reminder import Reminder
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.backend.discord.voice import VoiceRoutine
@@ -25,7 +26,6 @@ from src.ff import FF
 from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
-from src.api.reminder import Reminder
 from src.utils import Util
 
 

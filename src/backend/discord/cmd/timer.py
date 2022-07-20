@@ -4,10 +4,10 @@ import asyncio
 import datetime
 
 from src import const
+from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag
 from src.commands import BaseCmd
 from src.config import bc
-from src.backend.discord.message import Msg
 from src.utils import Util, null
 
 

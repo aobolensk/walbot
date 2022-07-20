@@ -2,13 +2,13 @@
 
 import datetime
 import random
-from src.backend.discord.embed import DiscordEmbed
 
 from src import const
+from src.api.quote import Quote
+from src.backend.discord.embed import DiscordEmbed
+from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
-from src.backend.discord.message import Msg
-from src.api.quote import Quote
 from src.utils import Util, null
 
 

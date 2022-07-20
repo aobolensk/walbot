@@ -1,10 +1,10 @@
 """WalBot plugin system management"""
 
 from src import const
-from src.commands import BaseCmd
-from src.config import bc
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
+from src.commands import BaseCmd
+from src.config import bc
 from src.utils import Util, null
 
 
