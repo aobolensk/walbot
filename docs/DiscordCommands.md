@@ -13,7 +13,6 @@
 * [Module: services](#module-services): Commands that get data from online services
 * [Module: string](#module-string): Helper functions for working with strings
 * [Module: timer](#module-timer): Timer and stopwatch
-* [Module: translate](#module-translate)
 * [Module: voice](#module-voice): Connection to voice channel
 
 # Module: builtin
@@ -519,6 +518,10 @@
 
 # Module: services
 
+**translate**: Translate text to specified language \
+    Usage: !translate &lt;lang&gt; &lt;text&gt; \
+    *This command can be used as subcommand*
+
 **weather**: Get current weather using wttr.in \
     Usage: !weather &lt;city&gt; \
     *This command can be used as subcommand*
@@ -631,12 +634,6 @@
 
 **timer**: Set timer \
     Usage: !timer 10
-
-# Module: translate
-
-**translate**: Translate text to specified language \
-    Usage: !translate &lt;lang&gt; &lt;text&gt; \
-    *This command can be used as subcommand*
 
 # Module: voice
 
