@@ -289,18 +289,20 @@ class WalBot(discord.Client):
         if (self.user.mentioned_in(message) or self.user.id in [
                 member.id for member in list(
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
+            # If the message is mentioning the bot or mentioning a role that the bot is in then
+            # answer with result of processing command from config.on_mention_command
             if channel_id in self.config.guilds[message.channel.guild.id].markov_responses_whitelist:
                 msg_content = message.content
                 cmd = bc.config.commands_prefix + bc.config.on_mention_command
+                cmd_split = cmd.split(" ")
                 message.content = cmd
-                result = await self._process_command(
-                    message,
-                    command=cmd.split(" "),
-                    silent=True)
+                result = await self._process_command(message, cmd_split, silent=True)
                 message.content = msg_content
                 result = (await self.config.disable_pings_in_response(message, result)) or ""
                 await message.channel.send(message.author.mention + ' ' + result)
         elif channel_id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
+            # If the message is in a channel that is supposed to log markov chains, doesn't mention the bot then
+            # add the message to the markov chain DB
             needs_to_be_added = True
             if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
                 for ignored_prefix in bc.markov.ignored_prefixes.values():
@@ -310,6 +312,8 @@ class WalBot(discord.Client):
             if needs_to_be_added:
                 bc.markov.add_string(message.content)
         if channel_id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+            # If the message is in a channel that is supposed to respond to messages then
+            # answer with corresponding response from config.responses dictionary
             responses_count = 0
             for response in self.config.responses.values():
                 if responses_count >= const.MAX_BOT_RESPONSES_ON_ONE_MESSAGE:
@@ -320,6 +324,8 @@ class WalBot(discord.Client):
                     await Msg.reply(message, text, False)
                     responses_count += 1
         if channel_id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+            # If the message is in a channel that is supposed to react to messages then
+            # react to the message with corresponding reaction from config.reactions dictionary
             for reaction in self.config.reactions.values():
                 if re.search(reaction.regex, message.content):
                     log.info("Added reaction " + reaction.emoji)
