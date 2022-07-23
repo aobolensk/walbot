@@ -164,7 +164,7 @@ class Util:
             else:
                 self.proxies = None
 
-        def get(self) -> str:
+        def get(self) -> requests.Response:
             """Get request"""
             return requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies)
 
