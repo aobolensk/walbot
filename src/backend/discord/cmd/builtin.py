@@ -97,7 +97,8 @@ class _BuiltinInternals:
                         break
                     # Unicode emoji
                     if const.UNICODE_EMOJI_REGEX.match(command[i]):
-                        emojis_page = requests.get('https://unicode.org/emoji/charts/full-emoji-list.html').text
+                        rq = Util.request("https://unicode.org/emoji/charts/full-emoji-list.html")
+                        emojis_page = rq.get_text()
                         emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
                         emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
                         if emoji_match:
