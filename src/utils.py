@@ -152,7 +152,7 @@ class Util:
             )
 
     class request:
-        def __init__(self, url: str, timeout: float = 10, headers: dict = None, use_proxy: bool = False):
+        def __init__(self, url: str, timeout: float = 10, headers: dict = None, use_proxy: bool = True):
             self.url = url
             self.timeout = timeout
             self.headers = headers

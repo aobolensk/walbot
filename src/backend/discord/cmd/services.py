@@ -59,7 +59,7 @@ class TimerCommands(BaseCmd):
             return
         city = "'" + ' '.join(command[1:]) + "'"
         try:
-            r = Util.request(f"https://wttr.in/{city}?format=4", use_proxy=True)
+            r = Util.request(f"https://wttr.in/{city}?format=4")
             result = r.get_text()
             await Msg.response(message, result, silent)
             return result
@@ -79,7 +79,7 @@ class TimerCommands(BaseCmd):
             return
         city = "'" + ' '.join(command[1:]) + "'"
         try:
-            r = Util.request(f"https://wttr.in/{city}.png?m", use_proxy=True)
+            r = Util.request(f"https://wttr.in/{city}.png?m")
             file_name = r.get_file(extension=".png")
             await Msg.response(message, None, silent, files=[discord.File(file_name)])
             os.unlink(file_name)
