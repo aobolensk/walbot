@@ -13,7 +13,6 @@ import urllib.parse
 import urllib.request
 
 import discord
-import requests
 from dateutil import tz
 
 from src import const, emoji
