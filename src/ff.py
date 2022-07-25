@@ -19,6 +19,13 @@ class FF:
         return value in ("1", "ON")
 
     @staticmethod
+    def get_value(feature_flag: str) -> str:
+        """Get feature flag value"""
+        if feature_flag not in FF._feature_flag_list:
+            raise ValueError(f"Incorrect feature flag: {feature_flag}")
+        return os.getenv(feature_flag) or "`"
+
+    @staticmethod
     def get_list() -> Dict[str, str]:
         """Get whole list of feature flags"""
         return {key: os.getenv(key) for key in FF._feature_flag_list}
