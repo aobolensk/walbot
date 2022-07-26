@@ -175,3 +175,5 @@ def at_exit() -> None:
     """Autoupdate finalize"""
     if os.path.isfile(const.BOT_CACHE_FILE_PATH):
         os.remove(const.BOT_CACHE_FILE_PATH)
+    if os.path.isfile(const.MINIBOT_CACHE_FILE_PATH):
+        os.remove(const.MINIBOT_CACHE_FILE_PATH)
