@@ -225,11 +225,13 @@ class Launcher:
 
     def _stop_bot_process(self, _, main_bot=True):
         if not BotCache(main_bot).exists():
-            return log.error("Could not stop the bot (cache file does not exist)")
+            log.error("Could not stop the bot (cache file does not exist)")
+            return const.ExitStatus.GENERAL_ERROR
         bot_cache = BotCache(main_bot).parse()
         pid = bot_cache["pid"]
         if pid is None:
-            return log.error("Could not stop the bot (cache file does not contain pid)")
+            log.error("Could not stop the bot (cache file does not contain pid)")
+            return const.ExitStatus.GENERAL_ERROR
         if psutil.pid_exists(pid):
             if sys.platform == "win32":
                 # Reference to the original solution:
@@ -250,10 +252,11 @@ class Launcher:
         else:
             log.error("Could not stop the bot (bot is not running)")
             BotCache(main_bot).remove()
+        return const.ExitStatus.OK
 
     def stop(self):
         """Stop the bot"""
-        self._stop_bot_process(self.args)
+        sys.exit(self._stop_bot_process(self.args))
 
     def restart(self):
         """Restart the bot"""
@@ -271,7 +274,7 @@ class Launcher:
 
     def stopmini(self):
         """Stop mini-bot"""
-        self._stop_bot_process(self.args, main_bot=False)
+        sys.exit(self._stop_bot_process(self.args, main_bot=False))
 
     def test(self):
         """Launch tests"""
