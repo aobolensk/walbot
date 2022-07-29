@@ -23,7 +23,7 @@ class FF:
         """Get feature flag value"""
         if feature_flag not in FF._feature_flag_list:
             raise ValueError(f"Incorrect feature flag: {feature_flag}")
-        return os.getenv(feature_flag) or "`"
+        return os.getenv(feature_flag) or ""
 
     @staticmethod
     def get_list() -> Dict[str, str]:
