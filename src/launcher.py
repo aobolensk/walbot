@@ -252,7 +252,7 @@ class Launcher:
         else:
             log.error("Could not stop the bot (bot is not running)")
             BotCache(main_bot).remove()
-        return const.ExitStatus.OK
+        return const.ExitStatus.NO_ERROR
 
     def stop(self):
         """Stop the bot"""
