@@ -110,8 +110,9 @@ class Launcher:
         self._prepare_args()
         if self.args.action is None:
             self._parser.print_help()
+            return const.ExitStatus.NO_ERROR
         else:
-            getattr(self, self.args.action)()
+            return getattr(self, self.args.action)()
 
     def _stop_signal_handler(self, sig, frame):
         for backend in self.backends:
@@ -256,7 +257,7 @@ class Launcher:
 
     def stop(self):
         """Stop the bot"""
-        sys.exit(self._stop_bot_process(self.args))
+        return self._stop_bot_process(self.args)
 
     def restart(self):
         """Restart the bot"""

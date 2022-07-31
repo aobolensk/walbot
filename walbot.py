@@ -20,7 +20,8 @@ def main():
         print("Start walbot.py from directory where it is located")
         sys.exit(1)
     launcher = importlib.import_module("src.launcher").Launcher()
-    launcher.launch_bot()
+    err_code = launcher.launch_bot()
+    sys.exit(err_code)
 
 
 if __name__ == "__main__":
