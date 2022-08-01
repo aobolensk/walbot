@@ -114,7 +114,6 @@ def check_updates(context: AutoUpdateContext) -> bool:
             "Autoupdate error",
             get_autoupdate_error_message(f"Failed to fetch requirements.txt. Return code: {p.returncode}"))
     minibot_response = "WalBot automatic update is in progress. Please, wait..."
-    log.debug("[TMP] Starting minibot...")
     subprocess.call(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &", shell=True)
     p = subprocess.run(f"{sys.executable} walbot.py stop", shell=True)
     if p.returncode != 0:
@@ -123,23 +122,20 @@ def check_updates(context: AutoUpdateContext) -> bool:
             "Autoupdate error",
             get_autoupdate_error_message(f"Failed to stop the bot. Return code: {p.returncode}"))
     if context.check_versions():
-        log.debug("[TMP] Patching...")
         subprocess.call(f"{sys.executable} walbot.py patch", shell=True)
-    log.debug("[TMP] Starting main bot...")
     subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
     while True:
         time.sleep(1)
-        log.debug("[TMP] Checking if walbot is already loaded up")
         bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
         if bot_cache is not None and bot_cache["ready"]:
-            log.debug("[TMP] Stopping minibot...")
+            log.debug("Stopping minibot...")
             p = subprocess.run(f"{sys.executable} walbot.py stopmini", shell=True)
             stopmini_attempt = 0
             stopmini_error = False
             while p.returncode != 0:
                 time.sleep(10)
                 p = subprocess.run(f"{sys.executable} walbot.py stopmini", shell=True)
-                log.debug(f"[TMP] Stopping minibot: {p} (attempt: {stopmini_attempt})")
+                log.debug(f"Stopping minibot: {p} (attempt: {stopmini_attempt})")
                 stopmini_attempt += 1
                 if stopmini_attempt > 10:
                     mail.send(
@@ -148,14 +144,12 @@ def check_updates(context: AutoUpdateContext) -> bool:
                         get_autoupdate_error_message(f"Failed to stop minibot. Return code: {p.returncode}"))
                     stopmini_error = True
                     break
-            log.debug(f"[TMP] Exit minibot stopping routine: {p}")
             if not stopmini_error:
                 log.info("Bot is fully loaded. MiniWalBot is stopped.")
             else:
                 log.warning("Failed to stop minibot!")
             break
         log.debug("Bot is not fully loaded yet. Waiting...")
-    log.debug("[TMP] Exiting from autoupdate routine")
     return True
 
 
