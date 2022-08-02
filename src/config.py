@@ -324,6 +324,7 @@ class Config:
                 except Exception:
                     log.error("yaml.dump failed", exc_info=True)
         if bc.do_not_update[DoNotUpdateFlag.VOICE]:
+            # If bot is connected to voice channel, don't save markov data because it causes sound lags
             return log.info("Markov module save is skipped since bot is in voice channel")
         markov_mutex = threading.Lock()
         with markov_mutex:
