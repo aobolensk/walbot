@@ -262,10 +262,13 @@ class BuiltinCommands(BaseCmd):
         e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
         e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
         e.add_field("Roles", roles, True)
-        e.add_field("Status",
-                    f"desktop: {info.desktop_status}\n"
-                    f"mobile: {info.mobile_status}\n"
-                    f"web: {info.web_status}", True)
+        if len(command) == 1:
+            # If user requests their own profile, show their status
+            # otherwise it is not available
+            e.add_field("Status",
+                        f"desktop: {info.desktop_status}\n"
+                        f"mobile: {info.mobile_status}\n"
+                        f"web: {info.web_status}", True)
         e.add_field(
             "Permission level",
             bc.config.users[info.id].permission_level if info.id in bc.config.users.keys() else 0, True)
