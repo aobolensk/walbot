@@ -20,6 +20,12 @@ class BotController:
             cls._instance = super().__new__(cls)
         return cls._instance
 
+    class VoiceCtx:
+        def __init__(self):
+            self.client = None
+            self.queue = deque()
+            self.auto_rejoin_channel = None
+
     def __init__(self):
         self.background_events = []
         self.deployment_time = datetime.datetime.now()
@@ -29,9 +35,6 @@ class BotController:
         self.markov = None
         self.secret_config = None
         self.yaml_dumper = None
-        self.voice_client = None
-        self.voice_client_queue = deque()
-        self.voice_auto_rejoin_channel = None
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
         self.stopwatches = dict()
@@ -44,3 +47,4 @@ class BotController:
             "telegram": False,
             "repl": False,
         }
+        self.voice_ctx = self.VoiceCtx()

@@ -47,10 +47,10 @@ class _VoiceInternals:
                     log.debug(f"Found in cache: {yt_video_url}")
         except Exception as e:
             return null(await Msg.response(message, f"🔊 ERROR: Downloading failed: {e}", silent))
-        bc.voice_client_queue.append(VoiceQueueEntry(
+        bc.voice_ctx.queue.append(VoiceQueueEntry(
             message.channel, video_info['title'], video_info['id'], output_file_name, message.author.name))
         e = DiscordEmbed()
-        e.title(f"🔊 Added to queue '{video_info['title']}' at position {len(bc.voice_client_queue)}")
+        e.title(f"🔊 Added to queue '{video_info['title']}' at position {len(bc.voice_ctx.queue)}")
         e.title_url(video_info['webpage_url'])
         e.color(0xcc1818)
         e.thumbnail(video_info['thumbnail'])
@@ -118,14 +118,14 @@ class VoiceCommands(BaseCmd):
         voice_channels = message.guild.voice_channels
         for v in voice_channels:
             if v.id == voice_channel_id:
-                if bc.voice_client is not None:
+                if bc.voice_ctx.client is not None:
                     log.debug("Disconnecting from previous voice channel...")
-                    await bc.voice_client.disconnect()
+                    await bc.voice_ctx.client.disconnect()
                     log.debug("Disconnected from previous voice channel")
-                    bc.voice_client = None
+                    bc.voice_ctx.client = None
                 log.debug(f"Connecting to the voice channel {voice_channel_id}...")
                 try:
-                    bc.voice_client = await v.connect()
+                    bc.voice_ctx.client = await v.connect()
                 except Exception as e:
                     return null(await Msg.response(message, f"ERROR: Failed to connect: {e}", silent))
                 log.debug("Connected to the voice channel")
@@ -139,11 +139,11 @@ class VoiceCommands(BaseCmd):
     Usage: !vleave"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        if bc.voice_client is not None:
+        if bc.voice_ctx.client is not None:
             log.debug("Leaving previous voice channel...")
-            await bc.voice_client.disconnect()
+            await bc.voice_ctx.client.disconnect()
             log.debug("Left previous voice channel")
-            bc.voice_client = None
+            bc.voice_ctx.client = None
         else:
             log.debug("No previous voice channel to leave")
 
@@ -221,8 +221,8 @@ class VoiceCommands(BaseCmd):
     Usage: !vqskip"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        if bc.voice_client is not None:
-            bc.voice_client.stop()
+        if bc.voice_ctx.client is not None:
+            bc.voice_ctx.client.stop()
             await Msg.response(message, "Skipped current song", silent)
         else:
             log.debug("Nothing to skip")
@@ -233,15 +233,15 @@ class VoiceCommands(BaseCmd):
     Usage: !vq"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        if not bc.voice_client_queue:
+        if not bc.voice_ctx.queue:
             e = DiscordEmbed()
             e.title("🔊 Voice queue 🔊")
             e.color(0xcc1818)
             e.description("<empty>")
             return null(await Msg.response(message, None, silent, embed=e.get()))
-        voice_client_queue = list(bc.voice_client_queue)
+        voice_ctx.queue = list(bc.voice_ctx.queue)
         pos = 0
-        for voice_queue_chunk in Msg.split_by_chunks(voice_client_queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+        for voice_queue_chunk in Msg.split_by_chunks(voice_ctx.queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
             e = DiscordEmbed()
             e.title("🔊 Voice queue 🔊")
             e.color(0xcc1818)
@@ -274,8 +274,8 @@ class VoiceCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=2):
             return
         if len(command) == 1:
-            if bc.voice_auto_rejoin_channel is not None:
-                bc.voice_client.auto_rejoin = False
+            if bc.voice_ctx.auto_rejoin_channel is not None:
+                bc.voice_ctx.client.auto_rejoin = False
                 await Msg.response(message, "Automatic rejoin is disabled", silent)
             else:
                 await Msg.response(message, "Automatic rejoin is not set", silent)
@@ -287,7 +287,7 @@ class VoiceCommands(BaseCmd):
         voice_channels = message.guild.voice_channels
         for v in voice_channels:
             if v.id == voice_channel_id:
-                bc.voice_auto_rejoin_channel = v
+                bc.voice_ctx.auto_rejoin_channel = v
                 await Msg.response(message, f"Automatic rejoin is enabled to {v.name}", silent)
                 return
         else:
