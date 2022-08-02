@@ -161,6 +161,8 @@ class Launcher:
             from src.db.walbot_db import WalbotDatabase
             db = WalbotDatabase()
             bc.markov = MarkovV2(db.markov)
+        if not os.path.exists(const.IMAGES_DIRECTORY):
+            os.makedirs(const.IMAGES_DIRECTORY)
         # Check config versions
         ok = True
         ok &= Util.check_version(

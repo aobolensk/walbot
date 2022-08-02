@@ -48,8 +48,6 @@ class _BuiltinInternals:
         if update and not found:
             return null(await Msg.response(message, f"Image '{name}' does not exist", silent))
 
-        if not os.path.exists(const.IMAGES_DIRECTORY):
-            os.makedirs(const.IMAGES_DIRECTORY)
         image_path = os.path.join(const.IMAGES_DIRECTORY, name + '.' + ext)
         with open(image_path, 'wb') as f:
             try:
