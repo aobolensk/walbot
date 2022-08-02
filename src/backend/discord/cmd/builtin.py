@@ -266,7 +266,9 @@ class BuiltinCommands(BaseCmd):
                     f"desktop: {info.desktop_status}\n"
                     f"mobile: {info.mobile_status}\n"
                     f"web: {info.web_status}", True)
-        e.add_field("Permission level", bc.config.users[info.id].permission_level, True)
+        e.add_field(
+            "Permission level",
+            bc.config.users[info.id].permission_level if info.id in bc.config.users[info.id].keys() else 0, True)
         if flags:
             e.add_field("Flags", flags)
         await Msg.response(message, None, silent, embed=e.get())
