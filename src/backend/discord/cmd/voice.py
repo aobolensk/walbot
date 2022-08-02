@@ -239,9 +239,9 @@ class VoiceCommands(BaseCmd):
             e.color(0xcc1818)
             e.description("<empty>")
             return null(await Msg.response(message, None, silent, embed=e.get()))
-        voice_ctx.queue = list(bc.voice_ctx.queue)
+        voice_client_queue = list(bc.voice_ctx.queue)
         pos = 0
-        for voice_queue_chunk in Msg.split_by_chunks(voice_ctx.queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+        for voice_queue_chunk in Msg.split_by_chunks(voice_client_queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
             e = DiscordEmbed()
             e.title("🔊 Voice queue 🔊")
             e.color(0xcc1818)
