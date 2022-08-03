@@ -25,6 +25,7 @@ class BotController:
             self.client = None
             self.queue = deque()
             self.auto_rejoin_channel = None
+            self.current_video = None
 
     def __init__(self):
         self.background_events = []
@@ -41,7 +42,6 @@ class BotController:
         self.plugin_manager = PluginManager()
         self.message_buffer = MessageBuffer()
         self.instance_name = ""
-        self.current_video = None
         self.backends = {
             "discord": False,
             "telegram": False,
