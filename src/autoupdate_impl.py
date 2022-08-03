@@ -123,7 +123,9 @@ def check_updates(context: AutoUpdateContext) -> bool:
             get_autoupdate_error_message(f"Failed to stop the bot. Return code: {p.returncode}"))
     if context.check_versions():
         subprocess.call(f"{sys.executable} walbot.py patch", shell=True)
-    subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
+    subprocess.call(
+        f"{sys.executable} walbot.py start --name '{const.INSTANCE_NAME}' "
+        "--fast_start --nohup &", shell=True)
     while True:
         time.sleep(1)
         bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
@@ -157,7 +159,9 @@ def at_start() -> None:
     """Autoupdate initialization"""
     if not os.path.isfile(const.BOT_CACHE_FILE_PATH):
         log.debug("Bot is not started! Starting...")
-        subprocess.call(f"{sys.executable} walbot.py start --fast_start --nohup &", shell=True)
+        subprocess.call(
+            f"{sys.executable} walbot.py start --name '{const.INSTANCE_NAME}' "
+            "--fast_start --nohup &", shell=True)
     else:
         bot_cache = BotCache(True).parse()
         pid = None

@@ -1,4 +1,5 @@
 import enum
+import os
 import re
 
 import src.version as ver
@@ -21,6 +22,8 @@ DISCORD_LIB_VERSION, DISCORD_LIB_COMMIT = _extract_discord_lib_version_from_requ
 CONFIG_VERSION = ver.CONFIG_VERSION
 MARKOV_CONFIG_VERSION = ver.MARKOV_CONFIG_VERSION
 SECRET_CONFIG_VERSION = ver.SECRET_CONFIG_VERSION
+
+INSTANCE_NAME = os.path.basename(os.getcwd())
 
 BOT_CACHE_FILE_PATH = ".bot_cache"
 MINIBOT_CACHE_FILE_PATH = ".minibot_cache"
