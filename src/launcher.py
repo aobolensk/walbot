@@ -138,58 +138,60 @@ class Launcher:
         bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
         if bc.secret_config is None:
             bc.secret_config = SecretConfig()
-        if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
-            bc.markov = Util.read_config_file(const.MARKOV_PATH)
-            if bc.markov is None and os.path.isdir("backup"):
-                # Check available backups
-                markov_backups = sorted(
-                    [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
-                if markov_backups:
-                    # Restore Markov model from backup
-                    with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
-                        zip_ref.extractall(".")
-                    log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
-                    shutil.move(markov_backups[-1][:-4], "markov.yaml")
-                    bc.markov = Util.read_config_file(const.MARKOV_PATH)
-                    if bc.markov is None:
-                        bc.markov = Markov()
-                        log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
-            if bc.markov is None:
-                bc.markov = Markov()
-                log.info("Created empty Markov model")
-        else:
-            from src.db.walbot_db import WalbotDatabase
-            db = WalbotDatabase()
-            bc.markov = MarkovV2(db.markov)
+        if main_bot:
+            if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
+                bc.markov = Util.read_config_file(const.MARKOV_PATH)
+                if bc.markov is None and os.path.isdir("backup"):
+                    # Check available backups
+                    markov_backups = sorted(
+                        [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
+                    if markov_backups:
+                        # Restore Markov model from backup
+                        with zipfile.ZipFile("backup/" + markov_backups[-1], 'r') as zip_ref:
+                            zip_ref.extractall(".")
+                        log.info(f"Restoring Markov model from backup/{markov_backups[-1]}")
+                        shutil.move(markov_backups[-1][:-4], "markov.yaml")
+                        bc.markov = Util.read_config_file(const.MARKOV_PATH)
+                        if bc.markov is None:
+                            bc.markov = Markov()
+                            log.warning("Failed to restore Markov model from backup. Creating new Markov model...")
+                if bc.markov is None:
+                    bc.markov = Markov()
+                    log.info("Created empty Markov model")
+            else:
+                from src.db.walbot_db import WalbotDatabase
+                db = WalbotDatabase()
+                bc.markov = MarkovV2(db.markov)
         if not os.path.exists(const.IMAGES_DIRECTORY):
             os.makedirs(const.IMAGES_DIRECTORY)
         # Check config versions
-        ok = True
-        ok &= Util.check_version(
-            "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
-            solutions=[
-                "execute: python -m pip install -r requirements.txt",
-            ])
-        ok &= Util.check_version(
-            "Config", bc.config.version, const.CONFIG_VERSION,
-            solutions=[
-                "run patch tool",
-                "remove config.yaml (settings will be lost!)",
-            ])
-        ok &= Util.check_version(
-            "Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
-            solutions=[
-                "run patch tool",
-                "remove markov.yaml (Markov model will be lost!)",
-            ])
-        ok &= Util.check_version(
-            "Secret config", bc.secret_config.version, const.SECRET_CONFIG_VERSION,
-            solutions=[
-                "run patch tool",
-                "remove secret.yaml (your Discord authentication token will be lost!)",
-            ])
-        if main_bot and not ok:
-            sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
+        if main_bot:
+            ok = True
+            ok &= Util.check_version(
+                "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
+                solutions=[
+                    "execute: python -m pip install -r requirements.txt",
+                ])
+            ok &= Util.check_version(
+                "Config", bc.config.version, const.CONFIG_VERSION,
+                solutions=[
+                    "run patch tool",
+                    "remove config.yaml (settings will be lost!)",
+                ])
+            ok &= Util.check_version(
+                "Markov config", bc.markov.version, const.MARKOV_CONFIG_VERSION,
+                solutions=[
+                    "run patch tool",
+                    "remove markov.yaml (Markov model will be lost!)",
+                ])
+            ok &= Util.check_version(
+                "Secret config", bc.secret_config.version, const.SECRET_CONFIG_VERSION,
+                solutions=[
+                    "run patch tool",
+                    "remove secret.yaml (your Discord authentication token will be lost!)",
+                ])
+            if not ok:
+                sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
         bc.config.commands.update()
         # Checking authentication token
         if bc.secret_config.token is None:
