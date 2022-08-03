@@ -188,7 +188,7 @@ class Launcher:
                 "Secret config", bc.secret_config.version, const.SECRET_CONFIG_VERSION,
                 solutions=[
                     "run patch tool",
-                    "remove secret.yaml (your Discord authentication token will be lost!)",
+                    "remove secret.yaml (your authentication tokens will be lost!)",
                 ])
             if not ok:
                 sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
