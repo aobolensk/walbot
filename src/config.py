@@ -49,6 +49,10 @@ class Command:
     @staticmethod
     async def process_variables(string, message, command, safe=False):
         string = string.replace("@author@", message.author.mention)
+        string = string.replace("@channel@", message.channel.mention)
+        string = string.replace("@server@", message.guild.name)
+        string = string.replace("@authorid@", str(message.author.id))
+        string = string.replace("@command@", ' '.join(command))
         if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[1:])):
             string = string.replace("@args@", ' '.join(command[1:]))
             it = 0
