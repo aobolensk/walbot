@@ -130,7 +130,7 @@ class Launcher:
 
     def _read_configs(self, main_bot=True):
         # Selecting YAML parser
-        bc.yaml_loader, bc.yaml_dumper = Util.get_yaml(verbose=True)
+        bc.yaml_loader, bc.yaml_dumper = Util.get_yaml()
         # Read configuration files
         bc.config = Util.read_config_file(const.CONFIG_PATH)
         if bc.config is None:

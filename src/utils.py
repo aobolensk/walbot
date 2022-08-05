@@ -103,25 +103,21 @@ class Util:
         return result
 
     @staticmethod
-    def get_yaml(verbose: bool = False) -> Any:
+    def get_yaml() -> Any:
         """Get YAML loader and dumper type.
         yaml.Loader and yaml.Dumper are slower implementations than yaml.CLoader and yaml.CDumper"""
         try:
             loader = yaml.CLoader
-            if verbose:
-                log.debug("Using fast YAML Loader")
+            log.debug2("Using fast YAML Loader")
         except AttributeError:
             loader = yaml.Loader
-            if verbose:
-                log.debug("Using slow YAML Loader")
+            log.debug2("Using slow YAML Loader")
         try:
             dumper = yaml.CDumper
-            if verbose:
-                log.debug("Using fast YAML Dumper")
+            log.debug2("Using fast YAML Dumper")
         except AttributeError:
             dumper = yaml.Dumper
-            if verbose:
-                log.debug("Using slow YAML Dumper")
+            log.debug2("Using slow YAML Dumper")
         return loader, dumper
 
     @staticmethod
