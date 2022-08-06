@@ -399,7 +399,6 @@ class DiscordBotInstance(BotInstance):
             if pid is not None and psutil.pid_exists(pid):
                 return log.error("Bot is already running!")
         # Some variable initializations
-        bc.restart_flag = False
         bc.args = args
         # Handle --nohup flag
         if sys.platform in ("linux", "darwin") and args.nohup:
@@ -432,15 +431,3 @@ class DiscordBotInstance(BotInstance):
         if main_bot:
             bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         BotCache(main_bot).remove()
-        if bc.restart_flag:
-            cmd = f"'{sys.executable}' '{os.getcwd() + '/walbot.py'}' start"
-            log.info("Calling: " + cmd)
-            if sys.platform in ("linux", "darwin"):
-                fork = os.fork()
-                if fork == 0:
-                    subprocess.call(cmd)
-                elif fork > 0:
-                    log.info("Stopping current instance of the bot")
-                    sys.exit(const.ExitStatus.NO_ERROR)
-            else:
-                subprocess.call(cmd)

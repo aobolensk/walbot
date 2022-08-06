@@ -1227,12 +1227,12 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _restart(message, command, silent=False):
         """Restart the bot
-    Example: !restart"""
+    Example: !restart
+    Note: Command is currently disabled!"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        log.info(str(message.author) + " invoked restarting the bot")
-        bc.restart_flag = True
-        await bc.close()
+        log.warning("Restart command is currently disabled!")
+        await Msg.response(message, "Restart command is currently disabled!", silent)
 
     @staticmethod
     async def _avatar(message, command, silent=False):
