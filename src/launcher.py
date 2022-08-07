@@ -41,10 +41,10 @@ class Launcher:
         for option in subparsers.keys():
             subparsers[option].add_argument(
                 "--name", default="WalBot", help="Bot instance name")
-        # Start
-        subparsers["start"].add_argument(
-            "--autoupdate", action="store_true",
-            help="Start autoupdate process for bot")
+        # Start & restart
+        for option in ("start", "restart"):
+            subparsers[option].add_argument(
+                "--autoupdate", action="store_true", help="Start autoupdate process for bot")
         # Start & suspend
         for option in ("start", "restart", "suspend", "startmini", "stopmini"):
             subparsers[option].add_argument(
