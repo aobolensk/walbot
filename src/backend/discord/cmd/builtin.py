@@ -8,6 +8,8 @@ import os
 import random
 import re
 import shutil
+import subprocess
+import sys
 import tempfile
 import urllib.parse
 import urllib.request
@@ -1222,7 +1224,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         log.info(str(message.author) + " invoked shutting down the bot")
-        await bc.close()
+        subprocess.call([sys.executable, "walbot.py", "stop"])
 
     @staticmethod
     async def _restart(message, command, silent=False):
