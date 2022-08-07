@@ -1229,12 +1229,12 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _restart(message, command, silent=False):
         """Restart the bot
-    Example: !restart
-    Note: Command is currently disabled!"""
+    Example: !restart"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        log.warning("Restart command is currently disabled!")
-        await Msg.response(message, "Restart command is currently disabled!", silent)
+        log.info(f"{message.author} invoked restarting the bot")
+        await Msg.response(message, f"{message.author} invoked restarting the bot", silent)
+        subprocess.call([sys.executable, "walbot.py", "restart"])
 
     @staticmethod
     async def _avatar(message, command, silent=False):

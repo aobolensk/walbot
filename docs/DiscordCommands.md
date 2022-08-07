@@ -190,8 +190,7 @@
     Usage: !reloadbotcommands
 
 **restart**: Restart the bot \
-    Example: !restart \
-    Note: Command is currently disabled!
+    Example: !restart
 
 **server**: Print information about current server \
     Example: !server
