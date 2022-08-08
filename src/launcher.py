@@ -45,6 +45,8 @@ class Launcher:
         for option in ("start", "restart"):
             subparsers[option].add_argument(
                 "--autoupdate", action="store_true", help="Start autoupdate process for bot")
+            subparsers[option].add_argument(
+                "--ignore-version-check", action="store_true", help="Ignore version check")
         # Start & suspend
         for option in ("start", "restart", "suspend", "startmini", "stopmini"):
             subparsers[option].add_argument(
@@ -190,7 +192,7 @@ class Launcher:
                     "run patch tool",
                     "remove secret.yaml (your authentication tokens will be lost!)",
                 ])
-            if not ok:
+            if not ok and not self.args.ignore_version_check:
                 sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
         bc.config.commands.update()
         # Checking authentication token
