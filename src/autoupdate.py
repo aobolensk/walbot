@@ -20,7 +20,7 @@ def start(args) -> None:
                 else const.AUTOUPDATE_CHECK_INTERVAL_TEST)
             is_updated = au.check_updates(context)
             if is_updated:
-                au = importlib.reload(au)
+                importlib.reload(au)
                 signal.signal(signal.SIGHUP, au.at_exit)
                 log.debug("Reloaded autoupdate implementation module")
     except KeyboardInterrupt as e:
