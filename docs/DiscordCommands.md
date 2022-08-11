@@ -518,6 +518,10 @@
 
 # Module: services
 
+**netcheck**: Check network and proxy settings \
+    Usage: !netcheck \
+    *This command can be used as subcommand*
+
 **translate**: Translate text to specified language \
     Usage: !translate &lt;lang&gt; &lt;text&gt; \
     *This command can be used as subcommand*

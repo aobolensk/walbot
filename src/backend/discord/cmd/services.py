@@ -1,6 +1,9 @@
 """Commands that get data from online services"""
 
+import json
 import os
+import subprocess
+import sys
 from urllib.parse import urlparse
 
 import discord
@@ -18,10 +21,29 @@ from src.utils import Util, null
 class TimerCommands(BaseCmd):
     def bind(self):
         bc.commands.register_commands(__name__, self.get_classname(), {
+            "netcheck": dict(permission=const.Permission.ADMIN.value, subcommand=True, max_execution_time=20),
             "translate": dict(permission=const.Permission.USER.value, subcommand=True, max_execution_time=10),
             "weather": dict(permission=const.Permission.USER.value, subcommand=True, max_execution_time=15),
             "weatherforecast": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=15),
         })
+
+    @staticmethod
+    async def _netcheck(message, command, silent=False):
+        """Check network and proxy settings
+    Usage: !netcheck"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+        result = ""
+        r = Util.request("https://api.ipify.org", use_proxy=True)
+        result += "IP: " + r.get_text() + "\n"
+        try:
+            r = Util.request("https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py", use_proxy=True)
+            p = subprocess.Popen(f"{sys.executable} - --json", stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+            j = json.loads(p.communicate(input=r.get_text().encode("utf-8"))[0])
+            result += f"Speedtest: {j['download']} Mbit/s, {j['upload']} Mbit/s, country: {j['server']['cc']}\n"
+        except Exception as e:
+            result += "Speedtest: failed with error: " + str(e) + "\n"
+        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _translate(message, command, silent=False):
