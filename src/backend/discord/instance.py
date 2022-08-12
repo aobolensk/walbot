@@ -421,7 +421,7 @@ class DiscordBotInstance(BotInstance):
                 args.name, bc.config, bc.secret_config, args.message, intents=intents)
         # Starting the bot
         try:
-            walbot.run(bc.secret_config.token)
+            walbot.run(bc.secret_config.discord["token"])
         except discord.PrivilegedIntentsRequired:
             log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
 

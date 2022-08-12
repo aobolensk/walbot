@@ -368,7 +368,6 @@ class Config:
 
 class SecretConfig:
     def __init__(self):
-        self.token = None
         self.version = const.SECRET_CONFIG_VERSION
         self.mail = {
             "smtp_server": None,
@@ -376,6 +375,9 @@ class SecretConfig:
             "password": None,
         }
         self.telegram = {
+            "token": None,
+        }
+        self.discord = {
             "token": None,
         }
         self.admin_email_list = list()

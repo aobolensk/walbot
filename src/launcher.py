@@ -196,9 +196,9 @@ class Launcher:
                 sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
         bc.config.commands.update()
         # Checking authentication token
-        if bc.secret_config.token is None:
+        if bc.secret_config.discord["token"] is None:
             bc.secret_config = SecretConfig()
-            bc.secret_config.token = input("Enter your token: ")
+            bc.secret_config.discord["token"] = input("Enter your token: ")
 
     def _append_backend(self, backend):
         module = importlib.import_module(f"src.backend.{backend}.instance")

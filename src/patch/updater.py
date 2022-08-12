@@ -351,6 +351,11 @@ class Updater:
             config.__dict__["telegram"]["token"] = None
             self._bump_version(config, "0.0.3")
         if config.version == "0.0.3":
+            config.__dict__["discord"] = dict()
+            config.__dict__["discord"]["token"] = config.__dict__["token"]
+            del config.__dict__["token"]
+            self._bump_version(config, "0.0.4")
+        if config.version == "0.0.4":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
