@@ -40,12 +40,11 @@ class TimerCommands(BaseCmd):
             p = subprocess.Popen(
                 f"{sys.executable} - --json", stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
             j = json.loads(p.communicate(input=r.get_text().encode("utf-8"))[0])
-            result += f"IP: {j['client']['ip']}\n"
+            result += f"IP: {j['client']['ip']}, country: {j['server']['cc']}\n"
             MBIT = 1024 * 1024
             result += (
-                f"Speedtest: {j['download'] / MBIT} Mbit/s, "
-                f"{j['upload'] / MBIT} Mbit/s, "
-                f"country: {j['server']['cc']}\n"
+                f"Speedtest: DL - {j['download'] / MBIT:.2f} Mbit/s, "
+                f"UP - {j['upload'] / MBIT:.2f} Mbit/s\n"
             )
         except Exception as e:
             result += "Speedtest: failed with error: " + str(e) + "\n"
