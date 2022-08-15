@@ -79,7 +79,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
         mail.send(
             secret_config.admin_email_list,
             "Autoupdate error",
-            f"Failed to fetch updates from remote: {e}")
+            get_autoupdate_error_message(f"Failed to fetch updates from remote: {e}"))
         return log.error(f"Fetch failed: {e}. Skipping this cycle, will try to update on the next one")
     new_sha = context.repo.remotes.origin.refs['master'].object.name_rev.split()[0]
     log.debug(f"{old_sha} {new_sha}")
