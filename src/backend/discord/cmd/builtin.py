@@ -19,6 +19,7 @@ from dateutil import tz
 
 from src import const, emoji
 from src.algorithms import levenshtein_distance
+from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag
@@ -987,11 +988,7 @@ class BuiltinCommands(BaseCmd):
     async def _uptime(message, command, silent=False):
         """Show bot uptime
     Example: !uptime"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = bc.info.uptime
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["uptime"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _status(message, command, silent=False):

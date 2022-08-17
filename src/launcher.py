@@ -208,12 +208,17 @@ class Launcher:
         self.backends.append(instance)
         log.debug2("Detected backend: " + self.backends[-1].name)
 
+    def _init_commands(self):
+        from src.cmd.builtin import BuiltinCommands
+        bc.executor.add_module(BuiltinCommands())
+
     def start(self, main_bot=True):
         """Start the bot"""
         if main_bot and self.args.autoupdate:
             return self.autoupdate()
         self.backends = []
         self._read_configs(main_bot)
+        self._init_commands()
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
             if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
                     os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):
