@@ -1,8 +1,8 @@
 import datetime
 from collections import deque
 from enum import IntEnum
-from src.api.command import Executor
 
+from src.api.command import Executor
 from src.backend.discord.message_buffer import MessageBuffer
 from src.plugin import PluginManager
 
