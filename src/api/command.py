@@ -57,9 +57,9 @@ class Command:
         if execution_ctx.permission_level < self.permission_level:
             self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
         if self.impl_type == Implementation.FUNCTION:
-            self._exec(cmd_line, execution_ctx)
+            return self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            return
+            return self.impl_message
 
     @abstractmethod
     def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
