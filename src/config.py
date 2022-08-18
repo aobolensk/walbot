@@ -345,26 +345,6 @@ class Config:
             except Exception:
                 log.error("Saving of Markov module data is failed", exc_info=True)
 
-    async def disable_pings_in_response(self, message, response, force=False):
-        if force or not self.guilds[message.channel.guild.id].markov_pings:
-            while True:
-                r = const.USER_ID_REGEX.search(response)
-                if r is None:
-                    break
-                response = const.USER_ID_REGEX.sub(
-                    str(await message.guild.fetch_member(r.group(1))), response, count=1)
-            while True:
-                r = const.ROLE_ID_REGEX.search(response)
-                if r is None:
-                    break
-                for role in message.guild.roles:
-                    if str(role.id) == r.group(1):
-                        response = const.ROLE_ID_REGEX.sub(f"`{role.name}`", response, count=1)
-                        break
-            response = re.sub(const.ROLE_EVERYONE, "`" + const.ROLE_EVERYONE + "`", response)
-            response = re.sub(const.ROLE_HERE, "`" + const.ROLE_HERE + "`", response)
-        return response
-
 
 class SecretConfig:
     def __init__(self):
