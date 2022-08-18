@@ -3,6 +3,7 @@
 import asyncio
 import os
 import re
+from src.backend.discord.context import DiscordExecutionContext
 
 from src import const
 from src.backend.discord.message import Msg
@@ -46,7 +47,8 @@ class MarkovCommands(BaseCmd):
                 result = ' '.join(command[1:-1]) + ' ' + result
         else:
             result = bc.markov.generate()
-        result = await bc.config.disable_pings_in_response(message, result)
+        if not bc.config.guilds[message.channel.guild.id].markov_pings:
+            result = DiscordExecutionContext(message).disable_pings(result)
         await Msg.response(message, result, silent)
         return result
 

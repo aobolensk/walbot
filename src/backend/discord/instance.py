@@ -14,6 +14,7 @@ from src import const
 from src.algorithms import levenshtein_distance
 from src.api.bot_instance import BotInstance
 from src.api.reminder import Reminder
+from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.backend.discord.voice import VoiceRoutine
@@ -297,7 +298,8 @@ class WalBot(discord.Client):
                 message.content = cmd
                 result = await self._process_command(message, cmd_split, silent=True)
                 message.content = msg_content
-                result = (await self.config.disable_pings_in_response(message, result)) or ""
+                if not self.guilds[message.channel.guild.id].markov_pings:
+                    result = (DiscordExecutionContext(message).disable_pings(response)) or ""
                 await message.channel.send(message.author.mention + ' ' + result)
         elif channel_id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
             # If the message is in a channel that is supposed to log markov chains, doesn't mention the bot then
