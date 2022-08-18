@@ -12,3 +12,7 @@ class TelegramExecutionContext(ExecutionContext):
 
     def send_message(self, message: str) -> None:
         reply(self.update, message)
+
+    def disable_pings(self, message: str) -> None:
+        # TODO: implement
+        return message

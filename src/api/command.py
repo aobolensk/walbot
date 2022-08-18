@@ -24,6 +24,10 @@ class ExecutionContext:
     def send_message(self, message: str) -> None:
         pass
 
+    @abstractmethod
+    def disable_pings(self, message: str) -> None:
+        pass
+
 
 class Implementation(enum.IntEnum):
     FUNCTION = 0
