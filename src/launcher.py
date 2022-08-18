@@ -212,6 +212,8 @@ class Launcher:
     def _init_commands(self):
         from src.cmd.builtin import BuiltinCommands
         bc.executor.add_module(BuiltinCommands())
+        from src.cmd.markov import MarkovCommands
+        bc.executor.add_module(MarkovCommands())
 
     def start(self, main_bot=True):
         """Start the bot"""

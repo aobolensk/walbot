@@ -35,22 +35,7 @@ class MarkovCommands(BaseCmd):
     async def _markov(message, command, silent=False):
         """Generate message using Markov chain
     Example: !markov"""
-        if not await Util.check_args_count(message, command, silent, min=1):
-            return
-        if len(command) > 1:
-            result = ""
-            for _ in range(const.MAX_MARKOV_ATTEMPTS):
-                result = bc.markov.generate(word=command[-1])
-                if len(result.split()) > 1:
-                    break
-            if result != "<Empty message was generated>":
-                result = ' '.join(command[1:-1]) + ' ' + result
-        else:
-            result = bc.markov.generate()
-        if not bc.config.guilds[message.channel.guild.id].markov_pings:
-            result = DiscordExecutionContext(message).disable_pings(result)
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["markov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _markovgc(message, command, silent=False):
