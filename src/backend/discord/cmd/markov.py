@@ -47,15 +47,7 @@ class MarkovCommands(BaseCmd):
     async def _delmarkov(message, command, silent=False):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        regex = ' '.join(command[1:])
-        try:
-            removed = bc.markov.del_words(regex)
-        except re.error as e:
-            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
-        await Msg.response(
-            message, f"Deleted {len(removed)} words from model: {removed}", silent, suppress_embeds=True)
+        return bc.executor.commands["delmarkov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _findmarkov(message, command, silent=False):

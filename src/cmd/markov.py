@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 from src import const
@@ -12,10 +13,13 @@ class MarkovCommands(BaseCmd):
     def bind(self, commands) -> None:
         commands["markov"] = Command(
             "builtin", "markov", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._markov)
+            subcommand=True, impl_func=self._markov)
         commands["markovgc"] = Command(
             "builtin", "markovgc", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._markovgc)
+        commands["delmarkov"] = Command(
+            "builtin", "delmarkov", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delmarkov)
 
     def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime"""
@@ -42,3 +46,13 @@ class MarkovCommands(BaseCmd):
         result = f"Garbage collected {len(result)} items: {', '.join(result)}"
         Command.send_message(execution_ctx, result)
         return result
+
+    def _delmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        regex = ' '.join(cmd_line[1:])
+        try:
+            removed = bc.markov.del_words(regex)
+        except re.error as e:
+            return Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+        Command.send_message(execution_ctx, f"Deleted {len(removed)} words from model: {removed}")
