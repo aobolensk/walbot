@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
 from src.backend.telegram.context import TelegramExecutionContext
-from src.backend.telegram.util import check_auth, log_command, reply
+from src.backend.telegram.util import check_auth, log_command
 from src.config import bc
 from src.mail import Mail
 

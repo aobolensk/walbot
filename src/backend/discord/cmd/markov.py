@@ -9,7 +9,7 @@ from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
-from src.utils import Util, null
+from src.utils import Util
 
 
 class MarkovCommands(BaseCmd):
