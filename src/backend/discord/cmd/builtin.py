@@ -829,22 +829,7 @@ class BuiltinCommands(BaseCmd):
         !about -v   <- verbose
         !about -vv  <- even more verbose
 """
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if not hasattr(bc, "discord_bot_user"):
-            return null(await Msg.response(message, "Bot is not loaded yet!", silent))
-        verbosity = 0
-        if len(command) > 1:
-            if command[1] == '-v':
-                verbosity = 1
-            elif command[1] == '-vv':
-                verbosity = 2
-            else:
-                return null(
-                    await Msg.response(
-                        message, f"Unknown argument '{command[1]}' for '{command[0]}' command", silent))
-        result = bc.info.get_full_info(verbosity)
-        await Msg.response(message, result, silent)
+        bc.executor.commands["about"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _addbgevent(message, command, silent=False):
