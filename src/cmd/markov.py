@@ -30,7 +30,7 @@ class MarkovCommands(BaseCmd):
 
     def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1):
             return
         if len(cmd_line) > 1:
             result = ""
@@ -42,7 +42,9 @@ class MarkovCommands(BaseCmd):
                 result = ' '.join(cmd_line[1:-1]) + ' ' + result
         else:
             result = bc.markov.generate()
-        result = execution_ctx.disable_pings(result)
+        if execution_ctx.platform == "discord":
+            if not bc.config.guilds[execution_ctx.message.channel.guild.id].markov_pings:
+                result = execution_ctx.disable_pings(result)
         Command.send_message(execution_ctx, result)
         return result
 
