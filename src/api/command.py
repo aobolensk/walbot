@@ -21,7 +21,7 @@ class ExecutionContext:
         self.permission_level = const.Permission.USER
 
     @abstractmethod
-    def send_message(self, message: str) -> None:
+    def send_message(self, message: str, *args, **kwargs) -> None:
         pass
 
     @abstractmethod

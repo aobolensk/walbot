@@ -10,7 +10,7 @@ class TelegramExecutionContext(ExecutionContext):
         self.platform = "telegram"
         self.update = update
 
-    def send_message(self, message: str) -> None:
+    def send_message(self, message: str, *args, **kwargs) -> None:
         reply(self.update, message)
 
     def disable_pings(self, message: str) -> None:

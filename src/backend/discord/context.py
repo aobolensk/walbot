@@ -5,6 +5,7 @@ import discord
 
 from src import const
 from src.api.command import ExecutionContext
+from src.backend.discord.message import Msg
 from src.config import bc
 
 
@@ -16,10 +17,9 @@ class DiscordExecutionContext(ExecutionContext):
         self.permission_level = bc.config.users[message.author.id].permission_level
         self.silent = silent
 
-    def send_message(self, message: str) -> None:
-        if self.silent:
-            return
-        asyncio.create_task(self.message.channel.send(message))
+    def send_message(self, message: str, *args, **kwargs) -> None:
+        t = asyncio.create_task(Msg.response(self.message, message, self.silent, *args, **kwargs))
+        return asyncio.run(t)
 
     def disable_pings(self, message: str) -> None:
         while True:
