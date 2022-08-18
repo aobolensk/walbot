@@ -1,9 +1,9 @@
 """Role commands"""
 
 import discord
-from src.backend.discord.context import DiscordExecutionContext
 
 from src import const
+from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
