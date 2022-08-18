@@ -813,13 +813,7 @@ class BuiltinCommands(BaseCmd):
     Examples:
         !version
         !version short"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        result = bc.info.version
-        if len(command) == 2 and (command[1] == 's' or command[1] == 'short'):
-            result = result[:7]
-        await Msg.response(message, result, silent)
-        return result
+        bc.executor.commands["version"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _about(message, command, silent=False):

@@ -19,6 +19,9 @@ class BuiltinCommands(BaseCmd):
         commands["about"] = Command(
             "builtin", "about", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._about)
+        commands["version"] = Command(
+            "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._version)
 
     def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime"""
@@ -46,3 +49,13 @@ class BuiltinCommands(BaseCmd):
                     execution_ctx, f"Unknown argument '{cmd_line[1]}' for '{cmd_line[0]}' command")
         result = bc.info.get_full_info(verbosity)
         Command.send_message(execution_ctx, result)
+
+    def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Get bot version"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+            return
+        result = bc.info.version
+        if len(cmd_line) == 2 and (cmd_line[1] == 's' or cmd_line[1] == 'short'):
+            result = result[:7]
+        Command.send_message(execution_ctx, result)
+        return result
