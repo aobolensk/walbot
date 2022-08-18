@@ -38,13 +38,7 @@ class BuiltinCommands:
         log_command(update)
         if not check_auth(update):
             return
-        cmd_txt = context.args[0] if context.args else ""
-        verbosity = 0
-        if cmd_txt == "-v":
-            verbosity = 1
-        elif cmd_txt == "-vv":
-            verbosity = 2
-        reply(update, bc.info.get_full_info(verbosity))
+        bc.executor.commands["about"].run(["about"] + context.args, TelegramExecutionContext(update))
 
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: Update, context: CallbackContext) -> None:
