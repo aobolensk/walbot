@@ -4,6 +4,7 @@ from typing import List
 from src import const
 from src.api.command import BaseCmd, Command, ExecutionContext, Implementation
 from src.config import bc
+from src.utils import Util
 
 
 class MarkovCommands(BaseCmd):
@@ -23,6 +24,9 @@ class MarkovCommands(BaseCmd):
         commands["findmarkov"] = Command(
             "builtin", "findmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._findmarkov)
+        commands["getmarkovword"] = Command(
+            "builtin", "getmarkovword", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._getmarkovword)
 
     def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime"""
@@ -79,3 +83,27 @@ class MarkovCommands(BaseCmd):
             f"Found {amount} words in model: {found}"
             f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
             suppress_embeds=True)
+
+    def _getmarkovword(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        regex = cmd_line[1]
+        try:
+            found = bc.markov.find_words(regex)
+        except re.error as e:
+            return Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+        amount = len(found)
+        if cmd_line[2] == '-a':
+            result = str(amount)
+            Command.send_message(execution_ctx, result)
+            return result
+        index = Util.parse_int_for_command(execution_ctx, cmd_line[2],
+            f"Third parameter '{cmd_line[2]}' should be a valid index")
+        if index is None:
+            return
+        if not 0 <= index < amount:
+            return Command.send_message(
+                execution_ctx, f"Wrong index in list '{cmd_line[2]}' (should be in range [0..{amount-1}])")
+        result = found[index]
+        Command.send_message(execution_ctx, result)
+        return result

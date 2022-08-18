@@ -63,32 +63,7 @@ class MarkovCommands(BaseCmd):
     Examples:
         !getmarkovword hello -a <- get amount of found words
         !getmarkovword hello 0 <- get word by index"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        regex = command[1]
-        try:
-            found = bc.markov.find_words(regex)
-        except re.error as e:
-            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
-        amount = len(found)
-        if command[2] == '-a':
-            result = str(amount)
-            await Msg.response(message, result, silent)
-            return result
-        index = await Util.parse_int(
-            message, command[2],
-            f"Third parameter '{command[2]}' should be a valid index", silent)
-        if index is None:
-            return
-        if not 0 <= index < amount:
-            return null(
-                await Msg.response(
-                    message,
-                    f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])",
-                    silent))
-        result = found[index]
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["getmarkovword"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):
