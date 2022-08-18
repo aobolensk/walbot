@@ -55,21 +55,7 @@ class MarkovCommands(BaseCmd):
     Examples:
         !findmarkov hello
         !findmarkov hello -f"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=3):
-            return
-        regex = command[1]
-        try:
-            found = bc.markov.find_words(regex)
-        except re.error as e:
-            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
-        amount = len(found)
-        if not (len(command) > 2 and command[2] == '-f' and
-                bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
-            found = found[:100]
-        await Msg.response(
-            message, f"Found {amount} words in model: {found}"
-                     f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
-            silent, suppress_embeds=True)
+        return bc.executor.commands["findmarkov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _getmarkovword(message, command, silent=False):
