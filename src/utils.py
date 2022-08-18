@@ -8,6 +8,7 @@ from typing import Any, Coroutine, Optional, Tuple
 import requests
 import yaml
 
+from src.api.command import Command, ExecutionContext
 from src.backend.discord.message import Msg
 from src.exception import HTTPRequestException
 from src.log import log
@@ -42,6 +43,14 @@ class Util:
             return int(string)
         except ValueError:
             await Msg.response(message, error_message, silent)
+            return
+
+    @staticmethod
+    def parse_int_for_command(execution_ctx: ExecutionContext, string: str, error_message: str):
+        try:
+            return int(string)
+        except ValueError:
+            Command.send_message(execution_ctx, error_message)
             return
 
     @staticmethod

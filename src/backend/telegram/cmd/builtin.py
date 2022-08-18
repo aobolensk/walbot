@@ -13,7 +13,6 @@ class BuiltinCommands:
 
     def add_handlers(self, dispatcher) -> None:
         dispatcher.add_handler(CommandHandler("ping", self._ping))
-        dispatcher.add_handler(CommandHandler("markov", self._markov))
         dispatcher.add_handler(CommandHandler("about", self._about))
         dispatcher.add_handler(CommandHandler("poll", self._poll))
         dispatcher.add_handler(CommandHandler("uptime", self._uptime))
@@ -24,14 +23,6 @@ class BuiltinCommands:
         if not check_auth(update):
             return
         bc.executor.commands["ping"].run(["ping"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _markov(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        result = bc.markov.generate()
-        reply(update, result)
 
     @Mail.send_exception_info_to_admin_emails
     def _about(self, update: Update, context: CallbackContext) -> None:

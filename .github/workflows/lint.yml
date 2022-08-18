@@ -82,3 +82,6 @@ jobs:
       run: isort .
     - name: Compare formatted version with unformatted
       run: git diff --exit-code
+    - name: List files with error (open this section to see the list of files that failed this check)
+      run: git diff | grep "diff --git"; exit 1
+      if: failure()

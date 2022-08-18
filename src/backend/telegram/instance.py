@@ -7,6 +7,7 @@ from telegram.messageentity import MessageEntity
 from src.api.bot_instance import BotInstance
 from src.backend.telegram.cmd.auth import AuthCommands
 from src.backend.telegram.cmd.builtin import BuiltinCommands
+from src.backend.telegram.cmd.markov import MarkovCommands
 from src.backend.telegram.cmd.reminder import ReminderCommands
 from src.backend.telegram.util import check_auth, reply
 from src.config import bc
@@ -55,6 +56,8 @@ class TelegramBotInstance(BotInstance):
         reminder_cmds.add_handlers(updater.dispatcher)
         auth_cmds = AuthCommands()
         auth_cmds.add_handlers(updater.dispatcher)
+        markov_cmds = MarkovCommands()
+        markov_cmds.add_handlers(updater.dispatcher)
         updater.dispatcher.add_handler(
             MessageHandler(
                 Filters.text & ~Filters.command & Filters.entity(MessageEntity.MENTION), self._handle_mentions))

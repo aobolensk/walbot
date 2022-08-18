@@ -14,6 +14,7 @@ import time
 import zipfile
 
 import discord
+import nest_asyncio
 import psutil
 
 from src import const
@@ -211,6 +212,8 @@ class Launcher:
     def _init_commands(self):
         from src.cmd.builtin import BuiltinCommands
         bc.executor.add_module(BuiltinCommands())
+        from src.cmd.markov import MarkovCommands
+        bc.executor.add_module(MarkovCommands())
 
     def start(self, main_bot=True):
         """Start the bot"""
@@ -219,6 +222,7 @@ class Launcher:
         self.backends = []
         self._read_configs(main_bot)
         self._init_commands()
+        nest_asyncio.apply()
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
             if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
                     os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):

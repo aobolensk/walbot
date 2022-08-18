@@ -3,6 +3,7 @@
 import discord
 
 from src import const
+from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
@@ -50,7 +51,7 @@ class RoleCommands(BaseCmd):
         roles = await message.guild.fetch_roles()
         result = '\n'.join(sorted((role.name for role in roles)))
         if result:
-            await Msg.response(message, await bc.config.disable_pings_in_response(message, result, force=True), silent)
+            await Msg.response(message, DiscordExecutionContext(message).disable_pings(result), silent)
         else:
             await Msg.response(message, "No roles available", silent)
 

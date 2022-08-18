@@ -5,10 +5,11 @@ import os
 import re
 
 from src import const
+from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
-from src.utils import Util, null
+from src.utils import Util
 
 
 class MarkovCommands(BaseCmd):
@@ -34,46 +35,19 @@ class MarkovCommands(BaseCmd):
     async def _markov(message, command, silent=False):
         """Generate message using Markov chain
     Example: !markov"""
-        if not await Util.check_args_count(message, command, silent, min=1):
-            return
-        if len(command) > 1:
-            result = ""
-            for _ in range(const.MAX_MARKOV_ATTEMPTS):
-                result = bc.markov.generate(word=command[-1])
-                if len(result.split()) > 1:
-                    break
-            if result != "<Empty message was generated>":
-                result = ' '.join(command[1:-1]) + ' ' + result
-        else:
-            result = bc.markov.generate()
-        result = await bc.config.disable_pings_in_response(message, result)
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["markov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _markovgc(message, command, silent=False):
         """Garbage collect Markov model nodes
     Example: !markovgc"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = bc.markov.collect_garbage()
-        result = f"Garbage collected {len(result)} items: {', '.join(result)}"
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["markovgc"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _delmarkov(message, command, silent=False):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        regex = ' '.join(command[1:])
-        try:
-            removed = bc.markov.del_words(regex)
-        except re.error as e:
-            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
-        await Msg.response(
-            message, f"Deleted {len(removed)} words from model: {removed}", silent, suppress_embeds=True)
+        return bc.executor.commands["delmarkov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _findmarkov(message, command, silent=False):
@@ -81,21 +55,7 @@ class MarkovCommands(BaseCmd):
     Examples:
         !findmarkov hello
         !findmarkov hello -f"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=3):
-            return
-        regex = command[1]
-        try:
-            found = bc.markov.find_words(regex)
-        except re.error as e:
-            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
-        amount = len(found)
-        if not (len(command) > 2 and command[2] == '-f' and
-                bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
-            found = found[:100]
-        await Msg.response(
-            message, f"Found {amount} words in model: {found}"
-                     f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
-            silent, suppress_embeds=True)
+        return bc.executor.commands["findmarkov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _getmarkovword(message, command, silent=False):
@@ -103,32 +63,7 @@ class MarkovCommands(BaseCmd):
     Examples:
         !getmarkovword hello -a <- get amount of found words
         !getmarkovword hello 0 <- get word by index"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        regex = command[1]
-        try:
-            found = bc.markov.find_words(regex)
-        except re.error as e:
-            return null(await Msg.response(message, f"Invalid regular expression: {e}", silent))
-        amount = len(found)
-        if command[2] == '-a':
-            result = str(amount)
-            await Msg.response(message, result, silent)
-            return result
-        index = await Util.parse_int(
-            message, command[2],
-            f"Third parameter '{command[2]}' should be a valid index", silent)
-        if index is None:
-            return
-        if not 0 <= index < amount:
-            return null(
-                await Msg.response(
-                    message,
-                    f"Wrong index in list '{command[2]}' (should be in range [0..{amount-1}])",
-                    silent))
-        result = found[index]
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["getmarkovword"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):
