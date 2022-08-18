@@ -41,12 +41,7 @@ class MarkovCommands(BaseCmd):
     async def _markovgc(message, command, silent=False):
         """Garbage collect Markov model nodes
     Example: !markovgc"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = bc.markov.collect_garbage()
-        result = f"Garbage collected {len(result)} items: {', '.join(result)}"
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["markovgc"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _delmarkov(message, command, silent=False):
