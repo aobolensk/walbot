@@ -55,4 +55,4 @@ class MarkovCommands(BaseCmd):
             removed = bc.markov.del_words(regex)
         except re.error as e:
             return Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
-        Command.send_message(execution_ctx, f"Deleted {len(removed)} words from model: {removed}")
+        execution_ctx.send_message(f"Deleted {len(removed)} words from model: {removed}", suppress_embeds=True)
