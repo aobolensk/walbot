@@ -28,8 +28,8 @@ class BuiltinCommands(BaseCmd):
             subcommand=False, impl_func=self._curl)
 
     def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        """Show bot uptime"""
-        print(cmd_line)
+        """Show bot uptime
+    Example: !uptime"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         result = bc.info.uptime
@@ -37,7 +37,12 @@ class BuiltinCommands(BaseCmd):
         return result
 
     def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        """Get information about the bot"""
+        """Get information about the bot
+    Examples:
+        !about
+        !about -v   <- verbose
+        !about -vv  <- even more verbose
+"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         if not hasattr(bc, "discord_bot_user"):
@@ -55,7 +60,10 @@ class BuiltinCommands(BaseCmd):
         Command.send_message(execution_ctx, result)
 
     def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        """Get bot version"""
+        """Get version of the bot
+    Examples:
+        !version
+        !version short"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         result = bc.info.version
@@ -65,6 +73,11 @@ class BuiltinCommands(BaseCmd):
         return result
 
     def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Perform HTTP request
+    Usage:
+        !curl <url>
+        !curl <url> --no-proxy
+    """
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
             return
         url = cmd_line[1]

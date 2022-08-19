@@ -809,20 +809,10 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _version(message, command, silent=False):
-        """Get version of the bot
-    Examples:
-        !version
-        !version short"""
         bc.executor.commands["version"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _about(message, command, silent=False):
-        """Get information about the bot
-    Examples:
-        !about
-        !about -v   <- verbose
-        !about -vv  <- even more verbose
-"""
         bc.executor.commands["about"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
@@ -965,8 +955,6 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _uptime(message, command, silent=False):
-        """Show bot uptime
-    Example: !uptime"""
         return bc.executor.commands["uptime"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
@@ -1366,11 +1354,6 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _curl(message, command, silent=False):
-        """Perform HTTP request
-    Usage:
-        !curl <url>
-        !curl <url> --no-proxy
-    """
         return bc.executor.commands["curl"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
