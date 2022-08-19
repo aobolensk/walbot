@@ -174,29 +174,7 @@ class ReminderCommands(BaseCmd):
         !updreminder 0 in 1w Test reminder 2
         !updreminder 0 in 5h10m Test reminder 3
 """
-        if not await Util.check_args_count(message, command, silent, min=5):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index in bc.config.reminders.keys():
-            text = ' '.join(command[4:])
-            if command[2] == "in":
-                time = await _ReminderInternals.parse_reminder_args_in(message, command[3], silent)
-            else:
-                time = await _ReminderInternals.parse_reminder_args(message, command[2], command[3], silent)
-            if time is None:
-                return
-            if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
-                return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
-            bc.config.reminders[index] = Reminder(
-                str(time), text, message.channel.id, bc.config.reminders[index].author,
-                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
-            await Msg.response(
-                message, f"Successfully updated reminder {index}: '{text}' at {time}", silent)
-        else:
-            await Msg.response(message, "Invalid index of reminder!", silent)
+        return bc.executor.commands["updreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _listreminder(message, command, silent=False):
@@ -210,34 +188,7 @@ class ReminderCommands(BaseCmd):
     async def _delreminder(message, command, silent=False):
         """Delete reminders by index
     Example: !delreminder 0 1 2"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        errors = []
-        passed = []
-        for i in range(1, len(command)):
-            index = await Util.parse_int(
-                message, command[i], f"Parameters for '{command[0]}' should be indexes of reminder", silent)
-            if index is None:
-                return
-            if index in bc.config.reminders.keys():
-                passed.append(command[i])
-                bc.config.reminders.pop(index)
-            else:
-                errors.append(command[i])
-        outstr = ""
-        if len(passed):
-            if len(passed) > 1:
-                outstr += "Successfully deleted reminders #"
-            else:
-                outstr += "Successfully deleted reminder #"
-            outstr += ', '.join(map(str, passed)) + '\n'
-        if len(errors):
-            if len(errors) > 1:
-                outstr += "Invalid reminder indexes: "
-            else:
-                outstr += "Invalid reminder index: "
-            outstr += ', '.join(map(str, errors))
-        await Msg.response(message, outstr, silent)
+        return bc.executor.commands["delreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _remindme(message, command, silent=False):

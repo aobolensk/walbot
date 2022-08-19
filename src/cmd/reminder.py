@@ -120,9 +120,15 @@ class ReminderCommands(BaseCmd):
         commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._addreminder)
+        commands["updreminder"] = Command(
+            "reminder", "updreminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._updreminder)
         commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._listreminder)
+        commands["delreminder"] = Command(
+            "reminder", "delreminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._delreminder)
 
     def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
@@ -188,6 +194,35 @@ class ReminderCommands(BaseCmd):
                 execution_ctx,
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
 
+    def _updreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=5):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        text = ' '.join(cmd_line[4:])
+        if cmd_line[2] == "in":
+            time = _ReminderInternals.parse_reminder_args_in(execution_ctx, cmd_line[3])
+        else:
+            time = _ReminderInternals.parse_reminder_args(execution_ctx, cmd_line[2], cmd_line[3])
+        if time is None:
+            return
+        if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
+            return Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
+        if execution_ctx.platform == "discord":
+            bc.config.reminders[index] = Reminder(
+                str(time), text, execution_ctx.message.channel.id, bc.config.reminders[index].author,
+                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
+            Command.send_message(
+                execution_ctx, f"Successfully updated reminder {index}: '{text}' at {time}")
+        else:
+            Command.send_message(
+                execution_ctx,
+                f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+
     def _listreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
@@ -230,3 +265,33 @@ class ReminderCommands(BaseCmd):
             for reminder in reminder_list:
                 result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
             Command.send_message(execution_ctx, result)
+
+    def _delreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        errors = []
+        passed = []
+        for i in range(1, len(cmd_line)):
+            index = Util.parse_int_for_command(
+                execution_ctx, cmd_line[i], f"Parameters for '{cmd_line[0]}' should be indexes of reminder")
+            if index is None:
+                return
+            if index in bc.config.reminders.keys():
+                passed.append(cmd_line[i])
+                bc.config.reminders.pop(index)
+            else:
+                errors.append(cmd_line[i])
+        result = ""
+        if len(passed):
+            if len(passed) > 1:
+                result += "Successfully deleted reminders #"
+            else:
+                result += "Successfully deleted reminder #"
+            result += ', '.join(map(str, passed)) + '\n'
+        if len(errors):
+            if len(errors) > 1:
+                result += "Invalid reminder indexes: "
+            else:
+                result += "Invalid reminder index: "
+            result += ', '.join(map(str, errors))
+        Command.send_message(execution_ctx, result)

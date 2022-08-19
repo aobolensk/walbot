@@ -14,6 +14,7 @@ class ReminderCommands:
     def add_handlers(self, dispatcher) -> None:
         dispatcher.add_handler(CommandHandler("reminder", self._reminder))
         dispatcher.add_handler(CommandHandler("listreminder", self._listreminder))
+        dispatcher.add_handler(CommandHandler("delreminder", self._delreminder))
 
     @Mail.send_exception_info_to_admin_emails
     def _reminder(self, update: Update, context: CallbackContext) -> None:
@@ -28,3 +29,10 @@ class ReminderCommands:
         if not check_auth(update):
             return
         bc.executor.commands["listreminder"].run(["listreminder"] + context.args, TelegramExecutionContext(update))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _delreminder(self, update: Update, context: CallbackContext) -> None:
+        log_command(update)
+        if not check_auth(update):
+            return
+        bc.executor.commands["delreminder"].run(["delreminder"] + context.args, TelegramExecutionContext(update))
