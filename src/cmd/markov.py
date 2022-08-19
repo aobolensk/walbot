@@ -13,19 +13,19 @@ class MarkovCommands(BaseCmd):
 
     def bind(self, commands) -> None:
         commands["markov"] = Command(
-            "builtin", "markov", const.Permission.USER, Implementation.FUNCTION,
+            "markov", "markov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._markov)
         commands["markovgc"] = Command(
-            "builtin", "markovgc", const.Permission.USER, Implementation.FUNCTION,
+            "markov", "markovgc", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._markovgc)
         commands["delmarkov"] = Command(
-            "builtin", "delmarkov", const.Permission.MOD, Implementation.FUNCTION,
+            "markov", "delmarkov", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delmarkov)
         commands["findmarkov"] = Command(
-            "builtin", "findmarkov", const.Permission.USER, Implementation.FUNCTION,
+            "markov", "findmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._findmarkov)
         commands["getmarkovword"] = Command(
-            "builtin", "getmarkovword", const.Permission.USER, Implementation.FUNCTION,
+            "markov", "getmarkovword", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._getmarkovword)
 
     def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
