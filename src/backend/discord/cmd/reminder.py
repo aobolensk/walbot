@@ -1,7 +1,6 @@
 """WalBot reminders"""
 
 import datetime
-import random
 
 import dateutil.relativedelta
 
@@ -228,40 +227,7 @@ class ReminderCommands(BaseCmd):
     Examples:
         !listreminder
         !listreminder 5 <- prints only first 5 reminders"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if len(command) == 2:
-            count = await Util.parse_int(
-                message, command[1],
-                f"Second parameter for '{command[0]}' should be amount of reminders to print", silent)
-            if count is None:
-                return
-            reminders_count = count
-        else:
-            reminders_count = len(bc.config.reminders)
-        reminder_list = []
-        for index, reminder in bc.config.reminders.items():
-            rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
-            prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
-            notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
-            reminder_list.append(
-                (reminder.time,
-                 Util.cut_string(reminder.message, 256),
-                 f"{notes if reminder.notes else ''}"
-                 f"{index} at {reminder.time} "
-                 f"{f' in <#{reminder.channel_id}>' if message.channel.id != reminder.channel_id else ''}"
-                 f"{rep if reminder.repeat_after else ''}"
-                 f"{prereminders if reminder.prereminders_list else ''}"))
-        reminder_list.sort()
-        reminder_list = reminder_list[:reminders_count]
-        embed_color = random.randint(0x000000, 0xffffff)
-        for reminder_chunk in Msg.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
-            e = DiscordEmbed()
-            e.title("List of reminders")
-            e.color(embed_color)
-            for rem in reminder_chunk:
-                e.add_field(rem[1], rem[2])
-            await Msg.response(message, None, silent, embed=e.get())
+        return bc.executor.commands["listreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _delreminder(message, command, silent=False):

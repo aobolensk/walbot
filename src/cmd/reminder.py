@@ -1,4 +1,5 @@
 import datetime
+import random
 from typing import List
 
 import dateutil.relativedelta
@@ -6,6 +7,8 @@ import dateutil.relativedelta
 from src import const
 from src.api.command import BaseCmd, Command, ExecutionContext, Implementation
 from src.api.reminder import Reminder
+from src.backend.discord.embed import DiscordEmbed
+from src.backend.discord.message import Msg
 from src.config import bc
 from src.utils import Util
 
@@ -95,8 +98,8 @@ class _ReminderInternals:
             return Command.send_message(
                 execution_ctx,
                 ("Provide relative time in the following format: "
-                "<weeks>w<days>d<hours>h<minutes>m. "
-                "All parts except one are optional"))
+                 "<weeks>w<days>d<hours>h<minutes>m. "
+                 "All parts except one are optional"))
         weeks = int(r.group(2)) if r.group(2) is not None else 0
         days = int(r.group(4)) if r.group(4) is not None else 0
         hours = int(r.group(6)) if r.group(6) is not None else 0
@@ -114,6 +117,9 @@ class ReminderCommands(BaseCmd):
         commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._addreminder)
+        commands["listreminder"] = Command(
+            "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._listreminder)
 
     def _addreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=4):
@@ -138,3 +144,46 @@ class ReminderCommands(BaseCmd):
             Command.send_message(
                 execution_ctx,
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+
+    def _listreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+            return
+        if len(cmd_line) == 2:
+            count = Util.parse_int_for_command(
+                execution_ctx, cmd_line[1],
+                f"Second parameter for '{cmd_line[0]}' should be amount of reminders to print")
+            if count is None:
+                return
+            reminders_count = count
+        else:
+            reminders_count = len(bc.config.reminders)
+        reminder_list = []
+        for index, reminder in bc.config.reminders.items():
+            rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
+            prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
+            notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
+            channel = f' in {reminder.backend}: <#{reminder.channel_id}>'
+            reminder_list.append(
+                (reminder.time,
+                 Util.cut_string(reminder.message, 256),
+                 f"{notes if reminder.notes else ''}"
+                 f"{index} at {reminder.time} "
+                 f"{channel}"
+                 f"{rep if reminder.repeat_after else ''}"
+                 f"{prereminders if reminder.prereminders_list else ''}"))
+        reminder_list.sort()
+        reminder_list = reminder_list[:reminders_count]
+        if execution_ctx.platform == "discord":
+            embed_color = random.randint(0x000000, 0xffffff)
+            for reminder_chunk in Msg.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+                e = DiscordEmbed()
+                e.title("List of reminders")
+                e.color(embed_color)
+                for rem in reminder_chunk:
+                    e.add_field(rem[1], rem[2])
+                execution_ctx.send_message(None, embed=e.get())
+        else:
+            result = ""
+            for reminder in reminder_list:
+                result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
+            Command.send_message(execution_ctx, result)
