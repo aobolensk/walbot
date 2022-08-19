@@ -73,7 +73,12 @@ class Commands:
                         continue
                     s = "**" + name + "**: "
                     try:
-                        docstring = command.get_actor().__doc__ or "*<No docs provided>*"
+                        docstring = (
+                            command.get_actor().__doc__ or
+                            (bc.executor.commands[name]._exec.__doc__
+                             if name in bc.executor.commands.keys() else None) or
+                            "*<No docs provided>*"
+                        )
                         s += " \\\n".join(docstring.strip().split('\n'))
                     except (AttributeError, KeyError):
                         to_remove.append(name)
