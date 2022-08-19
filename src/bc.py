@@ -1,19 +1,20 @@
 import datetime
 from collections import deque
-from enum import IntEnum
+import enum
 
 from src.api.command import Executor
 from src.backend.discord.message_buffer import MessageBuffer
 from src.plugin import PluginManager
 
 
-class DoNotUpdateFlag(IntEnum):
+@enum.unique
+class DoNotUpdateFlag(enum.IntEnum):
     VOICE = 0
-    DISCORD_REMINDER = 1
-    POLL = 2
-    TIMER = 3
-    STOPWATCH = 4
-    TELEGRAM_REMINDER = 5
+    DISCORD_REMINDER = enum.auto()
+    TELEGRAM_REMINDER = enum.auto()
+    POLL = enum.auto()
+    TIMER = enum.auto()
+    STOPWATCH = enum.auto()
 
 
 class BotController:
