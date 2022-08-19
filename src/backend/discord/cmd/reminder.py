@@ -7,7 +7,6 @@ import dateutil.relativedelta
 from src import const
 from src.api.reminder import Reminder
 from src.backend.discord.context import DiscordExecutionContext
-from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
@@ -136,29 +135,7 @@ class ReminderCommands(BaseCmd):
         """Print information about reminder
     Example:
         !reminder 1"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index not in bc.config.reminders.keys():
-            return null(await Msg.response(message, "Invalid index of reminder!", silent))
-        reminder = bc.config.reminders[index]
-        e = DiscordEmbed()
-        e.title("Reminder info")
-        e.description(reminder.message)
-        e.footer(f"{reminder.author} • {datetime.datetime.strptime(reminder.time, const.REMINDER_DATETIME_FORMAT)}")
-        e.add_field("Index", str(index), True)
-        e.add_field("Channel", f"<#{reminder.channel_id}>", True)
-        if reminder.repeat_after:
-            e.add_field("Repeats every", f"{reminder.repeat_after} {reminder.repeat_interval_measure}", True)
-        e.add_field("Created", reminder.time_created, True)
-        if reminder.prereminders_list:
-            e.add_field("Pre reminders (in minutes)", ', '.join([str(x) for x in reminder.prereminders_list]), True)
-        if reminder.notes:
-            e.add_field("Notes", reminder.notes, True)
-        await Msg.response(message, None, silent, embed=e.get())
+        return bc.executor.commands["reminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _addreminder(message, command, silent=False):

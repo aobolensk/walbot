@@ -114,12 +114,55 @@ class ReminderCommands(BaseCmd):
         pass
 
     def bind(self, commands) -> None:
+        commands["reminder"] = Command(
+            "reminder", "reminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._reminder)
         commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._addreminder)
         commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._listreminder)
+
+    def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        reminder = bc.config.reminders[index]
+        if execution_ctx.platform == "discord":
+            e = DiscordEmbed()
+            e.title("Reminder info")
+            e.description(reminder.message)
+            e.footer(f"{reminder.author} • {datetime.datetime.strptime(reminder.time, const.REMINDER_DATETIME_FORMAT)}")
+            e.add_field("Index", str(index), True)
+            e.add_field("Channel", f'{reminder.backend}: <#{reminder.channel_id}>', True)
+            if reminder.repeat_after:
+                e.add_field("Repeats every", f"{reminder.repeat_after} {reminder.repeat_interval_measure}", True)
+            e.add_field("Created", reminder.time_created, True)
+            if reminder.prereminders_list:
+                e.add_field("Pre reminders (in minutes)", ', '.join([str(x) for x in reminder.prereminders_list]), True)
+            if reminder.notes:
+                e.add_field("Notes", reminder.notes, True)
+            execution_ctx.send_message(None, embed=e.get())
+        else:
+            result = f"Reminder {index}:\n"
+            result += f"Message: {reminder.message}\n"
+            result += f"Time: {datetime.datetime.strptime(reminder.time, const.REMINDER_DATETIME_FORMAT)}\n"
+            result += f"Author: {reminder.author}\n"
+            result += f"Channel: {reminder.backend}: <#{reminder.channel_id}>\n"
+            if reminder.repeat_after:
+                result += f"Repeats every: {reminder.repeat_after} {reminder.repeat_interval_measure}\n"
+            result += f"Created: {reminder.time_created}\n"
+            if reminder.prereminders_list:
+                result += f"Pre reminders (in minutes): {', '.join([str(x) for x in reminder.prereminders_list])}\n"
+            if reminder.notes:
+                result += f"Notes: {reminder.notes}\n"
+            Command.send_message(execution_ctx, result)
 
     def _addreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=4):
@@ -162,13 +205,13 @@ class ReminderCommands(BaseCmd):
             rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
             prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
             notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
-            channel = f' in {reminder.backend}: <#{reminder.channel_id}>'
+            channel = f'{reminder.backend}: <#{reminder.channel_id}>'
             reminder_list.append(
                 (reminder.time,
                  Util.cut_string(reminder.message, 256),
                  f"{notes if reminder.notes else ''}"
                  f"{index} at {reminder.time} "
-                 f"{channel}"
+                 f" in {channel}"
                  f"{rep if reminder.repeat_after else ''}"
                  f"{prereminders if reminder.prereminders_list else ''}"))
         reminder_list.sort()
