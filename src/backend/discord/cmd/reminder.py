@@ -3,7 +3,6 @@
 import datetime
 
 from src import const
-from src.api.reminder import Reminder
 from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
@@ -136,107 +135,14 @@ class ReminderCommands(BaseCmd):
         !repeatreminder 1 2y
         !repeatreminder 1 0
     Note: number without postfix is translated to minutes. 0 means disabling repetition"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index not in bc.config.reminders.keys():
-            return null(await Msg.response(message, "Invalid index of reminder!", silent))
-
-        if command[2] == "hourly":
-            command[2] = "1h"
-        elif command[2] == "daily":
-            command[2] = "1d"
-        elif command[2] == "weekly":
-            command[2] = "1w"
-        elif command[2] == "monthly":
-            command[2] = "1m"
-        elif command[2] == "annually":
-            command[2] = "1y"
-
-        if command[2].endswith("h"):
-            duration = command[2][:-1]
-            duration = await Util.parse_int(
-                message, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
-            if duration is None:
-                return
-            duration *= 60
-        elif command[2].endswith("d"):
-            duration = command[2][:-1]
-            duration = await Util.parse_int(
-                message, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
-            if duration is None:
-                return
-            duration *= 1440
-        elif command[2].endswith("w"):
-            duration = command[2][:-1]
-            duration = await Util.parse_int(
-                message, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
-            if duration is None:
-                return
-            duration *= 10080
-        elif command[2].endswith("m"):
-            duration = command[2][:-1]
-            duration = await Util.parse_int(
-                message, duration, "You need to specify amount of days before 'm'. Example: 3m for 3 months", silent)
-            if duration is None:
-                return
-            bc.config.reminders[index].repeat_interval_measure = "months"
-        elif command[2].endswith("y"):
-            duration = command[2][:-1]
-            duration = await Util.parse_int(
-                message, duration, "You need to specify amount of days before 'y'. Example: 3y for 3 years", silent)
-            if duration is None:
-                return
-            bc.config.reminders[index].repeat_interval_measure = "years"
-        else:
-            duration = await Util.parse_int(
-                message, command[2],
-                f"Third parameter for '{command[0]}' should be duration of period between reminders", silent)
-            if duration is None:
-                return
-        if duration < 0:
-            return null(
-                await Msg.response(message, "Duration should be positive or zero (to disable repetition)!", silent))
-        bc.config.reminders[index].repeat_after = duration
-        if duration == 0:
-            return null(await Msg.response(message, f"Repetition is disabled for reminder {index}", silent))
-        await Msg.response(
-            message,
-            f"Reminder {index} will be repeated every {duration} "
-            f"{bc.config.reminders[index].repeat_interval_measure}!", silent)
+        return bc.executor.commands["repeatreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _skipreminder(message, command, silent=False):
         """Skip next instance of recurring (repeating) reminder
     Example: !skipreminder 1
     Note: only recurring (repeating) reminders are affected by this command"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index not in bc.config.reminders.keys():
-            return null(await Msg.response(message, "Invalid index of reminder!", silent))
-        if bc.config.reminders[index].repeat_after == 0:
-            return null(await Msg.response(message, "This reminder is not recurring!", silent))
-        rem = bc.config.reminders[index]
-        new_time = datetime.datetime.strftime(
-            datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) +
-            rem.get_next_event_delta(), const.REMINDER_DATETIME_FORMAT)
-        id_ = bc.config.ids["reminder"]
-        bc.config.reminders[id_] = Reminder(
-            str(new_time), rem.message, message.channel.id, bc.config.reminders[index].author,
-            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
-        bc.config.reminders[id_].repeat_after = rem.repeat_after
-        bc.config.ids["reminder"] += 1
-        bc.config.reminders.pop(index)
-        await Msg.response(
-            message, f"Skipped reminder {index} at {rem.time}, "
-                     f"next reminder {id_} will be at {bc.config.reminders[id_].time}", silent)
+        return bc.executor.commands["skipreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _timeuntilreminder(message, command, silent=False):

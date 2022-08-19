@@ -48,6 +48,7 @@ class TelegramBotInstance(BotInstance):
 
     @Mail.send_exception_info_to_admin_emails
     def _send_message(self, chat_id: int, text: str) -> None:
+        log.info(f"({chat_id}) /sendMessage: " + text)
         text = quote_plus(text).replace("-", "\\-")
         url = (
             f"https://api.telegram.org/bot{bc.secret_config.telegram['token']}/sendMessage"

@@ -135,6 +135,12 @@ class ReminderCommands(BaseCmd):
         commands["remindeme"] = Command(
             "reminder", "remindeme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindeme)
+        commands["repeatreminder"] = Command(
+            "reminder", "repeatreminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._repeatreminder)
+        commands["skipreminder"] = Command(
+            "reminder", "skipreminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._skipreminder)
 
     def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
@@ -351,3 +357,102 @@ class ReminderCommands(BaseCmd):
             Command.send_message(execution_ctx, "Invalid index of reminder!")
         bc.config.reminders[index].email_users.append(email)
         Command.send_message(execution_ctx, f"E-mail will be sent to '{email}' when reminder {index} is sent")
+
+    def _repeatreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+
+        if cmd_line[2] == "hourly":
+            cmd_line[2] = "1h"
+        elif cmd_line[2] == "daily":
+            cmd_line[2] = "1d"
+        elif cmd_line[2] == "weekly":
+            cmd_line[2] = "1w"
+        elif cmd_line[2] == "monthly":
+            cmd_line[2] = "1m"
+        elif cmd_line[2] == "annually":
+            cmd_line[2] = "1y"
+
+        if cmd_line[2].endswith("h"):
+            duration = cmd_line[2][:-1]
+            duration = Util.parse_int_for_command(
+                execution_ctx, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
+            if duration is None:
+                return
+            duration *= 60
+        elif cmd_line[2].endswith("d"):
+            duration = cmd_line[2][:-1]
+            duration = Util.parse_int_for_command(
+                execution_ctx, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
+            if duration is None:
+                return
+            duration *= 1440
+        elif cmd_line[2].endswith("w"):
+            duration = cmd_line[2][:-1]
+            duration = Util.parse_int_for_command(
+                execution_ctx, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
+            if duration is None:
+                return
+            duration *= 10080
+        elif cmd_line[2].endswith("m"):
+            duration = cmd_line[2][:-1]
+            duration = Util.parse_int_for_command(
+                execution_ctx, duration, "You need to specify amount of days before 'm'. Example: 3m for 3 months")
+            if duration is None:
+                return
+            bc.config.reminders[index].repeat_interval_measure = "months"
+        elif cmd_line[2].endswith("y"):
+            duration = cmd_line[2][:-1]
+            duration = Util.parse_int_for_command(
+                execution_ctx, duration, "You need to specify amount of days before 'y'. Example: 3y for 3 years")
+            if duration is None:
+                return
+            bc.config.reminders[index].repeat_interval_measure = "years"
+        else:
+            duration = Util.parse_int_for_command(
+                execution_ctx, cmd_line[2],
+                f"Third parameter for '{cmd_line[0]}' should be duration of period between reminders")
+            if duration is None:
+                return
+        if duration < 0:
+            return Command.send_message(execution_ctx, "Duration should be positive or zero (to disable repetition)!")
+        bc.config.reminders[index].repeat_after = duration
+        if duration == 0:
+            return Command.send_message(execution_ctx, f"Repetition is disabled for reminder {index}")
+        Command.send_message(
+            execution_ctx,
+            f"Reminder {index} will be repeated every {duration} "
+            f"{bc.config.reminders[index].repeat_interval_measure}!")
+
+    def _skipreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        if bc.config.reminders[index].repeat_after == 0:
+            return Command.send_message(execution_ctx, "This reminder is not recurring!")
+        rem = bc.config.reminders[index]
+        new_time = datetime.datetime.strftime(
+            datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) +
+            rem.get_next_event_delta(), const.REMINDER_DATETIME_FORMAT)
+        id_ = bc.config.ids["reminder"]
+        bc.config.reminders[id_] = Reminder(
+            str(new_time), rem.message, rem.channel_id, rem.author,
+            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), rem.backend)
+        bc.config.reminders[id_].repeat_after = rem.repeat_after
+        bc.config.ids["reminder"] += 1
+        bc.config.reminders.pop(index)
+        Command.send_message(
+            execution_ctx,
+            f"Skipped reminder {index} at {rem.time}, next reminder {id_} "
+            f"will be at {bc.config.reminders[id_].time}")
