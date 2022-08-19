@@ -365,7 +365,11 @@ class ReminderCommands(BaseCmd):
             return Command.check_args_count(execution_ctx, "Invalid index of reminder!")
         if execution_ctx.platform == "discord":
             bc.config.reminders[index].discord_whisper_users.append(execution_ctx.message.author.id)
-            Command.check_args_count(
+            Command.send_message(
+                execution_ctx, f"You will be notified in direct messages when reminder {index} is sent")
+        elif execution_ctx.platform == "telegram":
+            bc.config.reminders[index].telegram_whisper_users.append(execution_ctx.update.message.from_user.id)
+            Command.send_message(
                 execution_ctx, f"You will be notified in direct messages when reminder {index} is sent")
         else:
             Command.send_message(

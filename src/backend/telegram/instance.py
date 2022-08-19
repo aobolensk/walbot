@@ -86,8 +86,7 @@ class TelegramBotInstance(BotInstance):
                 result += rem.message + "\n" + rem.notes + "\n"
                 self._send_message(rem.channel_id, result)
                 for user_id in rem.telegram_whisper_users:
-                    # TODO: Add support for DMs
-                    pass
+                    self._send_message(user_id, result)
                 if rem.email_users:
                     mail = Mail(bc.secret_config)
                     mail.send(
