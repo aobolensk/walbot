@@ -116,19 +116,25 @@ class ReminderCommands(BaseCmd):
     def bind(self, commands) -> None:
         commands["reminder"] = Command(
             "reminder", "reminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._reminder)
+            subcommand=False, impl_func=self._reminder)
         commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._addreminder)
+            subcommand=False, impl_func=self._addreminder)
         commands["updreminder"] = Command(
             "reminder", "updreminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._updreminder)
+            subcommand=False, impl_func=self._updreminder)
         commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._listreminder)
+            subcommand=False, impl_func=self._listreminder)
         commands["delreminder"] = Command(
             "reminder", "delreminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._delreminder)
+            subcommand=False, impl_func=self._delreminder)
+        commands["remindme"] = Command(
+            "reminder", "remindme", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._remindme)
+        commands["remindeme"] = Command(
+            "reminder", "remindeme", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._remindeme)
 
     def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
@@ -311,3 +317,37 @@ class ReminderCommands(BaseCmd):
                 result += "Invalid reminder index: "
             result += ', '.join(map(str, errors))
         Command.send_message(execution_ctx, result)
+
+    def _remindme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, f"Reminder with index {index} not found")
+        if execution_ctx.platform == "discord":
+            bc.config.reminders[index].ping_users.append(execution_ctx.message.author.mention)
+            Command.send_message(execution_ctx, f"You will be mentioned when reminder {index} is sent")
+        elif execution_ctx.platform == "telegram":
+            bc.config.reminders[index].ping_users.append(
+                execution_ctx.update.message.from_user.mention_markdown_v2())
+            Command.send_message(execution_ctx, f"You will be mentioned when reminder {index} is sent")
+        else:
+            Command.send_message(
+                execution_ctx,
+                f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+
+    def _remindeme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        email = cmd_line[2]
+        if index not in bc.config.reminders.keys():
+            Command.send_message(execution_ctx, "Invalid index of reminder!")
+        bc.config.reminders[index].email_users.append(email)
+        Command.send_message(execution_ctx, f"E-mail will be sent to '{email}' when reminder {index} is sent")

@@ -194,17 +194,7 @@ class ReminderCommands(BaseCmd):
     async def _remindme(message, command, silent=False):
         """Ask bot to ping you when it sends reminder
     Example: !remindme 1"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index in bc.config.reminders.keys():
-            bc.config.reminders[index].ping_users.append(message.author.mention)
-            await Msg.response(message, f"You will be mentioned when reminder {index} is sent", silent)
-        else:
-            await Msg.response(message, "Invalid index of reminder!", silent)
+        return bc.executor.commands["remindme"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _remindwme(message, command, silent=False):
@@ -227,18 +217,7 @@ class ReminderCommands(BaseCmd):
     async def _remindeme(message, command, silent=False):
         """Ask bot to send you an e-mail when it sends reminder
     Example: !remindeme 1 <your-email-address>"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        email = command[2]
-        if index in bc.config.reminders.keys():
-            bc.config.reminders[index].email_users.append(email)
-            await Msg.response(message, f"E-mail will be sent to you when reminder {index} is sent", silent)
-        else:
-            await Msg.response(message, "Invalid index of reminder!", silent)
+        return bc.executor.commands["remindeme"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _repeatreminder(message, command, silent=False):

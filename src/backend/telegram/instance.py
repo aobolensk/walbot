@@ -46,12 +46,16 @@ class TelegramBotInstance(BotInstance):
         result = bc.markov.generate()
         reply(update, result)
 
+    @Mail.send_exception_info_to_admin_emails
     def _send_message(self, chat_id: int, text: str) -> None:
+        text = quote_plus(text).replace("-", "\\-")
         url = (
             f"https://api.telegram.org/bot{bc.secret_config.telegram['token']}/sendMessage"
-            f"?chat_id={chat_id}&text={quote_plus(text)}"
+            f"?chat_id={chat_id}&text={text}&parse_mode=MarkdownV2"
         )
-        requests.get(url, proxies={"http": Util.proxy.http(), "https": Util.proxy.https()})
+        r = requests.get(url, proxies={"http": Util.proxy.http(), "https": Util.proxy.https()})
+        if r.status_code != 200:
+            log.error(f"Error sending message to {chat_id}: {r.status_code} {r.json()}")
 
     @Mail.send_exception_info_to_admin_emails
     def _process_reminders_iteration(self) -> None:
@@ -76,7 +80,8 @@ class TelegramBotInstance(BotInstance):
                     self._send_message(rem.channel_id, result)
                     rem.used_prereminders_list[i] = True
             if rem == now:
-                result = f"⏰ You asked to remind at {now}\n"
+                result = (' '.join(rem.ping_users) + "\n") if rem.ping_users else ""
+                result += f"⏰ You asked to remind at {now}\n"
                 result += rem.message + "\n" + rem.notes + "\n"
                 self._send_message(rem.channel_id, result)
                 for user_id in rem.whisper_users:
