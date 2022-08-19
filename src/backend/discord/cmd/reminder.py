@@ -7,6 +7,7 @@ import dateutil.relativedelta
 
 from src import const
 from src.api.reminder import Reminder
+from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
@@ -177,23 +178,7 @@ class ReminderCommands(BaseCmd):
         !addreminder in 1w Test reminder 2
         !addreminder in 5h10m Test reminder 3
 """
-        if not await Util.check_args_count(message, command, silent, min=4):
-            return
-        text = ' '.join(command[3:])
-        if command[1] == "in":
-            time = await _ReminderInternals.parse_reminder_args_in(message, command[2], silent)
-        else:
-            time = await _ReminderInternals.parse_reminder_args(message, command[1], command[2], silent)
-        if time is None:
-            return
-        id_ = bc.config.ids["reminder"]
-        if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
-            return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
-        bc.config.reminders[id_] = Reminder(
-            str(time), text, message.channel.id, message.author.name,
-            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
-        bc.config.ids["reminder"] += 1
-        await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
+        return bc.executor.commands["addreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _updreminder(message, command, silent=False):
