@@ -189,6 +189,14 @@ class ReminderCommands(BaseCmd):
                 datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
             bc.config.ids["reminder"] += 1
             Command.send_message(execution_ctx, f"Reminder '{text}' with id {id_} added at {time}")
+        elif execution_ctx.platform == "telegram":
+            username = (
+                execution_ctx.update.message.from_user.username or execution_ctx.update.message.from_user.full_name)
+            bc.config.reminders[id_] = Reminder(
+                str(time), text, execution_ctx.update.message.chat.id, username,
+                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.TELEGRAM)
+            bc.config.ids["reminder"] += 1
+            Command.send_message(execution_ctx, f"Reminder '{text}' with id {id_} added at {time}")
         else:
             Command.send_message(
                 execution_ctx,
@@ -218,6 +226,14 @@ class ReminderCommands(BaseCmd):
                 datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
             Command.send_message(
                 execution_ctx, f"Successfully updated reminder {index}: '{text}' at {time}")
+        elif execution_ctx.platform == "telegram":
+            username = (
+                execution_ctx.update.message.from_user.username or execution_ctx.update.message.from_user.full_name)
+            bc.config.reminders[index] = Reminder(
+                str(time), text, execution_ctx.update.message.chat.id, username,
+                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.TELEGRAM)
+            bc.config.ids["reminder"] += 1
+            Command.send_message(execution_ctx, f"Reminder '{text}' with id {index} added at {time}")
         else:
             Command.send_message(
                 execution_ctx,

@@ -9,10 +9,11 @@ from src.plugin import PluginManager
 
 class DoNotUpdateFlag(IntEnum):
     VOICE = 0
-    REMINDER = 1
+    DISCORD_REMINDER = 1
     POLL = 2
     TIMER = 3
     STOPWATCH = 4
+    TELEGRAM_REMINDER = 5
 
 
 class BotController:
