@@ -132,6 +132,9 @@ class ReminderCommands(BaseCmd):
         commands["remindme"] = Command(
             "reminder", "remindme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindme)
+        commands["remindwme"] = Command(
+            "reminder", "remindwme", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._remindwme)
         commands["remindeme"] = Command(
             "reminder", "remindeme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindeme)
@@ -346,6 +349,24 @@ class ReminderCommands(BaseCmd):
             bc.config.reminders[index].ping_users.append(
                 execution_ctx.update.message.from_user.mention_markdown_v2())
             Command.send_message(execution_ctx, f"You will be mentioned when reminder {index} is sent")
+        else:
+            Command.send_message(
+                execution_ctx,
+                f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+
+    def _remindwme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.check_args_count(execution_ctx, "Invalid index of reminder!")
+        if execution_ctx.platform == "discord":
+            bc.config.reminders[index].discord_whisper_users.append(execution_ctx.message.author.id)
+            Command.check_args_count(
+                execution_ctx, f"You will be notified in direct messages when reminder {index} is sent")
         else:
             Command.send_message(
                 execution_ctx,

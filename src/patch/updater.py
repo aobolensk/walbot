@@ -259,6 +259,12 @@ class Updater:
                 reminder.__dict__["backend"] = str(const.BotBackend.DISCORD)
             self._bump_version(config, "0.0.43")
         if config.version == "0.0.43":
+            for index, reminder in config.reminders.items():
+                reminder.__dict__["discord_whisper_users"] = reminder.whisper_users
+                del reminder.__dict__["whisper_users"]
+                reminder.__dict__["telegram_whisper_users"] = []
+            self._bump_version(config, "0.0.44")
+        if config.version == "0.0.44":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

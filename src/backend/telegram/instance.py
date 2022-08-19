@@ -85,7 +85,7 @@ class TelegramBotInstance(BotInstance):
                 result += f"⏰ You asked to remind at {now}\n"
                 result += rem.message + "\n" + rem.notes + "\n"
                 self._send_message(rem.channel_id, result)
-                for user_id in rem.whisper_users:
+                for user_id in rem.telegram_whisper_users:
                     # TODO: Add support for DMs
                     pass
                 if rem.email_users:

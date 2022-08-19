@@ -97,18 +97,7 @@ class ReminderCommands(BaseCmd):
     async def _remindwme(message, command, silent=False):
         """Ask bot to send direct message you when it sends reminder
     Example: !remindwme 1"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index in bc.config.reminders.keys():
-            bc.config.reminders[index].whisper_users.append(message.author.id)
-            await Msg.response(
-                message, f"You will be notified in direct messages when reminder {index} is sent", silent)
-        else:
-            await Msg.response(message, "Invalid index of reminder!", silent)
+        return bc.executor.commands["remindwme"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _remindeme(message, command, silent=False):

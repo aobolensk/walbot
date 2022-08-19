@@ -156,7 +156,7 @@ class WalBot(discord.Client):
                 e.timestamp(datetime.datetime.now(datetime.timezone.utc))
                 e.footer(text=rem.author)
                 await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
-                for user_id in rem.whisper_users:
+                for user_id in rem.discord_whisper_users:
                     await Msg.send_direct_message(
                         self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                 if rem.email_users:
