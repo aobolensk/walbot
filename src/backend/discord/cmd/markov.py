@@ -33,36 +33,22 @@ class MarkovCommands(BaseCmd):
 
     @staticmethod
     async def _markov(message, command, silent=False):
-        """Generate message using Markov chain
-    Example: !markov"""
         return bc.executor.commands["markov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _markovgc(message, command, silent=False):
-        """Garbage collect Markov model nodes
-    Example: !markovgc"""
         return bc.executor.commands["markovgc"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _delmarkov(message, command, silent=False):
-        """Delete all words in Markov model by regex
-    Example: !delmarkov hello"""
         return bc.executor.commands["delmarkov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _findmarkov(message, command, silent=False):
-        """Match words in Markov model using regex
-    Examples:
-        !findmarkov hello
-        !findmarkov hello -f"""
         return bc.executor.commands["findmarkov"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _getmarkovword(message, command, silent=False):
-        """Get particular word from Markov model by regex
-    Examples:
-        !getmarkovword hello -a <- get amount of found words
-        !getmarkovword hello 0 <- get word by index"""
         return bc.executor.commands["getmarkovword"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod

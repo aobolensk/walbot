@@ -195,7 +195,6 @@ class Launcher:
                 ])
             if not ok and not self.args.ignore_version_check:
                 sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
-        bc.config.commands.update()
         # Checking authentication token
         if bc.secret_config.discord["token"] is None:
             bc.secret_config = SecretConfig()
@@ -224,6 +223,7 @@ class Launcher:
         self.backends = []
         self._read_configs(main_bot)
         self._init_commands()
+        bc.config.commands.update()
         nest_asyncio.apply()
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
             if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
@@ -300,6 +300,7 @@ class Launcher:
 
     def docs(self):
         """Generate command docs"""
+        self._init_commands()
         importlib.import_module("tools.docs").main(self.args)
 
     def help(self):
