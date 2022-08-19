@@ -24,6 +24,8 @@ class ReminderCommands:
         dispatcher.add_handler(CommandHandler("skipreminder", self._skipreminder))
         dispatcher.add_handler(CommandHandler("timeuntilreminder", self._timeuntilreminder))
         dispatcher.add_handler(CommandHandler("setprereminders", self._setprereminders))
+        dispatcher.add_handler(CommandHandler("addremindernotes", self._addremindernotes))
+        dispatcher.add_handler(CommandHandler("setreminderchannel", self._setreminderchannel))
 
     @Mail.send_exception_info_to_admin_emails
     def _reminder(self, update: Update, context: CallbackContext) -> None:
@@ -110,3 +112,19 @@ class ReminderCommands:
             return
         bc.executor.commands["setprereminders"].run(
             ["setprereminders"] + context.args, TelegramExecutionContext(update))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _addremindernotes(self, update: Update, context: CallbackContext) -> None:
+        log_command(update)
+        if not check_auth(update):
+            return
+        bc.executor.commands["addremindernotes"].run(
+            ["addremindernotes"] + context.args, TelegramExecutionContext(update))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _setreminderchannel(self, update: Update, context: CallbackContext) -> None:
+        log_command(update)
+        if not check_auth(update):
+            return
+        bc.executor.commands["setreminderchannel"].run(
+            ["setreminderchannel"] + context.args, TelegramExecutionContext(update))

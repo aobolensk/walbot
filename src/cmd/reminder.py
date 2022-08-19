@@ -150,6 +150,12 @@ class ReminderCommands(BaseCmd):
         commands["setprereminders"] = Command(
             "reminder", "setprereminders", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setprereminders)
+        commands["addremindernotes"] = Command(
+            "reminder", "addremindernotes", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addremindernotes)
+        commands["setreminderchannel"] = Command(
+            "reminder", "setreminderchannel", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._setreminderchannel)
 
     def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
@@ -530,3 +536,33 @@ class ReminderCommands(BaseCmd):
         rem.used_prereminders_list = [False] * len(prereminders_list)
         result = f"Set prereminders list for reminder {index}: {', '.join([str(x) for x in rem.prereminders_list])}"
         Command.send_message(execution_ctx, result)
+
+    def _addremindernotes(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        rem = bc.config.reminders[index]
+        rem.notes = ' '.join(cmd_line[2:])
+        Command.send_message(execution_ctx, f"Set notes for reminder {index}: {rem.notes}")
+
+    def _setreminderchannel(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        rem = bc.config.reminders[index]
+        channel_id = Util.parse_int_for_command(
+            execution_ctx, cmd_line[2], f"Third parameter for '{cmd_line[0]}' should be channel id")
+        if channel_id is None:
+            return
+        rem.channel_id = channel_id
+        Command.send_message(execution_ctx, f"Set channel id {channel_id} for reminder {index}")
