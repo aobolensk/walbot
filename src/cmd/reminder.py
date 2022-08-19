@@ -158,6 +158,9 @@ class ReminderCommands(BaseCmd):
             subcommand=False, impl_func=self._setreminderchannel)
 
     def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print information about reminder
+    Example:
+        !reminder 1"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
         index = Util.parse_int_for_command(
@@ -198,6 +201,21 @@ class ReminderCommands(BaseCmd):
             Command.send_message(execution_ctx, result)
 
     def _addreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print message at particular time
+    Examples:
+        !addreminder 2020-01-01 00:00 Happy new year!
+        !addreminder today 08:00 Wake up
+        !addreminder tomorrow 08:00 Wake up
+        !addreminder monday 09:00 Time to work
+        !addreminder sat 11:00 Time to chill
+        !addreminder 2d 08:00 Wake up <- 2 days
+        !addreminder 1w 08:00 Wake up <- 1 week
+        !addreminder 1m Monthly event
+        !addreminder 1y Annual event
+        !addreminder in 1w5d10h5m Test reminder
+        !addreminder in 1w Test reminder 2
+        !addreminder in 5h10m Test reminder 3
+"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=4):
             return
         text = ' '.join(cmd_line[3:])
@@ -230,6 +248,22 @@ class ReminderCommands(BaseCmd):
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
 
     def _updreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Update reminder by index
+    Examples:
+        !updreminder 0 2020-01-01 00:00 Happy new year!
+        !updreminder 0 2020-01-01 00:00 Happy new year!
+        !updreminder 0 today 08:00 Wake up
+        !updreminder 0 tomorrow 08:00 Wake up
+        !updreminder 0 monday 09:00 Time to work
+        !updreminder 0 sat 11:00 Time to chill
+        !updreminder 0 2d 08:00 Wake up <- 2 days
+        !updreminder 0 1w 08:00 Wake up <- 1 week
+        !addreminder 0 1m Monthly event
+        !addreminder 0 1y Annual event
+        !updreminder 0 in 1w5d10h5m Test reminder
+        !updreminder 0 in 1w Test reminder 2
+        !updreminder 0 in 5h10m Test reminder 3
+"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=5):
             return
         index = Util.parse_int_for_command(
@@ -267,6 +301,10 @@ class ReminderCommands(BaseCmd):
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
 
     def _listreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print list of reminders
+    Examples:
+        !listreminder
+        !listreminder 5 <- prints only first 5 reminders"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         if len(cmd_line) == 2:
@@ -310,6 +348,8 @@ class ReminderCommands(BaseCmd):
             Command.send_message(execution_ctx, result)
 
     def _delreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Delete reminders by index
+    Example: !delreminder 0 1 2"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         errors = []
@@ -340,6 +380,8 @@ class ReminderCommands(BaseCmd):
         Command.send_message(execution_ctx, result)
 
     def _remindme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Ask bot to ping you when it sends reminder
+    Example: !remindme 1"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
         index = Util.parse_int_for_command(
@@ -361,6 +403,8 @@ class ReminderCommands(BaseCmd):
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
 
     def _remindwme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Ask bot to send direct message you when it sends reminder
+    Example: !remindwme 1"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
         index = Util.parse_int_for_command(
@@ -383,6 +427,8 @@ class ReminderCommands(BaseCmd):
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
 
     def _remindeme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Ask bot to send you an e-mail when it sends reminder
+    Example: !remindeme 1 <your-email-address>"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
         index = Util.parse_int_for_command(
@@ -396,6 +442,21 @@ class ReminderCommands(BaseCmd):
         Command.send_message(execution_ctx, f"E-mail will be sent to '{email}' when reminder {index} is sent")
 
     def _repeatreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Make reminder repeating with particular period
+    Examples:
+        !repeatreminder 1 1
+        !repeatreminder 1 hourly
+        !repeatreminder 1 daily
+        !repeatreminder 1 weekly
+        !repeatreminder 1 monthly
+        !repeatreminder 1 annually
+        !repeatreminder 1 2h
+        !repeatreminder 1 2d
+        !repeatreminder 1 2w
+        !repeatreminder 1 2m
+        !repeatreminder 1 2y
+        !repeatreminder 1 0
+    Note: number without postfix is translated to minutes. 0 means disabling repetition"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
         index = Util.parse_int_for_command(
@@ -468,6 +529,9 @@ class ReminderCommands(BaseCmd):
             f"{bc.config.reminders[index].repeat_interval_measure}!")
 
     def _skipreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Skip next instance of recurring (repeating) reminder
+    Example: !skipreminder 1
+    Note: only recurring (repeating) reminders are affected by this command"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
         index = Util.parse_int_for_command(
@@ -495,6 +559,8 @@ class ReminderCommands(BaseCmd):
             f"will be at {bc.config.reminders[id_].time}")
 
     def _timeuntilreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Show time until particular reminder
+    Example: !timeuntilreminder 1"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
         index = Util.parse_int_for_command(
@@ -512,6 +578,12 @@ class ReminderCommands(BaseCmd):
         return result
 
     def _setprereminders(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Set pre reminders notifying that reminder will be sent in particular time.
+        For example, send pre reminder 10 minutes before actual event (to prepare or something)
+    Usage: !setprereminders <reminder_id> [<time_before_reminder_in_minutes> ...]
+    Examples:
+        !setprereminders 1 10
+        !setprereminders 2 5 10 15"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         index = Util.parse_int_for_command(
@@ -538,6 +610,8 @@ class ReminderCommands(BaseCmd):
         Command.send_message(execution_ctx, result)
 
     def _addremindernotes(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Add reminder notes
+    Example: !addremindernotes 1 Some text"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=3):
             return
         index = Util.parse_int_for_command(
@@ -551,6 +625,8 @@ class ReminderCommands(BaseCmd):
         Command.send_message(execution_ctx, f"Set notes for reminder {index}: {rem.notes}")
 
     def _setreminderchannel(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Set channel where reminder will be sent
+    Example: !setreminderchannel 1 <channel_id>"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
         index = Util.parse_int_for_command(
