@@ -48,7 +48,7 @@ class Command:
             self._exec = impl_func
             self.description = self._exec.__doc__
         elif impl_type == Implementation.MESSAGE:
-            self._exec = impl_message
+            self.impl_message = impl_message
             self.description = impl_message
         else:
             raise NotImplementedError(f"Implementation type {impl_type} is not supported")
@@ -61,7 +61,10 @@ class Command:
         if self.impl_type == Implementation.FUNCTION:
             return self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            return self.impl_message
+            return execution_ctx.send_message(self._process_message(self.impl_message))
+
+    def _process_message(self, message: str) -> str:
+        return message
 
     @abstractmethod
     def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
