@@ -119,12 +119,14 @@ class WalBot(discord.Client):
             index += 1
 
     async def _process_reminders_iteration(self) -> None:
-        log.debug3("Reminder processing iteration has started")
+        log.debug3("Discord: Reminder processing iteration has started")
         now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
         to_remove = []
         to_append = []
         reminder_do_not_update_flag = False
         for key, rem in self.config.reminders.items():
+            if rem.backend != "discord":
+                continue
             for i in range(len(rem.prereminders_list)):
                 prereminder = rem.prereminders_list[i]
                 used_prereminder = rem.used_prereminders_list[i]
@@ -154,7 +156,7 @@ class WalBot(discord.Client):
                 e.timestamp(datetime.datetime.now(datetime.timezone.utc))
                 e.footer(text=rem.author)
                 await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
-                for user_id in rem.whisper_users:
+                for user_id in rem.discord_whisper_users:
                     await Msg.send_direct_message(
                         self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                 if rem.email_users:
@@ -167,7 +169,9 @@ class WalBot(discord.Client):
                     new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                     new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
                     to_append.append(
-                        Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
+                        Reminder(
+                            str(new_time), rem.message, rem.channel_id, rem.author,
+                            rem.time_created, const.BotBackend.DISCORD))
                     to_append[-1].repeat_after = rem.repeat_after
                     to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
                     to_append[-1].prereminders_list = rem.prereminders_list
@@ -185,14 +189,14 @@ class WalBot(discord.Client):
                 if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
                         < datetime.timedelta(minutes=(5 + prereminders_delay / 60))):
                     reminder_do_not_update_flag = True
-        bc.do_not_update[DoNotUpdateFlag.REMINDER] = reminder_do_not_update_flag
+        bc.do_not_update[DoNotUpdateFlag.DISCORD_REMINDER] = reminder_do_not_update_flag
         for key in to_remove:
             self.config.reminders.pop(key)
         for item in to_append:
             key = self.config.ids["reminder"]
             self.config.reminders[key] = item
             self.config.ids["reminder"] += 1
-        log.debug3("Reminder processing iteration has finished")
+        log.debug3("Discord: Reminder processing iteration has finished")
 
     @Mail.send_exception_info_to_admin_emails_async
     async def _process_reminders(self) -> None:

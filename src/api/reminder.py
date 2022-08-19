@@ -6,12 +6,14 @@ from src.log import log
 
 
 class Reminder:
-    def __init__(self, time, message, channel_id, author_name, time_created):
+    def __init__(self, time, message, channel_id, author_name, time_created, backend):
         self.time = time
         self.message = message
         self.channel_id = channel_id
+        self.backend = str(backend)
         self.ping_users = []
-        self.whisper_users = []
+        self.discord_whisper_users = []
+        self.telegram_whisper_users = []
         self.email_users = []
         self.repeat_after = 0
         self.repeat_interval_measure = "minutes"

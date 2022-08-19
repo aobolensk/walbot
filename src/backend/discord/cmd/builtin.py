@@ -1443,7 +1443,7 @@ class BuiltinCommands(BaseCmd):
             result += "❌ Bot is connected to voice channel\n"
         else:
             result += "✅ Bot is not connected to voice channel\n"
-        if bc.do_not_update[DoNotUpdateFlag.REMINDER]:
+        if bc.do_not_update[DoNotUpdateFlag.DISCORD_REMINDER] or bc.do_not_update[DoNotUpdateFlag.TELEGRAM_REMINDER]:
             result += "❌ Next reminder will be sent very soon\n"
         else:
             result += "✅ No reminders in next several minutes\n"
