@@ -1,7 +1,5 @@
 """WalBot reminders"""
 
-import datetime
-
 from src import const
 from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
@@ -148,21 +146,7 @@ class ReminderCommands(BaseCmd):
     async def _timeuntilreminder(message, command, silent=False):
         """Show time until particular reminder
     Example: !timeuntilreminder 1"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index not in bc.config.reminders.keys():
-            return null(await Msg.response(message, "Invalid index of reminder!", silent))
-        rem = bc.config.reminders[index]
-        rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now()
-        if rem_time < datetime.timedelta(days=1):
-            rem_time = "0 days, " + str(rem_time)
-        result = f"Time until reminder {index} ('{rem.message}') is {rem_time}"
-        await Msg.response(message, result, silent)
-        return result
+        return bc.executor.commands["timeuntilreminder"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _setprereminders(message, command, silent=False):
@@ -172,30 +156,7 @@ class ReminderCommands(BaseCmd):
     Examples:
         !setprereminders 1 10
         !setprereminders 2 5 10 15"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of reminder", silent)
-        if index is None:
-            return
-        if index not in bc.config.reminders.keys():
-            return null(await Msg.response(message, "Invalid index of reminder!", silent))
-        rem = bc.config.reminders[index]
-        prereminders_list = []
-        for i in range(2, len(command)):
-            time_before_reminder = await Util.parse_int(
-                message, command[i], f"Parameter #{i} for '{command[0]}' should be time in minutes", silent)
-            if time_before_reminder is None:
-                return
-            prereminders_list.append(time_before_reminder)
-            if time_before_reminder <= 0:
-                return null(await Msg.response(message, "Pre reminder time should be more than 0 minutes", silent))
-            if time_before_reminder > 24 * 60:
-                return null(await Msg.response(message, "Pre reminder time should be less than 1 day", silent))
-        rem.prereminders_list = prereminders_list
-        rem.used_prereminders_list = [False] * len(prereminders_list)
-        result = f"Set prereminders list for reminder {index}: {', '.join([str(x) for x in rem.prereminders_list])}"
-        await Msg.response(message, result, silent)
+        return bc.executor.commands["setprereminders"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _addremindernotes(message, command, silent=False):

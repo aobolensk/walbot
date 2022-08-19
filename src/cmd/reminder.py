@@ -141,6 +141,12 @@ class ReminderCommands(BaseCmd):
         commands["skipreminder"] = Command(
             "reminder", "skipreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._skipreminder)
+        commands["timeuntilreminder"] = Command(
+            "reminder", "timeuntilreminder", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._timeuntilreminder)
+        commands["setprereminders"] = Command(
+            "reminder", "setprereminders", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._setprereminders)
 
     def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
@@ -456,3 +462,46 @@ class ReminderCommands(BaseCmd):
             execution_ctx,
             f"Skipped reminder {index} at {rem.time}, next reminder {id_} "
             f"will be at {bc.config.reminders[id_].time}")
+
+    def _timeuntilreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        rem = bc.config.reminders[index]
+        rem_time = datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now()
+        if rem_time < datetime.timedelta(days=1):
+            rem_time = "0 days, " + str(rem_time)
+        result = f"Time until reminder {index} ('{rem.message}') is {rem_time}"
+        Command.send_message(execution_ctx, result)
+        return result
+
+    def _setprereminders(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        index = Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return Command.send_message(execution_ctx, "Invalid index of reminder!")
+        rem = bc.config.reminders[index]
+        prereminders_list = []
+        for i in range(2, len(cmd_line)):
+            time_before_reminder = Util.parse_int_for_command(
+                execution_ctx, cmd_line[i], f"Parameter #{i} for '{cmd_line[0]}' should be time in minutes")
+            if time_before_reminder is None:
+                return
+            prereminders_list.append(time_before_reminder)
+            if time_before_reminder <= 0:
+                return Command.send_message(execution_ctx, "Pre reminder time should be more than 0 minutes")
+            if time_before_reminder > 24 * 60:
+                return Command.send_message(execution_ctx, "Pre reminder time should be less than 1 day")
+        rem.prereminders_list = prereminders_list
+        rem.used_prereminders_list = [False] * len(prereminders_list)
+        result = f"Set prereminders list for reminder {index}: {', '.join([str(x) for x in rem.prereminders_list])}"
+        Command.send_message(execution_ctx, result)
