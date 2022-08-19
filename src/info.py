@@ -64,6 +64,14 @@ class BotInfo:
         time = repo.head.object.committed_datetime
         return time
 
+    def _get_version_from_requirements_txt(self, dependency_name: str) -> str:
+        """Get version of dependency from requirements.txt"""
+        with open("requirements.txt") as f:
+            for line in f:
+                if line.startswith(dependency_name):
+                    return line.split("==")[1].strip()
+        return "<unknown>"
+
     def query_dependencies_info(self) -> Dict[str, str]:
         """Get dict with walbot dependencies versions"""
         res = {}
@@ -83,6 +91,7 @@ class BotInfo:
         res["yt_dlp"] = importlib.import_module("yt_dlp.update").__version__
         res["python-telegram-bot"] = importlib.import_module("telegram").__version__
         res["googletrans"] = importlib.import_module("googletrans").__version__
+        res["nest-asyncio"] = self._get_version_from_requirements_txt("nest-asyncio")
         return res
 
     @property
