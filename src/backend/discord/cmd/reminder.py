@@ -2,8 +2,6 @@
 
 import datetime
 
-import dateutil.relativedelta
-
 from src import const
 from src.api.reminder import Reminder
 from src.backend.discord.context import DiscordExecutionContext
@@ -11,104 +9,6 @@ from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
 from src.utils import Util, null
-
-
-class _ReminderInternals:
-    @staticmethod
-    async def parse_reminder_args(message, date, time, silent):
-        WEEK_DAYS_FULL = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
-        WEEK_DAYS_ABBREV = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
-
-        if date == "today":
-            date = datetime.datetime.strftime(datetime.datetime.now(), const.REMINDER_DATE_FORMAT)
-        elif date == "tomorrow":
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
-        elif date.lower() in WEEK_DAYS_FULL or date in WEEK_DAYS_ABBREV:
-            if date.lower() in WEEK_DAYS_FULL:
-                weekday = WEEK_DAYS_FULL.index(date.lower())
-            elif date in WEEK_DAYS_ABBREV:
-                weekday = WEEK_DAYS_ABBREV.index(date.lower())
-            else:
-                return null(await Msg.response(message, "Unexpected error during day of week processing!", silent))
-            days_delta = (weekday - datetime.datetime.today().weekday() + 7) % 7
-            if days_delta == 0:
-                days_delta = 7
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
-        elif date.endswith("d"):
-            days_amount = date[:-1]
-            days_amount = await Util.parse_int(
-                message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
-            if days_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
-        elif date.endswith("d"):
-            days_amount = date[:-1]
-            days_amount = await Util.parse_int(
-                message, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days", silent)
-            if days_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
-        elif date.endswith("w"):
-            weeks_amount = date[:-1]
-            weeks_amount = await Util.parse_int(
-                message, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks",
-                silent)
-            if weeks_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
-        elif date.endswith("m"):
-            months_amount = date[:-1]
-            months_amount = await Util.parse_int(
-                message, months_amount,
-                "You need to specify amount of months before 'm'. Example: 3m for 3 months", silent)
-            if months_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() +
-                dateutil.relativedelta.relativedelta(months=months_amount), const.REMINDER_DATE_FORMAT)
-        elif date.endswith("y"):
-            years_amount = date[:-1]
-            years_amount = await Util.parse_int(
-                message, years_amount,
-                "You need to specify amount of years before 'y'. Example: 3y for 3 years", silent)
-            if years_amount is None:
-                return
-            date = datetime.datetime.strftime(
-                datetime.datetime.now() +
-                dateutil.relativedelta.relativedelta(years=years_amount), const.REMINDER_DATE_FORMAT)
-        time = date + ' ' + time
-        try:
-            time = datetime.datetime.strptime(
-                time, const.REMINDER_DATETIME_FORMAT).strftime(const.REMINDER_DATETIME_FORMAT)
-        except ValueError:
-            return null(
-                await Msg.response(
-                    message,
-                    f"{time} does not match format {const.REMINDER_DATETIME_FORMAT}\n"
-                    "More information about format: <https://strftime.org/>", silent))
-        return time
-
-    @staticmethod
-    async def parse_reminder_args_in(message, time, silent):
-        r = const.REMINDER_IN_REGEX.match(time)
-        if r is None:
-            return null(
-                await Msg.response(
-                    message, ("Provide relative time in the following format: "
-                              "<weeks>w<days>d<hours>h<minutes>m. "
-                              "All parts except one are optional"), silent))
-        weeks = int(r.group(2)) if r.group(2) is not None else 0
-        days = int(r.group(4)) if r.group(4) is not None else 0
-        hours = int(r.group(6)) if r.group(6) is not None else 0
-        minutes = int(r.group(8)) if r.group(8) is not None else 0
-        time = (datetime.datetime.now() + datetime.timedelta(
-            weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_DATETIME_FORMAT)
-        return time
 
 
 class ReminderCommands(BaseCmd):
