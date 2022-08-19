@@ -29,7 +29,8 @@ class MarkovCommands(BaseCmd):
             subcommand=False, impl_func=self._getmarkovword)
 
     def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        """Show bot uptime"""
+        """Generate message using Markov chain
+    Example: !markov"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1):
             return
         if len(cmd_line) > 1:
@@ -49,6 +50,8 @@ class MarkovCommands(BaseCmd):
         return result
 
     def _markovgc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Garbage collect Markov model nodes
+    Example: !markovgc"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         result = bc.markov.collect_garbage()
@@ -57,6 +60,8 @@ class MarkovCommands(BaseCmd):
         return result
 
     def _delmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Delete all words in Markov model by regex
+    Example: !delmarkov hello"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         regex = ' '.join(cmd_line[1:])
@@ -67,6 +72,10 @@ class MarkovCommands(BaseCmd):
         execution_ctx.send_message(f"Deleted {len(removed)} words from model: {removed}", suppress_embeds=True)
 
     def _findmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Match words in Markov model using regex
+    Examples:
+        !findmarkov hello
+        !findmarkov hello -f"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
             return
         regex = cmd_line[1]
@@ -87,6 +96,10 @@ class MarkovCommands(BaseCmd):
             suppress_embeds=True)
 
     def _getmarkovword(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Get particular word from Markov model by regex
+    Examples:
+        !getmarkovword hello -a <- get amount of found words
+        !getmarkovword hello 0 <- get word by index"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
         regex = cmd_line[1]
