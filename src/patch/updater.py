@@ -255,6 +255,10 @@ class Updater:
             config.commands.data["netcheck"].max_execution_time = 60
             self._bump_version(config, "0.0.42")
         if config.version == "0.0.42":
+            for index, reminder in config.reminders.items():
+                reminder.__dict__["backend"] = str(const.BotBackend.DISCORD)
+            self._bump_version(config, "0.0.43")
+        if config.version == "0.0.43":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

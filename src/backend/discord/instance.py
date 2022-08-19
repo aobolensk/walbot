@@ -125,6 +125,8 @@ class WalBot(discord.Client):
         to_append = []
         reminder_do_not_update_flag = False
         for key, rem in self.config.reminders.items():
+            if rem.backend != "discord":
+                continue
             for i in range(len(rem.prereminders_list)):
                 prereminder = rem.prereminders_list[i]
                 used_prereminder = rem.used_prereminders_list[i]
@@ -167,7 +169,9 @@ class WalBot(discord.Client):
                     new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                     new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
                     to_append.append(
-                        Reminder(str(new_time), rem.message, rem.channel_id, rem.author, rem.time_created))
+                        Reminder(
+                            str(new_time), rem.message, rem.channel_id, rem.author,
+                            rem.time_created, const.BotBackend.DISCORD))
                     to_append[-1].repeat_after = rem.repeat_after
                     to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
                     to_append[-1].prereminders_list = rem.prereminders_list

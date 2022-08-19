@@ -131,3 +131,16 @@ class Verbosity(enum.IntEnum):
     SILENT = 0
     VERBOSE = 1
     VERBOSE2 = 2
+
+
+@enum.unique
+class BotBackend(enum.IntEnum):
+    DISCORD = 0
+    TELEGRAM = enum.auto()
+    REPL = enum.auto()
+
+    def __str__(self):
+        return self.name.lower()
+
+    def __repr__(self):
+        return self.__str__()

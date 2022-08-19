@@ -191,7 +191,7 @@ class ReminderCommands(BaseCmd):
             return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
         bc.config.reminders[id_] = Reminder(
             str(time), text, message.channel.id, message.author.name,
-            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT))
+            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
         bc.config.ids["reminder"] += 1
         await Msg.response(message, f"Reminder '{text}' with id {id_} added at {time}", silent)
 
@@ -231,7 +231,7 @@ class ReminderCommands(BaseCmd):
                 return null(await Msg.response(message, "Reminder timestamp is earlier than now", silent))
             bc.config.reminders[index] = Reminder(
                 str(time), text, message.channel.id, bc.config.reminders[index].author,
-                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT))
+                datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
             await Msg.response(
                 message, f"Successfully updated reminder {index}: '{text}' at {time}", silent)
         else:
@@ -472,7 +472,7 @@ class ReminderCommands(BaseCmd):
         id_ = bc.config.ids["reminder"]
         bc.config.reminders[id_] = Reminder(
             str(new_time), rem.message, message.channel.id, bc.config.reminders[index].author,
-            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT))
+            datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
         bc.config.reminders[id_].repeat_after = rem.repeat_after
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
