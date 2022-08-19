@@ -90,4 +90,4 @@ class Executor:
         self.commands = {}
 
     def add_module(self, module: BaseCmd) -> None:
-        module.bind(self.commands)
+        module.bind()

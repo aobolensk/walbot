@@ -9,17 +9,17 @@ class BuiltinCommands(BaseCmd):
     def __init__(self) -> None:
         pass
 
-    def bind(self, commands) -> None:
-        commands["ping"] = Command(
+    def bind(self) -> None:
+        bc.executor.commands["ping"] = Command(
             "builtin", "ping", const.Permission.USER, Implementation.MESSAGE,
             subcommand=True, impl_message="Pong!")
-        commands["uptime"] = Command(
+        bc.executor.commands["uptime"] = Command(
             "builtin", "uptime", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._uptime)
-        commands["about"] = Command(
+        bc.executor.commands["about"] = Command(
             "builtin", "about", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._about)
-        commands["version"] = Command(
+        bc.executor.commands["version"] = Command(
             "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._version)
 

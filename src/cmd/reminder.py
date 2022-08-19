@@ -113,47 +113,47 @@ class ReminderCommands(BaseCmd):
     def __init__(self) -> None:
         pass
 
-    def bind(self, commands) -> None:
-        commands["reminder"] = Command(
+    def bind(self) -> None:
+        bc.executor.commands["reminder"] = Command(
             "reminder", "reminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._reminder)
-        commands["addreminder"] = Command(
+        bc.executor.commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addreminder)
-        commands["updreminder"] = Command(
+        bc.executor.commands["updreminder"] = Command(
             "reminder", "updreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._updreminder)
-        commands["listreminder"] = Command(
+        bc.executor.commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listreminder)
-        commands["delreminder"] = Command(
+        bc.executor.commands["delreminder"] = Command(
             "reminder", "delreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delreminder)
-        commands["remindme"] = Command(
+        bc.executor.commands["remindme"] = Command(
             "reminder", "remindme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindme)
-        commands["remindwme"] = Command(
+        bc.executor.commands["remindwme"] = Command(
             "reminder", "remindwme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindwme)
-        commands["remindeme"] = Command(
+        bc.executor.commands["remindeme"] = Command(
             "reminder", "remindeme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindeme)
-        commands["repeatreminder"] = Command(
+        bc.executor.commands["repeatreminder"] = Command(
             "reminder", "repeatreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._repeatreminder)
-        commands["skipreminder"] = Command(
+        bc.executor.commands["skipreminder"] = Command(
             "reminder", "skipreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._skipreminder)
-        commands["timeuntilreminder"] = Command(
+        bc.executor.commands["timeuntilreminder"] = Command(
             "reminder", "timeuntilreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._timeuntilreminder)
-        commands["setprereminders"] = Command(
+        bc.executor.commands["setprereminders"] = Command(
             "reminder", "setprereminders", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setprereminders)
-        commands["addremindernotes"] = Command(
+        bc.executor.commands["addremindernotes"] = Command(
             "reminder", "addremindernotes", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addremindernotes)
-        commands["setreminderchannel"] = Command(
+        bc.executor.commands["setreminderchannel"] = Command(
             "reminder", "setreminderchannel", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setreminderchannel)
 

@@ -11,20 +11,20 @@ class MarkovCommands(BaseCmd):
     def __init__(self) -> None:
         pass
 
-    def bind(self, commands) -> None:
-        commands["markov"] = Command(
+    def bind(self) -> None:
+        bc.executor.commands["markov"] = Command(
             "markov", "markov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._markov)
-        commands["markovgc"] = Command(
+        bc.executor.commands["markovgc"] = Command(
             "markov", "markovgc", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._markovgc)
-        commands["delmarkov"] = Command(
+        bc.executor.commands["delmarkov"] = Command(
             "markov", "delmarkov", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delmarkov)
-        commands["findmarkov"] = Command(
+        bc.executor.commands["findmarkov"] = Command(
             "markov", "findmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._findmarkov)
-        commands["getmarkovword"] = Command(
+        bc.executor.commands["getmarkovword"] = Command(
             "markov", "getmarkovword", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._getmarkovword)
 
