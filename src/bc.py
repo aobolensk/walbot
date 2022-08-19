@@ -1,6 +1,6 @@
 import datetime
-from collections import deque
 import enum
+from collections import deque
 
 from src.api.command import Executor
 from src.backend.discord.message_buffer import MessageBuffer
