@@ -3,6 +3,7 @@ from typing import List
 from src import const
 from src.api.command import BaseCmd, Command, ExecutionContext, Implementation
 from src.config import bc
+from src.utils import Util
 
 
 class BuiltinCommands(BaseCmd):
@@ -22,6 +23,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["version"] = Command(
             "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._version)
+        bc.executor.commands["curl"] = Command(
+            "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._curl)
 
     def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime"""
@@ -59,3 +63,16 @@ class BuiltinCommands(BaseCmd):
             result = result[:7]
         Command.send_message(execution_ctx, result)
         return result
+
+    def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
+            return
+        url = cmd_line[1]
+        use_proxy = True if len(cmd_line) == 3 and cmd_line[2] == "--no-proxy" else False
+        try:
+            r = Util.request(url, use_proxy=use_proxy)
+            result = r.get_text()
+            Command.send_message(execution_ctx, result)
+            return result
+        except Exception as e:
+            Command.send_message(execution_ctx, f"Request failed: {e}")

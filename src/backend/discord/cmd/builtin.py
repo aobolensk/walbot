@@ -1371,17 +1371,7 @@ class BuiltinCommands(BaseCmd):
         !curl <url>
         !curl <url> --no-proxy
     """
-        if not await Util.check_args_count(message, command, silent, min=2, max=3):
-            return
-        url = command[1]
-        use_proxy = True if len(command) == 3 and command[2] == "--no-proxy" else False
-        try:
-            r = Util.request(url, use_proxy=use_proxy)
-            result = r.get_text()
-            await Msg.response(message, result, silent)
-            return result
-        except Exception as e:
-            await Msg.response(message, f"Request failed: {e}", silent)
+        return bc.executor.commands["curl"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _nick(message, command, silent=False):
