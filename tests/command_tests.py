@@ -1,4 +1,4 @@
-from src.api.command import ExecutionContext, Executor
+from src.api.command import ExecutionContext
 from src.cmd.builtin import BuiltinCommands
 from src.config import bc
 
