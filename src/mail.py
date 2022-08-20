@@ -1,4 +1,5 @@
 import functools
+import inspect
 import smtplib
 import traceback
 from typing import Any, List
@@ -49,60 +50,57 @@ class Mail:
             log.error(f"Send e-mail failed: {e}", exc_info=True)
 
     @staticmethod
-    def send_exception_info_to_admin_emails_async(func) -> Any:
-        """Catches all exceptions and sends e-mail to admins if it happened.
-        It should be used as a decorator"""
-        @functools.wraps(func)
-        async def wrapped(*args, **kwargs):
-            try:
-                return await func(*args, **kwargs)
-            except Exception as e:
-                try:
-                    bot_info = bc.info.get_full_info(2)
-                except Exception:
-                    log.warning("Failed to get bot info to attach to e-mail", exc_info=True)
-                    bot_info = "ERROR: Failed to retrieve details, please refer to log file"
-                if bc.secret_config.admin_email_list:
-                    mail = Mail(bc.secret_config)
-                    mail.send(
-                        bc.secret_config.admin_email_list,
-                        f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
-                        f"{func.__name__} failed:\n"
-                        f"{e}\n"
-                        "\n"
-                        f"Backtrace:\n"
-                        f"{traceback.format_exc()}\n"
-                        f"Details:\n"
-                        f"{bot_info}"
-                    )
-                log.error(f"{func.__name__} failed", exc_info=True)
-        return wrapped
-
-    @staticmethod
     def send_exception_info_to_admin_emails(func) -> Any:
         """Catches all exceptions and sends e-mail to admins if it happened.
         It should be used as a decorator"""
-        def inner(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
+        if inspect.iscoroutinefunction(func):
+            @functools.wraps(func)
+            async def wrapped(*args, **kwargs):
                 try:
-                    bot_info = bc.info.get_full_info(2)
-                except Exception:
-                    log.warning("Failed to get bot info to attach to e-mail", exc_info=True)
-                    bot_info = "ERROR: Failed to retrieve details, please refer to log file"
-                if bc.secret_config.admin_email_list:
-                    mail = Mail(bc.secret_config)
-                    mail.send(
-                        bc.secret_config.admin_email_list,
-                        f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
-                        f"{func.__name__} failed:\n"
-                        f"{e}\n"
-                        "\n"
-                        f"Backtrace:\n"
-                        f"{traceback.format_exc()}\n"
-                        f"Details:\n"
-                        f"{bot_info}"
-                    )
-                log.error(f"{func.__name__} failed", exc_info=True)
-        return inner
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    try:
+                        bot_info = bc.info.get_full_info(2)
+                    except Exception:
+                        log.warning("Failed to get bot info to attach to e-mail", exc_info=True)
+                        bot_info = "ERROR: Failed to retrieve details, please refer to log file"
+                    if bc.secret_config.admin_email_list:
+                        mail = Mail(bc.secret_config)
+                        mail.send(
+                            bc.secret_config.admin_email_list,
+                            f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
+                            f"{func.__name__} failed:\n"
+                            f"{e}\n"
+                            "\n"
+                            f"Backtrace:\n"
+                            f"{traceback.format_exc()}\n"
+                            f"Details:\n"
+                            f"{bot_info}"
+                        )
+                    log.error(f"{func.__name__} failed", exc_info=True)
+            return wrapped
+        else:
+            def inner(*args, **kwargs):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    try:
+                        bot_info = bc.info.get_full_info(2)
+                    except Exception:
+                        log.warning("Failed to get bot info to attach to e-mail", exc_info=True)
+                        bot_info = "ERROR: Failed to retrieve details, please refer to log file"
+                    if bc.secret_config.admin_email_list:
+                        mail = Mail(bc.secret_config)
+                        mail.send(
+                            bc.secret_config.admin_email_list,
+                            f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
+                            f"{func.__name__} failed:\n"
+                            f"{e}\n"
+                            "\n"
+                            f"Backtrace:\n"
+                            f"{traceback.format_exc()}\n"
+                            f"Details:\n"
+                            f"{bot_info}"
+                        )
+                    log.error(f"{func.__name__} failed", exc_info=True)
+            return inner

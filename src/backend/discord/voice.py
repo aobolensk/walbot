@@ -30,7 +30,7 @@ class VoiceRoutine:
             self.bot_cache.update({"do_not_update": current_autoupdate_flag})
             self.bot_cache.dump_to_file()
 
-    @Mail.send_exception_info_to_admin_emails_async
+    @Mail.send_exception_info_to_admin_emails
     async def _iteration(self) -> None:
         if bc.voice_ctx.client is not None and not bc.voice_ctx.queue and not bc.voice_ctx.client.is_playing():
             if bc.voice_ctx.current_video is not None:

@@ -99,7 +99,7 @@ class WalBot(discord.Client):
         bc.background_loop = None
         await bc.plugin_manager.unload_plugins()
 
-    @Mail.send_exception_info_to_admin_emails_async
+    @Mail.send_exception_info_to_admin_emails
     async def _precompile(self) -> None:
         log.debug("Started precompiling functions...")
         levenshtein_distance("", "")
@@ -198,14 +198,14 @@ class WalBot(discord.Client):
             self.config.ids["reminder"] += 1
         log.debug3("Discord: Reminder processing iteration has finished")
 
-    @Mail.send_exception_info_to_admin_emails_async
+    @Mail.send_exception_info_to_admin_emails
     async def _process_reminders(self) -> None:
         await self.wait_until_ready()
         while not self.is_closed():
             await self._process_reminders_iteration()
             await asyncio.sleep(const.REMINDER_POLLING_INTERVAL)
 
-    @Mail.send_exception_info_to_admin_emails_async
+    @Mail.send_exception_info_to_admin_emails
     async def on_ready(self) -> None:
         bc.backends["discord"] = True
         await bc.plugin_manager.load_plugins()
@@ -224,7 +224,7 @@ class WalBot(discord.Client):
         self.loop.create_task(self._config_autosave())
         self.loop.create_task(self._precompile())
 
-    @Mail.send_exception_info_to_admin_emails_async
+    @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
         await bc.plugin_manager.broadcast_command("on_message", message)
         if self.config.guilds[message.channel.guild.id].ignored:
@@ -250,7 +250,7 @@ class WalBot(discord.Client):
             await self._process_regular_message(message)
             await self._process_repetitions(message)
 
-    @Mail.send_exception_info_to_admin_emails_async
+    @Mail.send_exception_info_to_admin_emails
     async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:
         if message.content == old_message.content and message.embeds != old_message.embeds:
             log.info(f"<{message.id}> (edit, embed update) {message.author} -> {message.content}")
