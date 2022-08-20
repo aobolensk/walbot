@@ -144,7 +144,7 @@ class Launcher:
         if main_bot:
             if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
                 bc.markov = Util.read_config_file(const.MARKOV_PATH)
-                if bc.markov is None and os.path.isdir("backup"):
+                if bc.markov is None:
                     # Check available backups
                     markov_backups = sorted(
                         [x for x in os.listdir("backup") if x.startswith("markov_") and x.endswith(".zip")])
@@ -167,6 +167,8 @@ class Launcher:
                 bc.markov = MarkovV2(db.markov)
         if not os.path.exists(const.IMAGES_DIRECTORY):
             os.makedirs(const.IMAGES_DIRECTORY)
+        if not os.path.exists(const.BACKUP_DIRECTORY):
+            os.makedirs(const.BACKUP_DIRECTORY)
         # Check config versions
         if main_bot:
             ok = True

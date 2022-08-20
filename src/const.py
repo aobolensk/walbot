@@ -37,6 +37,7 @@ SECRET_CONFIG_PATH = "secret.yaml"
 COMMANDS_DOC_PATH = "docs/DiscordCommands.md"
 LOGS_DIRECTORY = "logs"
 IMAGES_DIRECTORY = "images"
+BACKUP_DIRECTORY = "backup"
 BOT_BACKENDS_PATH = "src/backend"
 
 MAX_POLL_OPTIONS = 20

@@ -261,8 +261,6 @@ class Config:
             name += "_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             backup_file = name + ext
             backup_archive = os.path.join(path, "backup", name + ext + ".zip")
-            if not os.path.exists("backup"):
-                os.makedirs("backup")
             try:
                 with zipfile.ZipFile(backup_archive, mode='w') as zf:
                     zf.write(file, arcname=backup_file, compress_type=compress_type)
