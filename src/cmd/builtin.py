@@ -2,6 +2,7 @@ from typing import List
 
 from src import const
 from src.api.command import BaseCmd, Command, ExecutionContext, Implementation
+from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.utils import Util
 
@@ -26,6 +27,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["curl"] = Command(
             "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._curl)
+        bc.executor.commands["donotupdatestate"] = Command(
+            "builtin", "donotupdatestate", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._donotupdatestate)
         bc.executor.commands["getmentioncmd"] = Command(
             "builtin", "getmentioncmd", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=True, impl_func=self._getmentioncmd)
@@ -95,6 +99,34 @@ class BuiltinCommands(BaseCmd):
             return result
         except Exception as e:
             Command.send_message(execution_ctx, f"Request failed: {e}")
+
+    def _donotupdatestate(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print current state of "Do Not Update" flag which blocks automatic bot updates
+    Usage: !donotupdatestate"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        result = ""
+        if bc.do_not_update[DoNotUpdateFlag.VOICE]:
+            result += "❌ Bot is connected to voice channel\n"
+        else:
+            result += "✅ Bot is not connected to voice channel\n"
+        if bc.do_not_update[DoNotUpdateFlag.DISCORD_REMINDER] or bc.do_not_update[DoNotUpdateFlag.TELEGRAM_REMINDER]:
+            result += "❌ Next reminder will be sent very soon\n"
+        else:
+            result += "✅ No reminders in next several minutes\n"
+        if bc.do_not_update[DoNotUpdateFlag.POLL]:
+            result += f"❌ {bc.do_not_update[DoNotUpdateFlag.POLL]} polls are active\n"
+        else:
+            result += "✅ No polls are active\n"
+        if bc.do_not_update[DoNotUpdateFlag.TIMER]:
+            result += f"❌ {bc.do_not_update[DoNotUpdateFlag.TIMER]} timers are active\n"
+        else:
+            result += "✅ No timers are active\n"
+        if bc.do_not_update[DoNotUpdateFlag.STOPWATCH]:
+            result += f"❌ {bc.do_not_update[DoNotUpdateFlag.STOPWATCH]} stopwatches are active\n"
+        else:
+            result += "✅ No stopwatches are active\n"
+        Command.send_message(execution_ctx, result)
 
     def _getmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get current command which is executed on bot ping

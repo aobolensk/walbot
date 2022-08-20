@@ -1407,32 +1407,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _donotupdatestate(message, command, silent=False):
-        """Print current state of "Do Not Update" flag which blocks automatic bot updates
-    Usage: !donotupdatestate"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = ""
-        if bc.do_not_update[DoNotUpdateFlag.VOICE]:
-            result += "❌ Bot is connected to voice channel\n"
-        else:
-            result += "✅ Bot is not connected to voice channel\n"
-        if bc.do_not_update[DoNotUpdateFlag.DISCORD_REMINDER] or bc.do_not_update[DoNotUpdateFlag.TELEGRAM_REMINDER]:
-            result += "❌ Next reminder will be sent very soon\n"
-        else:
-            result += "✅ No reminders in next several minutes\n"
-        if bc.do_not_update[DoNotUpdateFlag.POLL]:
-            result += f"❌ {bc.do_not_update[DoNotUpdateFlag.POLL]} polls are active\n"
-        else:
-            result += "✅ No polls are active\n"
-        if bc.do_not_update[DoNotUpdateFlag.TIMER]:
-            result += f"❌ {bc.do_not_update[DoNotUpdateFlag.TIMER]} timers are active\n"
-        else:
-            result += "✅ No timers are active\n"
-        if bc.do_not_update[DoNotUpdateFlag.STOPWATCH]:
-            result += f"❌ {bc.do_not_update[DoNotUpdateFlag.STOPWATCH]} stopwatches are active\n"
-        else:
-            result += "✅ No stopwatches are active\n"
-        await Msg.response(message, result, silent)
+        bc.executor.commands["donotupdatestate"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _disabletl(message, command, silent=False):
