@@ -241,7 +241,11 @@ class Launcher:
             thread.start()
             log.debug2("Started backend: " + backend.name)
         signal.signal(signal.SIGINT, self._stop_signal_handler if main_bot else self._stop_signal_handler_mini)
-        signal.pause()
+        if not sys.platform == "win32":
+            signal.pause()
+        else:
+            while True:
+                time.sleep(15)
 
     def _stop_bot_process(self, _, main_bot=True):
         if not BotCache(main_bot).exists():
