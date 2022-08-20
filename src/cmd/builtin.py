@@ -26,8 +26,11 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["curl"] = Command(
             "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._curl)
+        bc.executor.commands["getmentioncmd"] = Command(
+            "builtin", "getmentioncmd", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._getmentioncmd)
         bc.executor.commands["setmentioncmd"] = Command(
-            "builtin", "setmentioncmd", const.Permission.USER, Implementation.FUNCTION,
+            "builtin", "setmentioncmd", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setmentioncmd)
 
     def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
@@ -92,6 +95,13 @@ class BuiltinCommands(BaseCmd):
             return result
         except Exception as e:
             Command.send_message(execution_ctx, f"Request failed: {e}")
+
+    def _getmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Get current command which is executed on bot ping
+    Example: !getmentioncmd"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        Command.send_message(execution_ctx, bc.config.on_mention_command)
 
     def _setmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Set current command which is executed on bot ping

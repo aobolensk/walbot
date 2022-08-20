@@ -1450,11 +1450,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _getmentioncmd(message, command, silent=False):
-        """Get current command which is executed on bot ping
-    Example: !getmentioncmd"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        await Msg.response(message, bc.config.on_mention_command, silent)
+        bc.executor.commands["getmentioncmd"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _setmentioncmd(message, command, silent=False):
