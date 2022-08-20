@@ -84,6 +84,39 @@ class Command:
     def send_message(execution_ctx: ExecutionContext, message: str) -> None:
         execution_ctx.send_message(message)
 
+    @staticmethod
+    def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False):
+        if execution_ctx.platform == "discord":
+            string = string.replace("@author@", execution_ctx.message.author.mention)
+            string = string.replace("@channel@", execution_ctx.message.channel.mention)
+            string = string.replace("@server@", execution_ctx.message.guild.name)
+            string = string.replace("@authorid@", str(execution_ctx.message.author.id))
+        string = string.replace("@command@", ' '.join(cmd_line))
+        if not safe or const.ALNUM_STRING_REGEX.match(' '.join(cmd_line[1:])):
+            string = string.replace("@args@", ' '.join(cmd_line[1:]))
+            it = 0
+            while True:
+                res = const.ARGS_REGEX.search(string[it:])
+                if res is None:
+                    break
+                n1 = 1
+                n2 = len(cmd_line)
+                if res.group(1):
+                    n1 = int(res.group(1))
+                if res.group(2):
+                    n2 = int(res.group(2)) + 1
+                if not 0 < n1 < len(cmd_line) or not 0 < n2 <= len(cmd_line) or n1 > n2:
+                    it += res.end()
+                    continue
+                oldlen = len(string)
+                if not safe or const.ALNUM_STRING_REGEX.match(' '.join(cmd_line[n1:n2])):
+                    string = string.replace(res.group(0), ' '.join(cmd_line[n1:n2]), 1)
+                it += res.end() + len(string) - oldlen
+        for i in range(len(cmd_line)):
+            if not safe or const.ALNUM_STRING_REGEX.match(cmd_line[i]):
+                string = string.replace("@arg" + str(i) + "@", cmd_line[i])
+        return string
+
 
 class Executor:
     def __init__(self) -> None:

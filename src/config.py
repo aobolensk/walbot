@@ -46,38 +46,6 @@ class Command:
         return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
 
     @staticmethod
-    async def process_variables(string, message, command, safe=False):
-        string = string.replace("@author@", message.author.mention)
-        string = string.replace("@channel@", message.channel.mention)
-        string = string.replace("@server@", message.guild.name)
-        string = string.replace("@authorid@", str(message.author.id))
-        string = string.replace("@command@", ' '.join(command))
-        if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[1:])):
-            string = string.replace("@args@", ' '.join(command[1:]))
-            it = 0
-            while True:
-                res = const.ARGS_REGEX.search(string[it:])
-                if res is None:
-                    break
-                n1 = 1
-                n2 = len(command)
-                if res.group(1):
-                    n1 = int(res.group(1))
-                if res.group(2):
-                    n2 = int(res.group(2)) + 1
-                if not 0 < n1 < len(command) or not 0 < n2 <= len(command) or n1 > n2:
-                    it += res.end()
-                    continue
-                oldlen = len(string)
-                if not safe or const.ALNUM_STRING_REGEX.match(' '.join(command[n1:n2])):
-                    string = string.replace(res.group(0), ' '.join(command[n1:n2]), 1)
-                it += res.end() + len(string) - oldlen
-        for i in range(len(command)):
-            if not safe or const.ALNUM_STRING_REGEX.match(command[i]):
-                string = string.replace("@arg" + str(i) + "@", command[i])
-        return string
-
-    @staticmethod
     async def process_subcommands(content, message, user, safe=False):
         command_indicators = {
             ')': '(',
@@ -149,12 +117,14 @@ class Command:
             log.debug2("Subcommands are not processed!")
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
+        from src.api.command import Command as ApiCommand
+        from src.backend.discord.context import DiscordExecutionContext
         if self.perform is not None:
             return await self.get_actor()(message, command, silent)
         elif self.message is not None:
             response = self.message
             log.debug2(f"Command (before processing): {response}")
-            response = await self.process_variables(response, message, command)
+            response = ApiCommand.process_variables(DiscordExecutionContext(message), response, command)
             log.debug2(f"Command (after processing variables): {response}")
             response = await self.process_subcommands(response, message, user)
             log.debug2(f"Command (after processing subcommands): {response}")
@@ -175,7 +145,7 @@ class Command:
         elif self.cmd_line is not None:
             cmd_line = self.cmd_line[:]
             log.debug2(f"Command (before processing): {cmd_line}")
-            cmd_line = await self.process_variables(cmd_line, message, command, safe=True)
+            cmd_line = ApiCommand.process_variables(DiscordExecutionContext(message), cmd_line)
             log.debug2(f"Command (after processing variables): {cmd_line}")
             cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
             log.debug2(f"Command (after processing subcommands): {cmd_line}")
