@@ -1458,12 +1458,4 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _setmentioncmd(message, command, silent=False):
-        """Set current command which is executed on bot ping
-    Examples:
-        !setmentioncmd ping
-        !setmentioncmd markov"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        command = ' '.join(command[1:])
-        bc.config.on_mention_command = command
-        await Msg.response(message, f"Command '{command}' was set on bot mention", silent)
+        bc.executor.commands["setmentioncmd"].run(command, DiscordExecutionContext(message, silent))

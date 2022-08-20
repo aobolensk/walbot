@@ -18,6 +18,7 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("uptime", self._uptime))
         dispatcher.add_handler(CommandHandler("version", self._version))
         dispatcher.add_handler(CommandHandler("curl", self._curl))
+        dispatcher.add_handler(CommandHandler("setmentioncmd", self._setmentioncmd))
 
     @Mail.send_exception_info_to_admin_emails
     def _ping(self, update: Update, context: CallbackContext) -> None:
@@ -68,3 +69,10 @@ class BuiltinCommands:
         if not check_auth(update):
             return
         bc.executor.commands["curl"].run(["curl"] + context.args, TelegramExecutionContext(update))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _setmentioncmd(self, update: Update, context: CallbackContext) -> None:
+        log_command(update)
+        if not check_auth(update):
+            return
+        bc.executor.commands["setmentioncmd"].run(["setmentioncmd"] + context.args, TelegramExecutionContext(update))

@@ -26,6 +26,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["curl"] = Command(
             "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._curl)
+        bc.executor.commands["setmentioncmd"] = Command(
+            "builtin", "setmentioncmd", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._setmentioncmd)
 
     def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -89,3 +92,14 @@ class BuiltinCommands(BaseCmd):
             return result
         except Exception as e:
             Command.send_message(execution_ctx, f"Request failed: {e}")
+
+    def _setmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Set current command which is executed on bot ping
+    Examples:
+        !setmentioncmd ping
+        !setmentioncmd markov"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        command = ' '.join(cmd_line[1:])
+        bc.config.on_mention_command = command
+        Command.send_message(execution_ctx, f"Command '{command}' was set on bot mention")
