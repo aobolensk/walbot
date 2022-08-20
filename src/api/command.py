@@ -58,6 +58,7 @@ class Command:
             # On Discord platform we are using legacy separate permission handling or now
             if execution_ctx.permission_level < self.permission_level:
                 self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
+                return
         if self.impl_type == Implementation.FUNCTION:
             return self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
