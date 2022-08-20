@@ -14,6 +14,7 @@ from src.backend.telegram.cmd.auth import AuthCommands
 from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.markov import MarkovCommands
 from src.backend.telegram.cmd.reminder import ReminderCommands
+from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, reply
 from src.bc import DoNotUpdateFlag
 from src.config import bc
@@ -43,7 +44,7 @@ class TelegramBotInstance(BotInstance):
         log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
         if not check_auth(update):
             return
-        result = bc.markov.generate()
+        result = bc.executor.execute(bc.config.on_mention_command.split(" "), TelegramExecutionContext(update))
         reply(update, result)
 
     @Mail.send_exception_info_to_admin_emails
