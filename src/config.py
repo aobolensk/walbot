@@ -109,16 +109,18 @@ class Command:
             "addresponse",
             "updresponse",
         ]
+        from src.api.command import Command as ApiCommand
+        from src.backend.discord.context import DiscordExecutionContext
         if message.content.split(' ')[0][1:] not in postpone_execution:
             log.debug2(f"Command (before processing): {message.content}")
+            message.content = ApiCommand.process_variables(DiscordExecutionContext(message), message.content, command)
+            log.debug2(f"Command (after processing variables): {message.content}")
             message.content = await self.process_subcommands(message.content, message, user)
             log.debug2(f"Command (after processing subcommands): {message.content}")
         else:
             log.debug2("Subcommands are not processed!")
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
-        from src.api.command import Command as ApiCommand
-        from src.backend.discord.context import DiscordExecutionContext
         if self.perform is not None:
             return await self.get_actor()(message, command, silent)
         elif self.message is not None:
