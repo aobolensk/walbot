@@ -1465,6 +1465,69 @@ class BuiltinCommands(BaseCmd):
                         else "disabled"))
 
             @discord.ui.button(
+                label="Markov logging",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def markov_logging_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist:
+                    bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.remove(message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await message.channel.send(
+                    "Markov logging are " + (
+                        "enabled"
+                        if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist
+                        else "disabled"))
+
+            @discord.ui.button(
+                label="Bot responses",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def bot_responses_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
+                    bc.config.guilds[message.channel.guild.id].responses_whitelist.remove(message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await message.channel.send(
+                    "Bot responses " + (
+                        "enabled"
+                        if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist
+                        else "disabled"))
+
+            @discord.ui.button(
+                label="Markov responses",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def markov_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:
+                    bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.remove(message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await message.channel.send(
+                    "Markov responses " + (
+                        "enabled"
+                        if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist
+                        else "disabled"))
+
+            @discord.ui.button(
                 label="Markov pings",
                 style=(
                     discord.ButtonStyle.green
