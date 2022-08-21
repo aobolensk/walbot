@@ -192,6 +192,7 @@ class BuiltinCommands(BaseCmd):
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False, max_execution_time=-1),
             "getmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=True),
             "setmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
 
     @staticmethod
@@ -1430,3 +1431,36 @@ class BuiltinCommands(BaseCmd):
     @staticmethod
     async def _setmentioncmd(message, command, silent=False):
         bc.executor.commands["setmentioncmd"].run(command, DiscordExecutionContext(message, silent))
+
+    @staticmethod
+    async def _config2(message, command, silent=False):
+        """Config setup view
+    Example: !config2"""
+        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+            return
+
+        class ConfigView(discord.ui.View):
+            def __init__(self, *, timeout=180):
+                super().__init__(timeout=timeout)
+
+            @discord.ui.button(
+                label="Markov pings",
+                style=(
+                    discord.ButtonStyle.green
+                    if bc.config.guilds[message.channel.guild.id].markov_pings
+                    else discord.ButtonStyle.red
+                ))
+            async def markov_pings_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if bc.config.guilds[message.channel.guild.id].markov_pings:
+                    bc.config.guilds[message.channel.guild.id].markov_pings = False
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.guilds[message.channel.guild.id].markov_pings = True
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await message.channel.send(
+                    "Markov pings are " + (
+                        "enabled" if bc.config.guilds[message.channel.guild.id].markov_pings else "disabled"))
+
+        view = ConfigView()
+        await message.channel.send(f"Config for channel {message.channel}:", view=view)
