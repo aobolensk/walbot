@@ -1439,8 +1439,10 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
 
+        header = f"Config for channel {message.channel}:"
+
         class ConfigView(discord.ui.View):
-            def __init__(self, *, timeout=180):
+            def __init__(self, timeout=180):
                 super().__init__(timeout=timeout)
 
             @discord.ui.button(
@@ -1461,7 +1463,7 @@ class BuiltinCommands(BaseCmd):
                 else:
                     bc.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
                     button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
                     "Bot reactions are " + (
                         "enabled"
@@ -1486,7 +1488,7 @@ class BuiltinCommands(BaseCmd):
                 else:
                     bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.add(message.channel.id)
                     button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
                     "Markov logging are " + (
                         "enabled"
@@ -1511,7 +1513,7 @@ class BuiltinCommands(BaseCmd):
                 else:
                     bc.config.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
                     button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
                     "Bot responses " + (
                         "enabled"
@@ -1536,7 +1538,7 @@ class BuiltinCommands(BaseCmd):
                 else:
                     bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.add(message.channel.id)
                     button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
                     "Markov responses " + (
                         "enabled"
@@ -1561,10 +1563,10 @@ class BuiltinCommands(BaseCmd):
                 else:
                     bc.config.guilds[message.channel.guild.id].markov_pings = True
                     button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
                     "Markov pings are " + (
                         "enabled" if bc.config.guilds[message.channel.guild.id].markov_pings else "disabled"))
 
         view = ConfigView()
-        await message.channel.send(f"Config for channel {message.channel}:", view=view)
+        await message.channel.send(header, view=view)
