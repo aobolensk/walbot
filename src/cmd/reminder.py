@@ -341,11 +341,20 @@ class ReminderCommands(BaseCmd):
                 for rem in reminder_chunk:
                     e.add_field(rem[1], rem[2])
                 execution_ctx.send_message(None, embed=e.get())
+            if not reminder_list:
+                e = DiscordEmbed()
+                e.title("List of reminders")
+                e.color(embed_color)
+                e.add_field("No reminders found!", "Use `!addreminder` command to add new reminders")
+                execution_ctx.send_message(None, embed=e.get())
         else:
             result = ""
             for reminder in reminder_list:
                 result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
-            Command.send_message(execution_ctx, result)
+            if result:
+                Command.send_message(execution_ctx, result)
+            else:
+                Command.send_message(execution_ctx, "No reminders found!")
 
     def _delreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Delete reminders by index
