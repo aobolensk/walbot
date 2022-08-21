@@ -1442,8 +1442,8 @@ class BuiltinCommands(BaseCmd):
         header = f"Config for channel {message.channel}:"
 
         class ConfigView(discord.ui.View):
-            def __init__(self, timeout=60):
-                super().__init__(timeout=timeout)
+            def __init__(self, timeout=60, disable_on_timeout=True):
+                super().__init__(timeout=timeout, disable_on_timeout=disable_on_timeout)
 
             @discord.ui.button(
                 label="Bot reactions",
