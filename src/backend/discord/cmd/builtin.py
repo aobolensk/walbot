@@ -1490,7 +1490,7 @@ class BuiltinCommands(BaseCmd):
                     button.style = discord.ButtonStyle.green
                 await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
-                    f"{message.author.mention} Markov logging are " + (
+                    f"{message.author.mention} Markov logging is " + (
                         "enabled"
                         if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist
                         else "disabled"))
@@ -1515,7 +1515,7 @@ class BuiltinCommands(BaseCmd):
                     button.style = discord.ButtonStyle.green
                 await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
-                    f"{message.author.mention} Bot responses " + (
+                    f"{message.author.mention} Bot responses are " + (
                         "enabled"
                         if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist
                         else "disabled"))
@@ -1540,7 +1540,7 @@ class BuiltinCommands(BaseCmd):
                     button.style = discord.ButtonStyle.green
                 await interaction.response.edit_message(content=header, view=self)
                 await message.channel.send(
-                    f"{message.author.mention} Markov responses " + (
+                    f"{message.author.mention} Markov responses are " + (
                         "enabled"
                         if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist
                         else "disabled"))
