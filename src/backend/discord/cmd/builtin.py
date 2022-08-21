@@ -1444,6 +1444,27 @@ class BuiltinCommands(BaseCmd):
                 super().__init__(timeout=timeout)
 
             @discord.ui.button(
+                label="Bot reactions",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def bot_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
+                    bc.config.guilds[message.channel.guild.id].reactions_whitelist.remove(message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=f"Config for channel {message.channel}:", view=self)
+                await message.channel.send(
+                    "Bot reactions are " + (
+                        "enabled"
+                        if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist
+                        else "disabled"))
+
+            @discord.ui.button(
                 label="Markov pings",
                 style=(
                     discord.ButtonStyle.green
