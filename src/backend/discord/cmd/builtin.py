@@ -1457,6 +1457,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.commands.data["config2"].permission):
                     await message.channel.send(
                         f"{interaction.user.mention} you don't have permission to use this command")
+                    return
                 if message.channel.id in bc.config.guilds[message.channel.guild.id].reactions_whitelist:
                     bc.config.guilds[message.channel.guild.id].reactions_whitelist.remove(message.channel.id)
                     button.style = discord.ButtonStyle.red
@@ -1482,6 +1483,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.commands.data["config2"].permission):
                     await message.channel.send(
                         f"{interaction.user.mention} you don't have permission to use this command")
+                    return
                 if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_logging_whitelist:
                     bc.config.guilds[message.channel.guild.id].markov_logging_whitelist.remove(message.channel.id)
                     button.style = discord.ButtonStyle.red
@@ -1507,6 +1509,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.commands.data["config2"].permission):
                     await message.channel.send(
                         f"{interaction.user.mention} you don't have permission to use this command")
+                    return
                 if message.channel.id in bc.config.guilds[message.channel.guild.id].responses_whitelist:
                     bc.config.guilds[message.channel.guild.id].responses_whitelist.remove(message.channel.id)
                     button.style = discord.ButtonStyle.red
@@ -1532,6 +1535,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.commands.data["config2"].permission):
                     await message.channel.send(
                         f"{interaction.user.mention} you don't have permission to use this command")
+                    return
                 if message.channel.id in bc.config.guilds[message.channel.guild.id].markov_responses_whitelist:
                     bc.config.guilds[message.channel.guild.id].markov_responses_whitelist.remove(message.channel.id)
                     button.style = discord.ButtonStyle.red
@@ -1557,6 +1561,7 @@ class BuiltinCommands(BaseCmd):
                         bc.config.commands.data["config2"].permission):
                     await message.channel.send(
                         f"{interaction.user.mention} you don't have permission to use this command")
+                    return
                 if bc.config.guilds[message.channel.guild.id].markov_pings:
                     bc.config.guilds[message.channel.guild.id].markov_pings = False
                     button.style = discord.ButtonStyle.red
