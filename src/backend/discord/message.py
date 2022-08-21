@@ -43,6 +43,7 @@ class Msg:
                 msg = await message.channel.send(
                     chunk,
                     tts=kwargs.get("tts", False),
+                    view=kwargs.get("view", False),
                     files=kwargs.get("files", None),
                     embed=kwargs.get("embed", None))
                 if kwargs.get("suppress_embeds", False):

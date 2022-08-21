@@ -1575,4 +1575,4 @@ class BuiltinCommands(BaseCmd):
                         "enabled" if bc.config.guilds[message.channel.guild.id].markov_pings else "disabled"))
 
         view = ConfigView()
-        await message.channel.send(header, view=view)
+        await Msg.response(message, header, silent, view=view)
