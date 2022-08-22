@@ -336,6 +336,8 @@ class BuiltinCommands(BaseCmd):
             if command.perform is not None:
                 if command.get_actor().__doc__ is not None:
                     result += command.get_actor().__doc__.strip()
+                elif name in bc.executor.commands.keys():
+                    result += bc.executor.commands[name]._exec.__doc__.strip()
                 else:
                     result += "*<No docs provided>*"
             elif command.message is not None:
