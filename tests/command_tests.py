@@ -15,7 +15,12 @@ class BufferTestExecutionContext(ExecutionContext):
         return message
 
 
+def test_empty_executor():
+    assert bc.executor.commands == dict()
+
+
 def test_ping_command(capsys):
+    bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
     bc.executor.commands["ping"].run(["ping"], BufferTestExecutionContext())
     captured = capsys.readouterr()
