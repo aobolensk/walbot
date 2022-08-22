@@ -252,6 +252,10 @@ class Config:
             "channel_whitelist": set(),
             "passphrase": uuid.uuid4().hex,
         }
+        # Executor
+        self.executor = {
+            "commands_data": dict(),
+        }
 
     def backup(self, *files):
         compress_type = zipfile.ZIP_DEFLATED if self.saving["backup"]["compress"] else zipfile.ZIP_STORED

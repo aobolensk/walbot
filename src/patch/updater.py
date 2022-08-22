@@ -265,6 +265,10 @@ class Updater:
                 reminder.__dict__["telegram_whisper_users"] = []
             self._bump_version(config, "0.0.44")
         if config.version == "0.0.44":
+            config.__dict__["executor"] = dict()
+            config.__dict__["executor"]["commands_data"] = dict()
+            self._bump_version(config, "0.0.45")
+        if config.version == "0.0.45":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

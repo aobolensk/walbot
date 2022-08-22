@@ -1,7 +1,7 @@
 import enum
 from abc import abstractmethod
 from types import FunctionType
-from typing import List
+from typing import Any, Dict, List
 
 from src import const
 
@@ -44,6 +44,7 @@ class Command:
         self.permission_level = permission_level
         self.subcommand = subcommand
         self.impl_type = impl_type
+        self.times_called = 0
         if impl_type == Implementation.FUNCTION:
             self._exec = impl_func
             self.description = self._exec.__doc__
@@ -53,12 +54,28 @@ class Command:
         else:
             raise NotImplementedError(f"Implementation type {impl_type} is not supported")
 
+    def load_persistent_state(self, commands_data: Dict[str, Any]):
+        if self.command_name not in commands_data.keys():
+            return
+        state = commands_data[self.command_name]
+        if "permission_level" in state.keys():
+            self.permission_level = const.Permission(state["permission_level"])
+        if "times_called" in state.keys():
+            self.times_called = state["times_called"]
+
+    def store_persistent_state(self, commands_data: Dict[str, Any]):
+        if self.command_name not in commands_data.keys():
+            commands_data[self.command_name] = dict()
+        commands_data[self.command_name]["permission_level"] = int(self.permission_level)
+        commands_data[self.command_name]["times_called"] = self.times_called
+
     def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if execution_ctx.platform != "discord":
             # On Discord platform we are using legacy separate permission handling or now
             if execution_ctx.permission_level < self.permission_level:
                 self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
                 return
+        self.times_called += 1
         if self.impl_type == Implementation.FUNCTION:
             return self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
@@ -125,3 +142,11 @@ class Executor:
 
     def add_module(self, module: BaseCmd) -> None:
         module.bind()
+
+    def load_persistent_state(self, commands_data: Dict[str, Any]):
+        for command in self.commands.values():
+            command.load_persistent_state(commands_data)
+
+    def store_persistent_state(self, commands_data: Dict[str, Any]):
+        for command in self.commands.values():
+            command.store_persistent_state(commands_data)

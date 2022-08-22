@@ -225,6 +225,7 @@ class Launcher:
         self.backends = []
         self._read_configs(main_bot)
         self._init_commands()
+        bc.executor.load_persistent_state(bc.config.executor["commands_data"])
         bc.config.commands.update()
         nest_asyncio.apply()
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
