@@ -75,7 +75,7 @@ class Commands:
                     try:
                         docstring = (
                             command.get_actor().__doc__ or
-                            (bc.executor.commands[name]._exec.__doc__
+                            (bc.executor.commands[name].description
                              if name in bc.executor.commands.keys() else None) or
                             "*<No docs provided>*"
                         )
