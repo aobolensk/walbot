@@ -1,10 +1,12 @@
 """Markov model commands"""
 
 import asyncio
+import functools
 import os
 import re
 
 from src import const
+from src.backend.discord.commands import bind_command
 from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
@@ -30,26 +32,11 @@ class MarkovCommands(BaseCmd):
             "listmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
             "delmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
         })
-
-    @staticmethod
-    async def _markov(message, command, silent=False):
-        return bc.executor.commands["markov"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _markovgc(message, command, silent=False):
-        return bc.executor.commands["markovgc"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _delmarkov(message, command, silent=False):
-        return bc.executor.commands["delmarkov"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _findmarkov(message, command, silent=False):
-        return bc.executor.commands["findmarkov"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _getmarkovword(message, command, silent=False):
-        return bc.executor.commands["getmarkovword"].run(command, DiscordExecutionContext(message, silent))
+        self._markov = functools.partial(bind_command, "markov")
+        self._markovgc = functools.partial(bind_command, "markovgc")
+        self._delmarkov = functools.partial(bind_command, "delmarkov")
+        self._findmarkov = functools.partial(bind_command, "findmarkov")
+        self._getmarkovword = functools.partial(bind_command, "getmarkovword")
 
     @staticmethod
     async def _dropmarkov(message, command, silent=False):

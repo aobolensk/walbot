@@ -3,6 +3,7 @@
 import asyncio
 import base64
 import datetime
+import functools
 import imghdr
 import os
 import random
@@ -17,6 +18,7 @@ from dateutil import tz
 
 from src import const, emoji
 from src.algorithms import levenshtein_distance
+from src.backend.discord.commands import bind_command
 from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
@@ -192,10 +194,16 @@ class BuiltinCommands(BaseCmd):
             "setmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
-
-    @staticmethod
-    async def _echo(message, command, silent=False):
-        return bc.executor.commands["echo"].run(command, DiscordExecutionContext(message, silent))
+        self._echo = functools.partial(bind_command, "echo")
+        self._version = functools.partial(bind_command, "version")
+        self._about = functools.partial(bind_command, "about")
+        self._uptime = functools.partial(bind_command, "uptime")
+        self._shutdown = functools.partial(bind_command, "shutdown")
+        self._restart = functools.partial(bind_command, "restart")
+        self._curl = functools.partial(bind_command, "curl")
+        self._donotupdatestate = functools.partial(bind_command, "donotupdatestate")
+        self._getmentioncmd = functools.partial(bind_command, "getmentioncmd")
+        self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
 
     @staticmethod
     async def _range(message, command, silent=False):
@@ -336,10 +344,11 @@ class BuiltinCommands(BaseCmd):
                 return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
             result = name + ": "
             if command.perform is not None:
-                if command.get_actor().__doc__ is not None:
+                if (command.get_actor().__doc__ is not None and
+                        "new function with partial application" not in command.get_actor().__doc__):
                     result += command.get_actor().__doc__.strip()
                 elif name in bc.executor.commands.keys():
-                    result += bc.executor.commands[name]._exec.__doc__.strip()
+                    result += bc.executor.commands[name].description.strip()
                 else:
                     result += "*<No docs provided>*"
             elif command.message is not None:
@@ -824,14 +833,6 @@ class BuiltinCommands(BaseCmd):
                 return
 
     @staticmethod
-    async def _version(message, command, silent=False):
-        return bc.executor.commands["version"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _about(message, command, silent=False):
-        return bc.executor.commands["about"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
     async def _addbgevent(message, command, silent=False):
         """Add background event
     Example: !addbgevent 60 ping
@@ -968,10 +969,6 @@ class BuiltinCommands(BaseCmd):
         result = str(datetime.datetime.now(timezone)).split('.', maxsplit=1)[0]
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _uptime(message, command, silent=False):
-        return bc.executor.commands["uptime"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _status(message, command, silent=False):
@@ -1198,14 +1195,6 @@ class BuiltinCommands(BaseCmd):
         return result
 
     @staticmethod
-    async def _shutdown(message, command, silent=False):
-        return bc.executor.commands["shutdown"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _restart(message, command, silent=False):
-        return bc.executor.commands["restart"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
     async def _avatar(message, command, silent=False):
         """Change bot avatar
     Example: !avatar <image>
@@ -1358,10 +1347,6 @@ class BuiltinCommands(BaseCmd):
             await Msg.response(message, f"Slowmode is set to {duration} seconds", silent)
 
     @staticmethod
-    async def _curl(message, command, silent=False):
-        return bc.executor.commands["curl"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
     async def _nick(message, command, silent=False):
         """Change nickname
     Usage: !nick walbot"""
@@ -1411,10 +1396,6 @@ class BuiltinCommands(BaseCmd):
         await Msg.response(message, f"Permission level for {nick} is {perm_level}", silent)
 
     @staticmethod
-    async def _donotupdatestate(message, command, silent=False):
-        return bc.executor.commands["donotupdatestate"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
     async def _disabletl(message, command, silent=False):
         """Disable time limit for command
     Example: !disabletl ping"""
@@ -1427,14 +1408,6 @@ class BuiltinCommands(BaseCmd):
             cmd = bc.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, bc.config.users[message.author.id])
-
-    @staticmethod
-    async def _getmentioncmd(message, command, silent=False):
-        return bc.executor.commands["getmentioncmd"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _setmentioncmd(message, command, silent=False):
-        return bc.executor.commands["setmentioncmd"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _config2(message, command, silent=False):

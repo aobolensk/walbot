@@ -1,6 +1,9 @@
 """WalBot reminders"""
 
+import functools
+
 from src import const
+from src.backend.discord.commands import bind_command
 from src.backend.discord.context import DiscordExecutionContext
 from src.commands import BaseCmd
 from src.config import bc
@@ -24,59 +27,17 @@ class ReminderCommands(BaseCmd):
             "addremindernotes": dict(permission=const.Permission.USER.value, subcommand=False),
             "setreminderchannel": dict(permission=const.Permission.USER.value, subcommand=False),
         })
-
-    @staticmethod
-    async def _reminder(message, command, silent=False):
-        return bc.executor.commands["reminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _addreminder(message, command, silent=False):
-        return bc.executor.commands["addreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _updreminder(message, command, silent=False):
-        return bc.executor.commands["updreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _listreminder(message, command, silent=False):
-        return bc.executor.commands["listreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _delreminder(message, command, silent=False):
-        return bc.executor.commands["delreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _remindme(message, command, silent=False):
-        return bc.executor.commands["remindme"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _remindwme(message, command, silent=False):
-        return bc.executor.commands["remindwme"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _remindeme(message, command, silent=False):
-        return bc.executor.commands["remindeme"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _repeatreminder(message, command, silent=False):
-        return bc.executor.commands["repeatreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _skipreminder(message, command, silent=False):
-        return bc.executor.commands["skipreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _timeuntilreminder(message, command, silent=False):
-        return bc.executor.commands["timeuntilreminder"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _setprereminders(message, command, silent=False):
-        return bc.executor.commands["setprereminders"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _addremindernotes(message, command, silent=False):
-        return bc.executor.commands["addremindernotes"].run(command, DiscordExecutionContext(message, silent))
-
-    @staticmethod
-    async def _setreminderchannel(message, command, silent=False):
-        return bc.executor.commands["setreminderchannel"].run(command, DiscordExecutionContext(message, silent))
+        self._reminder = functools.partial(bind_command, "reminder")
+        self._addreminder = functools.partial(bind_command, "addreminder")
+        self._updreminder = functools.partial(bind_command, "updreminder")
+        self._listreminder = functools.partial(bind_command, "listreminder")
+        self._delreminder = functools.partial(bind_command, "delreminder")
+        self._remindme = functools.partial(bind_command, "remindme")
+        self._remindwme = functools.partial(bind_command, "remindwme")
+        self._remindeme = functools.partial(bind_command, "remindeme")
+        self._repeatreminder = functools.partial(bind_command, "repeatreminder")
+        self._skipreminder = functools.partial(bind_command, "skipreminder")
+        self._timeuntilreminder = functools.partial(bind_command, "timeuntilreminder")
+        self._setprereminders = functools.partial(bind_command, "setprereminders")
+        self._addremindernotes = functools.partial(bind_command, "addremindernotes")
+        self._setreminderchannel = functools.partial(bind_command, "setreminderchannel")

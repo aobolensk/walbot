@@ -2,10 +2,13 @@ import importlib
 import inspect
 import os
 from collections import defaultdict
-from typing import Any, Dict
+from typing import Any, Dict, List
+
+import discord
 
 from src import const
 from src.api.command import BaseCmd
+from src.backend.discord.context import DiscordExecutionContext
 from src.config import Command, bc, log
 from src.utils import Util
 
@@ -73,12 +76,12 @@ class Commands:
                         continue
                     s = "**" + name + "**: "
                     try:
-                        docstring = (
-                            command.get_actor().__doc__ or
-                            (bc.executor.commands[name].description
-                             if name in bc.executor.commands.keys() else None) or
-                            "*<No docs provided>*"
-                        )
+                        docstring = "*<No docs provided>*"
+                        if (command.get_actor().__doc__ and
+                                "new function with partial application" not in command.get_actor().__doc__):
+                            docstring = command.get_actor().__doc__
+                        elif name in bc.executor.commands.keys():
+                            docstring = bc.executor.commands[name].description
                         s += " \\\n".join(docstring.strip().split('\n'))
                     except (AttributeError, KeyError):
                         to_remove.append(name)
@@ -125,3 +128,7 @@ class Commands:
         """Register multiple commands. It calls register_command"""
         for command_name, command_args in commands.items():
             self.register_command(module_name, class_name, command_name, **command_args)
+
+
+async def bind_command(name: str, message: discord.Message, command: List[str], silent: bool = False):
+    return bc.executor.commands[name].run(command, DiscordExecutionContext(message, silent))
