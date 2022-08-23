@@ -276,7 +276,7 @@ class Updater:
             self._bump_version(config, "0.0.46")
         if config.version == "0.0.46":
             config.__dict__["discord"] = DiscordConfig()
-            config.discord.guilds = config.discord.guilds
+            config.discord.guilds = config.guilds
             del config.__dict__["guilds"]
             self._bump_version(config, "0.0.47")
         if config.version == "0.0.47":
