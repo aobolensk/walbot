@@ -4,6 +4,7 @@ from types import FunctionType
 from typing import Any, Dict, List
 
 from src import const
+from src.api.execution_context import ExecutionContext
 
 
 class BaseCmd:
@@ -13,20 +14,6 @@ class BaseCmd:
 
     def bind(self) -> None:
         raise NotImplementedError(f"Class {self.get_classname()} does not have bind() function")
-
-
-class ExecutionContext:
-    def __init__(self) -> None:
-        self.platform = "<unknown>"
-        self.permission_level = const.Permission.USER
-
-    @abstractmethod
-    def send_message(self, message: str, *args, **kwargs) -> None:
-        pass
-
-    @abstractmethod
-    def disable_pings(self, message: str) -> None:
-        pass
 
 
 class Implementation(enum.IntEnum):

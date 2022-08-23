@@ -5,7 +5,8 @@ from typing import List
 import dateutil.relativedelta
 
 from src import const
-from src.api.command import BaseCmd, Command, ExecutionContext, Implementation
+from src.api.command import BaseCmd, Command, Implementation
+from src.api.execution_context import ExecutionContext
 from src.api.reminder import Reminder
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg

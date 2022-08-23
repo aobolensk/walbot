@@ -2,7 +2,8 @@ import re
 from typing import List
 
 from src import const
-from src.api.command import BaseCmd, Command, ExecutionContext, Implementation
+from src.api.command import BaseCmd, Command, Implementation
+from src.api.execution_context import ExecutionContext
 from src.config import bc
 from src.utils import Util
 

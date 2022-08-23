@@ -4,7 +4,7 @@ import re
 import discord
 
 from src import const
-from src.api.command import ExecutionContext
+from src.api.execution_context import ExecutionContext
 from src.backend.discord.message import Msg
 from src.config import bc
 

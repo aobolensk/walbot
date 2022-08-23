@@ -8,7 +8,8 @@ from typing import Any, Coroutine, Optional, Tuple
 import requests
 import yaml
 
-from src.api.command import Command, ExecutionContext
+from src.api.command import Command
+from src.api.execution_context import ExecutionContext
 from src.backend.discord.message import Msg
 from src.exception import HTTPRequestException
 from src.log import log

@@ -1,6 +1,6 @@
 from telegram import Update
 
-from src.api.command import ExecutionContext
+from src.api.execution_context import ExecutionContext
 from src.backend.telegram.util import reply
 
 
