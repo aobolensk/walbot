@@ -19,7 +19,6 @@ from dateutil import tz
 from src import const, emoji
 from src.algorithms import levenshtein_distance
 from src.backend.discord.commands import bind_command
-from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag
