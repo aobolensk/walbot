@@ -1190,12 +1190,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _shutdown(message, command, silent=False):
-        """Shutdown the bot
-    Example: !shutdown"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        log.info(str(message.author) + " invoked shutting down the bot")
-        subprocess.call([sys.executable, "walbot.py", "stop"])
+        return bc.executor.commands["shutdown"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _restart(message, command, silent=False):

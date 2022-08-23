@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from typing import List
 
 from src import const
@@ -24,6 +26,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["about"] = Command(
             "builtin", "about", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._about)
+        bc.executor.commands["shutdown"] = Command(
+            "builtin", "shutdown", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._shutdown)
         bc.executor.commands["version"] = Command(
             "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._version)
@@ -71,6 +76,14 @@ class BuiltinCommands(BaseCmd):
                     execution_ctx, f"Unknown argument '{cmd_line[1]}' for '{cmd_line[0]}' command")
         result = bc.info.get_full_info(verbosity)
         Command.send_message(execution_ctx, result)
+
+    def _shutdown(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Shutdown the bot
+    Example: !shutdown"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        Command.send_message(execution_ctx, "Bot shotdown has been invoked!")
+        subprocess.call([sys.executable, "walbot.py", "stop"])
 
     def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get version of the bot
