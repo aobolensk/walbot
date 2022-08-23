@@ -816,11 +816,11 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _version(message, command, silent=False):
-        bc.executor.commands["version"].run(command, DiscordExecutionContext(message, silent))
+        return bc.executor.commands["version"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _about(message, command, silent=False):
-        bc.executor.commands["about"].run(command, DiscordExecutionContext(message, silent))
+        return bc.executor.commands["about"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _addbgevent(message, command, silent=False):
@@ -1414,7 +1414,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _donotupdatestate(message, command, silent=False):
-        bc.executor.commands["donotupdatestate"].run(command, DiscordExecutionContext(message, silent))
+        return bc.executor.commands["donotupdatestate"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _disabletl(message, command, silent=False):
@@ -1432,11 +1432,11 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _getmentioncmd(message, command, silent=False):
-        bc.executor.commands["getmentioncmd"].run(command, DiscordExecutionContext(message, silent))
+        return bc.executor.commands["getmentioncmd"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _setmentioncmd(message, command, silent=False):
-        bc.executor.commands["setmentioncmd"].run(command, DiscordExecutionContext(message, silent))
+        return bc.executor.commands["setmentioncmd"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _config2(message, command, silent=False):
