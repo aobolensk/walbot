@@ -15,6 +15,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["ping"] = Command(
             "builtin", "ping", const.Permission.USER, Implementation.MESSAGE,
             subcommand=True, impl_message="Pong!")
+        bc.executor.commands["echo"] = Command(
+            "builtin", "echo", const.Permission.USER, Implementation.MESSAGE,
+            subcommand=True, impl_message="@args@")
         bc.executor.commands["uptime"] = Command(
             "builtin", "uptime", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._uptime)
