@@ -29,6 +29,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["shutdown"] = Command(
             "builtin", "shutdown", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=False, impl_func=self._shutdown)
+        bc.executor.commands["restart"] = Command(
+            "builtin", "restart", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._restart)
         bc.executor.commands["version"] = Command(
             "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._version)
@@ -84,6 +87,14 @@ class BuiltinCommands(BaseCmd):
             return
         Command.send_message(execution_ctx, "Bot shotdown has been invoked!")
         subprocess.call([sys.executable, "walbot.py", "stop"])
+
+    def _restart(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Restart the bot
+    Example: !restart"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        Command.send_message(execution_ctx, "Bot restart has been invoked!")
+        subprocess.call([sys.executable, "walbot.py", "restart"])
 
     def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get version of the bot

@@ -16,6 +16,7 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("echo", self._echo))
         dispatcher.add_handler(CommandHandler("about", self._about))
         dispatcher.add_handler(CommandHandler("shutdown", self._shutdown))
+        dispatcher.add_handler(CommandHandler("restart", self._restart))
         dispatcher.add_handler(CommandHandler("poll", self._poll))
         dispatcher.add_handler(CommandHandler("uptime", self._uptime))
         dispatcher.add_handler(CommandHandler("version", self._version))
@@ -51,6 +52,13 @@ class BuiltinCommands:
         if not check_auth(update):
             return
         bc.executor.commands["shutdown"].run(["shutdown"] + context.args, TelegramExecutionContext(update))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _restart(self, update: Update, context: CallbackContext) -> None:
+        log_command(update)
+        if not check_auth(update):
+            return
+        bc.executor.commands["restart"].run(["restart"] + context.args, TelegramExecutionContext(update))
 
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: Update, context: CallbackContext) -> None:

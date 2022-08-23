@@ -1194,13 +1194,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _restart(message, command, silent=False):
-        """Restart the bot
-    Example: !restart"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        log.info(f"{message.author} invoked restarting the bot")
-        await Msg.response(message, f"{message.author} invoked restarting the bot", silent)
-        subprocess.call([sys.executable, "walbot.py", "restart"])
+        return bc.executor.commands["restart"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _avatar(message, command, silent=False):
