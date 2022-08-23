@@ -15,3 +15,7 @@ class ExecutionContext:
     @abstractmethod
     def disable_pings(self, message: str) -> None:
         pass
+
+    @abstractmethod
+    def message_author(self) -> None:
+        pass

@@ -40,3 +40,6 @@ class DiscordExecutionContext(ExecutionContext):
         message = re.sub(const.ROLE_EVERYONE, "`" + const.ROLE_EVERYONE + "`", message)
         message = re.sub(const.ROLE_HERE, "`" + const.ROLE_HERE + "`", message)
         return message
+
+    def message_author(self) -> None:
+        return self.message.author.mention

@@ -16,3 +16,6 @@ class TelegramExecutionContext(ExecutionContext):
     def disable_pings(self, message: str) -> None:
         # TODO: implement
         return message
+
+    def message_author(self) -> None:
+        return self.update.message.from_user.mention_markdown_v2()
