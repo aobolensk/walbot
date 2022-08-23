@@ -86,7 +86,7 @@ class BuiltinCommands(BaseCmd):
     Example: !shutdown"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
-        Command.send_message(execution_ctx, "Bot shotdown has been invoked!")
+        Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked bot shutdown!")
         subprocess.call([sys.executable, "walbot.py", "stop"])
 
     def _restart(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
@@ -94,7 +94,7 @@ class BuiltinCommands(BaseCmd):
     Example: !restart"""
         if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
-        Command.send_message(execution_ctx, "Bot restart has been invoked!")
+        Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked restarting the bot!")
         subprocess.call([sys.executable, "walbot.py", "restart"])
 
     def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
