@@ -2,7 +2,7 @@ import datetime
 import enum
 from collections import deque
 
-from src.api.command import Executor
+from src.executor import Executor
 from src.backend.discord.message_buffer import MessageBuffer
 from src.plugin import PluginManager
 
