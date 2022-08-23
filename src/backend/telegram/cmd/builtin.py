@@ -1,9 +1,10 @@
-from telegram import Update
+import functools
+
+from telegram import update
 from telegram.ext import CallbackContext, CommandHandler
 
-from src.backend.telegram.context import TelegramExecutionContext
+from src.backend.telegram.command import command_handler
 from src.backend.telegram.util import check_auth, log_command, reply
-from src.config import bc
 from src.mail import Mail
 
 
@@ -12,56 +13,22 @@ class BuiltinCommands:
         pass
 
     def add_handlers(self, dispatcher) -> None:
-        dispatcher.add_handler(CommandHandler("ping", self._ping))
-        dispatcher.add_handler(CommandHandler("echo", self._echo))
-        dispatcher.add_handler(CommandHandler("about", self._about))
-        dispatcher.add_handler(CommandHandler("shutdown", self._shutdown))
-        dispatcher.add_handler(CommandHandler("restart", self._restart))
+        dispatcher.add_handler(CommandHandler("ping", functools.partial(command_handler, "ping")))
+        dispatcher.add_handler(CommandHandler("echo", functools.partial(command_handler, "echo")))
+        dispatcher.add_handler(CommandHandler("about", functools.partial(command_handler, "about")))
+        dispatcher.add_handler(CommandHandler("shutdown", functools.partial(command_handler, "shutdown")))
+        dispatcher.add_handler(CommandHandler("restart", functools.partial(command_handler, "restart")))
+        dispatcher.add_handler(CommandHandler("uptime", functools.partial(command_handler, "uptime")))
+        dispatcher.add_handler(CommandHandler("version", functools.partial(command_handler, "version")))
+        dispatcher.add_handler(CommandHandler("curl", functools.partial(command_handler, "curl")))
+        dispatcher.add_handler(CommandHandler(
+            "donotupdatestate", functools.partial(command_handler, "donotupdatestate")))
+        dispatcher.add_handler(CommandHandler("getmentioncmd", functools.partial(command_handler, "getmentioncmd")))
+        dispatcher.add_handler(CommandHandler("setmentioncmd", functools.partial(command_handler, "setmentioncmd")))
         dispatcher.add_handler(CommandHandler("poll", self._poll))
-        dispatcher.add_handler(CommandHandler("uptime", self._uptime))
-        dispatcher.add_handler(CommandHandler("version", self._version))
-        dispatcher.add_handler(CommandHandler("curl", self._curl))
-        dispatcher.add_handler(CommandHandler("donotupdatestate", self._donotupdatestate))
-        dispatcher.add_handler(CommandHandler("getmentioncmd", self._getmentioncmd))
-        dispatcher.add_handler(CommandHandler("setmentioncmd", self._setmentioncmd))
 
     @Mail.send_exception_info_to_admin_emails
-    def _ping(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["ping"].run(["ping"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _echo(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["echo"].run(["echo"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _about(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["about"].run(["about"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _shutdown(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["shutdown"].run(["shutdown"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _restart(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["restart"].run(["restart"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _poll(self, update: Update, context: CallbackContext) -> None:
+    def _poll(self, update: update, context: CallbackContext) -> None:
         log_command(update)
         if not check_auth(update):
             return
@@ -74,46 +41,3 @@ class BuiltinCommands:
             "Poll",
             options,
         )
-
-    @Mail.send_exception_info_to_admin_emails
-    def _uptime(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["uptime"].run(["uptime"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _version(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["version"].run(["version"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _curl(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["curl"].run(["curl"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _donotupdatestate(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["donotupdatestate"].run(
-            ["donotupdatestate"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _getmentioncmd(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["getmentioncmd"].run(["getmentioncmd"] + context.args, TelegramExecutionContext(update))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _setmentioncmd(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
-        if not check_auth(update):
-            return
-        bc.executor.commands["setmentioncmd"].run(["setmentioncmd"] + context.args, TelegramExecutionContext(update))
