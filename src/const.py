@@ -34,11 +34,11 @@ GIT_REPO_LINK = "https://github.com/aobolensk/walbot"
 CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"
-COMMANDS_DOC_PATH = "docs/DiscordCommands.md"
+COMMANDS_DOC_PATH = os.path.join("docs", "DiscordCommands.md")
 LOGS_DIRECTORY = "logs"
 IMAGES_DIRECTORY = "images"
 BACKUP_DIRECTORY = "backup"
-BOT_BACKENDS_PATH = "src/backend"
+BOT_BACKENDS_PATH = os.path.join("src", "backend")
 
 MAX_POLL_OPTIONS = 20
 MAX_RANGE_ITERATIONS = 500
