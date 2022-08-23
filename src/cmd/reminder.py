@@ -400,17 +400,7 @@ class ReminderCommands(BaseCmd):
             return
         if index not in bc.config.reminders.keys():
             return Command.send_message(execution_ctx, f"Reminder with index {index} not found")
-        if execution_ctx.platform == "discord":
-            bc.config.reminders[index].ping_users.append(execution_ctx.message.author.mention)
-            Command.send_message(execution_ctx, f"You will be mentioned when reminder {index} is sent")
-        elif execution_ctx.platform == "telegram":
-            bc.config.reminders[index].ping_users.append(
-                execution_ctx.update.message.from_user.mention_markdown_v2())
-            Command.send_message(execution_ctx, f"You will be mentioned when reminder {index} is sent")
-        else:
-            Command.send_message(
-                execution_ctx,
-                f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+        bc.config.reminders[index].ping_users.append(execution_ctx.message_author())
 
     def _remindwme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Ask bot to send direct message you when it sends reminder
