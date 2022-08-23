@@ -129,6 +129,7 @@ class _BuiltinInternals:
 class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.commands.register_commands(__name__, self.get_classname(), {
+            "echo": dict(permission=const.Permission.USER.value, subcommand=True),
             "range": dict(permission=const.Permission.USER.value, subcommand=True),
             "ping": dict(permission=const.Permission.USER.value, subcommand=False),
             "help": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -185,7 +186,6 @@ class BuiltinCommands(BaseCmd):
             "nick": dict(permission=const.Permission.MOD.value, subcommand=False),
             "reloadbotcommands": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
-            "echo": dict(message="@args@", permission=const.Permission.USER.value, subcommand=True),
             "code": dict(message="`@args@`", permission=const.Permission.USER.value, subcommand=True),
             "codeblock": dict(message="```\n@args@\n```", permission=const.Permission.USER.value, subcommand=True),
             "donotupdatestate": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -194,6 +194,10 @@ class BuiltinCommands(BaseCmd):
             "setmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
+
+    @staticmethod
+    async def _echo(message, command, silent=False):
+        return bc.executor.commands["echo"].run(command, DiscordExecutionContext(message, silent))
 
     @staticmethod
     async def _range(message, command, silent=False):

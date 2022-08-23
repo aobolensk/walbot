@@ -269,6 +269,10 @@ class Updater:
             config.__dict__["executor"]["commands_data"] = dict()
             self._bump_version(config, "0.0.45")
         if config.version == "0.0.45":
+            config.commands.data["echo"].message = None
+            config.commands.data["echo"].perform = "_echo"
+            self._bump_version(config, "0.0.46")
+        if config.version == "0.0.46":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

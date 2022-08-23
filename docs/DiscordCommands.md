@@ -97,6 +97,9 @@
 **donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
     Usage: !donotupdatestate
 
+**echo**: @args@ \
+    *This command can be used as subcommand*
+
 **emojify**: Emojify text \
     Example: !emojify Hello! \
     *This command can be used as subcommand*
