@@ -401,6 +401,7 @@ class ReminderCommands(BaseCmd):
         if index not in bc.config.reminders.keys():
             return Command.send_message(execution_ctx, f"Reminder with index {index} not found")
         bc.config.reminders[index].ping_users.append(execution_ctx.message_author())
+        Command.send_message(execution_ctx, f"You will be mentioned when reminder {index} is sent")
 
     def _remindwme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Ask bot to send direct message you when it sends reminder
