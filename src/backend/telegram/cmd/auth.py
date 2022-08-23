@@ -23,8 +23,8 @@ class AuthCommands:
     def _authorize(self, update: Update, context: CallbackContext) -> None:
         log_command(update)
         passphrase = context.args[0] if context.args else ""
-        if passphrase == bc.config.telegram["passphrase"]:
-            bc.config.telegram["channel_whitelist"].add(update.effective_chat.id)
+        if passphrase == bc.config.telegram.passphrase:
+            bc.config.telegram.channel_whitelist.add(update.effective_chat.id)
             Command.send_message(TelegramExecutionContext(update), "Channel has been added to whitelist")
         else:
             Command.send_message(TelegramExecutionContext(update), "Wrong passphrase!")
@@ -34,6 +34,6 @@ class AuthCommands:
         log_command(update)
         if not check_auth(update):
             return
-        bc.config.telegram["passphrase"] = uuid.uuid4().hex
-        log.warning("New passphrase: " + bc.config.telegram["passphrase"])
+        bc.config.telegram.passphrase = uuid.uuid4().hex
+        log.warning("New passphrase: " + bc.config.telegram.passphrase)
         Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!')

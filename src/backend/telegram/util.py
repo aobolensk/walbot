@@ -10,7 +10,7 @@ def log_command(update: Update) -> None:
 
 
 def check_auth(update: Update) -> bool:
-    if update.message.chat.id not in bc.config.telegram["channel_whitelist"]:
+    if update.message.chat.id not in bc.config.telegram.channel_whitelist:
         return False
     return True
 

@@ -5,7 +5,6 @@ import inspect
 import os
 import sys
 import threading
-import uuid
 import zipfile
 
 import discord
@@ -14,6 +13,7 @@ import yaml
 from src import const
 from src.backend.discord.config import DiscordConfig
 from src.backend.discord.message import Msg
+from src.backend.telegram.config import TelegramConfig
 from src.bc import BotController, DoNotUpdateFlag
 from src.log import log
 from src.utils import Util, null
@@ -249,10 +249,7 @@ class Config:
             "port": 8080,
         }
         self.discord = DiscordConfig()
-        self.telegram = {
-            "channel_whitelist": set(),
-            "passphrase": uuid.uuid4().hex,
-        }
+        self.telegram = TelegramConfig()
         # Executor
         self.executor = {
             "commands_data": dict(),

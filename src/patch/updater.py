@@ -8,6 +8,7 @@ import yaml
 
 from src import const
 from src.backend.discord.config import DiscordConfig
+from src.backend.telegram.config import TelegramConfig
 from src.ff import FF
 from src.log import log
 from src.utils import Util
@@ -279,6 +280,12 @@ class Updater:
             del config.__dict__["guilds"]
             self._bump_version(config, "0.0.47")
         if config.version == "0.0.47":
+            telegram_config = TelegramConfig()
+            telegram_config.channel_whitelist = config.telegram["channel_whitelist"]
+            telegram_config.passphrase = config.telegram["passphrase"]
+            config.__dict__["telegram"] = telegram_config
+            self._bump_version(config, "0.0.48")
+        if config.version == "0.0.48":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
