@@ -79,7 +79,9 @@ class Command:
         if self.impl_type == Implementation.FUNCTION:
             return self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            return execution_ctx.send_message(self._process_message(self.impl_message))
+            result = self.process_variables(execution_ctx, self.impl_message, cmd_line)
+            result = self._process_message(result)
+            return execution_ctx.send_message(result)
 
     def _process_message(self, message: str) -> str:
         return message
@@ -103,7 +105,7 @@ class Command:
         execution_ctx.send_message(message)
 
     @staticmethod
-    def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False):
+    def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
         if execution_ctx.platform == "discord":
             string = string.replace("@author@", execution_ctx.message.author.mention)
             string = string.replace("@channel@", execution_ctx.message.channel.mention)
