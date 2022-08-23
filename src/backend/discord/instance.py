@@ -218,8 +218,8 @@ class WalBot(discord.Client):
         self.bot_cache.dump_to_file()
         bc.guilds = self.guilds
         for guild in self.guilds:
-            if guild.id not in self.config.guilds.keys():
-                self.config.guilds[guild.id] = GuildSettings(guild.id)
+            if guild.id not in self.config.discord.guilds.keys():
+                self.config.discord.guilds[guild.id] = GuildSettings(guild.id)
         bc.discord_bot_user = self.user
         self.loop.create_task(self._config_autosave())
         self.loop.create_task(self._precompile())
@@ -227,7 +227,7 @@ class WalBot(discord.Client):
     @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
         await bc.plugin_manager.broadcast_command("on_message", message)
-        if self.config.guilds[message.channel.guild.id].ignored:
+        if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
         bc.message_buffer.push(message)
         log.info(f"<{message.id}> {message.author} -> {message.content}")
@@ -237,8 +237,8 @@ class WalBot(discord.Client):
             return
         if message.channel.guild.id is None:
             return
-        if self.config.guilds[message.channel.guild.id].is_whitelisted:
-            if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
+        if self.config.discord.guilds[message.channel.guild.id].is_whitelisted:
+            if message.channel.id not in self.config.discord.guilds[message.channel.guild.id].whitelist:
                 return
         if message.author.id not in self.config.users.keys():
             self.config.users[message.author.id] = User(message.author.id)
@@ -255,7 +255,7 @@ class WalBot(discord.Client):
         if message.content == old_message.content and message.embeds != old_message.embeds:
             log.info(f"<{message.id}> (edit, embed update) {message.author} -> {message.content}")
             return
-        if self.config.guilds[message.channel.guild.id].ignored:
+        if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
         bc.message_buffer.push(message)
         log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
@@ -265,8 +265,8 @@ class WalBot(discord.Client):
             return
         if message.channel.guild.id is None:
             return
-        if self.config.guilds[message.channel.guild.id].is_whitelisted:
-            if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
+        if self.config.discord.guilds[message.channel.guild.id].is_whitelisted:
+            if message.channel.id not in self.config.discord.guilds[message.channel.guild.id].whitelist:
                 return
         if message.author.id not in self.config.users.keys():
             self.config.users[message.author.id] = User(message.author.id)
@@ -295,17 +295,17 @@ class WalBot(discord.Client):
                     itertools.chain(*[role.members for role in message.role_mentions]))]):
             # If the message is mentioning the bot or mentioning a role that the bot is in then
             # answer with result of processing command from config.on_mention_command
-            if channel_id in self.config.guilds[message.channel.guild.id].markov_responses_whitelist:
+            if channel_id in self.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist:
                 msg_content = message.content
                 cmd = bc.config.commands_prefix + bc.config.on_mention_command
                 cmd_split = cmd.split(" ")
                 message.content = cmd
                 result = await self._process_command(message, cmd_split, silent=True)
                 message.content = msg_content
-                if not self.config.guilds[message.channel.guild.id].markov_pings:
+                if not self.config.discord.guilds[message.channel.guild.id].markov_pings:
                     result = (DiscordExecutionContext(message).disable_pings(result)) or ""
                 await message.channel.send(message.author.mention + ' ' + result)
-        elif channel_id in self.config.guilds[message.channel.guild.id].markov_logging_whitelist:
+        elif channel_id in self.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist:
             # If the message is in a channel that is supposed to log markov chains, doesn't mention the bot then
             # add the message to the markov chain DB
             needs_to_be_added = True
@@ -316,7 +316,7 @@ class WalBot(discord.Client):
                         break
             if needs_to_be_added:
                 bc.markov.add_string(message.content)
-        if channel_id in self.config.guilds[message.channel.guild.id].responses_whitelist:
+        if channel_id in self.config.discord.guilds[message.channel.guild.id].responses_whitelist:
             # If the message is in a channel that is supposed to respond to messages then
             # answer with corresponding response from config.responses dictionary
             responses_count = 0
@@ -328,7 +328,7 @@ class WalBot(discord.Client):
                         response.text, message, self.config.users[message.author.id])
                     await Msg.reply(message, text, False)
                     responses_count += 1
-        if channel_id in self.config.guilds[message.channel.guild.id].reactions_whitelist:
+        if channel_id in self.config.discord.guilds[message.channel.guild.id].reactions_whitelist:
             # If the message is in a channel that is supposed to react to messages then
             # react to the message with corresponding reaction from config.reactions dictionary
             for reaction in self.config.reactions.values():

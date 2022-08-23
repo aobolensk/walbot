@@ -7,6 +7,7 @@ import uuid
 import yaml
 
 from src import const
+from src.backend.discord.config import DiscordConfig
 from src.ff import FF
 from src.log import log
 from src.utils import Util
@@ -124,14 +125,14 @@ class Updater:
                 reminder.__dict__["whisper_users"] = []
             self._bump_version(config, "0.0.13")
         if config.version == "0.0.13":
-            for guild in config.guilds.values():
+            for guild in config.discord.guilds.values():
                 guild.__dict__["markov_logging_whitelist"] = guild.markov_whitelist
                 del guild.__dict__["markov_whitelist"]
                 guild.__dict__["markov_responses_whitelist"] = guild.responses_whitelist
                 del guild.__dict__["responses_whitelist"]
             self._bump_version(config, "0.0.14")
         if config.version == "0.0.14":
-            for guild in config.guilds.values():
+            for guild in config.discord.guilds.values():
                 guild.__dict__["responses_whitelist"] = set()
             self._bump_version(config, "0.0.15")
         if config.version == "0.0.15":
@@ -175,7 +176,7 @@ class Updater:
                 reminder.__dict__["repeat_interval_measure"] = "minutes"
             self._bump_version(config, "0.0.23")
         if config.version == "0.0.23":
-            for guild in config.guilds.values():
+            for guild in config.discord.guilds.values():
                 guild.__dict__["ignored"] = False
             self._bump_version(config, "0.0.24")
         if config.version == "0.0.24":
@@ -273,6 +274,11 @@ class Updater:
             config.commands.data["echo"].perform = "_echo"
             self._bump_version(config, "0.0.46")
         if config.version == "0.0.46":
+            config.__dict__["discord"] = DiscordConfig()
+            config.discord.guilds = config.discord.guilds
+            del config.__dict__["guilds"]
+            self._bump_version(config, "0.0.47")
+        if config.version == "0.0.47":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

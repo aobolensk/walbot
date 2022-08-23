@@ -12,6 +12,7 @@ import discord
 import yaml
 
 from src import const
+from src.backend.discord.config import DiscordConfig
 from src.backend.discord.message import Msg
 from src.bc import BotController, DoNotUpdateFlag
 from src.log import log
@@ -221,7 +222,6 @@ class Config:
         self.commands.update()
         self.version = const.CONFIG_VERSION
         self.reactions = dict()
-        self.guilds = dict()
         self.users = dict()
         self.reminders = dict()
         self.responses = dict()
@@ -248,6 +248,7 @@ class Config:
         self.repl = {
             "port": 8080,
         }
+        self.discord = DiscordConfig()
         self.telegram = {
             "channel_whitelist": set(),
             "passphrase": uuid.uuid4().hex,

@@ -45,7 +45,7 @@ class MarkovCommands(BaseCmd):
         else:
             result = bc.markov.generate()
         if execution_ctx.platform == "discord":
-            if not bc.config.guilds[execution_ctx.message.channel.guild.id].markov_pings:
+            if not bc.config.discord.guilds[execution_ctx.message.channel.guild.id].markov_pings:
                 result = execution_ctx.disable_pings(result)
         Command.send_message(execution_ctx, result)
         return result

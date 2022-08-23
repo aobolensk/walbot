@@ -21,12 +21,12 @@ class MiniWalBot(discord.Client):
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
         for guild in self.guilds:
-            if guild.id not in self.config.guilds.keys():
-                self.config.guilds[guild.id] = GuildSettings(guild.id)
+            if guild.id not in self.config.discord.guilds.keys():
+                self.config.discord.guilds[guild.id] = GuildSettings(guild.id)
 
     async def on_message(self, message: discord.Message) -> None:
         try:
-            if self.config.guilds[message.channel.guild.id].ignored:
+            if self.config.discord.guilds[message.channel.guild.id].ignored:
                 return
             log.info(str(message.author) + " -> " + message.content)
             if message.author.id == self.user.id:
@@ -35,8 +35,8 @@ class MiniWalBot(discord.Client):
                 return
             if message.channel.guild.id is None:
                 return
-            if self.config.guilds[message.channel.guild.id].is_whitelisted:
-                if message.channel.id not in self.config.guilds[message.channel.guild.id].whitelist:
+            if self.config.discord.guilds[message.channel.guild.id].is_whitelisted:
+                if message.channel.id not in self.config.discord.guilds[message.channel.guild.id].whitelist:
                     return
             if message.author.id not in self.config.users.keys():
                 self.config.users[message.author.id] = User(message.author.id)
