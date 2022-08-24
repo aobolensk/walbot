@@ -94,10 +94,10 @@ class Command:
     @staticmethod
     def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
         if execution_ctx.platform == "discord":
-            string = string.replace("@author@", execution_ctx.message.author.mention)
             string = string.replace("@channel@", execution_ctx.message.channel.mention)
             string = string.replace("@server@", execution_ctx.message.guild.name)
             string = string.replace("@authorid@", str(execution_ctx.message.author.id))
+        string = string.replace("@author@", execution_ctx.message_author())
         string = string.replace("@command@", ' '.join(cmd_line))
         if not safe or const.ALNUM_STRING_REGEX.match(' '.join(cmd_line[1:])):
             string = string.replace("@args@", ' '.join(cmd_line[1:]))
