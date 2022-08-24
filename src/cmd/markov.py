@@ -87,7 +87,8 @@ class MarkovCommands(BaseCmd):
         amount = len(found)
         if execution_ctx.platform == "discord":
             if not (len(cmd_line) > 2 and cmd_line[2] == '-f' and
-                    bc.config.users[execution_ctx.message.author.id].permission_level >= const.Permission.MOD.value):
+                    bc.config.discord.users[
+                        execution_ctx.message.author.id].permission_level >= const.Permission.MOD.value):
                 found = found[:100]
         else:
             found = found[:100]

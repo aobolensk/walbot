@@ -284,7 +284,7 @@ class BuiltinCommands(BaseCmd):
                         f"web: {info.web_status}", True)
         e.add_field(
             "Permission level",
-            bc.config.users[info.id].permission_level if info.id in bc.config.users.keys() else 0, True)
+            bc.config.discord.users[info.id].permission_level if info.id in bc.config.discord.users.keys() else 0, True)
         if flags:
             e.add_field("Flags", flags)
         await Msg.response(message, None, silent, embed=e.get())
@@ -570,8 +570,8 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(
                     message, f"Second argument of command '{command[0]}' should be user ping", silent))
         user_id = int(r.group(1))
-        if user_id in bc.config.users.keys():
-            bc.config.users[user_id].permission_level = perm
+        if user_id in bc.config.discord.users.keys():
+            bc.config.discord.users[user_id].permission_level = perm
             return null(
                 await Msg.response(message, f"Set permission level {command[2]} for user '{command[1]}'", silent))
         else:
@@ -1388,9 +1388,9 @@ class BuiltinCommands(BaseCmd):
                                                 "for whom you want to get the permission level", silent))
             info = await message.guild.fetch_member(message.mentions[0].id)
             user_id = message.mentions[0].id
-        if info is None or user_id not in bc.config.users.keys():
+        if info is None or user_id not in bc.config.discord.users.keys():
             return null(await Msg.response(message, "Could not get permission level for this user", silent))
-        perm_level = bc.config.users[user_id].permission_level
+        perm_level = bc.config.discord.users[user_id].permission_level
         nick = str(info.nick) + " (" + str(info) + ")" if info.nick is not None else str(info)
         await Msg.response(message, f"Permission level for {nick} is {perm_level}", silent)
 
@@ -1406,7 +1406,7 @@ class BuiltinCommands(BaseCmd):
         else:
             cmd = bc.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
-            await cmd.run(message, command, bc.config.users[message.author.id])
+            await cmd.run(message, command, bc.config.discord.users[message.author.id])
 
     @staticmethod
     async def _config2(message, command, silent=False):
@@ -1430,7 +1430,7 @@ class BuiltinCommands(BaseCmd):
                     else discord.ButtonStyle.red
                 ))
             async def bot_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.users[interaction.user.id].permission_level <
+                if (bc.config.discord.users[interaction.user.id].permission_level <
                         bc.config.commands.data["config2"].permission):
                     await Msg.response(
                         message, f"{interaction.user.mention} you don't have permission to use this command", silent)
@@ -1457,7 +1457,7 @@ class BuiltinCommands(BaseCmd):
                     else discord.ButtonStyle.red
                 ))
             async def markov_logging_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.users[interaction.user.id].permission_level <
+                if (bc.config.discord.users[interaction.user.id].permission_level <
                         bc.config.commands.data["config2"].permission):
                     await Msg.response(
                         message, f"{interaction.user.mention} you don't have permission to use this command", silent)
@@ -1486,7 +1486,7 @@ class BuiltinCommands(BaseCmd):
                     else discord.ButtonStyle.red
                 ))
             async def bot_responses_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.users[interaction.user.id].permission_level <
+                if (bc.config.discord.users[interaction.user.id].permission_level <
                         bc.config.commands.data["config2"].permission):
                     await Msg.response(
                         message, f"{interaction.user.mention} you don't have permission to use this command", silent)
@@ -1514,7 +1514,7 @@ class BuiltinCommands(BaseCmd):
                     else discord.ButtonStyle.red
                 ))
             async def markov_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.users[interaction.user.id].permission_level <
+                if (bc.config.discord.users[interaction.user.id].permission_level <
                         bc.config.commands.data["config2"].permission):
                     await Msg.response(
                         message, f"{interaction.user.mention} you don't have permission to use this command", silent)
@@ -1544,7 +1544,7 @@ class BuiltinCommands(BaseCmd):
                     else discord.ButtonStyle.red
                 ))
             async def markov_pings_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.users[interaction.user.id].permission_level <
+                if (bc.config.discord.users[interaction.user.id].permission_level <
                         bc.config.commands.data["config2"].permission):
                     await Msg.response(
                         message, f"{interaction.user.mention} you don't have permission to use this command", silent)

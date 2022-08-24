@@ -240,9 +240,9 @@ class WalBot(discord.Client):
         if self.config.discord.guilds[message.channel.guild.id].is_whitelisted:
             if message.channel.id not in self.config.discord.guilds[message.channel.guild.id].whitelist:
                 return
-        if message.author.id not in self.config.users.keys():
-            self.config.users[message.author.id] = User(message.author.id)
-        if self.config.users[message.author.id].permission_level < 0:
+        if message.author.id not in self.config.discord.users.keys():
+            self.config.discord.users[message.author.id] = User(message.author.id)
+        if self.config.discord.users[message.author.id].permission_level < 0:
             return
         if message.content.startswith(self.config.commands_prefix):
             await self._process_command(message)
@@ -268,9 +268,9 @@ class WalBot(discord.Client):
         if self.config.discord.guilds[message.channel.guild.id].is_whitelisted:
             if message.channel.id not in self.config.discord.guilds[message.channel.guild.id].whitelist:
                 return
-        if message.author.id not in self.config.users.keys():
-            self.config.users[message.author.id] = User(message.author.id)
-        if self.config.users[message.author.id].permission_level < 0:
+        if message.author.id not in self.config.discord.users.keys():
+            self.config.discord.users[message.author.id] = User(message.author.id)
+        if self.config.discord.users[message.author.id].permission_level < 0:
             return
         if (datetime.datetime.now().astimezone() - message.created_at >
                 datetime.timedelta(seconds=const.MAX_MESSAGE_TIMEDELTA_FOR_RECALCULATION)):
@@ -325,7 +325,7 @@ class WalBot(discord.Client):
                     break
                 if re.search(response.regex, message.content):
                     text = await Command.process_subcommands(
-                        response.text, message, self.config.users[message.author.id])
+                        response.text, message, self.config.discord.users[message.author.id])
                     await Msg.reply(message, text, False)
                     responses_count += 1
         if channel_id in self.config.discord.guilds[message.channel.guild.id].reactions_whitelist:
@@ -358,7 +358,7 @@ class WalBot(discord.Client):
         if max_exec_time != -1:
             timeout_error, result = await Util.run_function_with_time_limit(
                 self.config.commands.data[command[0]].run(
-                    message, command, self.config.users[message.author.id], silent=silent),
+                    message, command, self.config.discord.users[message.author.id], silent=silent),
                 max_exec_time)
             if command[0] not in (
                 "silent",
@@ -367,7 +367,7 @@ class WalBot(discord.Client):
             return result
         else:
             return await self.config.commands.data[command[0]].run(
-                message, command, self.config.users[message.author.id], silent=silent)
+                message, command, self.config.discord.users[message.author.id], silent=silent)
 
     def _suggest_similar_command(self, unknown_command: str) -> str:
         min_dist = 100000

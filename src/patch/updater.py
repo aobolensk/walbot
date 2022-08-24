@@ -286,6 +286,10 @@ class Updater:
             config.__dict__["telegram"] = telegram_config
             self._bump_version(config, "0.0.48")
         if config.version == "0.0.48":
+            config.discord.__dict__["users"] = config.users
+            del config.__dict__["users"]
+            self._bump_version(config, "0.0.49")
+        if config.version == "0.0.49":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

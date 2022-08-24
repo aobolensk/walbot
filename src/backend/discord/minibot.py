@@ -38,9 +38,9 @@ class MiniWalBot(discord.Client):
             if self.config.discord.guilds[message.channel.guild.id].is_whitelisted:
                 if message.channel.id not in self.config.discord.guilds[message.channel.guild.id].whitelist:
                     return
-            if message.author.id not in self.config.users.keys():
-                self.config.users[message.author.id] = User(message.author.id)
-            if self.config.users[message.author.id].permission_level < const.Permission.USER.value:
+            if message.author.id not in self.config.discord.users.keys():
+                self.config.discord.users[message.author.id] = User(message.author.id)
+            if self.config.discord.users[message.author.id].permission_level < const.Permission.USER.value:
                 return
             if not message.content.startswith(self.config.commands_prefix) and not self.user.mentioned_in(message):
                 return

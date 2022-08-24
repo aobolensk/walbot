@@ -14,7 +14,7 @@ class DiscordExecutionContext(ExecutionContext):
         super().__init__()
         self.platform = "discord"
         self.message = message
-        self.permission_level = bc.config.users[message.author.id].permission_level
+        self.permission_level = bc.config.discord.users[message.author.id].permission_level
         self.silent = silent
 
     def send_message(self, message: str, *args, **kwargs) -> None:

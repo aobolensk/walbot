@@ -79,7 +79,7 @@ class MarkovCommands(BaseCmd):
         result = f"Next for '{word}':\n"
         amount = len(words)
         if not ('-f' in command and
-                bc.config.users[message.author.id].permission_level >= const.Permission.MOD.value):
+                bc.config.discord.users[message.author.id].permission_level >= const.Permission.MOD.value):
             words = words[:100]
         skipped_words = amount - len(words)
         result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])

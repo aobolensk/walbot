@@ -222,7 +222,6 @@ class Config:
         self.commands.update()
         self.version = const.CONFIG_VERSION
         self.reactions = dict()
-        self.users = dict()
         self.reminders = dict()
         self.responses = dict()
         self.quotes = dict()
