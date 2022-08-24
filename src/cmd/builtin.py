@@ -17,7 +17,7 @@ class BuiltinCommands(BaseCmd):
     def bind(self) -> None:
         bc.executor.commands["ping"] = Command(
             "builtin", "ping", const.Permission.USER, Implementation.MESSAGE,
-            subcommand=True, impl_message="Pong!")
+            subcommand=True, impl_message="🏓 Pong! @author@ 🏓")
         bc.executor.commands["echo"] = Command(
             "builtin", "echo", const.Permission.USER, Implementation.MESSAGE,
             subcommand=True, impl_message="@args@")

@@ -162,8 +162,7 @@
     Example: !pin 0 \
     *This command can be used as subcommand*
 
-**ping**: Check whether the bot is active and get latency in ms \
-    Example: !ping
+**ping**: 🏓 Pong! @author@ 🏓
 
 **poll**: Create poll \
     Example: !poll 60 option 1;option 2;option 3

@@ -194,6 +194,7 @@ class BuiltinCommands(BaseCmd):
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
         self._echo = functools.partial(bind_command, "echo")
+        self._ping = functools.partial(bind_command, "ping")
         self._version = functools.partial(bind_command, "version")
         self._about = functools.partial(bind_command, "about")
         self._uptime = functools.partial(bind_command, "uptime")
@@ -238,14 +239,6 @@ class BuiltinCommands(BaseCmd):
             result = result[:-1]
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _ping(message, command, silent=False):
-        """Check whether the bot is active and get latency in ms
-    Example: !ping"""
-        result = f":ping_pong: Pong! {message.author.mention} :ping_pong:\n"
-        result += f"Latency: {round(bc.latency() * 1000)} ms"
-        await Msg.response(message, result, silent)
 
     @staticmethod
     async def _profile(message, command, silent=False):
