@@ -18,4 +18,5 @@ def check_auth(update: Update) -> bool:
 def reply(update: Update, text: str) -> None:
     title = update.message.chat.title or "<DM>"
     log.info("(" + title + ") " + update.message.from_user.username + ": " + text)
-    update.message.reply_text(text)
+    text = text.replace("-", "\\-").replace("!", "\\!")
+    update.message.reply_text(text, parse_mode="MarkdownV2")
