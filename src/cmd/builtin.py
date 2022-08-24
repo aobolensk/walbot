@@ -36,6 +36,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["version"] = Command(
             "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._version)
+        bc.executor.commands["extexec"] = Command(
+            "builtin", "extexec", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._extexec)
         bc.executor.commands["curl"] = Command(
             "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._curl)
@@ -109,6 +112,15 @@ class BuiltinCommands(BaseCmd):
             result = result[:7]
         Command.send_message(execution_ctx, result)
         return result
+
+    def _extexec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Execute external shell command
+    Note: Be careful when you are executing external commands!
+    Example: !extexec uname -a"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        print(' '.join(cmd_line[1:]))
+        return Util.run_external_command(execution_ctx, ' '.join(cmd_line[1:]))
 
     def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Perform HTTP request

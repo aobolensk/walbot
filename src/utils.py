@@ -77,7 +77,7 @@ class Util:
         return not fatal
 
     @staticmethod
-    async def run_external_command(message, cmd_line, silent=False):
+    def run_external_command(execution_ctx: ExecutionContext, cmd_line: str) -> str:
         result = ""
         try:
             log.debug(f"Processing external command: '{cmd_line}'")
@@ -85,9 +85,9 @@ class Util:
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=os.environ)
             log.debug(f"External command '{cmd_line}' finished execution with return code: {process.returncode}")
             result = process.stdout.decode("utf-8")
-            await Msg.response(message, result, silent)
+            Command.send_message(execution_ctx, result)
         except subprocess.CalledProcessError as e:
-            await Msg.response(message, f"<Command failed with error code {e.returncode}>", silent)
+            Command.send_message(execution_ctx, f"<Command failed with error code {e.returncode}>")
         return result
 
     @staticmethod

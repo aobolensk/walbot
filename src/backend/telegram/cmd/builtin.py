@@ -21,6 +21,7 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("uptime", functools.partial(command_handler, "uptime")))
         dispatcher.add_handler(CommandHandler("version", functools.partial(command_handler, "version")))
         dispatcher.add_handler(CommandHandler("curl", functools.partial(command_handler, "curl")))
+        dispatcher.add_handler(CommandHandler("extexec", functools.partial(command_handler, "extexec")))
         dispatcher.add_handler(CommandHandler(
             "donotupdatestate", functools.partial(command_handler, "donotupdatestate")))
         dispatcher.add_handler(CommandHandler("getmentioncmd", functools.partial(command_handler, "getmentioncmd")))

@@ -200,6 +200,7 @@ class BuiltinCommands(BaseCmd):
         self._shutdown = functools.partial(bind_command, "shutdown")
         self._restart = functools.partial(bind_command, "restart")
         self._curl = functools.partial(bind_command, "curl")
+        self._extexec = functools.partial(bind_command, "extexec")
         self._donotupdatestate = functools.partial(bind_command, "donotupdatestate")
         self._getmentioncmd = functools.partial(bind_command, "getmentioncmd")
         self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
@@ -577,15 +578,6 @@ class BuiltinCommands(BaseCmd):
         else:
             return null(
                 await Msg.response(message, f"User '{command[1]}' is not found", silent))
-
-    @staticmethod
-    async def _extexec(message, command, silent=False):
-        """Execute external shell command
-    Note: Be careful when you are executing external commands!
-    Example: !extexec uname -a"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        return await Util.run_external_command(message, ' '.join(command[1:]), silent)
 
     @staticmethod
     async def _whitelist(message, command, silent=False):
