@@ -15,7 +15,7 @@ from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.markov import MarkovCommands
 from src.backend.telegram.cmd.reminder import ReminderCommands
 from src.backend.telegram.context import TelegramExecutionContext
-from src.backend.telegram.util import check_auth, reply
+from src.backend.telegram.util import check_auth, log_message, reply
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
@@ -33,8 +33,7 @@ class TelegramBotInstance(BotInstance):
     @Mail.send_exception_info_to_admin_emails
     def _handle_messages(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
-        title = update.message.chat.title or "<DM>"
-        log.info(f"({title}) {update.message.from_user.username}: {text}")
+        log_message(update)
         if not check_auth(update):
             return
         bc.markov.add_string(text)
@@ -42,8 +41,7 @@ class TelegramBotInstance(BotInstance):
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
-        title = update.message.chat.title or "<DM>"
-        log.info(f"({title}) {update.message.from_user.username}: {text}")
+        log_message(update)
         if not check_auth(update):
             return
         result = bc.executor.execute(bc.config.on_mention_command.split(" "), TelegramExecutionContext(update))

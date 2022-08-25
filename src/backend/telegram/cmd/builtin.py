@@ -4,7 +4,7 @@ from telegram import update
 from telegram.ext import CallbackContext, CommandHandler
 
 from src.backend.telegram.command import command_handler
-from src.backend.telegram.util import check_auth, log_command, reply
+from src.backend.telegram.util import check_auth, log_message, reply
 from src.mail import Mail
 
 
@@ -30,7 +30,7 @@ class BuiltinCommands:
 
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: update, context: CallbackContext) -> None:
-        log_command(update)
+        log_message(update)
         if not check_auth(update):
             return
         if len(context.args) < 2:

@@ -5,7 +5,7 @@ from telegram.ext import CallbackContext, CommandHandler
 
 from src.api.command import Command
 from src.backend.telegram.context import TelegramExecutionContext
-from src.backend.telegram.util import check_auth, log_command
+from src.backend.telegram.util import check_auth, log_message
 from src.config import bc
 from src.log import log
 from src.mail import Mail
@@ -21,7 +21,7 @@ class AuthCommands:
 
     @Mail.send_exception_info_to_admin_emails
     def _authorize(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
+        log_message(update)
         passphrase = context.args[0] if context.args else ""
         if passphrase == bc.config.telegram.passphrase:
             bc.config.telegram.channel_whitelist.add(update.effective_chat.id)
@@ -31,7 +31,7 @@ class AuthCommands:
 
     @Mail.send_exception_info_to_admin_emails
     def _resetpass(self, update: Update, context: CallbackContext) -> None:
-        log_command(update)
+        log_message(update)
         if not check_auth(update):
             return
         bc.config.telegram.passphrase = uuid.uuid4().hex

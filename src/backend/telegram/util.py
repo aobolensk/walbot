@@ -4,7 +4,7 @@ from src.config import bc
 from src.log import log
 
 
-def log_command(update: Update) -> None:
+def log_message(update: Update) -> None:
     title = update.message.chat.title or "<DM>"
     log.info(f"({title}) {update.message.from_user.username}: {update.message.text}")
 
@@ -16,7 +16,7 @@ def check_auth(update: Update) -> bool:
 
 
 def reply(update: Update, text: str) -> None:
-    title = update.message.chat.title or "<DM>"
-    log.info(f"({title}) {update.message.from_user.username}: {update.message.text}")
     text = text.replace("-", "\\-").replace("!", "\\!")
-    update.message.reply_text(text, parse_mode="MarkdownV2")
+    reply_message = update.message.reply_text(text, parse_mode="MarkdownV2")
+    title = reply_message.chat.title or "<DM>"
+    log.info(f"({title}) {reply_message.from_user.username}: {reply_message.text}")
