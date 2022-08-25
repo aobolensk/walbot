@@ -2,6 +2,7 @@ from telegram import Update
 
 from src.api.execution_context import ExecutionContext
 from src.backend.telegram.util import reply
+from src.config import bc
 
 
 class TelegramExecutionContext(ExecutionContext):
@@ -9,6 +10,7 @@ class TelegramExecutionContext(ExecutionContext):
         super().__init__()
         self.platform = "telegram"
         self.update = update
+        self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
 
     def send_message(self, message: str, *args, **kwargs) -> None:
         reply(self.update, message)

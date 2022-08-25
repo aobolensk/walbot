@@ -40,7 +40,6 @@ class TelegramBotInstance(BotInstance):
 
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
-        text = update.message.text
         log_message(update)
         if not check_auth(update):
             return
