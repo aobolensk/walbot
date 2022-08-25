@@ -28,6 +28,9 @@ class MarkovCommands(BaseCmd):
         bc.executor.commands["getmarkovword"] = Command(
             "markov", "getmarkovword", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._getmarkovword)
+        bc.executor.commands["dropmarkov"] = Command(
+            "markov", "dropmarkov", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._dropmarkov)
 
     def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
@@ -125,3 +128,12 @@ class MarkovCommands(BaseCmd):
         result = found[index]
         Command.send_message(execution_ctx, result)
         return result
+
+    def _dropmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Drop Markov database
+    Example: !dropmarkov"""
+        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        print("?")
+        bc.markov.__init__()
+        Command.send_message(execution_ctx, "Markov database has been dropped!")

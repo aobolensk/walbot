@@ -36,15 +36,7 @@ class MarkovCommands(BaseCmd):
         self._delmarkov = functools.partial(bind_command, "delmarkov")
         self._findmarkov = functools.partial(bind_command, "findmarkov")
         self._getmarkovword = functools.partial(bind_command, "getmarkovword")
-
-    @staticmethod
-    async def _dropmarkov(message, command, silent=False):
-        """Drop Markov database
-    Example: !dropmarkov"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        bc.markov.__init__()
-        await Msg.response(message, "Markov database has been dropped!", silent)
+        self._dropmarkov = functools.partial(bind_command, "dropmarkov")
 
     @staticmethod
     async def _statmarkov(message, command, silent=False):
