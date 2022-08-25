@@ -77,11 +77,7 @@ class Command:
         if self.impl_type == Implementation.FUNCTION:
             return self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            result = self._process_message(result)
             return execution_ctx.send_message(result)
-
-    def _process_message(self, message: str) -> str:
-        return message
 
     @abstractmethod
     def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
