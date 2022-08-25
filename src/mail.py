@@ -18,7 +18,6 @@ class Mail:
 
     def connect(self) -> None:
         self._server = smtplib.SMTP_SSL(self.secrets["smtp_server"])
-        self._server.ehlo(self.secrets["email"])
         self._server.login(self.secrets["email"], self.secrets["password"])
         self._server.auth_plain()
 
