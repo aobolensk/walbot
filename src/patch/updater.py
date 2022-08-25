@@ -367,9 +367,7 @@ class Updater:
                 })
                 self._bump_version(config, "0.1.0")
                 log.warning("Markov model has been moved to MongoDB!")
-            else:
-                log.info(f"Version of {self.config_name} is up to date!")
-        if config.version == "0.1.0":
+                return
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
