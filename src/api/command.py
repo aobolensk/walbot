@@ -1,10 +1,14 @@
 import enum
 from abc import abstractmethod
 from types import FunctionType
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from src import const
 from src.api.execution_context import ExecutionContext
+from src.log import log
+
+if TYPE_CHECKING:
+    from src.executor import Executor
 
 
 class BaseCmd:
@@ -64,9 +68,15 @@ class Command:
                 return
         self.times_called += 1
         if self.impl_type == Implementation.FUNCTION:
-            return self._exec(cmd_line, execution_ctx)
+            result = self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
         elif self.impl_type == Implementation.MESSAGE:
             result = self.process_variables(execution_ctx, self.impl_message, cmd_line)
+        if execution_ctx.platform == "telegram":
+            from src.config import bc
+            result = self.process_subcommands(execution_ctx, bc.executor, result)
+        if self.impl_type == Implementation.FUNCTION:
+            return self._exec(cmd_line, execution_ctx)
+        elif self.impl_type == Implementation.MESSAGE:
             result = self._process_message(result)
             return execution_ctx.send_message(result)
 
@@ -122,4 +132,47 @@ class Command:
         for i in range(len(cmd_line)):
             if not safe or const.ALNUM_STRING_REGEX.match(cmd_line[i]):
                 string = string.replace("@arg" + str(i) + "@", cmd_line[i])
+        return string
+
+    @staticmethod
+    def process_subcommands(execution_ctx: ExecutionContext, executor: 'Executor', string: str, safe: bool = False):
+        command_indicators = {
+            ')': '(',
+            ']': '[',
+            '`': '`',
+            '}': '{',
+        }
+        while True:
+            updated = False
+            for i in range(len(string)):
+                if string[i] in command_indicators.keys():
+                    for j in range(i - 1, 0, -1):
+                        if string[j] == command_indicators[string[i]] and string[j - 1] == '$':
+                            updated = True
+                            subcommand_string = string[j + 1:i]
+                            command = subcommand_string.split(' ')
+                            if not command:
+                                return
+                            if command[0] not in executor.commands.keys():
+                                execution_ctx.send_message(f"Unknown command '{command[0]}'")
+                            result = ""
+                            if command and command[0] in executor.commands.keys():
+                                log.debug(f"Processing subcommand: {command[0]}: {subcommand_string}")
+                                cmd = executor.commands[command[0]]
+                                if cmd.subcommand:
+                                    real_silent_status = execution_ctx.silent
+                                    execution_ctx.silent = True
+                                    result = cmd.run(command, execution_ctx)
+                                    execution_ctx.silent = real_silent_status
+                                    if result is None or (safe and not const.ALNUM_STRING_REGEX.match(string)):
+                                        result = ""
+                                else:
+                                    execution_ctx.send_message(f"Command '{command[0]}' can not be used as subcommand")
+                            string = string[:j - 1] + result + string[i + 1:]
+                            log.debug2(f"Command (during processing subcommands): {string}")
+                            break
+                if updated:
+                    break
+            if not updated:
+                break
         return string

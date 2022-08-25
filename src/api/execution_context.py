@@ -7,6 +7,7 @@ class ExecutionContext:
     def __init__(self) -> None:
         self.platform = "<unknown>"
         self.permission_level = const.Permission.USER
+        self.silent = False
 
     @abstractmethod
     def send_message(self, message: str, *args, **kwargs) -> None:

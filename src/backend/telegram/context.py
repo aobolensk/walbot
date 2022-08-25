@@ -13,6 +13,8 @@ class TelegramExecutionContext(ExecutionContext):
         self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
 
     def send_message(self, message: str, *args, **kwargs) -> None:
+        if self.silent:
+            return
         reply(self.update, message)
 
     def disable_pings(self, message: str) -> None:
