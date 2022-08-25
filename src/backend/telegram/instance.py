@@ -33,7 +33,8 @@ class TelegramBotInstance(BotInstance):
     @Mail.send_exception_info_to_admin_emails
     def _handle_messages(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
-        log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
+        title = update.message.chat.title or "<DM>"
+        log.info(f"({title}) {update.message.from_user.username}: {text}")
         if not check_auth(update):
             return
         bc.markov.add_string(text)
@@ -41,7 +42,8 @@ class TelegramBotInstance(BotInstance):
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
         text = update.message.text
-        log.info("(" + update.message.chat.title + ") " + update.message.from_user.username + ": " + text)
+        title = update.message.chat.title or "<DM>"
+        log.info(f"({title}) {update.message.from_user.username}: {text}")
         if not check_auth(update):
             return
         result = bc.executor.execute(bc.config.on_mention_command.split(" "), TelegramExecutionContext(update))
