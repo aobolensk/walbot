@@ -292,7 +292,7 @@ class Updater:
         if config.version == "0.0.49":
             config.telegram.__dict__["users"] = dict()
             self._bump_version(config, "0.0.50")
-        if config.version == "0.0.49":
+        if config.version == "0.0.50":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
