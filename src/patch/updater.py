@@ -30,6 +30,7 @@ class Updater:
         yaml_path = self.config_name + '.yaml'
         if os.path.isfile(yaml_path):
             # .yaml file path
+            log.info(f"Сhecking {self.config_name} version...")
             config = Util.read_config_file(yaml_path)
             getattr(self, self.config_name + "_yaml")(config)
         else:
