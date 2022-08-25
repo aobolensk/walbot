@@ -15,7 +15,8 @@ from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.markov import MarkovCommands
 from src.backend.telegram.cmd.reminder import ReminderCommands
 from src.backend.telegram.context import TelegramExecutionContext
-from src.backend.telegram.util import check_auth, log_message, reply
+from src.backend.telegram.util import (check_auth, escape_markdown_text,
+                                       log_message, reply)
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
@@ -49,7 +50,7 @@ class TelegramBotInstance(BotInstance):
     @Mail.send_exception_info_to_admin_emails
     def _send_message(self, chat_id: int, text: str) -> None:
         log.info(f"({chat_id}) /sendMessage: " + text)
-        text = quote_plus(text).replace("-", "\\-")
+        text = quote_plus(escape_markdown_text(text))
         url = (
             f"https://api.telegram.org/bot{bc.secret_config.telegram['token']}/sendMessage"
             f"?chat_id={chat_id}&text={text}&parse_mode=MarkdownV2"

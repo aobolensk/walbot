@@ -17,8 +17,33 @@ def check_auth(update: Update) -> bool:
     return True
 
 
+def escape_markdown_text(text: str):
+    return (
+        text
+        .replace('_', '\\_')
+        .replace('_', '\\_')
+        .replace('*', '\\*')
+        .replace('[', '\\[')
+        .replace(']', '\\]')
+        .replace('(', '\\(')
+        .replace(')', '\\)')
+        .replace('~', '\\~')
+        .replace('`', '\\`')
+        .replace('>', '\\>')
+        .replace('#', '\\#')
+        .replace('+', '\\+')
+        .replace('-', '\\-')
+        .replace('=', '\\=')
+        .replace('|', '\\|')
+        .replace('{', '\\{')
+        .replace('}', '\\}')
+        .replace('.', '\\.')
+        .replace('!', '\\!')
+    )
+
+
 def reply(update: Update, text: str) -> None:
-    text = text.replace("-", "\\-").replace("!", "\\!")
+    text = escape_markdown_text(text)
     reply_message = update.message.reply_text(text, parse_mode="MarkdownV2")
     title = reply_message.chat.title or "<DM>"
     log.info(f"({title}) {reply_message.from_user.username}: {reply_message.text}")
