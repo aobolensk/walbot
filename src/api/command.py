@@ -60,31 +60,32 @@ class Command:
         commands_data[self.command_name]["permission_level"] = int(self.permission_level)
         commands_data[self.command_name]["times_called"] = self.times_called
 
-    def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if execution_ctx.platform != "discord":
             # On Discord platform we are using legacy separate permission handling or now
             if execution_ctx.permission_level < self.permission_level:
-                self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
+                await self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
                 return
         self.times_called += 1
         if self.impl_type == Implementation.FUNCTION:
-            result = self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
+            result = await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
         elif self.impl_type == Implementation.MESSAGE:
-            result = self.process_variables(execution_ctx, self.impl_message, cmd_line)
+            result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
         if execution_ctx.platform == "telegram":
             from src.config import bc
-            result = self.process_subcommands(execution_ctx, bc.executor, result)
+            result = await self.process_subcommands(execution_ctx, bc.executor, result)
         if self.impl_type == Implementation.FUNCTION:
-            return self._exec(cmd_line, execution_ctx)
+            return await self._exec(cmd_line, execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            return execution_ctx.send_message(result)
+            await execution_ctx.send_message(result)
+            return result
 
     @abstractmethod
-    def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
         pass
 
     @staticmethod
-    def check_args_count(execution_ctx, cmd_line, min=None, max=None):
+    async def check_args_count(execution_ctx, cmd_line, min=None, max=None):
         if min and len(cmd_line) < min:
             Command.send_message(execution_ctx, f"Too few arguments for command '{cmd_line[0]}'")
             return False
@@ -94,11 +95,11 @@ class Command:
         return True
 
     @staticmethod
-    def send_message(execution_ctx: ExecutionContext, message: str) -> None:
-        execution_ctx.send_message(message)
+    async def send_message(execution_ctx: ExecutionContext, message: str) -> None:
+        await execution_ctx.send_message(message)
 
     @staticmethod
-    def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
+    async def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
         if execution_ctx.platform == "discord":
             string = string.replace("@channel@", execution_ctx.message.channel.mention)
             string = string.replace("@server@", execution_ctx.message.guild.name)
@@ -131,7 +132,8 @@ class Command:
         return string
 
     @staticmethod
-    def process_subcommands(execution_ctx: ExecutionContext, executor: 'Executor', string: str, safe: bool = False):
+    async def process_subcommands(
+            execution_ctx: ExecutionContext, executor: 'Executor', string: str, safe: bool = False):
         command_indicators = {
             ')': '(',
             ']': '[',
@@ -150,7 +152,7 @@ class Command:
                             if not command:
                                 return
                             if command[0] not in executor.commands.keys():
-                                execution_ctx.send_message(f"Unknown command '{command[0]}'")
+                                await execution_ctx.send_message(f"Unknown command '{command[0]}'")
                             result = ""
                             if command and command[0] in executor.commands.keys():
                                 log.debug(f"Processing subcommand: {command[0]}: {subcommand_string}")
@@ -158,12 +160,13 @@ class Command:
                                 if cmd.subcommand:
                                     real_silent_status = execution_ctx.silent
                                     execution_ctx.silent = True
-                                    result = cmd.run(command, execution_ctx)
+                                    result = await cmd.run(command, execution_ctx)
                                     execution_ctx.silent = real_silent_status
                                     if result is None or (safe and not const.ALNUM_STRING_REGEX.match(string)):
                                         result = ""
                                 else:
-                                    execution_ctx.send_message(f"Command '{command[0]}' can not be used as subcommand")
+                                    await execution_ctx.send_message(
+                                        f"Command '{command[0]}' can not be used as subcommand")
                             string = string[:j - 1] + result + string[i + 1:]
                             log.debug2(f"Command (during processing subcommands): {string}")
                             break

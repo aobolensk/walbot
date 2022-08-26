@@ -40,10 +40,10 @@ class MarkovCommands(BaseCmd):
             "markov", "inspectmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._inspectmarkov)
 
-    def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
     Example: !markov"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1):
             return
         if len(cmd_line) > 1:
             result = ""
@@ -58,69 +58,69 @@ class MarkovCommands(BaseCmd):
         if execution_ctx.platform == "discord":
             if not bc.config.discord.guilds[execution_ctx.message.channel.guild.id].markov_pings:
                 result = execution_ctx.disable_pings(result)
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
         return result
 
-    def _markovgc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _markovgc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Garbage collect Markov model nodes
     Example: !markovgc"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         result = bc.markov.collect_garbage()
         result = f"Garbage collected {len(result)} items: {', '.join(result)}"
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
         return result
 
-    def _delmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _delmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         regex = ' '.join(cmd_line[1:])
         try:
             removed = bc.markov.del_words(regex)
         except re.error as e:
-            return Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
-        execution_ctx.send_message(f"Deleted {len(removed)} words from model: {removed}", suppress_embeds=True)
+            return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+        await execution_ctx.send_message(f"Deleted {len(removed)} words from model: {removed}", suppress_embeds=True)
 
-    def _findmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _findmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Match words in Markov model using regex. If you have permission level >= 1,
         you can add -f flag to show full list of found words
     Examples:
         !findmarkov hello
         !findmarkov hello -f"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
             return
         regex = cmd_line[1]
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            return Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+            return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
         amount = len(found)
         if not (len(cmd_line) > 2 and cmd_line[2] == '-f' and
                 execution_ctx.permission_level >= const.Permission.MOD.value):
             found = found[:100]
-        execution_ctx.send_message(
+        await execution_ctx.send_message(
             f"Found {amount} words in model: {found}"
             f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
             suppress_embeds=True)
 
-    def _getmarkovword(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _getmarkovword(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get particular word from Markov model by regex
     Examples:
         !getmarkovword hello -a <- get amount of found words
         !getmarkovword hello 0 <- get word by index"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
         regex = cmd_line[1]
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            return Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+            return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
         amount = len(found)
         if cmd_line[2] == '-a':
             result = str(amount)
-            Command.send_message(execution_ctx, result)
+            await Command.send_message(execution_ctx, result)
             return result
         index = Util.parse_int_for_command(
             execution_ctx, cmd_line[2],
@@ -128,24 +128,24 @@ class MarkovCommands(BaseCmd):
         if index is None:
             return
         if not 0 <= index < amount:
-            return Command.send_message(
+            return await Command.send_message(
                 execution_ctx, f"Wrong index in list '{cmd_line[2]}' (should be in range [0..{amount-1}])")
         result = found[index]
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
         return result
 
-    def _dropmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+    async def _dropmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Drop Markov database
     Example: !dropmarkov"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         bc.markov.__init__()
-        Command.send_message(execution_ctx, "Markov database has been dropped!")
+        await Command.send_message(execution_ctx, "Markov database has been dropped!")
 
-    def _statmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+    async def _statmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Show stats for Markov module
     Example: !statmarkov"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         pairs_count = sum(word.total_next for word in bc.markov.model.values())
         markov_db_size = os.path.getsize(const.MARKOV_PATH)
@@ -161,12 +161,12 @@ class MarkovCommands(BaseCmd):
                   f"Words count: {len(bc.markov.model)}\n"
                   f"Pairs (word -> word) count: {pairs_count}\n"
                   f"Markov database size: {markov_db_size}\n")
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
 
-    def _inspectmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+    async def _inspectmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Inspect next words in Markov model for current one
     Example: !inspectmarkov hello"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=3):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=3):
             return
         word = cmd_line[1] if len(cmd_line) > 1 else ''
         words = bc.markov.get_next_words_list(word)
@@ -179,4 +179,4 @@ class MarkovCommands(BaseCmd):
         result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)

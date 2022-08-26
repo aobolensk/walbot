@@ -131,4 +131,4 @@ class Commands:
 
 
 async def bind_command(name: str, message: discord.Message, command: List[str], silent: bool = False):
-    return bc.executor.commands[name].run(command, DiscordExecutionContext(message, silent))
+    return await bc.executor.commands[name].run(command, DiscordExecutionContext(message, silent))

@@ -10,7 +10,7 @@ class ExecutionContext:
         self.silent = False
 
     @abstractmethod
-    def send_message(self, message: str, *args, **kwargs) -> None:
+    async def send_message(self, message: str, *args, **kwargs) -> None:
         pass
 
     @abstractmethod

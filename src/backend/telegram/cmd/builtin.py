@@ -13,7 +13,7 @@ class BuiltinCommands:
         pass
 
     def add_handlers(self, dispatcher) -> None:
-        dispatcher.add_handler(CommandHandler("ping", functools.partial(command_handler, "ping")))
+        dispatcher.add_handler(CommandHandler("ping", functools.partial(command_handler, "ping"), run_async=True))
         dispatcher.add_handler(CommandHandler("echo", functools.partial(command_handler, "echo")))
         dispatcher.add_handler(CommandHandler("about", functools.partial(command_handler, "about")))
         dispatcher.add_handler(CommandHandler("shutdown", functools.partial(command_handler, "shutdown")))

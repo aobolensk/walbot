@@ -47,7 +47,7 @@ class Util:
             return
 
     @staticmethod
-    def parse_int_for_command(execution_ctx: ExecutionContext, string: str, error_message: str):
+    async def parse_int_for_command(execution_ctx: ExecutionContext, string: str, error_message: str):
         try:
             return int(string)
         except ValueError:
