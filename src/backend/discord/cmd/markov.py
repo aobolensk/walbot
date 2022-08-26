@@ -1,7 +1,6 @@
 """Markov model commands"""
 
 import functools
-import re
 
 from src import const
 from src.backend.discord.commands import bind_command
