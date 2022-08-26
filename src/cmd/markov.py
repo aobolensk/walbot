@@ -40,11 +40,14 @@ class MarkovCommands(BaseCmd):
             "markov", "inspectmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._inspectmarkov)
         bc.executor.commands["addmarkovfilter"] = Command(
-            "markov", "addmarkovfilter", const.Permission.USER, Implementation.FUNCTION,
+            "markov", "addmarkovfilter", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addmarkovfilter)
         bc.executor.commands["listmarkovfilter"] = Command(
             "markov", "listmarkovfilter", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._listmarkovfilter)
+            subcommand=True, impl_func=self._listmarkovfilter)
+        bc.executor.commands["delmarkovfilter"] = Command(
+            "markov", "delmarkovfilter", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delmarkovfilter)
 
     async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
@@ -205,3 +208,19 @@ class MarkovCommands(BaseCmd):
             result += f"{index} -> `{regex.pattern}`\n"
         await Command.send_message(execution_ctx, result or "No filters for Markov model found!")
         return result
+
+    async def _delmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Delete regular expression filter for Markov model by index
+    Example: !delmarkovfilter 0"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = await Util.parse_int_for_command(
+            execution_ctx, cmd_line[1],
+            f"Second parameter for '{cmd_line[0]}' should be an index of filter")
+        if index is None:
+            return
+        if 0 <= index < len(bc.markov.filters):
+            bc.markov.filters.pop(index)
+            await Command.send_message(execution_ctx, "Successfully deleted filter!")
+        else:
+            await Command.send_message(execution_ctx, "Invalid index of filter!")

@@ -24,7 +24,7 @@ class MarkovCommands(BaseCmd):
             "inspectmarkov": dict(permission=const.Permission.USER.value, subcommand=False),
             "addmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listmarkovfilter": dict(permission=const.Permission.USER.value, subcommand=True),
-            "delmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=True),
+            "delmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
             "addmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
             "listmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
             "delmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
@@ -39,22 +39,7 @@ class MarkovCommands(BaseCmd):
         self._inspectmarkov = functools.partial(bind_command, "inspectmarkov")
         self._addmarkovfilter = functools.partial(bind_command, "addmarkovfilter")
         self._listmarkovfilter = functools.partial(bind_command, "listmarkovfilter")
-
-    @staticmethod
-    async def _delmarkovfilter(message, command, silent=False):
-        """Delete regular expression filter for Markov model by index
-    Example: !delmarkovfilter 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of filter", silent)
-        if index is None:
-            return
-        if 0 <= index < len(bc.markov.filters):
-            bc.markov.filters.pop(index)
-            await Msg.response(message, "Successfully deleted filter!", silent)
-        else:
-            await Msg.response(message, "Invalid index of filter!", silent)
+        self._delmarkovfilter = functools.partial(bind_command, "delmarkovfilter")
 
     @staticmethod
     async def _addmarkovignoredprefix(message, command, silent=False):
