@@ -37,15 +37,7 @@ class MarkovCommands(BaseCmd):
         self._dropmarkov = functools.partial(bind_command, "dropmarkov")
         self._statmarkov = functools.partial(bind_command, "statmarkov")
         self._inspectmarkov = functools.partial(bind_command, "inspectmarkov")
-
-    @staticmethod
-    async def _addmarkovfilter(message, command, silent=False):
-        """Add regular expression filter for Markov model
-    Example: !addmarkovfilter regex"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        bc.markov.filters.append(re.compile(command[1], re.DOTALL))
-        await Msg.response(message, f"Filter '{command[1]}' was successfully added for Markov model", silent)
+        self._addmarkovfilter = functools.partial(bind_command, "addmarkovfilter")
 
     @staticmethod
     async def _listmarkovfilter(message, command, silent=False):

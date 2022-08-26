@@ -1,6 +1,6 @@
+import asyncio
 import os
 import re
-import time
 from typing import List
 
 from src import const
@@ -39,6 +39,9 @@ class MarkovCommands(BaseCmd):
         bc.executor.commands["inspectmarkov"] = Command(
             "markov", "inspectmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._inspectmarkov)
+        bc.executor.commands["addmarkovfilter"] = Command(
+            "markov", "addmarkovfilter", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addmarkovfilter)
 
     async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
@@ -151,7 +154,7 @@ class MarkovCommands(BaseCmd):
         markov_db_size = os.path.getsize(const.MARKOV_PATH)
         while markov_db_size == 0:
             markov_db_size = os.path.getsize(const.MARKOV_PATH)
-            time.sleep(1)
+            await asyncio.sleep(1)
         if markov_db_size > 1024 * 1024:
             markov_db_size = f"{(markov_db_size / (1024 * 1024)):.2f} MB"
         else:
@@ -180,3 +183,11 @@ class MarkovCommands(BaseCmd):
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
         await Command.send_message(execution_ctx, result)
+
+    async def _addmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Add regular expression filter for Markov model
+    Example: !addmarkovfilter regex"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        bc.markov.filters.append(re.compile(cmd_line[1], re.DOTALL))
+        await Command.send_message(execution_ctx, f"Filter '{cmd_line[1]}' was successfully added for Markov model")
