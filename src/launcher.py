@@ -347,12 +347,15 @@ class Launcher:
     def setuphooks(self):
         if sys.platform != "win32":
             shutil.copyfile(
-                os.path.join("tools", "githooks", "pre-commit"),
+                os.path.join("tools", "githooks", "pre-commit.linux"),
                 os.path.join(".git", "hooks", "pre-commit"))
-            log.info("Git hooks are successfully set up!")
+        else:
+            shutil.copyfile(
+                os.path.join("tools", "githooks", "pre-commit.windows"),
+                os.path.join(".git", "hooks", "pre-commit"))
+        log.info("Git hooks are successfully set up!")
 
     def removehooks(self):
-        if sys.platform != "win32":
-            if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
-                os.unlink(os.path.join(".git", "hooks", "pre-commit"))
-            log.info("Git hooks are successfully removed!")
+        if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
+            os.unlink(os.path.join(".git", "hooks", "pre-commit"))
+        log.info("Git hooks are successfully removed!")

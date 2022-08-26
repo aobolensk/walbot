@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+cd $(git rev-parse --show-toplevel)
+
+echo "-- Starting linter checks"
+echo "-- flake8"
+python -m flake8 --max-line-length 120 --show-source --exclude venv
+echo "-- isort"
+python -m isort . --check-only --diff
+echo "-- Lint check is done"
