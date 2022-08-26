@@ -2,7 +2,6 @@ import datetime
 import time
 from urllib.parse import quote_plus
 
-import requests
 from telegram import Update
 from telegram.ext import CallbackContext, Filters, MessageHandler, Updater
 from telegram.messageentity import MessageEntity
