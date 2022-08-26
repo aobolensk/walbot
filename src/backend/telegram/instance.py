@@ -55,7 +55,8 @@ class TelegramBotInstance(BotInstance):
             f"https://api.telegram.org/bot{bc.secret_config.telegram['token']}/sendMessage"
             f"?chat_id={chat_id}&text={text}&parse_mode=MarkdownV2"
         )
-        r = requests.get(url, proxies={"http": Util.proxy.http(), "https": Util.proxy.https()})
+        rq = Util.request(url)
+        r = rq.get()
         if r.status_code != 200:
             log.error(f"Error sending message to {chat_id}: {r.status_code} {r.json()}")
 
