@@ -52,26 +52,26 @@ class BuiltinCommands(BaseCmd):
             "builtin", "setmentioncmd", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setmentioncmd)
 
-    def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
     Example: !uptime"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         result = bc.info.uptime
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
         return result
 
-    def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get information about the bot
     Examples:
         !about
         !about -v   <- verbose
         !about -vv  <- even more verbose
 """
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         if not hasattr(bc, "discord_bot_user"):
-            return Command.send_message(execution_ctx, "Bot is not loaded yet!")
+            return await Command.send_message(execution_ctx, "Bot is not loaded yet!")
         verbosity = 0
         if len(cmd_line) > 1:
             if cmd_line[1] == '-v':
@@ -79,71 +79,71 @@ class BuiltinCommands(BaseCmd):
             elif cmd_line[1] == '-vv':
                 verbosity = 2
             else:
-                return Command.send_message(
+                return await Command.send_message(
                     execution_ctx, f"Unknown argument '{cmd_line[1]}' for '{cmd_line[0]}' command")
         result = bc.info.get_full_info(verbosity)
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
 
-    def _shutdown(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _shutdown(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Shutdown the bot
     Example: !shutdown"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
-        Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked bot shutdown!")
+        await Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked bot shutdown!")
         subprocess.call([sys.executable, "walbot.py", "stop"])
 
-    def _restart(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _restart(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Restart the bot
     Example: !restart"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
-        Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked restarting the bot!")
+        await Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked restarting the bot!")
         subprocess.call([sys.executable, "walbot.py", "restart"])
 
-    def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get version of the bot
     Examples:
         !version
         !version short"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         result = bc.info.version
         if len(cmd_line) == 2 and (cmd_line[1] == 's' or cmd_line[1] == 'short'):
             result = result[:7]
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
         return result
 
-    def _extexec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _extexec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Execute external shell command
     Note: Be careful when you are executing external commands!
     Example: !extexec uname -a"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         print(' '.join(cmd_line[1:]))
         return Util.run_external_command(execution_ctx, ' '.join(cmd_line[1:]))
 
-    def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Perform HTTP request
     Usage:
         !curl <url>
         !curl <url> --no-proxy
     """
-        if not Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
             return
         url = cmd_line[1]
         use_proxy = True if len(cmd_line) == 3 and cmd_line[2] == "--no-proxy" else False
         try:
             r = Util.request(url, use_proxy=use_proxy)
             result = r.get_text()
-            Command.send_message(execution_ctx, result)
+            await Command.send_message(execution_ctx, result)
             return result
         except Exception as e:
-            Command.send_message(execution_ctx, f"Request failed: {e}")
+            await Command.send_message(execution_ctx, f"Request failed: {e}")
 
-    def _donotupdatestate(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _donotupdatestate(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print current state of "Do Not Update" flag which blocks automatic bot updates
     Usage: !donotupdatestate"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         result = ""
         if bc.do_not_update[DoNotUpdateFlag.VOICE]:
@@ -166,22 +166,22 @@ class BuiltinCommands(BaseCmd):
             result += f"❌ {bc.do_not_update[DoNotUpdateFlag.STOPWATCH]} stopwatches are active\n"
         else:
             result += "✅ No stopwatches are active\n"
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
 
-    def _getmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _getmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get current command which is executed on bot ping
     Example: !getmentioncmd"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
-        Command.send_message(execution_ctx, bc.config.on_mention_command)
+        await Command.send_message(execution_ctx, bc.config.on_mention_command)
 
-    def _setmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _setmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Set current command which is executed on bot ping
     Examples:
         !setmentioncmd ping
         !setmentioncmd markov"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=2):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         command = ' '.join(cmd_line[1:])
         bc.config.on_mention_command = command
-        Command.send_message(execution_ctx, f"Command '{command}' was set on bot mention")
+        await Command.send_message(execution_ctx, f"Command '{command}' was set on bot mention")

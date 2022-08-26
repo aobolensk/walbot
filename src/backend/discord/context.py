@@ -17,7 +17,7 @@ class DiscordExecutionContext(ExecutionContext):
         self.permission_level = bc.config.discord.users[message.author.id].permission_level
         self.silent = silent
 
-    def send_message(self, message: str, *args, **kwargs) -> None:
+    async def send_message(self, message: str, *args, **kwargs) -> None:
         t = asyncio.create_task(Msg.response(self.message, message, self.silent, *args, **kwargs))
         return asyncio.run(t)
 

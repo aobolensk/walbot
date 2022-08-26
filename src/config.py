@@ -114,7 +114,8 @@ class Command:
         from src.backend.discord.context import DiscordExecutionContext
         if message.content.split(' ')[0][1:] not in postpone_execution:
             log.debug2(f"Command (before processing): {message.content}")
-            message.content = ApiCommand.process_variables(DiscordExecutionContext(message), message.content, command)
+            message.content = await ApiCommand.process_variables(
+                DiscordExecutionContext(message), message.content, command)
             log.debug2(f"Command (after processing variables): {message.content}")
             message.content = await self.process_subcommands(message.content, message, user)
             log.debug2(f"Command (after processing subcommands): {message.content}")
@@ -127,7 +128,7 @@ class Command:
         elif self.message is not None:
             response = self.message
             log.debug2(f"Command (before processing): {response}")
-            response = ApiCommand.process_variables(DiscordExecutionContext(message), response, command)
+            response = await ApiCommand.process_variables(DiscordExecutionContext(message), response, command)
             log.debug2(f"Command (after processing variables): {response}")
             response = await self.process_subcommands(response, message, user)
             log.debug2(f"Command (after processing subcommands): {response}")
@@ -148,7 +149,7 @@ class Command:
         elif self.cmd_line is not None:
             cmd_line = self.cmd_line[:]
             log.debug2(f"Command (before processing): {cmd_line}")
-            cmd_line = ApiCommand.process_variables(DiscordExecutionContext(message), cmd_line)
+            cmd_line = await ApiCommand.process_variables(DiscordExecutionContext(message), cmd_line)
             log.debug2(f"Command (after processing variables): {cmd_line}")
             cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
             log.debug2(f"Command (after processing subcommands): {cmd_line}")
