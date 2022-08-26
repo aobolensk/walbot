@@ -83,10 +83,9 @@ class MarkovCommands(BaseCmd):
             return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
         await execution_ctx.send_message(f"Deleted {len(removed)} words from model: {removed}", suppress_embeds=True)
 
-    def _findmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _findmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Match words in Markov model using regex. If you have permission level >= 1,
         you can add -f flag to show full list of found words
-        """Match words in Markov model using regex
     Examples:
         !findmarkov hello
         !findmarkov hello -f"""
@@ -135,18 +134,18 @@ class MarkovCommands(BaseCmd):
         await Command.send_message(execution_ctx, result)
         return result
 
-    def _dropmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+    async def _dropmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Drop Markov database
     Example: !dropmarkov"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         bc.markov.__init__()
-        Command.send_message(execution_ctx, "Markov database has been dropped!")
+        await Command.send_message(execution_ctx, "Markov database has been dropped!")
 
-    def _statmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+    async def _statmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Show stats for Markov module
     Example: !statmarkov"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         pairs_count = sum(word.total_next for word in bc.markov.model.values())
         markov_db_size = os.path.getsize(const.MARKOV_PATH)
@@ -162,12 +161,12 @@ class MarkovCommands(BaseCmd):
                   f"Words count: {len(bc.markov.model)}\n"
                   f"Pairs (word -> word) count: {pairs_count}\n"
                   f"Markov database size: {markov_db_size}\n")
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
 
-    def _inspectmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+    async def _inspectmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Inspect next words in Markov model for current one
     Example: !inspectmarkov hello"""
-        if not Command.check_args_count(execution_ctx, cmd_line, min=1, max=3):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=3):
             return
         word = cmd_line[1] if len(cmd_line) > 1 else ''
         words = bc.markov.get_next_words_list(word)
@@ -180,4 +179,4 @@ class MarkovCommands(BaseCmd):
         result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
-        Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result)
