@@ -343,3 +343,10 @@ class Launcher:
             log.info("bash autocompletion script has been updated: " + script_path)
         else:
             log.error("Unsupported shell type")
+
+    def setuphooks(self):
+        if sys.platform != "win32":
+            shutil.copyfile(
+                os.path.join("tools", "githooks", "pre-commit"),
+                os.path.join(".git", "hooks", "pre-commit"))
+            log.info("Git hooks are successfully set up!")
