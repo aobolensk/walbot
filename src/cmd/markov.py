@@ -122,7 +122,7 @@ class MarkovCommands(BaseCmd):
             result = str(amount)
             await Command.send_message(execution_ctx, result)
             return result
-        index = Util.parse_int_for_command(
+        index = await Util.parse_int_for_command(
             execution_ctx, cmd_line[2],
             f"Third parameter '{cmd_line[2]}' should be a valid index")
         if index is None:
