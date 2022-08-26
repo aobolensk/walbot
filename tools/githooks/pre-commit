@@ -2,12 +2,7 @@
 
 set -e
 
-function on_exit {
-    popd
-}
-
-trap on_exit EXIT
-pushd `git rev-parse --show-toplevel`
+cd `git rev-parse --show-toplevel`
 
 echo "-- Starting linter checks"
 echo "-- flake8"
