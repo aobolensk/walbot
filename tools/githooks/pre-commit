@@ -6,7 +6,7 @@ function on_exit {
     popd
 }
 
-trap cleanup EXIT
+trap on_exit EXIT
 pushd `git rev-parse --show-toplevel`
 
 echo "-- Starting linter checks"
