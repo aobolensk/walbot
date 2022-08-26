@@ -2,6 +2,13 @@
 
 set -e
 
+function on_exit {
+    popd
+}
+
+trap cleanup EXIT
+pushd `git rev-parse --show-toplevel`
+
 echo "-- Starting linter checks"
 echo "-- flake8"
 python3 -m flake8 --max-line-length 120 --show-source --exclude venv
