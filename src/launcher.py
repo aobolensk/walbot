@@ -350,3 +350,9 @@ class Launcher:
                 os.path.join("tools", "githooks", "pre-commit"),
                 os.path.join(".git", "hooks", "pre-commit"))
             log.info("Git hooks are successfully set up!")
+
+    def removehooks(self):
+        if sys.platform != "win32":
+            if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
+                os.unlink(os.path.join(".git", "hooks", "pre-commit"))
+            log.info("Git hooks are successfully removed!")
