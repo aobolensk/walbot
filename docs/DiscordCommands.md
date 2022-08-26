@@ -297,7 +297,8 @@
 **dropmarkov**: Drop Markov database \
     Example: !dropmarkov
 
-**findmarkov**: Match words in Markov model using regex \
+**findmarkov**: Match words in Markov model using regex. If you have permission level &gt;= 1, \
+        you can add -f flag to show full list of found words \
     Examples: \
         !findmarkov hello \
         !findmarkov hello -f

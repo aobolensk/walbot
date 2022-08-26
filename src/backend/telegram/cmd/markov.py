@@ -16,3 +16,5 @@ class MarkovCommands:
         dispatcher.add_handler(CommandHandler("findmarkov", functools.partial(command_handler, "findmarkov")))
         dispatcher.add_handler(CommandHandler("getmarkovword", functools.partial(command_handler, "getmarkovword")))
         dispatcher.add_handler(CommandHandler("dropmarkov", functools.partial(command_handler, "dropmarkov")))
+        dispatcher.add_handler(CommandHandler("statmarkov", functools.partial(command_handler, "statmarkov")))
+        dispatcher.add_handler(CommandHandler("inspectmarkov", functools.partial(command_handler, "inspectmarkov")))

@@ -1,8 +1,6 @@
 """Markov model commands"""
 
-import asyncio
 import functools
-import os
 import re
 
 from src import const
@@ -37,47 +35,8 @@ class MarkovCommands(BaseCmd):
         self._findmarkov = functools.partial(bind_command, "findmarkov")
         self._getmarkovword = functools.partial(bind_command, "getmarkovword")
         self._dropmarkov = functools.partial(bind_command, "dropmarkov")
-
-    @staticmethod
-    async def _statmarkov(message, command, silent=False):
-        """Show stats for Markov module
-    Example: !statmarkov"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        pairs_count = sum(word.total_next for word in bc.markov.model.values())
-        markov_db_size = os.path.getsize(const.MARKOV_PATH)
-        while markov_db_size == 0:
-            markov_db_size = os.path.getsize(const.MARKOV_PATH)
-            await asyncio.sleep(1)
-        if markov_db_size > 1024 * 1024:
-            markov_db_size = f"{(markov_db_size / (1024 * 1024)):.2f} MB"
-        else:
-            markov_db_size = f"{markov_db_size / 1024:.2f} KB"
-        result = (f"Markov module stats:\n"
-                  f"Markov chains generated: {bc.markov.chains_generated}\n"
-                  f"Words count: {len(bc.markov.model)}\n"
-                  f"Pairs (word -> word) count: {pairs_count}\n"
-                  f"Markov database size: {markov_db_size}\n")
-        await Msg.response(message, result, silent)
-
-    @staticmethod
-    async def _inspectmarkov(message, command, silent=False):
-        """Inspect next words in Markov model for current one
-    Example: !inspectmarkov hello"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=3):
-            return
-        word = command[1] if len(command) > 1 else ''
-        words = bc.markov.get_next_words_list(word)
-        result = f"Next for '{word}':\n"
-        amount = len(words)
-        if not ('-f' in command and
-                bc.config.discord.users[message.author.id].permission_level >= const.Permission.MOD.value):
-            words = words[:100]
-        skipped_words = amount - len(words)
-        result += ', '.join([f"{word if word is not None else '<end>'}: {count}" for word, count in words])
-        if skipped_words > 0:
-            result += f"... and {skipped_words} more words"
-        await Msg.response(message, result, silent, suppress_embeds=True)
+        self._statmarkov = functools.partial(bind_command, "statmarkov")
+        self._inspectmarkov = functools.partial(bind_command, "inspectmarkov")
 
     @staticmethod
     async def _addmarkovfilter(message, command, silent=False):
