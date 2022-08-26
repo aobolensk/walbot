@@ -19,3 +19,4 @@ class MarkovCommands:
         dispatcher.add_handler(CommandHandler("statmarkov", functools.partial(command_handler, "statmarkov")))
         dispatcher.add_handler(CommandHandler("inspectmarkov", functools.partial(command_handler, "inspectmarkov")))
         dispatcher.add_handler(CommandHandler("addmarkovfilter", functools.partial(command_handler, "addmarkovfilter")))
+        dispatcher.add_handler(CommandHandler("listmarkovfilter", functools.partial(command_handler, "listmarkovfilter")))

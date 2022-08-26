@@ -42,6 +42,9 @@ class MarkovCommands(BaseCmd):
         bc.executor.commands["addmarkovfilter"] = Command(
             "markov", "addmarkovfilter", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addmarkovfilter)
+        bc.executor.commands["listmarkovfilter"] = Command(
+            "markov", "listmarkovfilter", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._listmarkovfilter)
 
     async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
@@ -191,3 +194,14 @@ class MarkovCommands(BaseCmd):
             return
         bc.markov.filters.append(re.compile(cmd_line[1], re.DOTALL))
         await Command.send_message(execution_ctx, f"Filter '{cmd_line[1]}' was successfully added for Markov model")
+
+    async def _listmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Print list of regular expression filters for Markov model
+    Example: !listmarkovfilter"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        result = ""
+        for index, regex in enumerate(bc.markov.filters):
+            result += f"{index} -> `{regex.pattern}`\n"
+        await Command.send_message(execution_ctx, result or "No filters for Markov model found!")
+        return result

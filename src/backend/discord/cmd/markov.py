@@ -38,18 +38,7 @@ class MarkovCommands(BaseCmd):
         self._statmarkov = functools.partial(bind_command, "statmarkov")
         self._inspectmarkov = functools.partial(bind_command, "inspectmarkov")
         self._addmarkovfilter = functools.partial(bind_command, "addmarkovfilter")
-
-    @staticmethod
-    async def _listmarkovfilter(message, command, silent=False):
-        """Print list of regular expression filters for Markov model
-    Example: !listmarkovfilter"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = ""
-        for index, regex in enumerate(bc.markov.filters):
-            result += f"{index} -> `{regex.pattern}`\n"
-        await Msg.response(message, result or "No filters for Markov model found!", silent)
-        return result
+        self._listmarkovfilter = functools.partial(bind_command, "listmarkovfilter")
 
     @staticmethod
     async def _delmarkovfilter(message, command, silent=False):
