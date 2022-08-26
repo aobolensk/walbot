@@ -294,6 +294,9 @@ class Updater:
             config.telegram.__dict__["users"] = dict()
             self._bump_version(config, "0.0.50")
         if config.version == "0.0.50":
+            config.commands.data["delmarkovfilter"].subcommand = False
+            self._bump_version(config, "0.0.51")
+        if config.version == "0.0.51":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
