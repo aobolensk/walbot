@@ -25,17 +25,25 @@ class Implementation(enum.IntEnum):
     MESSAGE = 1
 
 
+class SupportedPlatforms:
+    DISCORD = 1 << 0
+    TELEGRAM = 1 << 1
+    ALL = ~0
+
+
 class Command:
     def __init__(
             self, module_name: str, command_name: str, permission_level: const.Permission,
             impl_type: Implementation, subcommand: bool = False,
-            impl_func: FunctionType = None, impl_message: str = None) -> None:
+            impl_func: FunctionType = None, impl_message: str = None,
+            supported_platforms: SupportedPlatforms = SupportedPlatforms.ALL) -> None:
         self.module_name = module_name
         self.command_name = command_name
         self.permission_level = permission_level
         self.subcommand = subcommand
         self.impl_type = impl_type
         self.times_called = 0
+        self.supported_platforms = supported_platforms
         if impl_type == Implementation.FUNCTION:
             self._exec = impl_func
             self.description = self._exec.__doc__
