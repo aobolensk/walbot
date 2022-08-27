@@ -1,14 +1,11 @@
 """Markov model commands"""
 
 import functools
-import re
 
 from src import const
 from src.backend.discord.commands import bind_command
-from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
-from src.utils import Util
 
 
 class MarkovCommands(BaseCmd):
@@ -24,10 +21,10 @@ class MarkovCommands(BaseCmd):
             "inspectmarkov": dict(permission=const.Permission.USER.value, subcommand=False),
             "addmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listmarkovfilter": dict(permission=const.Permission.USER.value, subcommand=True),
-            "delmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=True),
-            "addmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
-            "listmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
-            "delmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
+            "delmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "addmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listmarkovignoredprefix": dict(permission=const.Permission.USER.value, subcommand=True),
+            "delmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
         self._markov = functools.partial(bind_command, "markov")
         self._markovgc = functools.partial(bind_command, "markovgc")
@@ -37,79 +34,9 @@ class MarkovCommands(BaseCmd):
         self._dropmarkov = functools.partial(bind_command, "dropmarkov")
         self._statmarkov = functools.partial(bind_command, "statmarkov")
         self._inspectmarkov = functools.partial(bind_command, "inspectmarkov")
-
-    @staticmethod
-    async def _addmarkovfilter(message, command, silent=False):
-        """Add regular expression filter for Markov model
-    Example: !addmarkovfilter regex"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        bc.markov.filters.append(re.compile(command[1], re.DOTALL))
-        await Msg.response(message, f"Filter '{command[1]}' was successfully added for Markov model", silent)
-
-    @staticmethod
-    async def _listmarkovfilter(message, command, silent=False):
-        """Print list of regular expression filters for Markov model
-    Example: !listmarkovfilter"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = ""
-        for index, regex in enumerate(bc.markov.filters):
-            result += f"{index} -> `{regex.pattern}`\n"
-        await Msg.response(message, result or "No filters for Markov model found!", silent)
-        return result
-
-    @staticmethod
-    async def _delmarkovfilter(message, command, silent=False):
-        """Delete regular expression filter for Markov model by index
-    Example: !delmarkovfilter 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of filter", silent)
-        if index is None:
-            return
-        if 0 <= index < len(bc.markov.filters):
-            bc.markov.filters.pop(index)
-            await Msg.response(message, "Successfully deleted filter!", silent)
-        else:
-            await Msg.response(message, "Invalid index of filter!", silent)
-
-    @staticmethod
-    async def _addmarkovignoredprefix(message, command, silent=False):
-        """Add message prefix that should be ignored by Markov model
-    Example: !addmarkovignoredprefix $"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        prefix = ' '.join(command[1:])
-        index = bc.config.ids["markov_ignored_prefix"]
-        bc.markov.ignored_prefixes[index] = ' '.join(command[1:])
-        bc.config.ids["markov_ignored_prefix"] += 1
-        await Msg.response(message, f"Added '{prefix}' as ignored prefix for Markov model", silent)
-
-    @staticmethod
-    async def _listmarkovignoredprefix(message, command, silent=False):
-        """List all prefixes that should be ignored by Markov model
-    Example: !listmarkovignoredprefix"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = ""
-        for index, prefix in bc.markov.ignored_prefixes.items():
-            result += f"{index} -> `{prefix}`\n"
-        await Msg.response(message, result or "No ignored prefixes for Markov model found!", silent)
-
-    @staticmethod
-    async def _delmarkovignoredprefix(message, command, silent=False):
-        """Delete message prefix that should be ignored by Markov model by its index
-    Example: !delquote 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of ignored prefix", silent)
-        if index is None:
-            return
-        if index in bc.markov.ignored_prefixes.keys():
-            bc.markov.ignored_prefixes.pop(index)
-            await Msg.response(message, "Successfully deleted ignored prefix!", silent)
-        else:
-            await Msg.response(message, "Invalid index of ignored prefix!", silent)
+        self._addmarkovfilter = functools.partial(bind_command, "addmarkovfilter")
+        self._listmarkovfilter = functools.partial(bind_command, "listmarkovfilter")
+        self._delmarkovfilter = functools.partial(bind_command, "delmarkovfilter")
+        self._addmarkovignoredprefix = functools.partial(bind_command, "addmarkovignoredprefix")
+        self._listmarkovignoredprefix = functools.partial(bind_command, "listmarkovignoredprefix")
+        self._delmarkovignoredprefix = functools.partial(bind_command, "delmarkovignoredprefix")

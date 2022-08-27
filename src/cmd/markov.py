@@ -1,6 +1,6 @@
+import asyncio
 import os
 import re
-import time
 from typing import List
 
 from src import const
@@ -39,6 +39,24 @@ class MarkovCommands(BaseCmd):
         bc.executor.commands["inspectmarkov"] = Command(
             "markov", "inspectmarkov", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._inspectmarkov)
+        bc.executor.commands["addmarkovfilter"] = Command(
+            "markov", "addmarkovfilter", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addmarkovfilter)
+        bc.executor.commands["listmarkovfilter"] = Command(
+            "markov", "listmarkovfilter", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._listmarkovfilter)
+        bc.executor.commands["delmarkovfilter"] = Command(
+            "markov", "delmarkovfilter", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delmarkovfilter)
+        bc.executor.commands["addmarkovignoredprefix"] = Command(
+            "markov", "addmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addmarkovignoredprefix)
+        bc.executor.commands["listmarkovignoredprefix"] = Command(
+            "markov", "listmarkovignoredprefix", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._listmarkovignoredprefix)
+        bc.executor.commands["delmarkovignoredprefix"] = Command(
+            "markov", "delmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delmarkovignoredprefix)
 
     async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
@@ -151,7 +169,7 @@ class MarkovCommands(BaseCmd):
         markov_db_size = os.path.getsize(const.MARKOV_PATH)
         while markov_db_size == 0:
             markov_db_size = os.path.getsize(const.MARKOV_PATH)
-            time.sleep(1)
+            await asyncio.sleep(1)
         if markov_db_size > 1024 * 1024:
             markov_db_size = f"{(markov_db_size / (1024 * 1024)):.2f} MB"
         else:
@@ -180,3 +198,74 @@ class MarkovCommands(BaseCmd):
         if skipped_words > 0:
             result += f"... and {skipped_words} more words"
         await Command.send_message(execution_ctx, result)
+
+    async def _addmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Add regular expression filter for Markov model
+    Example: !addmarkovfilter regex"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        bc.markov.filters.append(re.compile(cmd_line[1], re.DOTALL))
+        await Command.send_message(execution_ctx, f"Filter '{cmd_line[1]}' was successfully added for Markov model")
+
+    async def _listmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Print list of regular expression filters for Markov model
+    Example: !listmarkovfilter"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        result = ""
+        for index, regex in enumerate(bc.markov.filters):
+            result += f"{index} -> `{regex.pattern}`\n"
+        await Command.send_message(execution_ctx, result or "No filters for Markov model found!")
+        return result
+
+    async def _delmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Delete regular expression filter for Markov model by index
+    Example: !delmarkovfilter 0"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = await Util.parse_int_for_command(
+            execution_ctx, cmd_line[1],
+            f"Second parameter for '{cmd_line[0]}' should be an index of filter")
+        if index is None:
+            return
+        if 0 <= index < len(bc.markov.filters):
+            bc.markov.filters.pop(index)
+            await Command.send_message(execution_ctx, "Successfully deleted filter!")
+        else:
+            await Command.send_message(execution_ctx, "Invalid index of filter!")
+
+    async def _addmarkovignoredprefix(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Add message prefix that should be ignored by Markov model
+    Example: !addmarkovignoredprefix $"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        prefix = ' '.join(cmd_line[1:])
+        index = bc.config.ids["markov_ignored_prefix"]
+        bc.markov.ignored_prefixes[index] = ' '.join(cmd_line[1:])
+        bc.config.ids["markov_ignored_prefix"] += 1
+        await Command.send_message(execution_ctx, f"Added '{prefix}' as ignored prefix for Markov model")
+
+    async def _listmarkovignoredprefix(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """List all prefixes that should be ignored by Markov model
+    Example: !listmarkovignoredprefix"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        result = ""
+        for index, prefix in bc.markov.ignored_prefixes.items():
+            result += f"{index} -> `{prefix}`\n"
+        await Command.send_message(execution_ctx, result or "No ignored prefixes for Markov model found!")
+
+    async def _delmarkovignoredprefix(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Delete message prefix that should be ignored by Markov model by its index
+    Example: !delmarkovignoredprefix 0"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = await Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of ignored prefix")
+        if index is None:
+            return
+        if index in bc.markov.ignored_prefixes.keys():
+            bc.markov.ignored_prefixes.pop(index)
+            await Command.send_message(execution_ctx, "Successfully deleted ignored prefix!")
+        else:
+            await Command.send_message(execution_ctx, "Invalid index of ignored prefix!")

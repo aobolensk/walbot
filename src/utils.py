@@ -51,7 +51,7 @@ class Util:
         try:
             return int(string)
         except ValueError:
-            Command.send_message(execution_ctx, error_message)
+            await Command.send_message(execution_ctx, error_message)
             return
 
     @staticmethod
