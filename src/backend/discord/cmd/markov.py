@@ -22,9 +22,9 @@ class MarkovCommands(BaseCmd):
             "addmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listmarkovfilter": dict(permission=const.Permission.USER.value, subcommand=True),
             "delmarkovfilter": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "addmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
-            "listmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
-            "delmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=True),
+            "addmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "listmarkovignoredprefix": dict(permission=const.Permission.USER.value, subcommand=True),
+            "delmarkovignoredprefix": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
         self._markov = functools.partial(bind_command, "markov")
         self._markovgc = functools.partial(bind_command, "markovgc")

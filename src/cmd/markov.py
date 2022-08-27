@@ -50,13 +50,13 @@ class MarkovCommands(BaseCmd):
             subcommand=False, impl_func=self._delmarkovfilter)
         bc.executor.commands["addmarkovignoredprefix"] = Command(
             "markov", "addmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._addmarkovignoredprefix)
+            subcommand=False, impl_func=self._addmarkovignoredprefix)
         bc.executor.commands["listmarkovignoredprefix"] = Command(
-            "markov", "listmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
+            "markov", "listmarkovignoredprefix", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._listmarkovignoredprefix)
         bc.executor.commands["delmarkovignoredprefix"] = Command(
             "markov", "delmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._delmarkovignoredprefix)
+            subcommand=False, impl_func=self._delmarkovignoredprefix)
 
     async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain

@@ -297,6 +297,11 @@ class Updater:
             config.commands.data["delmarkovfilter"].subcommand = False
             self._bump_version(config, "0.0.51")
         if config.version == "0.0.51":
+            config.commands.data["addmarkovignoredprefix"].subcommand = False
+            config.commands.data["listmarkovignoredprefix"].permission = 0
+            config.commands.data["delmarkovignoredprefix"].subcommand = False
+            self._bump_version(config, "0.0.52")
+        if config.version == "0.0.52":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
