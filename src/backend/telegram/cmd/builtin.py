@@ -1,10 +1,13 @@
-import functools
+import uuid
 
-from telegram import update
+from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
-from src.backend.telegram.command import command_handler
+from src.api.command import Command
+from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message, reply
+from src.config import bc
+from src.log import log
 from src.mail import Mail
 
 
@@ -13,23 +16,31 @@ class BuiltinCommands:
         pass
 
     def add_handlers(self, dispatcher) -> None:
-        dispatcher.add_handler(CommandHandler("ping", functools.partial(command_handler, "ping"), run_async=True))
-        dispatcher.add_handler(CommandHandler("echo", functools.partial(command_handler, "echo")))
-        dispatcher.add_handler(CommandHandler("about", functools.partial(command_handler, "about")))
-        dispatcher.add_handler(CommandHandler("shutdown", functools.partial(command_handler, "shutdown")))
-        dispatcher.add_handler(CommandHandler("restart", functools.partial(command_handler, "restart")))
-        dispatcher.add_handler(CommandHandler("uptime", functools.partial(command_handler, "uptime")))
-        dispatcher.add_handler(CommandHandler("version", functools.partial(command_handler, "version")))
-        dispatcher.add_handler(CommandHandler("curl", functools.partial(command_handler, "curl")))
-        dispatcher.add_handler(CommandHandler("extexec", functools.partial(command_handler, "extexec")))
-        dispatcher.add_handler(CommandHandler(
-            "donotupdatestate", functools.partial(command_handler, "donotupdatestate")))
-        dispatcher.add_handler(CommandHandler("getmentioncmd", functools.partial(command_handler, "getmentioncmd")))
-        dispatcher.add_handler(CommandHandler("setmentioncmd", functools.partial(command_handler, "setmentioncmd")))
+        dispatcher.add_handler(CommandHandler("authorize", self._authorize))
+        dispatcher.add_handler(CommandHandler("resetpass", self._resetpass))
         dispatcher.add_handler(CommandHandler("poll", self._poll))
 
     @Mail.send_exception_info_to_admin_emails
-    def _poll(self, update: update, context: CallbackContext) -> None:
+    def _authorize(self, update: Update, context: CallbackContext) -> None:
+        log_message(update)
+        passphrase = context.args[0] if context.args else ""
+        if passphrase == bc.config.telegram.passphrase:
+            bc.config.telegram.channel_whitelist.add(update.effective_chat.id)
+            Command.send_message(TelegramExecutionContext(update), "Channel has been added to whitelist")
+        else:
+            Command.send_message(TelegramExecutionContext(update), "Wrong passphrase!")
+
+    @Mail.send_exception_info_to_admin_emails
+    def _resetpass(self, update: Update, context: CallbackContext) -> None:
+        log_message(update)
+        if not check_auth(update):
+            return
+        bc.config.telegram.passphrase = uuid.uuid4().hex
+        log.warning("New passphrase: " + bc.config.telegram.passphrase)
+        Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!')
+
+    @Mail.send_exception_info_to_admin_emails
+    def _poll(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
         if not check_auth(update):
             return
