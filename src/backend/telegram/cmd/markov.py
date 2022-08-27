@@ -24,3 +24,7 @@ class MarkovCommands:
         dispatcher.add_handler(CommandHandler("delmarkovfilter", functools.partial(command_handler, "delmarkovfilter")))
         dispatcher.add_handler(CommandHandler("addmarkovignoredprefix",
                                               functools.partial(command_handler, "addmarkovignoredprefix")))
+        dispatcher.add_handler(CommandHandler("listmarkovignoredprefix",
+                                              functools.partial(command_handler, "listmarkovignoredprefix")))
+        dispatcher.add_handler(CommandHandler("delmarkovignoredprefix",
+                                              functools.partial(command_handler, "delmarkovignoredprefix")))

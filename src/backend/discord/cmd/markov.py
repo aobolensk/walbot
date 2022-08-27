@@ -40,30 +40,5 @@ class MarkovCommands(BaseCmd):
         self._listmarkovfilter = functools.partial(bind_command, "listmarkovfilter")
         self._delmarkovfilter = functools.partial(bind_command, "delmarkovfilter")
         self._addmarkovignoredprefix = functools.partial(bind_command, "addmarkovignoredprefix")
-
-    @staticmethod
-    async def _listmarkovignoredprefix(message, command, silent=False):
-        """List all prefixes that should be ignored by Markov model
-    Example: !listmarkovignoredprefix"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = ""
-        for index, prefix in bc.markov.ignored_prefixes.items():
-            result += f"{index} -> `{prefix}`\n"
-        await Msg.response(message, result or "No ignored prefixes for Markov model found!", silent)
-
-    @staticmethod
-    async def _delmarkovignoredprefix(message, command, silent=False):
-        """Delete message prefix that should be ignored by Markov model by its index
-    Example: !delquote 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of ignored prefix", silent)
-        if index is None:
-            return
-        if index in bc.markov.ignored_prefixes.keys():
-            bc.markov.ignored_prefixes.pop(index)
-            await Msg.response(message, "Successfully deleted ignored prefix!", silent)
-        else:
-            await Msg.response(message, "Invalid index of ignored prefix!", silent)
+        self._listmarkovignoredprefix = functools.partial(bind_command, "listmarkovignoredprefix")
+        self._delmarkovignoredprefix = functools.partial(bind_command, "delmarkovignoredprefix")
