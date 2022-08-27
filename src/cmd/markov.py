@@ -48,6 +48,9 @@ class MarkovCommands(BaseCmd):
         bc.executor.commands["delmarkovfilter"] = Command(
             "markov", "delmarkovfilter", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delmarkovfilter)
+        bc.executor.commands["addmarkovignoredprefix"] = Command(
+            "markov", "addmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._addmarkovignoredprefix)
 
     async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Generate message using Markov chain
@@ -224,3 +227,14 @@ class MarkovCommands(BaseCmd):
             await Command.send_message(execution_ctx, "Successfully deleted filter!")
         else:
             await Command.send_message(execution_ctx, "Invalid index of filter!")
+
+    async def _addmarkovignoredprefix(self, cmd_line: List[str], execution_ctx: ExecutionContext):
+        """Add message prefix that should be ignored by Markov model
+    Example: !addmarkovignoredprefix $"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        prefix = ' '.join(cmd_line[1:])
+        index = bc.config.ids["markov_ignored_prefix"]
+        bc.markov.ignored_prefixes[index] = ' '.join(cmd_line[1:])
+        bc.config.ids["markov_ignored_prefix"] += 1
+        await Command.send_message(execution_ctx, f"Added '{prefix}' as ignored prefix for Markov model")

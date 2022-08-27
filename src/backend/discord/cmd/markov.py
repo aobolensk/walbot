@@ -39,18 +39,7 @@ class MarkovCommands(BaseCmd):
         self._addmarkovfilter = functools.partial(bind_command, "addmarkovfilter")
         self._listmarkovfilter = functools.partial(bind_command, "listmarkovfilter")
         self._delmarkovfilter = functools.partial(bind_command, "delmarkovfilter")
-
-    @staticmethod
-    async def _addmarkovignoredprefix(message, command, silent=False):
-        """Add message prefix that should be ignored by Markov model
-    Example: !addmarkovignoredprefix $"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        prefix = ' '.join(command[1:])
-        index = bc.config.ids["markov_ignored_prefix"]
-        bc.markov.ignored_prefixes[index] = ' '.join(command[1:])
-        bc.config.ids["markov_ignored_prefix"] += 1
-        await Msg.response(message, f"Added '{prefix}' as ignored prefix for Markov model", silent)
+        self._addmarkovignoredprefix = functools.partial(bind_command, "addmarkovignoredprefix")
 
     @staticmethod
     async def _listmarkovignoredprefix(message, command, silent=False):
