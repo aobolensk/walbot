@@ -149,11 +149,12 @@ class Command:
         elif self.cmd_line is not None:
             cmd_line = self.cmd_line[:]
             log.debug2(f"Command (before processing): {cmd_line}")
-            cmd_line = await ApiCommand.process_variables(DiscordExecutionContext(message), cmd_line)
+            cmd_line = await ApiCommand.process_variables(
+                DiscordExecutionContext(message), cmd_line, message.content.split(' '), safe=True)
             log.debug2(f"Command (after processing variables): {cmd_line}")
             cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
             log.debug2(f"Command (after processing subcommands): {cmd_line}")
-            return Util.run_external_command(DiscordExecutionContext(message, silent), cmd_line)
+            return await Util.run_external_command(DiscordExecutionContext(message, silent), cmd_line)
         else:
             await message.channel.send(f"Command '{command[0]}' is not callable")
 

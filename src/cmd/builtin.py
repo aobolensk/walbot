@@ -120,7 +120,7 @@ class BuiltinCommands(BaseCmd):
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         print(' '.join(cmd_line[1:]))
-        return Util.run_external_command(execution_ctx, ' '.join(cmd_line[1:]))
+        return await Util.run_external_command(execution_ctx, ' '.join(cmd_line[1:]))
 
     async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Perform HTTP request
