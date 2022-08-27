@@ -280,8 +280,7 @@
     Example: !addmarkovfilter regex
 
 **addmarkovignoredprefix**: Add message prefix that should be ignored by Markov model \
-    Example: !addmarkovignoredprefix $ \
-    *This command can be used as subcommand*
+    Example: !addmarkovignoredprefix $
 
 **delmarkov**: Delete all words in Markov model by regex \
     Example: !delmarkov hello
@@ -290,8 +289,7 @@
     Example: !delmarkovfilter 0
 
 **delmarkovignoredprefix**: Delete message prefix that should be ignored by Markov model by its index \
-    Example: !delquote 0 \
-    *This command can be used as subcommand*
+    Example: !delquote 0
 
 **dropmarkov**: Drop Markov database \
     Example: !dropmarkov
