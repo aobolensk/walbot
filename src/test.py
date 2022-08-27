@@ -2,6 +2,23 @@ import os
 import subprocess
 import sys
 
+from src.api.execution_context import ExecutionContext
+
+
+class BufferTestExecutionContext(ExecutionContext):
+    def __init__(self) -> None:
+        super().__init__()
+        self.platform = "test"
+
+    async def send_message(self, message: str, *args, **kwargs) -> None:
+        print(message)
+
+    def disable_pings(self, message: str) -> None:
+        return message
+
+    def message_author(self) -> None:
+        return ""
+
 
 def start_testing(args):
     if args.verbose2:

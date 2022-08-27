@@ -1,18 +1,8 @@
-from src.api.execution_context import ExecutionContext
+import asyncio
+
 from src.cmd.builtin import BuiltinCommands
 from src.config import bc
-
-
-class BufferTestExecutionContext(ExecutionContext):
-    def __init__(self) -> None:
-        super().__init__()
-        self.platform = "test"
-
-    def send_message(self, message: str, *args, **kwargs) -> None:
-        print(message)
-
-    def disable_pings(self, message: str) -> None:
-        return message
+from src.test import BufferTestExecutionContext
 
 
 def test_empty_executor():
@@ -22,6 +12,8 @@ def test_empty_executor():
 def test_ping_command(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
-    bc.executor.commands["ping"].run(["ping"], BufferTestExecutionContext())
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(
+        bc.executor.commands["ping"].run(["ping"], BufferTestExecutionContext()))
     captured = capsys.readouterr()
-    assert captured.out == "Pong!\n"
+    assert captured.out == "🏓 Pong!  🏓\n"
