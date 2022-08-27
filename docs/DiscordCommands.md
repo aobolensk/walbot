@@ -289,7 +289,7 @@
     Example: !delmarkovfilter 0
 
 **delmarkovignoredprefix**: Delete message prefix that should be ignored by Markov model by its index \
-    Example: !delquote 0
+    Example: !delmarkovignoredprefix 0
 
 **dropmarkov**: Drop Markov database \
     Example: !dropmarkov

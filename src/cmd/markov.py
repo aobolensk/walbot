@@ -257,7 +257,7 @@ class MarkovCommands(BaseCmd):
 
     async def _delmarkovignoredprefix(self, cmd_line: List[str], execution_ctx: ExecutionContext):
         """Delete message prefix that should be ignored by Markov model by its index
-    Example: !delquote 0"""
+    Example: !delmarkovignoredprefix 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
         index = await Util.parse_int_for_command(

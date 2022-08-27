@@ -63,7 +63,6 @@ class Markov:
         if len(text) < self.min_chars or len(text) > self.max_chars:
             return
         for prefix in self.ignored_prefixes.values():
-            print(prefix)
             if text.startswith(prefix):
                 return
         words = [word for word in filter(None, text.split(' ')) if not any(regex.match(word) for regex in self.filters)]
