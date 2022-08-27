@@ -5,7 +5,8 @@ from typing import List
 import dateutil.relativedelta
 
 from src import const
-from src.api.command import BaseCmd, Command, Implementation
+from src.api.command import (BaseCmd, Command, Implementation,
+                             SupportedPlatforms)
 from src.api.execution_context import ExecutionContext
 from src.api.reminder import Reminder
 from src.backend.discord.embed import DiscordEmbed
@@ -120,10 +121,12 @@ class ReminderCommands(BaseCmd):
             subcommand=False, impl_func=self._reminder)
         bc.executor.commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._addreminder)
+            subcommand=False, impl_func=self._addreminder,
+            supported_platforms=(SupportedPlatforms.DISCORD & SupportedPlatforms.TELEGRAM))
         bc.executor.commands["updreminder"] = Command(
             "reminder", "updreminder", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._updreminder)
+            subcommand=False, impl_func=self._updreminder,
+            supported_platforms=(SupportedPlatforms.DISCORD & SupportedPlatforms.TELEGRAM))
         bc.executor.commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listreminder)
@@ -135,7 +138,8 @@ class ReminderCommands(BaseCmd):
             subcommand=False, impl_func=self._remindme)
         bc.executor.commands["remindwme"] = Command(
             "reminder", "remindwme", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._remindwme)
+            subcommand=False, impl_func=self._remindwme,
+            supported_platforms=(SupportedPlatforms.DISCORD & SupportedPlatforms.TELEGRAM))
         bc.executor.commands["remindeme"] = Command(
             "reminder", "remindeme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindeme)
