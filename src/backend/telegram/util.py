@@ -21,7 +21,6 @@ def escape_markdown_text(text: str):
     return (
         text
         .replace('_', '\\_')
-        .replace('_', '\\_')
         .replace('*', '\\*')
         .replace('[', '\\[')
         .replace(']', '\\]')
