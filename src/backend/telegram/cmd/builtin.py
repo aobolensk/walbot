@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 
 from telegram import Update
@@ -16,28 +17,31 @@ class BuiltinCommands:
         pass
 
     def add_handlers(self, dispatcher) -> None:
-        dispatcher.add_handler(CommandHandler("authorize", self._authorize))
-        dispatcher.add_handler(CommandHandler("resetpass", self._resetpass))
-        dispatcher.add_handler(CommandHandler("poll", self._poll))
+        dispatcher.add_handler(CommandHandler("authorize", self._authorize, run_async=True))
+        dispatcher.add_handler(CommandHandler("resetpass", self._resetpass, run_async=True))
+        dispatcher.add_handler(CommandHandler("poll", self._poll, run_async=True))
 
     @Mail.send_exception_info_to_admin_emails
     def _authorize(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
         passphrase = context.args[0] if context.args else ""
+        loop = asyncio.new_event_loop()
         if passphrase == bc.config.telegram.passphrase:
             bc.config.telegram.channel_whitelist.add(update.effective_chat.id)
-            Command.send_message(TelegramExecutionContext(update), "Channel has been added to whitelist")
+            loop.run_until_complete(
+                Command.send_message(TelegramExecutionContext(update), "Channel has been added to whitelist"))
         else:
-            Command.send_message(TelegramExecutionContext(update), "Wrong passphrase!")
+            loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), "Wrong passphrase!"))
 
     @Mail.send_exception_info_to_admin_emails
     def _resetpass(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
         if not check_auth(update):
             return
+        loop = asyncio.new_event_loop()
         bc.config.telegram.passphrase = uuid.uuid4().hex
         log.warning("New passphrase: " + bc.config.telegram.passphrase)
-        Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!')
+        loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!'))
 
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: Update, context: CallbackContext) -> None:
