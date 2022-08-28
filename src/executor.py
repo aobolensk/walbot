@@ -58,7 +58,7 @@ class Executor:
             f.write("# Table of Contents:\n")
             for module_name in sorted(modules.keys()):
                 f.write(f"* [Module: {module_name}](#module-{module_name})\n")
-            for module_name, module_commands in modules.items():
+            for module_name, module_commands in sorted(modules.items()):
                 f.write(f"\n# Module: {module_name}\n")
                 result = ""
                 for cmd_name, cmd_help_text in module_commands.items():
