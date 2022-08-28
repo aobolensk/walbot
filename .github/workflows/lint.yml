@@ -45,7 +45,7 @@ jobs:
     - name: Update docs
       run: python walbot.py docs
     - name: Compare docs
-      run: git diff --exit-code docs/DiscordCommands.md
+      run: git diff --exit-code docs/DiscordCommands.md docs/TelegramCommands.md
   pylint:
     runs-on: ubuntu-latest
     steps:
