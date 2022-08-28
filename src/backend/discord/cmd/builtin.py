@@ -23,7 +23,7 @@ from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag
 from src.commands import BaseCmd
-from src.config import BackgroundEvent, Command, bc, log
+from src.config import Command, bc, log
 from src.utils import Util, null
 
 
@@ -815,60 +815,6 @@ class BuiltinCommands(BaseCmd):
                         log.debug(f"Error on remove_reaction: {emoji.alphabet[i]}")
                 bc.do_not_update[DoNotUpdateFlag.POLL] -= 1
                 return
-
-    @staticmethod
-    async def _addbgevent(message, command, silent=False):
-        """Add background event
-    Example: !addbgevent 60 ping
-    Note: This command is *deprecated*"""
-        if not await Util.check_args_count(message, command, silent, min=3):
-            return
-        await Msg.response(
-            message, "⚠️ WARN: Background events are deprecated and may be removed at any moment", silent)
-        duration = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
-        if duration is None:
-            return
-        message.content = bc.config.commands_prefix + ' '.join(command[2:])
-        bc.background_events.append(BackgroundEvent(bc.config, message.channel, message, duration))
-        await Msg.response(
-            message, f"Successfully added background event '{message.content}' with period {duration}", silent)
-
-    @staticmethod
-    async def _listbgevent(message, command, silent=False):
-        """Print list of background events
-    Example: !listbgevent
-    Note: This command is *deprecated*"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        await Msg.response(
-            message, "⚠️ WARN: Background events are deprecated and may be removed at any moment", silent)
-        result = ""
-        for index, event in enumerate(bc.background_events):
-            result += (f"{index}: '{event.message.content}' every {event.period} seconds,"
-                       f"channel: <#{event.channel.id}>\n")
-        await Msg.response(message, result or "No background events found!", silent)
-        return result
-
-    @staticmethod
-    async def _delbgevent(message, command, silent=False):
-        """Delete background event
-    Example: !delbgevent 0
-    Note: This command is *deprecated*"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        await Msg.response(
-            message, "⚠️ WARN: Background events are deprecated and may be removed at any moment", silent)
-        index = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be an index of background event", silent)
-        if index is None:
-            return
-        if 0 <= index < len(bc.background_events):
-            bc.background_events[index].cancel()
-            del bc.background_events[index]
-            await Msg.response(message, "Successfully deleted background task!", silent)
-        else:
-            await Msg.response(message, "Invalid index of background task!", silent)
 
     @staticmethod
     async def _random(message, command, silent=False):

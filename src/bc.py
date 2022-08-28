@@ -31,9 +31,7 @@ class BotController:
             self.current_video = None
 
     def __init__(self):
-        self.background_events = []
         self.deployment_time = datetime.datetime.now()
-        self.background_loop = None
         self.commands = None
         self.config = None
         self.markov = None

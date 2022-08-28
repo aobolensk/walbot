@@ -27,10 +27,6 @@
     Usage: !addalias &lt;command&gt; &lt;alias&gt; \
     Example: !addalias ping pong
 
-**addbgevent**: Add background event \
-    Example: !addbgevent 60 ping \
-    Note: This command is *deprecated*
-
 **addcmd**: Add command \
     Example: !addcmd hello Hello!
 
@@ -69,10 +65,6 @@
 **delalias**: Delete command alias \
     Usage: !delalias &lt;alias&gt; \
     Example: !delalias pong
-
-**delbgevent**: Delete background event \
-    Example: !delbgevent 0 \
-    Note: This command is *deprecated*
 
 **delcmd**: Delete command \
     Example: !delcmd hello
@@ -131,11 +123,6 @@
 
 **listalias**: Print list of aliases \
     Example: !listalias \
-    *This command can be used as subcommand*
-
-**listbgevent**: Print list of background events \
-    Example: !listbgevent \
-    Note: This command is *deprecated* \
     *This command can be used as subcommand*
 
 **listimg**: Print list of available images for !img command \

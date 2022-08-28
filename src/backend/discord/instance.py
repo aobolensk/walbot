@@ -43,7 +43,6 @@ class WalBot(discord.Client):
         self.loop.create_task(VoiceRoutine(self.bot_cache).start())
         bc.config = self.config
         bc.commands = self.config.commands
-        bc.background_loop = self.loop
         bc.latency = lambda: self.latency
         bc.change_status = self._change_status
         bc.change_presence = self.change_presence
@@ -94,9 +93,6 @@ class WalBot(discord.Client):
     async def _on_shutdown(self) -> None:
         if self.repl is not None:
             self.repl.stop()
-        for event in bc.background_events:
-            event.cancel()
-        bc.background_loop = None
         await bc.plugin_manager.unload_plugins()
 
     @Mail.send_exception_info_to_admin_emails

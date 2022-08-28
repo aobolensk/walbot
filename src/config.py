@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 import importlib
 import inspect
@@ -157,33 +156,6 @@ class Command:
             return await Util.run_external_command(DiscordExecutionContext(message, silent), cmd_line)
         else:
             await message.channel.send(f"Command '{command[0]}' is not callable")
-
-
-class BackgroundEvent:
-    def __init__(self, config, channel, message, period):
-        self.config = config
-        self.channel = channel
-        self.message = message
-        self.period = period
-        self.task = bc.background_loop.create_task(self.run())
-
-    async def run(self):
-        command = self.message.content.split(' ')
-        command = list(filter(None, command))
-        command[0] = command[0][1:]
-        while True:
-            await asyncio.sleep(self.period)
-            log.debug(f"Triggered background event: {' '.join(command)}")
-            if command[0] not in self.config.commands.data.keys():
-                await self.channel.send(f"Unknown command '{command[0]}'")
-            else:
-                cmd = self.config.commands.data[command[0]]
-                saved_content = self.message.content
-                await cmd.run(self.message, command, None)
-                self.message.content = saved_content
-
-    def cancel(self):
-        self.task.cancel()
 
 
 class Reaction:
