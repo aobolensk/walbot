@@ -105,7 +105,6 @@ class Command:
             "updcmd",
             "addextcmd",
             "updextcmd",
-            "addbgevent",
             "addresponse",
             "updresponse",
         ]
