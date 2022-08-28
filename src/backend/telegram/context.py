@@ -15,7 +15,10 @@ class TelegramExecutionContext(ExecutionContext):
     async def send_message(self, message: str, *args, **kwargs) -> None:
         if self.silent:
             return
-        reply(self.update, message)
+        reply(
+            self.update, message,
+            disable_web_page_preview=kwargs.get("suppress_embeds", False),
+        )
 
     def disable_pings(self, message: str) -> None:
         # TODO: implement

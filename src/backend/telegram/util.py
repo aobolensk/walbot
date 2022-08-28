@@ -41,8 +41,11 @@ def escape_markdown_text(text: str):
     )
 
 
-def reply(update: Update, text: str) -> None:
+def reply(update: Update, text: str, disable_web_page_preview: bool = False) -> None:
     text = escape_markdown_text(text)
-    reply_message = update.message.reply_text(text, parse_mode="MarkdownV2")
+    reply_message = update.message.reply_text(
+        text, parse_mode="MarkdownV2",
+        disable_web_page_preview=disable_web_page_preview,
+    )
     title = reply_message.chat.title or "<DM>"
     log.info(f"({title}) {reply_message.from_user.username}: {reply_message.text}")
