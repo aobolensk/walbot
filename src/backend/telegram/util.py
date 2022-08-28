@@ -42,7 +42,8 @@ def escape_markdown_text(text: str):
 
 
 def reply(update: Update, text: str, disable_web_page_preview: bool = False) -> None:
-    reply_message = update.message.reply_text(
+    reply_message = update.message.bot.send_message(
+        update.message.chat_id,
         text, parse_mode="MarkdownV2",
         disable_web_page_preview=disable_web_page_preview,
     )
