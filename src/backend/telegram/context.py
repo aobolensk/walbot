@@ -1,7 +1,7 @@
 from telegram import Update
 
 from src.api.execution_context import ExecutionContext
-from src.backend.telegram.util import reply
+from src.backend.telegram.util import escape_markdown_text, reply
 from src.config import bc
 
 
@@ -15,6 +15,10 @@ class TelegramExecutionContext(ExecutionContext):
     async def send_message(self, message: str, *args, **kwargs) -> None:
         if self.silent:
             return
+        message = escape_markdown_text(message)
+        message = message.replace(
+            escape_markdown_text("@__telegram_message_author@"),
+            self.update.message.from_user.mention_markdown_v2())
         reply(
             self.update, message,
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
@@ -25,4 +29,4 @@ class TelegramExecutionContext(ExecutionContext):
         return message
 
     def message_author(self) -> None:
-        return self.update.message.from_user.mention_markdown_v2()
+        return "@__telegram_message_author@"
