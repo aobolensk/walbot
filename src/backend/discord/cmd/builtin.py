@@ -309,7 +309,7 @@ class BuiltinCommands(BaseCmd):
             if len(command) == 2 and command[1] == '-p':
                 # Plain text help
                 result = (f"Built-in commands <{const.GIT_REPO_LINK}/blob/" +
-                          (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">\n")
+                          (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">\n")
                 for cmd in commands:
                     result += f"**{cmd[0]}**: {cmd[1]}\n"
                 await Msg.response(message, result, silent, suppress_embeds=True)
@@ -318,7 +318,7 @@ class BuiltinCommands(BaseCmd):
                 commands.insert(
                     0, ("Built-in commands", (
                         f"<{const.GIT_REPO_LINK}/blob/" +
-                        (version if version != ' ' else "master") + "/" + const.COMMANDS_DOC_PATH + ">")))
+                        (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">")))
                 for chunk in Msg.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
                     embed = discord.Embed(title="Help", color=0x717171)
                     for cmd in chunk:

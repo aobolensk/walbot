@@ -67,7 +67,7 @@ class Launcher:
                 help="Message for MiniWalBot to type on every mention or command")
         # Docs
         subparsers["docs"].add_argument(
-            "-o", "--out_file", default=const.COMMANDS_DOC_PATH, help="Path to output file")
+            "-o", "--out_file", default=const.DISCORD_COMMANDS_DOC_PATH, help="Path to output file")
         # Patch
         self.config_files = [
             "config.yaml",
