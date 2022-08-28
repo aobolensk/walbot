@@ -208,21 +208,13 @@ class Launcher:
         self.backends.append(instance)
         log.debug2("Detected backend: " + self.backends[-1].name)
 
-    def _init_commands(self):
-        from src.cmd.builtin import BuiltinCommands
-        bc.executor.add_module(BuiltinCommands())
-        from src.cmd.markov import MarkovCommands
-        bc.executor.add_module(MarkovCommands())
-        from src.cmd.reminder import ReminderCommands
-        bc.executor.add_module(ReminderCommands())
-
     def start(self, main_bot=True):
         """Start the bot"""
         if main_bot and self.args.autoupdate:
             return self.autoupdate()
         self.backends = []
         self._read_configs(main_bot)
-        self._init_commands()
+        bc.executor.load_commands()
         bc.executor.export_help(SupportedPlatforms.TELEGRAM)
         bc.executor.load_persistent_state(bc.config.executor["commands_data"])
         bc.config.commands.update()

@@ -1,13 +1,39 @@
+import importlib
+import inspect
 import os
 from collections import defaultdict
 from typing import Any, Dict
 
 from src.api.command import BaseCmd, SupportedPlatforms
+from src.log import log
 
 
 class Executor:
     def __init__(self) -> None:
         self.commands = {}
+
+    def load_commands(self) -> None:
+        cmd_directory = os.path.join(os.getcwd(), "src", "cmd")
+        cmd_modules = [
+            "src.cmd." + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
+            if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
+        for module in cmd_modules:
+            log.debug2(f"Processing commands from module: {module}")
+            commands_file = importlib.import_module(module)
+            commands = [
+                obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
+                if (obj[1].__module__ == module) and issubclass(obj[1], BaseCmd)]
+            if len(commands) == 1:
+                commands = commands[0]
+                if "bind" in [func[0] for func in inspect.getmembers(commands, inspect.isfunction)
+                              if not func[0].startswith('_')]:
+                    self.add_module(commands())
+                else:
+                    log.error(f"Class '{commands.__name__}' does not have bind() function")
+            elif len(commands) > 1:
+                log.error(f"Module '{module}' have more than 1 class in it")
+            else:
+                log.error(f"Module '{module}' have no classes in it")
 
     def add_module(self, module: BaseCmd) -> None:
         module.bind()
