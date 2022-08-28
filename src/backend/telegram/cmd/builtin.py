@@ -4,6 +4,7 @@ import uuid
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
+from src import const
 from src.api.command import Command
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message, reply
@@ -19,6 +20,7 @@ class BuiltinCommands:
     def add_handlers(self, dispatcher) -> None:
         dispatcher.add_handler(CommandHandler("authorize", self._authorize, run_async=True))
         dispatcher.add_handler(CommandHandler("resetpass", self._resetpass, run_async=True))
+        dispatcher.add_handler(CommandHandler("help", self._help, run_async=True))
         dispatcher.add_handler(CommandHandler("poll", self._poll, run_async=True))
 
     @Mail.send_exception_info_to_admin_emails
@@ -42,6 +44,16 @@ class BuiltinCommands:
         bc.config.telegram.passphrase = uuid.uuid4().hex
         log.warning("New passphrase: " + bc.config.telegram.passphrase)
         loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!'))
+
+    @Mail.send_exception_info_to_admin_emails
+    def _help(self, update: Update, context: CallbackContext) -> None:
+        log_message(update)
+        if not check_auth(update):
+            return
+        loop = asyncio.new_event_loop()
+        version = bc.info.version
+        result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
+        loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), result))
 
     @Mail.send_exception_info_to_admin_emails
     def _poll(self, update: Update, context: CallbackContext) -> None:

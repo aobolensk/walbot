@@ -35,6 +35,7 @@ CONFIG_PATH = "config.yaml"
 MARKOV_PATH = "markov.yaml"
 SECRET_CONFIG_PATH = "secret.yaml"
 DISCORD_COMMANDS_DOC_PATH = os.path.join("docs", "DiscordCommands.md")
+TELEGRAM_COMMANDS_DOC_PATH = os.path.join("docs", "TelegramCommands.md")
 LOGS_DIRECTORY = "logs"
 IMAGES_DIRECTORY = "images"
 BACKUP_DIRECTORY = "backup"
