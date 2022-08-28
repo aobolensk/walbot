@@ -11,6 +11,7 @@ def main(args):
     if config is None:
         config = Config()
     config.commands.update()
+    bc.executor.load_commands()
     log.info(f"Exporting help to {const.DISCORD_COMMANDS_DOC_PATH}")
     config.commands.export_help(const.DISCORD_COMMANDS_DOC_PATH)  # Discord legacy help export
     log.info(f"Exporting help to docs/{SupportedPlatforms.TELEGRAM.name.title()}Commands.md")

@@ -298,7 +298,6 @@ class Launcher:
 
     def docs(self):
         """Generate command docs"""
-        self._init_commands()
         importlib.import_module("tools.docs").main(self.args)
 
     def help(self):
