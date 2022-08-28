@@ -44,5 +44,5 @@ FAQ: [Read](docs/FAQ.rst)<br>
 
 #### Commands
 
-Discord commands help: [Read](docs/DiscordCommands.md)
+Discord commands help: [Read](docs/DiscordCommands.md)<br>
 Telegram commands help: [Read](docs/TelegramCommands.md)
