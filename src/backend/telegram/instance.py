@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import time
 from urllib.parse import quote_plus
@@ -13,7 +14,7 @@ from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.common import CommonCommands
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import (check_auth, escape_markdown_text,
-                                       log_message, reply)
+                                       log_message)
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
@@ -41,8 +42,9 @@ class TelegramBotInstance(BotInstance):
         log_message(update)
         if not check_auth(update):
             return
-        result = bc.executor.execute(bc.config.on_mention_command.split(" "), TelegramExecutionContext(update))
-        reply(update, result)
+        cmd_line = bc.config.on_mention_command.split(" ")
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update)))
 
     @Mail.send_exception_info_to_admin_emails
     def _send_message(self, chat_id: int, text: str) -> None:
