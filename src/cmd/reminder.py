@@ -122,11 +122,11 @@ class ReminderCommands(BaseCmd):
         bc.executor.commands["addreminder"] = Command(
             "reminder", "addreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addreminder,
-            supported_platforms=(SupportedPlatforms.DISCORD & SupportedPlatforms.TELEGRAM))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["updreminder"] = Command(
             "reminder", "updreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._updreminder,
-            supported_platforms=(SupportedPlatforms.DISCORD & SupportedPlatforms.TELEGRAM))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listreminder)
@@ -139,7 +139,7 @@ class ReminderCommands(BaseCmd):
         bc.executor.commands["remindwme"] = Command(
             "reminder", "remindwme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindwme,
-            supported_platforms=(SupportedPlatforms.DISCORD & SupportedPlatforms.TELEGRAM))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["remindeme"] = Command(
             "reminder", "remindeme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindeme)
