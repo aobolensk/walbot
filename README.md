@@ -45,3 +45,4 @@ FAQ: [Read](docs/FAQ.rst)<br>
 #### Commands
 
 Discord commands help: [Read](docs/DiscordCommands.md)
+Telegram commands help: [Read](docs/TelegramCommands.md)
