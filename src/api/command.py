@@ -25,7 +25,7 @@ class Implementation(enum.IntEnum):
     MESSAGE = 1
 
 
-class SupportedPlatforms:
+class SupportedPlatforms(enum.IntEnum):
     DISCORD = 1 << 0
     TELEGRAM = 1 << 1
     ALL = ~0

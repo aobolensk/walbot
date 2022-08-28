@@ -19,6 +19,7 @@ import psutil
 
 from src import const
 from src.api.bot_instance import BotInstance
+from src.api.command import SupportedPlatforms
 from src.bot_cache import BotCache
 from src.config import Config, SecretConfig, bc
 from src.ff import FF
@@ -225,6 +226,7 @@ class Launcher:
         self.backends = []
         self._read_configs(main_bot)
         self._init_commands()
+        bc.executor.export_help(SupportedPlatforms.TELEGRAM)
         bc.executor.load_persistent_state(bc.config.executor["commands_data"])
         bc.config.commands.update()
         nest_asyncio.apply()

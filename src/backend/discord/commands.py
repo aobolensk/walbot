@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 import discord
 
 from src import const
-from src.api.command import BaseCmd
+from src.api.command import BaseCmd, SupportedPlatforms
 from src.backend.discord.context import DiscordExecutionContext
 from src.config import Command, bc, log
 from src.utils import Util
@@ -56,7 +56,8 @@ class Commands:
             else:
                 log.error(f"Module '{module}' have no classes in it")
         if not reload:
-            self.export_help(const.COMMANDS_DOC_PATH)
+            self.export_help(const.COMMANDS_DOC_PATH)  # Discord legacy help export
+            bc.executor.export_help(SupportedPlatforms.TELEGRAM)
 
     def export_help(self, file_path: str) -> None:
         """Generate and export help for loaded commands to md file in docs directory"""
