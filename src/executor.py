@@ -56,7 +56,7 @@ class Executor:
 <!-- To regenerate this file launch `python walbot.py docs` command or simply launch the bot -->
 \n""")
             f.write("# Table of Contents:\n")
-            for module_name in modules.keys():
+            for module_name in sorted(modules.keys()):
                 f.write(f"* [Module: {module_name}](#module-{module_name})\n")
             for module_name, module_commands in modules.items():
                 f.write(f"\n# Module: {module_name}\n")
