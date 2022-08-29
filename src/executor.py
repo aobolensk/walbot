@@ -61,7 +61,7 @@ class Executor:
             for module_name, module_commands in sorted(modules.items()):
                 f.write(f"\n# Module: {module_name}\n")
                 result = ""
-                for cmd_name, cmd_help_text in module_commands.items():
+                for cmd_name, cmd_help_text in sorted(module_commands.items()):
                     cmd_help_text = cmd_help_text.replace("<", "&lt;").replace(">", "&gt;").replace("\n", " \\\n")
                     result += f"\n**{cmd_name}**: {cmd_help_text}"
                     if self.commands[cmd_name].subcommand:

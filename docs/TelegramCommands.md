@@ -8,45 +8,12 @@
 
 # Module: builtin
 
-**ping**: 🏓 Pong! @author@ 🏓 \
-    *This command can be used as subcommand* \
-    *Default permission level: 0*
-
-**echo**: @args@ \
-    *This command can be used as subcommand* \
-    *Default permission level: 0*
-
-**uptime**: Show bot uptime \
-    Example: !uptime \
-    *This command can be used as subcommand* \
-    *Default permission level: 0*
-
 **about**: Get information about the bot \
     Examples: \
         !about \
         !about -v   &lt;- verbose \
         !about -vv  &lt;- even more verbose \
     *Default permission level: 0*
-
-**shutdown**: Shutdown the bot \
-    Example: !shutdown \
-    *Default permission level: 2*
-
-**restart**: Restart the bot \
-    Example: !restart \
-    *Default permission level: 2*
-
-**version**: Get version of the bot \
-    Examples: \
-        !version \
-        !version short \
-    *Default permission level: 0*
-
-**extexec**: Execute external shell command \
-    Note: Be careful when you are executing external commands! \
-    Example: !extexec uname -a \
-    *This command can be used as subcommand* \
-    *Default permission level: 2*
 
 **curl**: Perform HTTP request \
     Usage: \
@@ -58,10 +25,28 @@
     Usage: !donotupdatestate \
     *Default permission level: 1*
 
+**echo**: @args@ \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**extexec**: Execute external shell command \
+    Note: Be careful when you are executing external commands! \
+    Example: !extexec uname -a \
+    *This command can be used as subcommand* \
+    *Default permission level: 2*
+
 **getmentioncmd**: Get current command which is executed on bot ping \
     Example: !getmentioncmd \
     *This command can be used as subcommand* \
     *Default permission level: 1*
+
+**ping**: 🏓 Pong! @author@ 🏓 \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**restart**: Restart the bot \
+    Example: !restart \
+    *Default permission level: 2*
 
 **setmentioncmd**: Set current command which is executed on bot ping \
     Examples: \
@@ -69,20 +54,46 @@
         !setmentioncmd markov \
     *Default permission level: 1*
 
-# Module: markov
+**shutdown**: Shutdown the bot \
+    Example: !shutdown \
+    *Default permission level: 2*
 
-**markov**: Generate message using Markov chain \
-    Example: !markov \
+**uptime**: Show bot uptime \
+    Example: !uptime \
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**markovgc**: Garbage collect Markov model nodes \
-    Example: !markovgc \
+**version**: Get version of the bot \
+    Examples: \
+        !version \
+        !version short \
     *Default permission level: 0*
+
+# Module: markov
+
+**addmarkovfilter**: Add regular expression filter for Markov model \
+    Example: !addmarkovfilter regex \
+    *Default permission level: 1*
+
+**addmarkovignoredprefix**: Add message prefix that should be ignored by Markov model \
+    Example: !addmarkovignoredprefix $ \
+    *Default permission level: 1*
 
 **delmarkov**: Delete all words in Markov model by regex \
     Example: !delmarkov hello \
     *Default permission level: 1*
+
+**delmarkovfilter**: Delete regular expression filter for Markov model by index \
+    Example: !delmarkovfilter 0 \
+    *Default permission level: 1*
+
+**delmarkovignoredprefix**: Delete message prefix that should be ignored by Markov model by its index \
+    Example: !delmarkovignoredprefix 0 \
+    *Default permission level: 1*
+
+**dropmarkov**: Drop Markov database \
+    Example: !dropmarkov \
+    *Default permission level: 2*
 
 **findmarkov**: Match words in Markov model using regex. If you have permission level &gt;= 1, \
         you can add -f flag to show full list of found words \
@@ -97,50 +108,34 @@
         !getmarkovword hello 0 &lt;- get word by index \
     *Default permission level: 0*
 
-**dropmarkov**: Drop Markov database \
-    Example: !dropmarkov \
-    *Default permission level: 2*
-
-**statmarkov**: Show stats for Markov module \
-    Example: !statmarkov \
-    *Default permission level: 0*
-
 **inspectmarkov**: Inspect next words in Markov model for current one \
     Example: !inspectmarkov hello \
     *Default permission level: 0*
-
-**addmarkovfilter**: Add regular expression filter for Markov model \
-    Example: !addmarkovfilter regex \
-    *Default permission level: 1*
 
 **listmarkovfilter**: Print list of regular expression filters for Markov model \
     Example: !listmarkovfilter \
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**delmarkovfilter**: Delete regular expression filter for Markov model by index \
-    Example: !delmarkovfilter 0 \
-    *Default permission level: 1*
-
-**addmarkovignoredprefix**: Add message prefix that should be ignored by Markov model \
-    Example: !addmarkovignoredprefix $ \
-    *Default permission level: 1*
-
 **listmarkovignoredprefix**: List all prefixes that should be ignored by Markov model \
     Example: !listmarkovignoredprefix \
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**delmarkovignoredprefix**: Delete message prefix that should be ignored by Markov model by its index \
-    Example: !delmarkovignoredprefix 0 \
-    *Default permission level: 1*
+**markov**: Generate message using Markov chain \
+    Example: !markov \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**markovgc**: Garbage collect Markov model nodes \
+    Example: !markovgc \
+    *Default permission level: 0*
+
+**statmarkov**: Show stats for Markov module \
+    Example: !statmarkov \
+    *Default permission level: 0*
 
 # Module: reminder
-
-**reminder**: Print information about reminder \
-    Example: \
-        !reminder 1 \
-    *Default permission level: 0*
 
 **addreminder**: Print message at particular time \
     Examples: \
@@ -158,21 +153,12 @@
         !addreminder in 5h10m Test reminder 3 \
     *Default permission level: 0*
 
-**updreminder**: Update reminder by index \
-    Examples: \
-        !updreminder 0 2020-01-01 00:00 Happy new year! \
-        !updreminder 0 2020-01-01 00:00 Happy new year! \
-        !updreminder 0 today 08:00 Wake up \
-        !updreminder 0 tomorrow 08:00 Wake up \
-        !updreminder 0 monday 09:00 Time to work \
-        !updreminder 0 sat 11:00 Time to chill \
-        !updreminder 0 2d 08:00 Wake up &lt;- 2 days \
-        !updreminder 0 1w 08:00 Wake up &lt;- 1 week \
-        !addreminder 0 1m Monthly event \
-        !addreminder 0 1y Annual event \
-        !updreminder 0 in 1w5d10h5m Test reminder \
-        !updreminder 0 in 1w Test reminder 2 \
-        !updreminder 0 in 5h10m Test reminder 3 \
+**addremindernotes**: Add reminder notes \
+    Example: !addremindernotes 1 Some text \
+    *Default permission level: 0*
+
+**delreminder**: Delete reminders by index \
+    Example: !delreminder 0 1 2 \
     *Default permission level: 0*
 
 **listreminder**: Print list of reminders \
@@ -181,8 +167,13 @@
         !listreminder 5 &lt;- prints only first 5 reminders \
     *Default permission level: 0*
 
-**delreminder**: Delete reminders by index \
-    Example: !delreminder 0 1 2 \
+**remindeme**: Ask bot to send you an e-mail when it sends reminder \
+    Example: !remindeme 1 &lt;your-email-address&gt; \
+    *Default permission level: 0*
+
+**reminder**: Print information about reminder \
+    Example: \
+        !reminder 1 \
     *Default permission level: 0*
 
 **remindme**: Ask bot to ping you when it sends reminder \
@@ -191,10 +182,6 @@
 
 **remindwme**: Ask bot to send direct message you when it sends reminder \
     Example: !remindwme 1 \
-    *Default permission level: 0*
-
-**remindeme**: Ask bot to send you an e-mail when it sends reminder \
-    Example: !remindeme 1 &lt;your-email-address&gt; \
     *Default permission level: 0*
 
 **repeatreminder**: Make reminder repeating with particular period \
@@ -214,6 +201,18 @@
     Note: number without postfix is translated to minutes. 0 means disabling repetition \
     *Default permission level: 0*
 
+**setprereminders**: Set pre reminders notifying that reminder will be sent in particular time. \
+        For example, send pre reminder 10 minutes before actual event (to prepare or something) \
+    Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \
+    Examples: \
+        !setprereminders 1 10 \
+        !setprereminders 2 5 10 15 \
+    *Default permission level: 0*
+
+**setreminderchannel**: Set channel where reminder will be sent \
+    Example: !setreminderchannel 1 &lt;channel_id&gt; \
+    *Default permission level: 0*
+
 **skipreminder**: Skip next instance of recurring (repeating) reminder \
     Example: !skipreminder 1 \
     Note: only recurring (repeating) reminders are affected by this command \
@@ -224,18 +223,19 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**setprereminders**: Set pre reminders notifying that reminder will be sent in particular time. \
-        For example, send pre reminder 10 minutes before actual event (to prepare or something) \
-    Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \
+**updreminder**: Update reminder by index \
     Examples: \
-        !setprereminders 1 10 \
-        !setprereminders 2 5 10 15 \
-    *Default permission level: 0*
-
-**addremindernotes**: Add reminder notes \
-    Example: !addremindernotes 1 Some text \
-    *Default permission level: 0*
-
-**setreminderchannel**: Set channel where reminder will be sent \
-    Example: !setreminderchannel 1 &lt;channel_id&gt; \
+        !updreminder 0 2020-01-01 00:00 Happy new year! \
+        !updreminder 0 2020-01-01 00:00 Happy new year! \
+        !updreminder 0 today 08:00 Wake up \
+        !updreminder 0 tomorrow 08:00 Wake up \
+        !updreminder 0 monday 09:00 Time to work \
+        !updreminder 0 sat 11:00 Time to chill \
+        !updreminder 0 2d 08:00 Wake up &lt;- 2 days \
+        !updreminder 0 1w 08:00 Wake up &lt;- 1 week \
+        !addreminder 0 1m Monthly event \
+        !addreminder 0 1y Annual event \
+        !updreminder 0 in 1w5d10h5m Test reminder \
+        !updreminder 0 in 1w Test reminder 2 \
+        !updreminder 0 in 5h10m Test reminder 3 \
     *Default permission level: 0*
