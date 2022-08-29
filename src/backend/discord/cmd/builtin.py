@@ -15,7 +15,7 @@ import urllib.request
 import discord
 from dateutil import tz
 
-from src import const, emoji
+from src import const
 from src.algorithms import levenshtein_distance
 from src.backend.discord.commands import bind_command
 from src.backend.discord.embed import DiscordEmbed
@@ -193,6 +193,8 @@ class BuiltinCommands(BaseCmd):
         self._version = functools.partial(bind_command, "version")
         self._about = functools.partial(bind_command, "about")
         self._uptime = functools.partial(bind_command, "uptime")
+        self._emojify = functools.partial(bind_command, "emojify")
+        self._demojify = functools.partial(bind_command, "demojify")
         self._shutdown = functools.partial(bind_command, "shutdown")
         self._restart = functools.partial(bind_command, "restart")
         self._curl = functools.partial(bind_command, "curl")
@@ -1014,48 +1016,6 @@ class BuiltinCommands(BaseCmd):
             return
         result = ' '.join(command[1:])
         result = urllib.request.quote(result.encode("cp1251"))
-        await Msg.response(message, result, silent)
-        return result
-
-    @staticmethod
-    async def _emojify(message, command, silent=False):
-        """Emojify text
-    Example: !emojify Hello!"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        text = ' '.join(command[1:]).lower()
-        result = ""
-        is_emoji = False
-        for i, word in enumerate(text):
-            if not is_emoji:
-                result += ' '
-            if word in emoji.text_to_emoji.keys():
-                is_emoji = True
-                result += emoji.text_to_emoji[word] + ' '
-            else:
-                is_emoji = False
-                result += word
-        result = result.strip()
-        await Msg.response(message, result, silent)
-        return result
-
-    @staticmethod
-    async def _demojify(message, command, silent=False):
-        """Demojify text
-    Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        text = message.content[len(command[0]) + 1:]
-        result = ""
-        i = 0
-        while i < len(text):
-            if text[i] in emoji.emoji_to_text.keys():
-                result += emoji.emoji_to_text[text[i]]
-                i += 1
-            else:
-                result += text[i]
-            i += 1
-        result = result.strip()
         await Msg.response(message, result, silent)
         return result
 

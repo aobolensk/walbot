@@ -5,6 +5,7 @@
 * [Module: builtin](#module-builtin)
 * [Module: markov](#module-markov)
 * [Module: reminder](#module-reminder)
+* [Module: string](#module-string)
 
 # Module: builtin
 
@@ -242,4 +243,16 @@
         !updreminder 0 in 1w5d10h5m Test reminder \
         !updreminder 0 in 1w Test reminder 2 \
         !updreminder 0 in 5h10m Test reminder 3 \
+    *Default permission level: 0*
+
+# Module: string
+
+**demojify**: Demojify text \
+    Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**emojify**: Emojify text \
+    Example: !emojify Hello! \
+    *This command can be used as subcommand* \
     *Default permission level: 0*
