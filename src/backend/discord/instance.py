@@ -8,7 +8,6 @@ import re
 import sys
 
 import discord
-import psutil
 
 from src import const
 from src.algorithms import levenshtein_distance
@@ -398,11 +397,6 @@ class DiscordBotInstance(BotInstance):
         if bc.secret_config.discord["token"] is None:
             log.warning("Discord backend is not configured. Missing token in secret config")
             return
-        bot_cache = BotCache(main_bot).parse()
-        if bot_cache is not None:
-            pid = bot_cache["pid"]
-            if pid is not None and psutil.pid_exists(pid):
-                return log.error("Bot is already running!")
         # Some variable initializations
         bc.args = args
         # Handle --nohup flag
@@ -414,8 +408,6 @@ class DiscordBotInstance(BotInstance):
             os.close(fd)
             # NOTE: Does not work when not in main thread
             # signal.signal(signal.SIGHUP, signal.SIG_IGN)
-        # Saving application pd in order to safely stop it later
-        BotCache(main_bot).dump_to_file()
         # Constructing bot instance
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -436,4 +428,3 @@ class DiscordBotInstance(BotInstance):
         if main_bot:
             bc.executor.store_persistent_state(bc.config.executor["commands_data"])
             bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
-        BotCache(main_bot).remove()

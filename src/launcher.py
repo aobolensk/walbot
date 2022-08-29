@@ -119,6 +119,7 @@ class Launcher:
         for backend in self.backends:
             backend.stop(self.args)
             log.debug2("Stopped backend: " + backend.name)
+        BotCache(True).remove()
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
@@ -126,6 +127,7 @@ class Launcher:
         for backend in self.backends:
             backend.stop(self.args, main_bot=False)
             log.debug2("Stopped backend: " + backend.name)
+        BotCache(False).remove()
         log.info('Stopped the minibot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
@@ -215,6 +217,15 @@ class Launcher:
         bc.executor.load_persistent_state(bc.config.executor["commands_data"])
         bc.config.commands.update()
         nest_asyncio.apply()
+
+        # Saving bot_cache to safely stop it later
+        bot_cache = BotCache(main_bot).parse()
+        if bot_cache is not None:
+            pid = bot_cache["pid"]
+            if pid is not None and psutil.pid_exists(pid):
+                return log.error("Bot is already running!")
+        BotCache(main_bot).dump_to_file()
+
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
             if (os.path.isdir(os.path.join(const.BOT_BACKENDS_PATH, backend)) and
                     os.path.exists(os.path.join(const.BOT_BACKENDS_PATH, backend, "instance.py"))):
