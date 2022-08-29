@@ -9,7 +9,7 @@ from src.utils import Util, null
 
 class StringCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "takechars": dict(permission=const.Permission.USER.value, subcommand=True),
             "dropchars": dict(permission=const.Permission.USER.value, subcommand=True),
             "countchars": dict(permission=const.Permission.USER.value, subcommand=True),

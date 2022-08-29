@@ -63,7 +63,7 @@ class MathExprEvaluator:
 
 class MathCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "calc": dict(permission=const.Permission.USER.value, subcommand=True),
             "if": dict(permission=const.Permission.USER.value, subcommand=True),
         })

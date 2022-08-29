@@ -9,7 +9,7 @@ from src.utils import Util, null
 
 class ReactionCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "addreaction": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updreaction": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delreaction": dict(permission=const.Permission.MOD.value, subcommand=False),

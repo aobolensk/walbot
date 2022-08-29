@@ -127,7 +127,7 @@ class _BuiltinInternals:
 
 class BuiltinCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "echo": dict(permission=const.Permission.USER.value, subcommand=True),
             "range": dict(permission=const.Permission.USER.value, subcommand=True),
             "ping": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -291,7 +291,7 @@ class BuiltinCommands(BaseCmd):
             return
         if len(command) == 1 or (len(command) == 2 and command[1] == '-p'):
             commands = []
-            for name, cmd in bc.commands.data.items():
+            for name, cmd in bc.discord.commands.data.items():
                 if cmd.message is not None:
                     s = (name, cmd.message)
                     commands.append(s)
@@ -326,10 +326,10 @@ class BuiltinCommands(BaseCmd):
                     await Msg.response(message, None, silent, embed=embed)
         elif len(command) == 2:
             name = command[1]
-            if command[1] in bc.commands.data:
-                command = bc.commands.data[command[1]]
-            elif command[1] in bc.commands.aliases.keys():
-                command = bc.commands.data[bc.commands.aliases[command[1]]]
+            if command[1] in bc.discord.commands.data:
+                command = bc.discord.commands.data[command[1]]
+            elif command[1] in bc.discord.commands.aliases.keys():
+                command = bc.discord.commands.data[bc.discord.commands.aliases[command[1]]]
             else:
                 return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
             result = name + ": "
@@ -360,12 +360,13 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
+        if command_name in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Command {command_name} already exists", silent))
-        bc.commands.data[command_name] = Command(command_name, message=' '.join(command[2:]))
-        bc.commands.data[command_name].channels.append(message.channel.id)
+        bc.discord.commands.data[command_name] = Command(command_name, message=' '.join(command[2:]))
+        bc.discord.commands.data[command_name].channels.append(message.channel.id)
         await Msg.response(
-            message, f"Command '{command_name}' -> '{bc.commands.data[command_name].message}' successfully added",
+            message,
+            f"Command '{command_name}' -> '{bc.discord.commands.data[command_name].message}' successfully added",
             silent)
 
     @staticmethod
@@ -376,13 +377,13 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
+        if command_name in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Command {command_name} already exists", silent))
-        bc.commands.data[command_name] = Command(command_name, cmd_line=' '.join(command[2:]))
-        bc.commands.data[command_name].channels.append(message.channel.id)
+        bc.discord.commands.data[command_name] = Command(command_name, cmd_line=' '.join(command[2:]))
+        bc.discord.commands.data[command_name].channels.append(message.channel.id)
         await Msg.response(
             message, f"Command '{command_name}' that calls external command "
-                     f"`{bc.commands.data[command_name].cmd_line}` is successfully added", silent)
+                     f"`{bc.discord.commands.data[command_name].cmd_line}` is successfully added", silent)
 
     @staticmethod
     async def _updcmd(message, command, silent=False):
@@ -391,14 +392,14 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
-            if bc.commands.data[command_name].message is None:
+        if command_name in bc.discord.commands.data.keys():
+            if bc.discord.commands.data[command_name].message is None:
                 return null(await Msg.response(message, f"Command '{command_name}' is not editable", silent))
-            bc.commands.data[command_name].message = ' '.join(command[2:])
+            bc.discord.commands.data[command_name].message = ' '.join(command[2:])
             return null(
                 await Msg.response(
                     message, f"Command '{command_name}' -> "
-                             f"'{bc.commands.data[command_name].message}' successfully updated", silent))
+                             f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
@@ -409,14 +410,14 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
-            if bc.commands.data[command_name].cmd_line is None:
+        if command_name in bc.discord.commands.data.keys():
+            if bc.discord.commands.data[command_name].cmd_line is None:
                 return null(await Msg.response(message, f"Command '{command_name}' is not editable", silent))
-            bc.commands.data[command_name].cmd_line = ' '.join(command[2:])
+            bc.discord.commands.data[command_name].cmd_line = ' '.join(command[2:])
             return null(
                 await Msg.response(
                     message, f"Command '{command_name}' that calls external command "
-                             f"`{bc.commands.data[command_name].cmd_line}` is successfully updated", silent))
+                             f"`{bc.discord.commands.data[command_name].cmd_line}` is successfully updated", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
@@ -426,8 +427,8 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
-            bc.commands.data.pop(command_name, None)
+        if command_name in bc.discord.commands.data.keys():
+            bc.discord.commands.data.pop(command_name, None)
             return null(await Msg.response(message, f"Command '{command_name}' successfully deleted", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
@@ -442,18 +443,18 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
+        if command_name in bc.discord.commands.data.keys():
             if len(command) == 2 or command[2] == "channel":
-                if message.channel.id not in bc.commands.data[command_name].channels:
-                    bc.commands.data[command_name].channels.append(message.channel.id)
+                if message.channel.id not in bc.discord.commands.data[command_name].channels:
+                    bc.discord.commands.data[command_name].channels.append(message.channel.id)
                 await Msg.response(message, f"Command '{command_name}' is enabled in this channel", silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
-                    if channel.id not in bc.commands.data[command_name].channels:
-                        bc.commands.data[command_name].channels.append(channel.id)
+                    if channel.id not in bc.discord.commands.data[command_name].channels:
+                        bc.discord.commands.data[command_name].channels.append(channel.id)
                 await Msg.response(message, f"Command '{command_name}' is enabled in this guild", silent)
             elif command[2] == "global":
-                bc.commands.data[command_name].is_global = True
+                bc.discord.commands.data[command_name].is_global = True
                 await Msg.response(message, f"Command '{command_name}' is enabled in global scope", silent)
             else:
                 await Msg.response(message, f"Unknown scope '{command[2]}'", silent)
@@ -471,18 +472,18 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=3):
             return
         command_name = command[1]
-        if command_name in bc.commands.data.keys():
+        if command_name in bc.discord.commands.data.keys():
             if len(command) == 2 or command[2] == "channel":
-                if message.channel.id in bc.commands.data[command_name].channels:
-                    bc.commands.data[command_name].channels.remove(message.channel.id)
+                if message.channel.id in bc.discord.commands.data[command_name].channels:
+                    bc.discord.commands.data[command_name].channels.remove(message.channel.id)
                 await Msg.response(message, f"Command '{command_name}' is disabled in this channel", silent)
             elif command[2] == "guild":
                 for channel in message.channel.guild.text_channels:
-                    if channel.id in bc.commands.data[command_name].channels:
-                        bc.commands.data[command_name].channels.remove(channel.id)
+                    if channel.id in bc.discord.commands.data[command_name].channels:
+                        bc.discord.commands.data[command_name].channels.remove(channel.id)
                 await Msg.response(message, f"Command '{command_name}' is disabled in this guild", silent)
             elif command[2] == "global":
-                bc.commands.data[command_name].is_global = False
+                bc.discord.commands.data[command_name].is_global = False
                 await Msg.response(message, f"Command '{command_name}' is disabled in global scope", silent)
             else:
                 await Msg.response(message, f"Unknown scope '{command[2]}'", silent)
@@ -500,8 +501,8 @@ class BuiltinCommands(BaseCmd):
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         if perm is None:
             return
-        if command_name in bc.commands.data.keys():
-            bc.commands.data[command_name].permission = perm
+        if command_name in bc.discord.commands.data.keys():
+            bc.discord.commands.data[command_name].permission = perm
             return null(
                 await Msg.response(
                     message, f"Set permission level {command[2]} for command '{command_name}'", silent))
@@ -517,9 +518,9 @@ class BuiltinCommands(BaseCmd):
             return
         if command[1] in bc.config.commands.aliases.keys():
             command[1] = bc.config.commands.aliases[command[1]]
-        if command[1] not in bc.commands.data.keys():
+        if command[1] not in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
-        com = bc.commands.data[command[1]]
+        com = bc.discord.commands.data[command[1]]
         times = com.times_called
         if len(command) == 3 and command[2] == '-s':
             result = f"{times}"
@@ -536,9 +537,9 @@ class BuiltinCommands(BaseCmd):
             return
         if command[1] in bc.config.commands.aliases.keys():
             command[1] = bc.config.commands.aliases[command[1]]
-        if command[1] not in bc.commands.data.keys():
+        if command[1] not in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
-        com = bc.commands.data[command[1]]
+        com = bc.discord.commands.data[command[1]]
         max_exec_time = await Util.parse_int(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         com.max_execution_time = max_exec_time
@@ -866,10 +867,10 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         command = command[1:]
-        if command[0] not in bc.commands.data.keys():
+        if command[0] not in bc.discord.commands.data.keys():
             await Msg.response(message, f"Unknown command '{command[0]}'", silent)
         else:
-            cmd = bc.commands.data[command[0]]
+            cmd = bc.discord.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, None, silent=True)
 
@@ -943,13 +944,13 @@ class BuiltinCommands(BaseCmd):
     Example: !addalias ping pong"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        if command[1] not in bc.commands.data.keys():
+        if command[1] not in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
-        if command[2] in bc.commands.data.keys():
+        if command[2] in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Command '{command[2]}' already exists", silent))
-        if command[2] in bc.commands.aliases.keys():
+        if command[2] in bc.discord.commands.aliases.keys():
             return null(await Msg.response(message, f"Alias '{command[2]}' already exists", silent))
-        bc.commands.aliases[command[2]] = command[1]
+        bc.discord.commands.aliases[command[2]] = command[1]
         await Msg.response(message, f"Alias '{command[2]}' for '{command[1]}' was successfully created", silent)
 
     @staticmethod
@@ -959,9 +960,9 @@ class BuiltinCommands(BaseCmd):
     Example: !delalias pong"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        if command[1] not in bc.commands.aliases.keys():
+        if command[1] not in bc.discord.commands.aliases.keys():
             return null(await Msg.response(message, f"Alias '{command[1]}' does not exist", silent))
-        bc.commands.aliases.pop(command[1])
+        bc.discord.commands.aliases.pop(command[1])
         await Msg.response(message, f"Alias '{command[1]}' was successfully deleted", silent)
 
     @staticmethod
@@ -972,7 +973,7 @@ class BuiltinCommands(BaseCmd):
             return
         result = ""
         alias_mapping = {}
-        for alias, command in bc.commands.aliases.items():
+        for alias, command in bc.discord.commands.aliases.items():
             if command not in alias_mapping.keys():
                 alias_mapping[command] = []
             alias_mapping[command].append(alias)
@@ -1294,7 +1295,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
         await Msg.response(message, "Bot commands reloading is started...", silent)
-        bc.commands.update(reload=True)
+        bc.discord.commands.update(reload=True)
         await Msg.response(message, "Bot commands reloading is finished", silent)
 
     @staticmethod
@@ -1329,10 +1330,10 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         command = command[1:]
-        if command[0] not in bc.commands.data.keys():
+        if command[0] not in bc.discord.commands.data.keys():
             await Msg.response(message, f"Unknown command '{command[0]}'", silent)
         else:
-            cmd = bc.commands.data[command[0]]
+            cmd = bc.discord.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, bc.config.discord.users[message.author.id])
 

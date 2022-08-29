@@ -13,7 +13,7 @@
 
     Example:
     ```py
-    bc.commands.register_command(__name__, self.get_classname(), "test",
+    bc.discord.commands.register_command(__name__, self.get_classname(), "test",
                                  permission=const.Permission.USER.value, subcommand=True)
     ```
 
@@ -29,7 +29,7 @@ from src.config import bc
 
 class NewTestCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_command(__name__, self.get_classname(), "test",
+        bc.discord.commands.register_command(__name__, self.get_classname(), "test",
                                      permission=const.Permission.USER.value, subcommand=True)
 
     @staticmethod

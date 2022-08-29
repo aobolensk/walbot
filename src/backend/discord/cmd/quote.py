@@ -14,7 +14,7 @@ from src.utils import Util, null
 
 class QuoteCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "quote": dict(permission=const.Permission.USER.value, subcommand=False),
             "addquote": dict(permission=const.Permission.USER.value, subcommand=False),
             "listquote": dict(permission=const.Permission.USER.value, subcommand=False),

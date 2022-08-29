@@ -41,7 +41,7 @@ class WalBot(discord.Client):
         self.loop.create_task(self._process_reminders())
         self.loop.create_task(VoiceRoutine(self.bot_cache).start())
         bc.config = self.config
-        bc.commands = self.config.commands
+        bc.discord.commands = self.config.commands
         bc.latency = lambda: self.latency
         bc.change_status = self._change_status
         bc.change_presence = self.change_presence

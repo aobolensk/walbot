@@ -26,7 +26,7 @@ class Commands:
         Public commands: src/*.py
         Private commands: src/private/*.py
         """
-        bc.commands = self
+        bc.discord.commands = self
         cmd_directory = os.path.join(os.getcwd(), "src", "backend", "discord", "cmd")
         cmd_modules = ['src.backend.discord.cmd.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
                        if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]

@@ -20,7 +20,7 @@ from src.utils import Util, null
 
 class TimerCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "netcheck": dict(permission=const.Permission.ADMIN.value, subcommand=True, max_execution_time=60),
             "translate": dict(permission=const.Permission.USER.value, subcommand=True, max_execution_time=10),
             "weather": dict(permission=const.Permission.USER.value, subcommand=True, max_execution_time=15),

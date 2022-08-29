@@ -12,7 +12,7 @@ from src.utils import Util, null
 
 class RoleCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "addrole": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listrole": dict(permission=const.Permission.USER.value, subcommand=False),
             "delrole": dict(permission=const.Permission.MOD.value, subcommand=False),

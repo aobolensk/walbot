@@ -93,7 +93,7 @@ class _VoiceInternals:
 
 class VoiceCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "vjoin": dict(permission=const.Permission.USER.value, subcommand=False),
             "vleave": dict(permission=const.Permission.USER.value, subcommand=False),
             "vqpush": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),

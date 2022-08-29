@@ -10,7 +10,7 @@ from src.config import bc
 
 class ReminderCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "reminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "addreminder": dict(permission=const.Permission.USER.value, subcommand=False),
             "updreminder": dict(permission=const.Permission.USER.value, subcommand=False),

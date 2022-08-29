@@ -10,7 +10,7 @@ from src.utils import Util, null
 
 class PluginCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "listplugin": dict(permission=const.Permission.USER.value, subcommand=False),
             "loadplugin": dict(permission=const.Permission.MOD.value, subcommand=False),
             "reloadpluginmanager": dict(permission=const.Permission.MOD.value, subcommand=False),

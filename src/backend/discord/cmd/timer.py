@@ -13,7 +13,7 @@ from src.utils import Util, null
 
 class TimerCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "timer": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
             "stoptimer": dict(permission=const.Permission.USER.value, subcommand=False),
             "stopwatch": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),

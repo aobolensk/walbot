@@ -30,9 +30,12 @@ class BotController:
             self.auto_rejoin_channel = None
             self.current_video = None
 
+    class Discord:
+        def __init__(self) -> None:
+            self.commands = None
+
     def __init__(self):
         self.deployment_time = datetime.datetime.now()
-        self.commands = None
         self.config = None
         self.markov = None
         self.secret_config = None
@@ -50,3 +53,4 @@ class BotController:
         }
         self.voice_ctx = self.VoiceCtx()
         self.executor = Executor()
+        self.discord = self.Discord()

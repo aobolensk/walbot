@@ -70,9 +70,9 @@ class Command:
                                 else:
                                     await message.channel.send(f"Unknown command '{command[0]}'")
                             result = ""
-                            if command and command[0] in bc.commands.data.keys():
+                            if command and command[0] in bc.discord.commands.data.keys():
                                 log.debug(f"Processing subcommand: {command[0]}: {message.content}")
-                                cmd = bc.commands.data[command[0]]
+                                cmd = bc.discord.commands.data[command[0]]
                                 if cmd.can_be_subcommand():
                                     result = await cmd.run(message, command, user, silent=True)
                                     if result is None or (safe and not const.ALNUM_STRING_REGEX.match(content)):

@@ -10,7 +10,7 @@ from src.config import bc
 
 class MarkovCommands(BaseCmd):
     def bind(self):
-        bc.commands.register_commands(__name__, self.get_classname(), {
+        bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "markov": dict(permission=const.Permission.USER.value, subcommand=True),
             "markovgc": dict(permission=const.Permission.USER.value, subcommand=False),
             "delmarkov": dict(permission=const.Permission.MOD.value, subcommand=False),
