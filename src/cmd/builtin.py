@@ -80,7 +80,7 @@ class BuiltinCommands(BaseCmd):
                 return await Command.send_message(
                     execution_ctx, f"Unknown argument '{cmd_line[1]}' for '{cmd_line[0]}' command")
         result = bc.info.get_full_info(verbosity)
-        await Command.send_message(execution_ctx, result)
+        await Command.send_message(execution_ctx, result, suppress_embeds=True)
 
     async def _shutdown(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Shutdown the bot

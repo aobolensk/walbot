@@ -119,7 +119,7 @@ class BotInfo:
         else:
             result += "    REPL: off\n"
         result += (
-            f"Source code: <{const.GIT_REPO_LINK}>\n"
+            f"Source code: {const.GIT_REPO_LINK}\n"
             f"Version: {self.version}{'-dirty' if self.is_version_dirty else ''} (updated at {self.version_time})\n"
             f"Uptime: {self.uptime}\n"
         )

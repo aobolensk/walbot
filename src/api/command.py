@@ -103,8 +103,8 @@ class Command:
         return True
 
     @staticmethod
-    async def send_message(execution_ctx: ExecutionContext, message: str) -> None:
-        await execution_ctx.send_message(message)
+    async def send_message(execution_ctx: ExecutionContext, message: str, *args, **kwargs) -> None:
+        await execution_ctx.send_message(message, *args, **kwargs)
 
     @staticmethod
     async def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
