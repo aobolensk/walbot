@@ -11,6 +11,8 @@ class BufferTestExecutionContext(ExecutionContext):
         self.platform = "test"
 
     async def send_message(self, message: str, *args, **kwargs) -> None:
+        if self.silent:
+            return
         print(message)
 
     def disable_pings(self, message: str) -> None:
