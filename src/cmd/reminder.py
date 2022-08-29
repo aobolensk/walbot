@@ -1,6 +1,6 @@
 import datetime
 import random
-from typing import List
+from typing import List, Optional
 
 import dateutil.relativedelta
 
@@ -564,7 +564,7 @@ class ReminderCommands(BaseCmd):
             f"Skipped reminder {index} at {rem.time}, next reminder {id_} "
             f"will be at {bc.config.reminders[id_].time}")
 
-    async def _timeuntilreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _timeuntilreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Show time until particular reminder
     Example: !timeuntilreminder 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):

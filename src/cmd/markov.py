@@ -1,7 +1,7 @@
 import asyncio
 import os
 import re
-from typing import List
+from typing import List, Optional
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -58,7 +58,7 @@ class MarkovCommands(BaseCmd):
             "markov", "delmarkovignoredprefix", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delmarkovignoredprefix)
 
-    async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _markov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Generate message using Markov chain
     Example: !markov"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1):
@@ -79,7 +79,7 @@ class MarkovCommands(BaseCmd):
         await Command.send_message(execution_ctx, result)
         return result
 
-    async def _markovgc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _markovgc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Garbage collect Markov model nodes
     Example: !markovgc"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
@@ -123,7 +123,7 @@ class MarkovCommands(BaseCmd):
             f"{f' and {amount - len(found)} more...' if amount - len(found) > 0 else ''}",
             suppress_embeds=True)
 
-    async def _getmarkovword(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _getmarkovword(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Get particular word from Markov model by regex
     Examples:
         !getmarkovword hello -a <- get amount of found words
@@ -207,7 +207,7 @@ class MarkovCommands(BaseCmd):
         bc.markov.filters.append(re.compile(cmd_line[1], re.DOTALL))
         await Command.send_message(execution_ctx, f"Filter '{cmd_line[1]}' was successfully added for Markov model")
 
-    async def _listmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _listmarkovfilter(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Print list of regular expression filters for Markov model
     Example: !listmarkovfilter"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):

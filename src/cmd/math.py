@@ -1,6 +1,6 @@
 import ast
 import operator as op
-from typing import List
+from typing import List, Optional
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -72,7 +72,7 @@ class MathCommands(BaseCmd):
             "math", "if", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._if)
 
-    async def _calc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _calc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Calculate mathematical expression
     Examples:
         !calc 2+2*2
@@ -87,7 +87,7 @@ class MathCommands(BaseCmd):
         await Command.send_message(execution_ctx, result)
         return result
 
-    async def _if(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _if(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """If expression is true (!= 0) then return first expression otherwise return the second one
     Examples:
         !if 1 It's true;It's false -> It's true
