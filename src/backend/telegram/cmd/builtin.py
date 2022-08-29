@@ -7,7 +7,7 @@ from telegram.ext import CallbackContext, CommandHandler
 from src import const
 from src.api.command import Command
 from src.backend.telegram.context import TelegramExecutionContext
-from src.backend.telegram.util import check_auth, log_message, reply
+from src.backend.telegram.util import check_auth, log_message
 from src.config import bc
 from src.log import log
 from src.mail import Mail
@@ -21,7 +21,6 @@ class BuiltinCommands:
         dispatcher.add_handler(CommandHandler("authorize", self._authorize, run_async=True))
         dispatcher.add_handler(CommandHandler("resetpass", self._resetpass, run_async=True))
         dispatcher.add_handler(CommandHandler("help", self._help, run_async=True))
-        dispatcher.add_handler(CommandHandler("poll", self._poll, run_async=True))
 
     @Mail.send_exception_info_to_admin_emails
     def _authorize(self, update: Update, context: CallbackContext) -> None:
@@ -54,18 +53,3 @@ class BuiltinCommands:
         version = bc.info.version
         result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
         loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), result))
-
-    @Mail.send_exception_info_to_admin_emails
-    def _poll(self, update: Update, context: CallbackContext) -> None:
-        log_message(update)
-        if not check_auth(update):
-            return
-        if len(context.args) < 2:
-            reply(update, "Usage: /poll option 1;option 2;option 3")
-            return
-        options = ' '.join(context.args).split(';')
-        context.bot.send_poll(
-            update.effective_chat.id,
-            "Poll",
-            options,
-        )

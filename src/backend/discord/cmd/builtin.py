@@ -1,6 +1,5 @@
 """Built-in WalBot commands"""
 
-import asyncio
 import base64
 import datetime
 import functools
@@ -21,7 +20,6 @@ from src.algorithms import levenshtein_distance
 from src.backend.discord.commands import bind_command
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
-from src.bc import DoNotUpdateFlag
 from src.commands import BaseCmd
 from src.config import Command, bc, log
 from src.utils import Util, null
@@ -202,6 +200,7 @@ class BuiltinCommands(BaseCmd):
         self._donotupdatestate = functools.partial(bind_command, "donotupdatestate")
         self._getmentioncmd = functools.partial(bind_command, "getmentioncmd")
         self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
+        self._poll = functools.partial(bind_command, "poll")
 
     @staticmethod
     async def _range(message, command, silent=False):
@@ -751,68 +750,6 @@ class BuiltinCommands(BaseCmd):
             return
         result = "You asked me to send you this: " + result
         await Msg.send_direct_message(message.author, result, silent)
-
-    @staticmethod
-    async def _poll(message, command, silent=False):
-        """Create poll
-    Example: !poll 60 option 1;option 2;option 3"""
-        if not await Util.check_args_count(message, command, silent, min=3):
-            return
-        if silent:
-            return
-        duration = await Util.parse_int(
-            message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
-        if duration is None:
-            return
-        options = ' '.join(command[2:])
-        options = options.split(';')
-        if len(options) > const.MAX_POLL_OPTIONS:
-            return null(
-                await Msg.response(
-                    message,
-                    f"Too many options for poll (got: {len(options)}, max: {const.MAX_POLL_OPTIONS})", silent))
-        poll_message = "Poll is started! You have " + command[1] + " seconds to vote!\n"
-        for i, option in enumerate(options):
-            poll_message += emoji.alphabet[i] + " -> " + option + '\n'
-        poll_message = await Msg.response(message, poll_message, silent)
-        bc.do_not_update[DoNotUpdateFlag.POLL] += 1
-        for i in range(len(options)):
-            try:
-                await poll_message.add_reaction(emoji.alphabet[i])
-            except Exception:
-                log.debug(f"Error on add_reaction: {emoji.alphabet[i]}")
-        timestamps = [60]
-        timestamps = [x for x in timestamps if x < duration]
-        timestamps.append(duration)
-        timestamps = (
-            [timestamps[0]] + [timestamps[i] - timestamps[i - 1] for i in range(1, len(timestamps))])
-        timestamps.reverse()
-        remaining = duration
-        for timestamp in timestamps:
-            await asyncio.sleep(timestamp)
-            remaining -= timestamp
-            if remaining > 0:
-                await Msg.response(message, f"Poll is still going! {remaining} seconds left", silent)
-            else:
-                poll_message = poll_message.id
-                poll_message = await message.channel.fetch_message(poll_message)
-                results = []
-                possible_answers = emoji.alphabet[:len(options)]
-                for index, reaction in enumerate(poll_message.reactions):
-                    if str(reaction) in possible_answers:
-                        results.append((reaction, options[index], reaction.count - 1))
-                results.sort(key=lambda option: option[2], reverse=True)
-                result_message = "Time is up! Results:\n"
-                for result in results:
-                    result_message += str(result[0]) + " -> " + result[1] + " -> votes: " + str(result[2]) + '\n'
-                await Msg.response(message, result_message, silent)
-                for i in range(len(options)):
-                    try:
-                        await poll_message.remove_reaction(emoji.alphabet[i], poll_message.author)
-                    except Exception:
-                        log.debug(f"Error on remove_reaction: {emoji.alphabet[i]}")
-                bc.do_not_update[DoNotUpdateFlag.POLL] -= 1
-                return
 
     @staticmethod
     async def _random(message, command, silent=False):

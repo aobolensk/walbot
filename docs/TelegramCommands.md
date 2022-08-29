@@ -44,6 +44,10 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
+**poll**: Create poll and collect result after selected time \
+    Example: !poll 60 option 1;option 2;option 3 \
+    *Default permission level: 0*
+
 **restart**: Restart the bot \
     Example: !restart \
     *Default permission level: 2*

@@ -151,7 +151,7 @@
 
 **ping**: 🏓 Pong! @author@ 🏓
 
-**poll**: Create poll \
+**poll**: Create poll and collect result after selected time \
     Example: !poll 60 option 1;option 2;option 3
 
 **profile**: Print information about user \
