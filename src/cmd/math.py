@@ -6,7 +6,7 @@ from src import const
 from src.api.command import BaseCmd, Command, Implementation
 from src.api.execution_context import ExecutionContext
 from src.config import bc
-from src.utils import null
+from src.utils import Util, null
 
 
 class MathExprEvaluator:
@@ -66,6 +66,9 @@ class MathCommands(BaseCmd):
         bc.executor.commands["calc"] = Command(
             "math", "calc", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._calc)
+        bc.executor.commands["if"] = Command(
+            "math", "if", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._if)
 
     async def _calc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
         """Calculate mathematical expression
@@ -79,5 +82,41 @@ class MathCommands(BaseCmd):
             result = str(MathExprEvaluator().evaluate(expr))
         except Exception as e:
             return null(await Command.send_message(execution_ctx, f"Expression evaluation failed: {e}"))
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _if(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+        """If expression is true (!= 0) then return first expression otherwise return the second one
+    Examples:
+        !if 1 It's true;It's false -> It's true
+        !if 0 It's true;It's false -> It's false
+"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        condition = cmd_line[1]
+
+        true = ["true"]
+        false = ["false"]
+
+        print(cmd_line)
+        if condition.lower() not in true + false:
+            condition = await Util.parse_int_for_command(
+                execution_ctx, cmd_line[1], f"Second parameter should be either number or {', '.join(true + false)}")
+            if condition is None:
+                return
+        else:
+            # Handle keywords that can be used in conditions
+            if condition.lower() in true:
+                condition = 1
+            elif condition.lower() in false:
+                condition = 0
+
+        expressions = ' '.join(cmd_line[2:]).split(';')
+        if len(expressions) != 2:
+            return null(
+                await Command.send_message(execution_ctx,
+                    f"There should be only 2 branches ('then' and 'else') "
+                    f"separated by ';' in '{cmd_line[0]}' command"))
+        result = expressions[0] if condition != 0 else expressions[1]
         await Command.send_message(execution_ctx, result)
         return result
