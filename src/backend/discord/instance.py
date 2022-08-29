@@ -395,6 +395,9 @@ class WalBot(discord.Client):
 class DiscordBotInstance(BotInstance):
     def start(self, args, main_bot=True):
         # Check whether bot is already running
+        if bc.secret_config.discord["token"] is None:
+            log.warning("Discord backend is not configured. Missing token in secret config")
+            return
         bot_cache = BotCache(main_bot).parse()
         if bot_cache is not None:
             pid = bot_cache["pid"]
