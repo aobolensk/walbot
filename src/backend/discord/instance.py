@@ -50,7 +50,8 @@ class WalBot(discord.Client):
         bc.secret_config = self.secret_config
         bc.info = BotInfo()
         bc.plugin_manager.register()
-        bc.fetch_channel = self.fetch_channel
+        bc.get_channel = self.get_channel
+        bc.discord_background_loop = self.loop
         if not bc.args.fast_start:
             log.debug("Started Markov model checks...")
             if bc.markov.check():

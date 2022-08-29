@@ -42,7 +42,7 @@ class REPLCommands:
             return "Usage: join <channel_id>"
         channel = command[1]
         try:
-            self._current_channel = await bc.fetch_channel(int(channel))
+            self._current_channel = bc.get_channel(int(channel))
         except Exception as e:
             return f"Failed to join channel: {e}"
         return "Joined channel: " + str(self._current_channel)
@@ -58,4 +58,5 @@ class REPLCommands:
         text = ' '.join(command[1:])
         if self._current_channel is None:
             return "Cannot send message to undefined channel. First execute: join <channel_id>"
-        await self._current_channel.send(text)
+        t = bc.discord_background_loop.create_task(self._current_channel.send(text))
+        bc.discord_background_loop.run_until_complete(t)

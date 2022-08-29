@@ -29,7 +29,8 @@ class ReplBotInstance(BotInstance):
     def start(self, args, *rest, **kwargs) -> None:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(self._run())
+        t = loop.create_task(self._run())
+        loop.run_until_complete(t)
 
     async def _run(self) -> None:
         self.port = bc.config.repl["port"]
