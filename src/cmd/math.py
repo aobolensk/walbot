@@ -59,9 +59,11 @@ class MathExprEvaluator:
     def evaluate(self, expr):
         return self._evaluate_expr_node(ast.parse(expr, mode='eval').body)
 
+
 class MathCommands(BaseCmd):
     def __init__(self) -> None:
         pass
+
     def bind(self) -> None:
         bc.executor.commands["calc"] = Command(
             "math", "calc", const.Permission.USER, Implementation.FUNCTION,
@@ -114,9 +116,9 @@ class MathCommands(BaseCmd):
         expressions = ' '.join(cmd_line[2:]).split(';')
         if len(expressions) != 2:
             return null(
-                await Command.send_message(execution_ctx,
-                    f"There should be only 2 branches ('then' and 'else') "
-                    f"separated by ';' in '{cmd_line[0]}' command"))
+                await Command.send_message(
+                    execution_ctx, f"There should be only 2 branches ('then' and 'else') "
+                                   f"separated by ';' in '{cmd_line[0]}' command"))
         result = expressions[0] if condition != 0 else expressions[1]
         await Command.send_message(execution_ctx, result)
         return result
