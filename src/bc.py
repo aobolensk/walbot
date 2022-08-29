@@ -42,6 +42,10 @@ class BotController:
             self.plugin_manager = PluginManager()
             self.message_buffer = MessageBuffer()
 
+    class Telegram:
+        def __init__(self) -> None:
+            self.bot_username = None
+
     def __init__(self):
         self.deployment_time = datetime.datetime.now()
         self.config = None
@@ -60,3 +64,4 @@ class BotController:
         self.voice_ctx = self.VoiceCtx()
         self.executor = Executor()
         self.discord = self.Discord()
+        self.telegram = self.Telegram()

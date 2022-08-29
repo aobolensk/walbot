@@ -104,12 +104,21 @@ class BotInfo:
         return f"{days}:{hours:02}:{minutes:02}:{seconds:02}"
 
     def get_full_info(self, verbosity) -> str:
-        result = (
-            f"{bc.discord.bot_user} (WalBot instance)\n"
-            "Backends:\n"
-            f"    Discord: {'on' if bc.backends['discord'] else 'off'}\n"
-            f"    Telegram: {'on' if bc.backends['telegram'] else 'off'}\n"
-            f"    REPL: {'on' if bc.backends['repl'] else 'off'}\n"
+        result = f"{const.INSTANCE_NAME} (WalBot instance)\n"
+        result += "Backends:\n"
+        if bc.backends['discord']:
+            result += f"    Discord: on ({bc.discord.bot_user})\n"
+        else:
+            result += f"    Discord: off\n"
+        if bc.backends['telegram']:
+            result += f"    Telegram: on ({bc.telegram.bot_username})\n"
+        else:
+            result += f"    Telegram: off\n"
+        if bc.backends['repl']:
+            result += f"    REPL: on\n"
+        else:
+            result += f"    REPL: off\n"
+        result += (
             f"Source code: <{const.GIT_REPO_LINK}>\n"
             f"Version: {self.version}{'-dirty' if self.is_version_dirty else ''} (updated at {self.version_time})\n"
             f"Uptime: {self.uptime}\n"
