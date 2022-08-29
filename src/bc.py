@@ -33,6 +33,10 @@ class BotController:
     class Discord:
         def __init__(self) -> None:
             self.commands = None
+            self.get_channel = None
+            self.background_loop = None
+            self.change_status = None
+            self.change_presence = None
 
     def __init__(self):
         self.deployment_time = datetime.datetime.now()

@@ -43,14 +43,13 @@ class WalBot(discord.Client):
         bc.config = self.config
         bc.discord.commands = self.config.commands
         bc.latency = lambda: self.latency
-        bc.change_status = self._change_status
-        bc.change_presence = self.change_presence
-        bc.close = self.close
+        bc.discord.change_status = self._change_status
+        bc.discord.change_presence = self.change_presence
         bc.secret_config = self.secret_config
         bc.info = BotInfo()
         bc.plugin_manager.register()
-        bc.get_channel = self.get_channel
-        bc.discord_background_loop = self.loop
+        bc.discord.get_channel = self.get_channel
+        bc.discord.background_loop = self.loop
         if not bc.args.fast_start:
             log.debug("Started Markov model checks...")
             if bc.markov.check():

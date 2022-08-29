@@ -42,7 +42,7 @@ class REPLCommands:
             return "Usage: join <channel_id>"
         channel = command[1]
         try:
-            self._current_channel = bc.get_channel(int(channel))
+            self._current_channel = bc.discord.get_channel(int(channel))
         except Exception as e:
             return f"Failed to join channel: {e}"
         return "Joined channel: " + str(self._current_channel)

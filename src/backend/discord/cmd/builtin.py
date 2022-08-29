@@ -907,23 +907,23 @@ class BuiltinCommands(BaseCmd):
     Possible activities: [playing, streaming, watching, listening]
     Possible bot statuses: [online, idle, dnd, invisible]"""
         if len(command) == 1:
-            await bc.change_status("", discord.ActivityType.playing)
+            await bc.discord.change_status("", discord.ActivityType.playing)
         elif command[1] == "playing":
-            await bc.change_status(' '.join(command[2:]), discord.ActivityType.playing)
+            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.playing)
         elif command[1] == "streaming":
-            await bc.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
+            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
         elif command[1] == "watching":
-            await bc.change_status(' '.join(command[2:]), discord.ActivityType.watching)
+            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.watching)
         elif command[1] == "listening":
-            await bc.change_status(' '.join(command[2:]), discord.ActivityType.listening)
+            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.listening)
         elif command[1] == "online":
-            await bc.change_presence(status=discord.Status.online)
+            await bc.discord.change_presence(status=discord.Status.online)
         elif command[1] == "idle":
-            await bc.change_presence(status=discord.Status.idle)
+            await bc.discord.change_presence(status=discord.Status.idle)
         elif command[1] == "dnd":
-            await bc.change_presence(status=discord.Status.dnd)
+            await bc.discord.change_presence(status=discord.Status.dnd)
         elif command[1] == "invisible":
-            await bc.change_presence(status=discord.Status.invisible)
+            await bc.discord.change_presence(status=discord.Status.invisible)
         else:
             await Msg.response(message, "Unknown type of activity", silent)
 
