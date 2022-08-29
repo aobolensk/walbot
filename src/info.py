@@ -105,7 +105,7 @@ class BotInfo:
 
     def get_full_info(self, verbosity) -> str:
         result = (
-            f"{bc.discord_bot_user if hasattr(bc, 'discord_bot_user') else '<None>'} (WalBot instance)\n"
+            f"{bc.discord.bot_user} (WalBot instance)\n"
             "Backends:\n"
             f"    Discord: {'on' if bc.backends['discord'] else 'off'}\n"
             f"    Telegram: {'on' if bc.backends['telegram'] else 'off'}\n"

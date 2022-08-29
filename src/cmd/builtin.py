@@ -70,8 +70,6 @@ class BuiltinCommands(BaseCmd):
 """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
-        if not hasattr(bc, "discord_bot_user"):
-            return await Command.send_message(execution_ctx, "Bot is not loaded yet!")
         verbosity = 0
         if len(cmd_line) > 1:
             if cmd_line[1] == '-v':

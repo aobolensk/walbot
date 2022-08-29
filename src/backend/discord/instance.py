@@ -22,7 +22,6 @@ from src.bot_cache import BotCache
 from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
 from src.emoji import get_clock_emoji
 from src.ff import FF
-from src.info import BotInfo
 from src.log import log
 from src.mail import Mail
 from src.utils import Util
@@ -40,14 +39,12 @@ class WalBot(discord.Client):
         self.bot_cache = BotCache(True)
         self.loop.create_task(self._process_reminders())
         self.loop.create_task(VoiceRoutine(self.bot_cache).start())
-        bc.config = self.config
         bc.discord.commands = self.config.commands
-        bc.latency = lambda: self.latency
+        bc.discord.latency = lambda: self.latency
         bc.discord.change_status = self._change_status
         bc.discord.change_presence = self.change_presence
         bc.secret_config = self.secret_config
-        bc.info = BotInfo()
-        bc.plugin_manager.register()
+        bc.discord.plugin_manager.register()
         bc.discord.get_channel = self.get_channel
         bc.discord.background_loop = self.loop
         if not bc.args.fast_start:
@@ -92,7 +89,7 @@ class WalBot(discord.Client):
     async def _on_shutdown(self) -> None:
         if self.repl is not None:
             self.repl.stop()
-        await bc.plugin_manager.unload_plugins()
+        await bc.discord.plugin_manager.unload_plugins()
 
     @Mail.send_exception_info_to_admin_emails
     async def _precompile(self) -> None:
@@ -203,7 +200,7 @@ class WalBot(discord.Client):
     @Mail.send_exception_info_to_admin_emails
     async def on_ready(self) -> None:
         bc.backends["discord"] = True
-        await bc.plugin_manager.load_plugins()
+        await bc.discord.plugin_manager.load_plugins()
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
@@ -215,16 +212,16 @@ class WalBot(discord.Client):
         for guild in self.guilds:
             if guild.id not in self.config.discord.guilds.keys():
                 self.config.discord.guilds[guild.id] = GuildSettings(guild.id)
-        bc.discord_bot_user = self.user
+        bc.discord.bot_user = self.user
         self.loop.create_task(self._config_autosave())
         self.loop.create_task(self._precompile())
 
     @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
-        await bc.plugin_manager.broadcast_command("on_message", message)
+        await bc.discord.plugin_manager.broadcast_command("on_message", message)
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
-        bc.message_buffer.push(message)
+        bc.discord.message_buffer.push(message)
         log.info(f"<{message.id}> {message.author} -> {message.content}")
         if message.author.id == self.user.id:
             return
@@ -252,7 +249,7 @@ class WalBot(discord.Client):
             return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
-        bc.message_buffer.push(message)
+        bc.discord.message_buffer.push(message)
         log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
         if message.author.id == self.user.id:
             return
@@ -274,7 +271,7 @@ class WalBot(discord.Client):
             await self._process_command(message)
 
     async def _process_repetitions(self, message: discord.Message) -> None:
-        m = tuple(bc.message_buffer.get(message.channel.id, i) for i in range(3))
+        m = tuple(bc.discord.message_buffer.get(message.channel.id, i) for i in range(3))
         if (all(m) and m[0].content and m[0].content == m[1].content == m[2].content and
             (m[0].author.id != self.user.id and
              m[1].author.id != self.user.id and

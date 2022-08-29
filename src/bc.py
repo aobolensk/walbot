@@ -32,11 +32,15 @@ class BotController:
 
     class Discord:
         def __init__(self) -> None:
+            self.bot_user = None
             self.commands = None
             self.get_channel = None
             self.background_loop = None
             self.change_status = None
             self.change_presence = None
+            self.latency = None
+            self.plugin_manager = PluginManager()
+            self.message_buffer = MessageBuffer()
 
     def __init__(self):
         self.deployment_time = datetime.datetime.now()
@@ -47,8 +51,6 @@ class BotController:
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
         self.stopwatches = dict()
-        self.plugin_manager = PluginManager()
-        self.message_buffer = MessageBuffer()
         self.instance_name = ""
         self.backends = {
             "discord": False,

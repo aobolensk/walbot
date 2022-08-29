@@ -23,6 +23,7 @@ from src.api.command import SupportedPlatforms
 from src.bot_cache import BotCache
 from src.config import Config, SecretConfig, bc
 from src.ff import FF
+from src.info import BotInfo
 from src.log import log
 from src.markov import Markov, MarkovV2
 from src.utils import Util
@@ -141,6 +142,7 @@ class Launcher:
         bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
         if bc.secret_config is None:
             bc.secret_config = SecretConfig()
+        bc.info = BotInfo()
         if main_bot:
             if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
                 bc.markov = Util.read_config_file(const.MARKOV_PATH)

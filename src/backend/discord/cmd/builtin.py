@@ -1137,7 +1137,7 @@ class BuiltinCommands(BaseCmd):
                 if os.path.splitext(os.path.basename(file))[0].lower() == image.lower():
                     try:
                         with open(os.path.join(const.IMAGES_DIRECTORY, file), "rb") as f:
-                            await bc.discord_bot_user.edit(avatar=f.read())
+                            await bc.discord.bot_user.edit(avatar=f.read())
                         await Msg.response(
                             message, f"Successfully changed bot avatar to {image}", silent)
                     except discord.HTTPException as e:
@@ -1172,7 +1172,7 @@ class BuiltinCommands(BaseCmd):
                     temp_image_file.close()
                 try:
                     with open(temp_image_file.name, "rb") as temp_image_file:
-                        await bc.discord_bot_user.edit(avatar=temp_image_file.read())
+                        await bc.discord.bot_user.edit(avatar=temp_image_file.read())
                 except Exception as e:
                     log.error("Changing avatar failed!", exc_info=True)
                     return null(await Msg.response(message, f"Changing avatar failed: {e}", silent))
@@ -1206,12 +1206,12 @@ class BuiltinCommands(BaseCmd):
                     message,
                     f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
                     silent))
-        result = bc.message_buffer.get(message.channel.id, number)
+        result = bc.discord.message_buffer.get(message.channel.id, number)
         if result is not None:
             result = result.content
         else:
             result = await message.channel.history(limit=number + 1).flatten()
-            bc.message_buffer.reset(message.channel.id, result)
+            bc.discord.message_buffer.reset(message.channel.id, result)
             result = result[-1].content
         await Msg.response(message, result, silent)
         return result
