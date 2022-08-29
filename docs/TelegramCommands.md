@@ -5,6 +5,7 @@
 * [Module: builtin](#module-builtin)
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
+* [Module: math](#module-math)
 * [Module: reminder](#module-reminder)
 * [Module: string](#module-string)
 
@@ -141,6 +142,22 @@
 
 **statmarkov**: Show stats for Markov module \
     Example: !statmarkov \
+    *Default permission level: 0*
+
+# Module: math
+
+**calc**: Calculate mathematical expression \
+    Examples: \
+        !calc 2+2*2 \
+        !calc 4/2-1 \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**if**: If expression is true (!= 0) then return first expression otherwise return the second one \
+    Examples: \
+        !if 1 It's true;It's false -&gt; It's true \
+        !if 0 It's true;It's false -&gt; It's false \
+    *This command can be used as subcommand* \
     *Default permission level: 0*
 
 # Module: reminder
