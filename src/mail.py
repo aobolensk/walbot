@@ -4,6 +4,7 @@ import smtplib
 import traceback
 from typing import Any, List
 
+from src import const
 from src.config import SecretConfig, bc
 from src.log import log
 
@@ -67,7 +68,7 @@ class Mail:
                         mail = Mail(bc.secret_config)
                         mail.send(
                             bc.secret_config.admin_email_list,
-                            f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
+                            f"WalBot (instance: {const.INSTANCE_NAME}) {func.__name__} failed",
                             f"{func.__name__} failed:\n"
                             f"{e}\n"
                             "\n"
@@ -92,7 +93,7 @@ class Mail:
                         mail = Mail(bc.secret_config)
                         mail.send(
                             bc.secret_config.admin_email_list,
-                            f"WalBot (instance: {bc.instance_name}) {func.__name__} failed",
+                            f"WalBot (instance: {const.INSTANCE_NAME}) {func.__name__} failed",
                             f"{func.__name__} failed:\n"
                             f"{e}\n"
                             "\n"

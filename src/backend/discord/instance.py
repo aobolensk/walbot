@@ -28,12 +28,14 @@ from src.utils import Util
 
 
 class WalBot(discord.Client):
-    def __init__(self, name: str, config: Config, secret_config: SecretConfig, intents: discord.Intents) -> None:
+    def __init__(
+            self, name: str, config: Config, secret_config: SecretConfig, intents: discord.Intents,
+            fast_start: bool = False) -> None:
         super().__init__(intents=intents, proxy=Util.proxy.http())
         if Util.proxy.http() is not None:
             log.info("Discord instance is using proxy: " + Util.proxy.http())
         self.repl = None
-        bc.instance_name = self.instance_name = name
+        self.instance_name = name
         self.config = config
         self.secret_config = secret_config
         self.bot_cache = BotCache(True)
@@ -43,11 +45,10 @@ class WalBot(discord.Client):
         bc.discord.latency = lambda: self.latency
         bc.discord.change_status = self._change_status
         bc.discord.change_presence = self.change_presence
-        bc.secret_config = self.secret_config
         bc.discord.plugin_manager.register()
         bc.discord.get_channel = self.get_channel
         bc.discord.background_loop = self.loop
-        if not bc.args.fast_start:
+        if not fast_start:
             log.debug("Started Markov model checks...")
             if bc.markov.check():
                 log.info("Markov model has passed all checks")
@@ -393,8 +394,6 @@ class DiscordBotInstance(BotInstance):
         if bc.secret_config.discord["token"] is None:
             log.warning("Discord backend is not configured. Missing token in secret config")
             return
-        # Some variable initializations
-        bc.args = args
         # Handle --nohup flag
         if sys.platform in ("linux", "darwin") and args.nohup:
             fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
@@ -409,7 +408,7 @@ class DiscordBotInstance(BotInstance):
         asyncio.set_event_loop(loop)
         intents = discord.Intents.all()
         if main_bot:
-            walbot = WalBot(args.name, bc.config, bc.secret_config, intents=intents)
+            walbot = WalBot(args.name, bc.config, bc.secret_config, intents=intents, fast_start=args.fast_start)
         else:
             walbot = importlib.import_module("src.backend.discord.minibot").MiniWalBot(
                 args.name, bc.config, bc.secret_config, args.message, intents=intents)
