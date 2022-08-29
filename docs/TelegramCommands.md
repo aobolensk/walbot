@@ -3,6 +3,7 @@
 
 # Table of Contents:
 * [Module: builtin](#module-builtin)
+* [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: reminder](#module-reminder)
 * [Module: string](#module-string)
@@ -45,10 +46,6 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**poll**: Create poll and collect result after selected time \
-    Example: !poll 60 option 1;option 2;option 3 \
-    *Default permission level: 0*
-
 **restart**: Restart the bot \
     Example: !restart \
     *Default permission level: 2*
@@ -72,6 +69,12 @@
     Examples: \
         !version \
         !version short \
+    *Default permission level: 0*
+
+# Module: interactive
+
+**poll**: Create poll and collect result after selected time \
+    Example: !poll 60 option 1;option 2;option 3 \
     *Default permission level: 0*
 
 # Module: markov

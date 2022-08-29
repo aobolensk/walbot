@@ -74,7 +74,7 @@ class InteractiveCommands(BaseCmd):
 
     def bind(self) -> None:
         bc.executor.commands["poll"] = Command(
-            "builtin", "poll", const.Permission.USER, Implementation.FUNCTION,
+            "interactive", "poll", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._poll,
             supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
 
