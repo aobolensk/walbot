@@ -57,7 +57,6 @@ class Commands:
                 log.error(f"Module '{module}' have no classes in it")
         if not reload:
             self.export_help(const.DISCORD_COMMANDS_DOC_PATH)  # Discord legacy help export
-            bc.executor.export_help(SupportedPlatforms.TELEGRAM)
 
     def export_help(self, file_path: str) -> None:
         """Generate and export help for loaded commands to md file in docs directory"""
