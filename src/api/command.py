@@ -79,14 +79,18 @@ class Command:
             result = await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
         elif self.impl_type == Implementation.MESSAGE:
             result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
-        if execution_ctx.platform == "telegram":
+        else:
+            raise RuntimeError("invalid implementation type")
+        if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
             from src.config import bc
             result = await self.process_subcommands(execution_ctx, bc.executor, result)
         if self.impl_type == Implementation.FUNCTION:
-            return await self._exec(cmd_line, execution_ctx)
+            return await self._exec(result.split(" "), execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
             await execution_ctx.send_message(result)
             return result
+        else:
+            raise RuntimeError("invalid implementation type")
 
     @abstractmethod
     async def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:

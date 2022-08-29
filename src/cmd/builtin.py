@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from typing import List
+from typing import List, Optional
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -98,7 +98,7 @@ class BuiltinCommands(BaseCmd):
         await Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked restarting the bot!")
         subprocess.call([sys.executable, "walbot.py", "restart"])
 
-    async def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _version(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Get version of the bot
     Examples:
         !version
@@ -111,7 +111,7 @@ class BuiltinCommands(BaseCmd):
         await Command.send_message(execution_ctx, result)
         return result
 
-    async def _extexec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _extexec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Execute external shell command
     Note: Be careful when you are executing external commands!
     Example: !extexec uname -a"""
@@ -120,7 +120,7 @@ class BuiltinCommands(BaseCmd):
         print(' '.join(cmd_line[1:]))
         return await Util.run_external_command(execution_ctx, ' '.join(cmd_line[1:]))
 
-    async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Perform HTTP request
     Usage:
         !curl <url>

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from src import const, emoji
 from src.api.command import BaseCmd, Command, Implementation
@@ -18,7 +18,7 @@ class StringCommands(BaseCmd):
             "string", "demojify", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._demojify)
 
-    async def _emojify(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _emojify(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Emojify text
     Example: !emojify Hello!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
@@ -39,7 +39,7 @@ class StringCommands(BaseCmd):
         await Command.send_message(execution_ctx, result)
         return result
 
-    async def _demojify(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _demojify(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Demojify text
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
