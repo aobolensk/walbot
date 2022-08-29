@@ -109,15 +109,15 @@ class BotInfo:
         if bc.backends['discord']:
             result += f"    Discord: on ({bc.discord.bot_user})\n"
         else:
-            result += f"    Discord: off\n"
+            result += "    Discord: off\n"
         if bc.backends['telegram']:
             result += f"    Telegram: on ({bc.telegram.bot_username})\n"
         else:
-            result += f"    Telegram: off\n"
+            result += "    Telegram: off\n"
         if bc.backends['repl']:
-            result += f"    REPL: on\n"
+            result += "    REPL: on\n"
         else:
-            result += f"    REPL: off\n"
+            result += "    REPL: off\n"
         result += (
             f"Source code: <{const.GIT_REPO_LINK}>\n"
             f"Version: {self.version}{'-dirty' if self.is_version_dirty else ''} (updated at {self.version_time})\n"
