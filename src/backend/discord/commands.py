@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 import discord
 
 from src import const
-from src.api.command import BaseCmd, SupportedPlatforms
+from src.api.command import BaseCmd
 from src.backend.discord.context import DiscordExecutionContext
 from src.config import Command, bc, log
 from src.utils import Util

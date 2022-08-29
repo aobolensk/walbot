@@ -4,7 +4,6 @@ import functools
 
 from src import const
 from src.backend.discord.commands import bind_command
-from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import bc
 
