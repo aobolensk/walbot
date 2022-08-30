@@ -41,7 +41,7 @@ class BuiltinCommands(BaseCmd):
             subcommand=True, impl_func=self._extexec)
         bc.executor.commands["curl"] = Command(
             "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._curl)
+            subcommand=True, impl_func=self._curl)
         bc.executor.commands["donotupdatestate"] = Command(
             "builtin", "donotupdatestate", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._donotupdatestate)
