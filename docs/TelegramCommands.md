@@ -68,6 +68,14 @@
     Example: !shutdown \
     *Default permission level: 2*
 
+**time**: Show current time \
+    Examples: \
+        !time \
+        !time Europe/Moscow \
+        !time America/New_York \
+    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
+    *Default permission level: 0*
+
 **uptime**: Show bot uptime \
     Example: !uptime \
     *This command can be used as subcommand* \

@@ -1,7 +1,6 @@
 """Built-in WalBot commands"""
 
 import base64
-import datetime
 import imghdr
 import os
 import random
@@ -12,7 +11,6 @@ import urllib.parse
 import urllib.request
 
 import discord
-from dateutil import tz
 
 from src import const
 from src.algorithms import levenshtein_distance
@@ -139,7 +137,6 @@ class BuiltinCommands(BaseCmd):
             "wme": dict(permission=const.Permission.MOD.value, subcommand=False),
             "poll": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
             "silent": dict(permission=const.Permission.USER.value, subcommand=False),
-            "time": dict(permission=const.Permission.USER.value, subcommand=True),
             "status": dict(permission=const.Permission.MOD.value, subcommand=False),
             "channelid": dict(permission=const.Permission.MOD.value, subcommand=True),
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -648,30 +645,6 @@ class BuiltinCommands(BaseCmd):
             cmd = bc.discord.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, None, silent=True)
-
-    @staticmethod
-    async def _time(message, command, silent=False):
-        """Show current time
-    Examples:
-        !time
-        !time Europe/Moscow
-        !time America/New_York
-    Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        timezone = None
-        if len(command) == 2:
-            timezone = tz.gettz(command[1])
-            if timezone is None:
-                return null(
-                    await Msg.response(
-                        message,
-                        "Incorrect timezone. "
-                        "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
-                        silent))
-        result = str(datetime.datetime.now(timezone)).split('.', maxsplit=1)[0]
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _status(message, command, silent=False):

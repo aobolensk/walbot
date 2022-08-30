@@ -1,6 +1,9 @@
+import datetime
 import subprocess
 import sys
 from typing import List, Optional
+
+from dateutil import tz
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -36,6 +39,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["version"] = Command(
             "builtin", "version", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._version)
+        bc.executor.commands["time"] = Command(
+            "builtin", "time", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._time)
         bc.executor.commands["extexec"] = Command(
             "builtin", "extexec", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=True, impl_func=self._extexec)
@@ -108,6 +114,27 @@ class BuiltinCommands(BaseCmd):
         result = bc.info.version
         if len(cmd_line) == 2 and (cmd_line[1] == 's' or cmd_line[1] == 'short'):
             result = result[:7]
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _time(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Show current time
+    Examples:
+        !time
+        !time Europe/Moscow
+        !time America/New_York
+    Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+            return
+        timezone = None
+        if len(cmd_line) == 2:
+            timezone = tz.gettz(cmd_line[1])
+            if timezone is None:
+                return await Command.send_message(
+                        execution_ctx,
+                        "Incorrect timezone. "
+                        "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>")
+        result = str(datetime.datetime.now(timezone)).split('.', maxsplit=1)[0]
         await Command.send_message(execution_ctx, result)
         return result
 
