@@ -74,12 +74,13 @@ class CustomCmdsCommands(BaseCmd):
             return
         command_name = cmd_line[1]
         if command_name not in bc.executor.commands.keys():
-            return await Command.send_message(execution_ctx, f"Command '{command_name}' does not exist")
+            await Command.send_message(
+                execution_ctx, f"WARN: Command '{command_name}' does not exist (in common commands)")
         if command_name not in bc.discord.commands.data.keys():
-            return await Command.send_message(
-                execution_ctx, f"Command '{command_name}' does not exist (on Discord backend")
+            await Command.send_message(
+                execution_ctx, f"WARN: Command '{command_name}' does not exist (on Discord backend")
         bc.executor.commands.pop(command_name, None)
         bc.discord.commands.data.pop(command_name, None)
-        if bc.backends["telegram"]:
+        if bc.backends["telegram"] and command_name in bc.telegram.handlers.keys():
             CommonCommands.remove_handler(bc.telegram.dispatcher, command_name)
         return await Command.send_message(execution_ctx, f"Command '{command_name}' successfully deleted")
