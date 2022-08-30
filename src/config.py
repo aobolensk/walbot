@@ -145,7 +145,7 @@ class Command:
                             await message.channel.send(chunk)
                 return response
         elif self.cmd_line is not None:
-            cmd_line = self.cmd_line[:]
+            cmd_line = bc.executor.commands[message.content.split(' ')[0][1:]].impl_message[:]
             log.debug2(f"Command (before processing): {cmd_line}")
             cmd_line = await ApiCommand.process_variables(
                 DiscordExecutionContext(message), cmd_line, message.content.split(' '), safe=True)
