@@ -216,7 +216,7 @@ class Launcher:
         self._read_configs(main_bot)
         bc.executor.load_commands()
         bc.executor.export_help(SupportedPlatforms.TELEGRAM)
-        bc.executor.load_persistent_state(bc.config.executor["commands_data"])
+        bc.executor.load_persistent_state(bc.config.executor)
         bc.config.commands.update()
         nest_asyncio.apply()
 

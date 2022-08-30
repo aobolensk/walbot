@@ -421,5 +421,5 @@ class DiscordBotInstance(BotInstance):
     def stop(self, args, main_bot=True):
         log.info("Bot is disconnected!")
         if main_bot:
-            bc.executor.store_persistent_state(bc.config.executor["commands_data"])
+            bc.executor.store_persistent_state(bc.config.executor)
             bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)

@@ -38,13 +38,13 @@ class Executor:
     def add_module(self, module: BaseCmd) -> None:
         module.bind()
 
-    def load_persistent_state(self, commands_data: Dict[str, Any]):
+    def load_persistent_state(self, executor_config: Dict[str, Any]):
         for command in self.commands.values():
-            command.load_persistent_state(commands_data)
+            command.load_persistent_state(executor_config["commands_data"])
 
-    def store_persistent_state(self, commands_data: Dict[str, Any]):
+    def store_persistent_state(self, executor_config: Dict[str, Any]):
         for command in self.commands.values():
-            command.store_persistent_state(commands_data)
+            command.store_persistent_state(executor_config["commands_data"])
 
     def export_help(self, platform: SupportedPlatforms):
         modules = defaultdict(dict)
