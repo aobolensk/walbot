@@ -25,6 +25,10 @@
         !curl &lt;url&gt; --no-proxy \
     *Default permission level: 0*
 
+**delcmd**: Delete command \
+    Example: !delcmd hello \
+    *Default permission level: 1*
+
 **donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
     Usage: !donotupdatestate \
     *Default permission level: 1*

@@ -51,6 +51,7 @@ class Executor:
             if command.module_name is None:
                 continue
             command.store_persistent_state(executor_config["commands_data"])
+        executor_config["custom_commands"] = dict()
         for command in self.commands.values():
             if command.module_name is not None:
                 continue

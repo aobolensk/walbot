@@ -18,6 +18,9 @@ class CustomCmdsCommands(BaseCmd):
         bc.executor.commands["updextcmd"] = Command(
             "custom-commands", "updextcmd", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=False, impl_func=self._updextcmd, postpone_execution=True)
+        bc.executor.commands["delcmd"] = Command(
+            "builtin", "delcmd", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delcmd)
 
     async def _addextcmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Add command that executes external process
@@ -60,3 +63,18 @@ class CustomCmdsCommands(BaseCmd):
         return await Command.send_message(
             execution_ctx,
             f"Command '{command_name}' that calls external command `{external_cmd_line}` is successfully updated")
+
+    async def _delcmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Delete command
+    Example: !delcmd hello"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        command_name = cmd_line[1]
+        if command_name not in bc.executor.commands.keys():
+            return await Command.send_message(execution_ctx, f"Command '{command_name}' does not exist")
+        if command_name not in bc.discord.commands.data.keys():
+            return await Command.send_message(
+                execution_ctx, f"Command '{command_name}' does not exist (on Discord backend")
+        bc.executor.commands.pop(command_name, None)
+        bc.discord.commands.data.pop(command_name, None)
+        return await Command.send_message(execution_ctx, f"Command '{command_name}' successfully deleted")

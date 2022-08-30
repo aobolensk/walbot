@@ -199,6 +199,7 @@ class BuiltinCommands(BaseCmd):
         self._restart = functools.partial(bind_command, "restart")
         self._curl = functools.partial(bind_command, "curl")
         self._extexec = functools.partial(bind_command, "extexec")
+        self._delcmd = functools.partial(bind_command, "delcmd")
         self._donotupdatestate = functools.partial(bind_command, "donotupdatestate")
         self._getmentioncmd = functools.partial(bind_command, "getmentioncmd")
         self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
@@ -387,18 +388,6 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(
                     message, f"Command '{command_name}' -> "
                              f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
-        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
-
-    @staticmethod
-    async def _delcmd(message, command, silent=False):
-        """Delete command
-    Example: !delcmd hello"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        command_name = command[1]
-        if command_name in bc.discord.commands.data.keys():
-            bc.discord.commands.data.pop(command_name, None)
-            return null(await Msg.response(message, f"Command '{command_name}' successfully deleted", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
