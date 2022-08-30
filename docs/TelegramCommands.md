@@ -7,6 +7,7 @@
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
+* [Module: random](#module-random)
 * [Module: reminder](#module-reminder)
 * [Module: string](#module-string)
 
@@ -175,6 +176,13 @@
     Examples: \
         !if 1 It's true;It's false -&gt; It's true \
         !if 0 It's true;It's false -&gt; It's false \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+# Module: random
+
+**random**: Get random number in range [left, right] \
+    Example: !random 5 10 \
     *This command can be used as subcommand* \
     *Default permission level: 0*
 

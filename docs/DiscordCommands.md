@@ -9,6 +9,7 @@
 * [Module: math](#module-math)
 * [Module: plugin](#module-plugin): WalBot plugin system management
 * [Module: quote](#module-quote): Interaction with WalBot quote database
+* [Module: random](#module-random)
 * [Module: reaction](#module-reaction): Management of bot reactions to user messages
 * [Module: reminder](#module-reminder)
 * [Module: role](#module-role): Role commands
@@ -146,10 +147,6 @@
     Examples: \
         !profile \
         !profile `@user`
-
-**random**: Get random number in range [left, right] \
-    Example: !random 5 10 \
-    *This command can be used as subcommand*
 
 **randselect**: Get random option among provided strings (split by space) \
     Example: !randselect a b c \
@@ -363,6 +360,12 @@
 
 **setquoteauthor**: Set author of quote by its index \
     Example: !setquoteauthor 0 WalBot
+
+# Module: random
+
+**random**: Get random number in range [left, right] \
+    Example: !random 5 10 \
+    *This command can be used as subcommand*
 
 # Module: reaction
 

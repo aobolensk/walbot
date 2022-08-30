@@ -138,7 +138,6 @@ class BuiltinCommands(BaseCmd):
             "config": dict(permission=const.Permission.MOD.value, subcommand=False),
             "wme": dict(permission=const.Permission.MOD.value, subcommand=False),
             "poll": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
-            "random": dict(permission=const.Permission.USER.value, subcommand=True),
             "randselect": dict(permission=const.Permission.USER.value, subcommand=True),
             "randselects": dict(permission=const.Permission.USER.value, subcommand=True),
             "silent": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -637,29 +636,6 @@ class BuiltinCommands(BaseCmd):
             return
         result = "You asked me to send you this: " + result
         await Msg.send_direct_message(message.author, result, silent)
-
-    @staticmethod
-    async def _random(message, command, silent=False):
-        """Get random number in range [left, right]
-    Example: !random 5 10"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        left = await Util.parse_float(
-            message, command[1], "Left border should be a number", silent)
-        if left is None:
-            return
-        right = await Util.parse_float(
-            message, command[2], "Right border should be a number", silent)
-        if right is None:
-            return
-        if left > right:
-            return null(await Msg.response(message, "Left border should be less or equal than right", silent))
-        if const.INTEGER_NUMBER.fullmatch(command[1]) and const.INTEGER_NUMBER.fullmatch(command[2]):
-            result = str(random.randint(int(left), int(right)))  # integer random
-        else:
-            result = str(random.uniform(left, right))  # float random
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _randselect(message, command, silent=False):

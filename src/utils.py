@@ -63,6 +63,14 @@ class Util:
             return
 
     @staticmethod
+    async def parse_float_for_command(execution_ctx: ExecutionContext, string: str, error_message: str):
+        try:
+            return float(string)
+        except ValueError:
+            await Command.send_message(execution_ctx, error_message)
+            return
+
+    @staticmethod
     def check_version(name, actual, expected, solutions=None, fatal=True):
         if actual == expected:
             return True
