@@ -23,6 +23,7 @@ class BaseCmd:
 class Implementation(enum.IntEnum):
     FUNCTION = 0
     MESSAGE = 1
+    EXTERNAL_CMDLINE = 2
 
 
 class SupportedPlatforms(enum.IntEnum):
@@ -48,6 +49,9 @@ class Command:
             self._exec = impl_func
             self.description = self._exec.__doc__
         elif impl_type == Implementation.MESSAGE:
+            self.impl_message = impl_message
+            self.description = impl_message
+        elif impl_type == Implementation.EXTERNAL_CMDLINE:
             self.impl_message = impl_message
             self.description = impl_message
         else:
@@ -79,6 +83,8 @@ class Command:
             result = await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
         elif self.impl_type == Implementation.MESSAGE:
             result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
+        elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
+            result = await self.process_variables(execution_ctx, self.impl_message, cmd_line, safe=True)
         else:
             raise RuntimeError("invalid implementation type")
         if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
@@ -87,8 +93,10 @@ class Command:
         if self.impl_type == Implementation.FUNCTION:
             return await self._exec(result.split(" "), execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            await execution_ctx.send_message(result)
-            return result
+            return await execution_ctx.send_message(result)
+        elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
+            from src.utils import Util
+            return await Util.run_external_command(execution_ctx, result)
         else:
             raise RuntimeError("invalid implementation type")
 
