@@ -80,6 +80,11 @@
     Example: !addextcmd uname uname -a \
     *Default permission level: 2*
 
+**updextcmd**: Update command that executes external process (works only for commands that already exist) \
+    Note: Be careful when you are executing external commands! \
+    Example: !updextcmd uname uname -a \
+    *Default permission level: 2*
+
 # Module: interactive
 
 **poll**: Create poll and collect result after selected time \

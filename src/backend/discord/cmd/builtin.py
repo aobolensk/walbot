@@ -204,6 +204,7 @@ class BuiltinCommands(BaseCmd):
         self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
         self._poll = functools.partial(bind_command, "poll")
         self._addextcmd = functools.partial(bind_command, "addextcmd")
+        self._updextcmd = functools.partial(bind_command, "updextcmd")
 
     @staticmethod
     async def _range(message, command, silent=False):
@@ -386,24 +387,6 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(
                     message, f"Command '{command_name}' -> "
                              f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
-        await Msg.response(message, f"Command '{command_name}' does not exist", silent)
-
-    @staticmethod
-    async def _updextcmd(message, command, silent=False):
-        """Update command that executes external process (works only for commands that already exist)
-    Note: Be careful when you are executing external commands!
-    Example: !updextcmd uname uname -a"""
-        if not await Util.check_args_count(message, command, silent, min=3):
-            return
-        command_name = command[1]
-        if command_name in bc.discord.commands.data.keys():
-            if bc.discord.commands.data[command_name].cmd_line is None:
-                return null(await Msg.response(message, f"Command '{command_name}' is not editable", silent))
-            bc.discord.commands.data[command_name].cmd_line = ' '.join(command[2:])
-            return null(
-                await Msg.response(
-                    message, f"Command '{command_name}' that calls external command "
-                             f"`{bc.discord.commands.data[command_name].cmd_line}` is successfully updated", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod

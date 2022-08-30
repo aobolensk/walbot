@@ -15,6 +15,9 @@ class CustomCmdsCommands(BaseCmd):
         bc.executor.commands["addextcmd"] = Command(
             "custom-commands", "addextcmd", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addextcmd, postpone_execution=True)
+        bc.executor.commands["updextcmd"] = Command(
+            "custom-commands", "updextcmd", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._updextcmd, postpone_execution=True)
 
     async def _addextcmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Add command that executes external process
@@ -39,3 +42,21 @@ class CustomCmdsCommands(BaseCmd):
         await Command.send_message(
             execution_ctx,
             f"Command '{command_name}' that calls external command `{external_cmd_line}` is successfully added")
+
+    async def _updextcmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Update command that executes external process (works only for commands that already exist)
+    Note: Be careful when you are executing external commands!
+    Example: !updextcmd uname uname -a"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        command_name = cmd_line[1]
+        if command_name not in bc.executor.commands.keys():
+            return await Command.send_message(execution_ctx, f"Command '{command_name}' does not exist")
+        if (bc.executor.commands[command_name].impl_type != Implementation.EXTERNAL_CMDLINE or
+                bc.executor.commands[command_name].impl_message is None):
+            return await Command.send_message(execution_ctx, f"Command '{command_name}' is not editable")
+        external_cmd_line = ' '.join(cmd_line[2:])
+        bc.executor.commands[command_name].impl_message = external_cmd_line
+        return await Command.send_message(
+            execution_ctx,
+            f"Command '{command_name}' that calls external command `{external_cmd_line}` is successfully updated")
