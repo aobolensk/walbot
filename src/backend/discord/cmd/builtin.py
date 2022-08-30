@@ -203,6 +203,7 @@ class BuiltinCommands(BaseCmd):
         self._getmentioncmd = functools.partial(bind_command, "getmentioncmd")
         self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
         self._poll = functools.partial(bind_command, "poll")
+        self._addextcmd = functools.partial(bind_command, "addextcmd")
 
     @staticmethod
     async def _range(message, command, silent=False):
@@ -369,22 +370,6 @@ class BuiltinCommands(BaseCmd):
             message,
             f"Command '{command_name}' -> '{bc.discord.commands.data[command_name].message}' successfully added",
             silent)
-
-    @staticmethod
-    async def _addextcmd(message, command, silent=False):
-        """Add command that executes external process
-    Note: Be careful when you are executing external commands!
-    Example: !addextcmd uname uname -a"""
-        if not await Util.check_args_count(message, command, silent, min=3):
-            return
-        command_name = command[1]
-        if command_name in bc.discord.commands.data.keys():
-            return null(await Msg.response(message, f"Command {command_name} already exists", silent))
-        bc.discord.commands.data[command_name] = Command(command_name, cmd_line=' '.join(command[2:]))
-        bc.discord.commands.data[command_name].channels.append(message.channel.id)
-        await Msg.response(
-            message, f"Command '{command_name}' that calls external command "
-                     f"`{bc.discord.commands.data[command_name].cmd_line}` is successfully added", silent)
 
     @staticmethod
     async def _updcmd(message, command, silent=False):

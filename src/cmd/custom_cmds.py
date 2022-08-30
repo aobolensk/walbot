@@ -1,0 +1,41 @@
+from typing import List
+
+from src import const
+from src.api.command import BaseCmd, Command, Implementation
+from src.api.execution_context import ExecutionContext
+from src.config import Command as LegacyDiscordCommand
+from src.config import bc
+
+
+class CustomCmdsCommands(BaseCmd):
+    def __init__(self) -> None:
+        pass
+
+    def bind(self) -> None:
+        bc.executor.commands["addextcmd"] = Command(
+            "custom-commands", "addextcmd", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addextcmd, postpone_execution=True)
+
+    async def _addextcmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Add command that executes external process
+    Note: Be careful when you are executing external commands!
+    Example: !addextcmd uname uname -a"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        command_name = cmd_line[1]
+        if command_name in bc.executor.commands.keys():
+            return await Command.send_message(execution_ctx, f"Command {command_name} already exists")
+        if command_name in bc.discord.commands.data.keys():
+            return await Command.send_message(
+                execution_ctx, f"Command {command_name} already exists (on Discord backend)")
+        external_cmd_line = ' '.join(cmd_line[2:])
+        bc.executor.commands[cmd_line[1]] = Command(
+            None, command_name, const.Permission.ADMIN, Implementation.EXTERNAL_CMDLINE,
+            subcommand=True, impl_message=external_cmd_line)
+        bc.discord.commands.data[command_name] = LegacyDiscordCommand(
+            command_name, cmd_line=external_cmd_line)
+        if execution_ctx.platform == "discord":
+            bc.discord.commands.data[command_name].channels.append(execution_ctx.message.channel.id)
+        await Command.send_message(
+            execution_ctx,
+            f"Command '{command_name}' that calls external command `{external_cmd_line}` is successfully added")

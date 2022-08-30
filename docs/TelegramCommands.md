@@ -3,6 +3,7 @@
 
 # Table of Contents:
 * [Module: builtin](#module-builtin)
+* [Module: custom-commands](#module-custom-commands)
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
@@ -71,6 +72,13 @@
         !version \
         !version short \
     *Default permission level: 0*
+
+# Module: custom-commands
+
+**addextcmd**: Add command that executes external process \
+    Note: Be careful when you are executing external commands! \
+    Example: !addextcmd uname uname -a \
+    *Default permission level: 2*
 
 # Module: interactive
 

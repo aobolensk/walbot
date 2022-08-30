@@ -40,12 +40,16 @@ class Executor:
 
     def load_persistent_state(self, executor_config: Dict[str, Any]):
         for command in self.commands.values():
+            if command.module_name is None:
+                continue
             command.load_persistent_state(executor_config["commands_data"])
         for cmd_name, command in executor_config["custom_commands"].items():
             self.commands[cmd_name] = command
 
     def store_persistent_state(self, executor_config: Dict[str, Any]):
         for command in self.commands.values():
+            if command.module_name is None:
+                continue
             command.store_persistent_state(executor_config["commands_data"])
         for command in self.commands.values():
             if command.module_name is not None:
