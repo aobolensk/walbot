@@ -121,6 +121,8 @@ class Launcher:
             backend.stop(self.args)
             log.debug2("Stopped backend: " + backend.name)
         BotCache(True).remove()
+        bc.executor.store_persistent_state(bc.config.executor)
+        bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 

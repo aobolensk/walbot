@@ -419,7 +419,4 @@ class DiscordBotInstance(BotInstance):
             log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
 
     def stop(self, args, main_bot=True):
-        log.info("Bot is disconnected!")
-        if main_bot:
-            bc.executor.store_persistent_state(bc.config.executor)
-            bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
+        pass
