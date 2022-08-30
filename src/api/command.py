@@ -37,7 +37,8 @@ class Command:
             self, module_name: str, command_name: str, permission_level: const.Permission,
             impl_type: Implementation, subcommand: bool = False,
             impl_func: FunctionType = None, impl_message: str = None,
-            supported_platforms: SupportedPlatforms = SupportedPlatforms.ALL) -> None:
+            supported_platforms: SupportedPlatforms = SupportedPlatforms.ALL,
+            postpone_execution=False) -> None:
         self.module_name = module_name
         self.command_name = command_name
         self.permission_level = permission_level
@@ -45,6 +46,7 @@ class Command:
         self.impl_type = impl_type
         self.times_called = 0
         self.supported_platforms = supported_platforms
+        self.postpone_execution = postpone_execution
         if impl_type == Implementation.FUNCTION:
             self._exec = impl_func
             self.description = self._exec.__doc__
@@ -79,17 +81,20 @@ class Command:
                 await self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
                 return
         self.times_called += 1
-        if self.impl_type == Implementation.FUNCTION:
-            result = await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
-        elif self.impl_type == Implementation.MESSAGE:
-            result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
-        elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
-            result = await self.process_variables(execution_ctx, self.impl_message, cmd_line, safe=True)
+        if not self.postpone_execution:
+            if self.impl_type == Implementation.FUNCTION:
+                result = await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)
+            elif self.impl_type == Implementation.MESSAGE:
+                result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
+            elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
+                result = await self.process_variables(execution_ctx, self.impl_message, cmd_line, safe=True)
+            else:
+                raise RuntimeError("invalid implementation type")
+            if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
+                from src.config import bc
+                result = await self.process_subcommands(execution_ctx, bc.executor, result)
         else:
-            raise RuntimeError("invalid implementation type")
-        if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
-            from src.config import bc
-            result = await self.process_subcommands(execution_ctx, bc.executor, result)
+            result = ' '.join(cmd_line)
         if self.impl_type == Implementation.FUNCTION:
             return await self._exec(result.split(" "), execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
