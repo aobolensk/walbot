@@ -186,7 +186,8 @@
         !time \
         !time Europe/Moscow \
         !time America/New_York \
-    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt;
+    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
+    *This command can be used as subcommand*
 
 **timescmd**: Print how many times command was invoked \
     Examples: \
