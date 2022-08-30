@@ -125,7 +125,6 @@ class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "echo": dict(permission=const.Permission.USER.value, subcommand=True),
-            "range": dict(permission=const.Permission.USER.value, subcommand=True),
             "ping": dict(permission=const.Permission.USER.value, subcommand=False),
             "help": dict(permission=const.Permission.USER.value, subcommand=False),
             "profile": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -186,40 +185,6 @@ class BuiltinCommands(BaseCmd):
             "setmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
-
-    @staticmethod
-    async def _range(message, command, silent=False):
-        """Generate range of numbers
-    Examples:
-        !range <stop>
-        !range <start> <stop>
-        !range <start> <stop> <step>"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=4):
-            return
-        start, stop, step = 0, 0, 1
-        if len(command) == 2:
-            stop = await Util.parse_int(
-                message, command[1], f"Stop parameter in range '{command[0]}' should be an integer", silent)
-        else:
-            start = await Util.parse_int(
-                message, command[1], f"Start parameter in range '{command[0]}' should be an integer", silent)
-            stop = await Util.parse_int(
-                message, command[2], f"Stop parameter in range '{command[0]}' should be an integer", silent)
-            if len(command) == 4:
-                step = await Util.parse_int(
-                    message, command[3], f"Step parameter in range '{command[0]}' should be an integer", silent)
-        if start is None or stop is None or step is None:
-            return
-        result = ''
-        for iteration, number in enumerate(range(start, stop, step)):
-            if iteration >= const.MAX_RANGE_ITERATIONS:
-                result = f"Range iteration limit ({const.MAX_RANGE_ITERATIONS}) has exceeded"
-                break
-            result += str(number) + ' '
-        else:
-            result = result[:-1]
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _profile(message, command, silent=False):

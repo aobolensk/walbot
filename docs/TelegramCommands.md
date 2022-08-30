@@ -294,3 +294,11 @@
     Example: !emojify Hello! \
     *This command can be used as subcommand* \
     *Default permission level: 0*
+
+**range**: Generate range of numbers \
+    Examples: \
+        !range &lt;stop&gt; \
+        !range &lt;start&gt; &lt;stop&gt; \
+        !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*

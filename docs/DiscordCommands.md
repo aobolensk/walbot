@@ -159,13 +159,6 @@
     Example: !randselects a;b;c \
     *This command can be used as subcommand*
 
-**range**: Generate range of numbers \
-    Examples: \
-        !range &lt;stop&gt; \
-        !range &lt;start&gt; &lt;stop&gt; \
-        !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
-    *This command can be used as subcommand*
-
 **reloadbotcommands**: Reload bot commands \
     Usage: !reloadbotcommands
 
@@ -580,6 +573,13 @@
 
 **join**: Join words with string as separator \
     Example: !join + 1 2 3 -&gt; 1+2+3 \
+    *This command can be used as subcommand*
+
+**range**: Generate range of numbers \
+    Examples: \
+        !range &lt;stop&gt; \
+        !range &lt;start&gt; &lt;stop&gt; \
+        !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
     *This command can be used as subcommand*
 
 **takechars**: Take n characters of the string \
