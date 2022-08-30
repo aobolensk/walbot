@@ -186,6 +186,16 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
+**randselect**: Get random option among provided strings (split by space) \
+    Example: !randselect a b c \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**randselects**: Get random option among provided strings (split by semicolon) \
+    Example: !randselects a;b;c \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
 # Module: reminder
 
 **addreminder**: Print message at particular time \

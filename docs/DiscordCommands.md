@@ -148,14 +148,6 @@
         !profile \
         !profile `@user`
 
-**randselect**: Get random option among provided strings (split by space) \
-    Example: !randselect a b c \
-    *This command can be used as subcommand*
-
-**randselects**: Get random option among provided strings (split by semicolon) \
-    Example: !randselects a;b;c \
-    *This command can be used as subcommand*
-
 **reloadbotcommands**: Reload bot commands \
     Usage: !reloadbotcommands
 
@@ -365,6 +357,14 @@
 
 **random**: Get random number in range [left, right] \
     Example: !random 5 10 \
+    *This command can be used as subcommand*
+
+**randselect**: Get random option among provided strings (split by space) \
+    Example: !randselect a b c \
+    *This command can be used as subcommand*
+
+**randselects**: Get random option among provided strings (split by semicolon) \
+    Example: !randselects a;b;c \
     *This command can be used as subcommand*
 
 # Module: reaction

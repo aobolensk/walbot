@@ -138,8 +138,6 @@ class BuiltinCommands(BaseCmd):
             "config": dict(permission=const.Permission.MOD.value, subcommand=False),
             "wme": dict(permission=const.Permission.MOD.value, subcommand=False),
             "poll": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
-            "randselect": dict(permission=const.Permission.USER.value, subcommand=True),
-            "randselects": dict(permission=const.Permission.USER.value, subcommand=True),
             "silent": dict(permission=const.Permission.USER.value, subcommand=False),
             "time": dict(permission=const.Permission.USER.value, subcommand=True),
             "status": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -636,29 +634,6 @@ class BuiltinCommands(BaseCmd):
             return
         result = "You asked me to send you this: " + result
         await Msg.send_direct_message(message.author, result, silent)
-
-    @staticmethod
-    async def _randselect(message, command, silent=False):
-        """Get random option among provided strings (split by space)
-    Example: !randselect a b c"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        index = random.randint(1, len(command) - 1)
-        result = command[index]
-        await Msg.response(message, result, silent)
-        return result
-
-    @staticmethod
-    async def _randselects(message, command, silent=False):
-        """Get random option among provided strings (split by semicolon)
-    Example: !randselects a;b;c"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        options = ' '.join(command[1:]).split(';')
-        index = random.randint(0, len(options) - 1)
-        result = options[index]
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _silent(message, command, silent=False):
