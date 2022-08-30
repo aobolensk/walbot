@@ -23,6 +23,7 @@
     Usage: \
         !curl &lt;url&gt; \
         !curl &lt;url&gt; --no-proxy \
+    *This command can be used as subcommand* \
     *Default permission level: 0*
 
 **delcmd**: Delete command \

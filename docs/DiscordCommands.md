@@ -57,7 +57,8 @@
 **curl**: Perform HTTP request \
     Usage: \
         !curl &lt;url&gt; \
-        !curl &lt;url&gt; --no-proxy
+        !curl &lt;url&gt; --no-proxy \
+    *This command can be used as subcommand*
 
 **delalias**: Delete command alias \
     Usage: !delalias &lt;alias&gt; \
