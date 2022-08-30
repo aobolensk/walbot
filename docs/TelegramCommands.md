@@ -3,6 +3,7 @@
 
 # Table of Contents:
 * [Module: builtin](#module-builtin)
+* [Module: custom-commands](#module-custom-commands)
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
@@ -23,6 +24,10 @@
         !curl &lt;url&gt; \
         !curl &lt;url&gt; --no-proxy \
     *Default permission level: 0*
+
+**delcmd**: Delete command \
+    Example: !delcmd hello \
+    *Default permission level: 1*
 
 **donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
     Usage: !donotupdatestate \
@@ -71,6 +76,18 @@
         !version \
         !version short \
     *Default permission level: 0*
+
+# Module: custom-commands
+
+**addextcmd**: Add command that executes external process \
+    Note: Be careful when you are executing external commands! \
+    Example: !addextcmd uname uname -a \
+    *Default permission level: 2*
+
+**updextcmd**: Update command that executes external process (works only for commands that already exist) \
+    Note: Be careful when you are executing external commands! \
+    Example: !updextcmd uname uname -a \
+    *Default permission level: 2*
 
 # Module: interactive
 

@@ -45,6 +45,8 @@ class BotController:
     class Telegram:
         def __init__(self) -> None:
             self.bot_username = None
+            self.dispatcher = None
+            self.handlers = dict()
 
     def __init__(self):
         self.deployment_time = datetime.datetime.now()

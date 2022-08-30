@@ -121,6 +121,8 @@ class Launcher:
             backend.stop(self.args)
             log.debug2("Stopped backend: " + backend.name)
         BotCache(True).remove()
+        bc.executor.store_persistent_state(bc.config.executor)
+        bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
@@ -216,7 +218,7 @@ class Launcher:
         self._read_configs(main_bot)
         bc.executor.load_commands()
         bc.executor.export_help(SupportedPlatforms.TELEGRAM)
-        bc.executor.load_persistent_state(bc.config.executor["commands_data"])
+        bc.executor.load_persistent_state(bc.config.executor)
         bc.config.commands.update()
         nest_asyncio.apply()
 
