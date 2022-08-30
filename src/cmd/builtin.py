@@ -131,9 +131,9 @@ class BuiltinCommands(BaseCmd):
             timezone = tz.gettz(cmd_line[1])
             if timezone is None:
                 return await Command.send_message(
-                        execution_ctx,
-                        "Incorrect timezone. "
-                        "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>")
+                    execution_ctx,
+                    "Incorrect timezone. "
+                    "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>")
         result = str(datetime.datetime.now(timezone)).split('.', maxsplit=1)[0]
         await Command.send_message(execution_ctx, result)
         return result
