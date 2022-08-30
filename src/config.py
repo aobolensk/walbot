@@ -225,6 +225,7 @@ class Config:
         # Executor
         self.executor = {
             "commands_data": dict(),
+            "custom_commands": dict(),
         }
 
     def backup(self, *files):

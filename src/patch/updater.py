@@ -7,6 +7,7 @@ import uuid
 import yaml
 
 from src import const
+from src.api.command import Command, Implementation
 from src.backend.discord.config import DiscordConfig
 from src.backend.telegram.config import TelegramConfig
 from src.ff import FF
@@ -302,6 +303,14 @@ class Updater:
             config.commands.data["delmarkovignoredprefix"].subcommand = False
             self._bump_version(config, "0.0.52")
         if config.version == "0.0.52":
+            config.executor["custom_commands"] = dict()
+            for cmd_name, command in config.commands.data.items():
+                if command.cmd_line is not None:
+                    config.executor["custom_commands"][cmd_name] = Command(
+                        None, cmd_name, command.permission, Implementation.EXTERNAL_CMDLINE,
+                        subcommand=True, impl_message=command.cmd_line)
+            self._bump_version(config, "0.0.53")
+        if config.version == "0.0.53":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
