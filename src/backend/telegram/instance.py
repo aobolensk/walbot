@@ -151,6 +151,7 @@ class TelegramBotInstance(BotInstance):
         log.info("Telegram instance is started!")
         bc.backends["telegram"] = True
         bc.telegram.bot_username = updater.bot.name
+        bc.telegram.dispatcher = updater.dispatcher
         updater.start_polling(timeout=600)
         counter = 0
         while True:

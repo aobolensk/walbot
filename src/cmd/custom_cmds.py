@@ -3,6 +3,7 @@ from typing import List
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
 from src.api.execution_context import ExecutionContext
+from src.backend.telegram.cmd.common import CommonCommands
 from src.config import Command as LegacyDiscordCommand
 from src.config import bc
 
@@ -42,6 +43,8 @@ class CustomCmdsCommands(BaseCmd):
             command_name, cmd_line=external_cmd_line)
         if execution_ctx.platform == "discord":
             bc.discord.commands.data[command_name].channels.append(execution_ctx.message.channel.id)
+        if bc.backends["telegram"]:
+            CommonCommands.add_handler(bc.telegram.dispatcher, bc.executor.commands[cmd_line[1]])
         await Command.send_message(
             execution_ctx,
             f"Command '{command_name}' that calls external command `{external_cmd_line}` is successfully added")
@@ -77,4 +80,6 @@ class CustomCmdsCommands(BaseCmd):
                 execution_ctx, f"Command '{command_name}' does not exist (on Discord backend")
         bc.executor.commands.pop(command_name, None)
         bc.discord.commands.data.pop(command_name, None)
+        if bc.backends["telegram"]:
+            CommonCommands.remove_handler(bc.telegram.dispatcher, command_name)
         return await Command.send_message(execution_ctx, f"Command '{command_name}' successfully deleted")
