@@ -2,7 +2,6 @@
 
 import base64
 import datetime
-import functools
 import imghdr
 import os
 import random
@@ -17,7 +16,6 @@ from dateutil import tz
 
 from src import const
 from src.algorithms import levenshtein_distance
-from src.backend.discord.commands import bind_command
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
@@ -188,24 +186,6 @@ class BuiltinCommands(BaseCmd):
             "setmentioncmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
-        self._echo = functools.partial(bind_command, "echo")
-        self._ping = functools.partial(bind_command, "ping")
-        self._version = functools.partial(bind_command, "version")
-        self._about = functools.partial(bind_command, "about")
-        self._uptime = functools.partial(bind_command, "uptime")
-        self._emojify = functools.partial(bind_command, "emojify")
-        self._demojify = functools.partial(bind_command, "demojify")
-        self._shutdown = functools.partial(bind_command, "shutdown")
-        self._restart = functools.partial(bind_command, "restart")
-        self._curl = functools.partial(bind_command, "curl")
-        self._extexec = functools.partial(bind_command, "extexec")
-        self._delcmd = functools.partial(bind_command, "delcmd")
-        self._donotupdatestate = functools.partial(bind_command, "donotupdatestate")
-        self._getmentioncmd = functools.partial(bind_command, "getmentioncmd")
-        self._setmentioncmd = functools.partial(bind_command, "setmentioncmd")
-        self._poll = functools.partial(bind_command, "poll")
-        self._addextcmd = functools.partial(bind_command, "addextcmd")
-        self._updextcmd = functools.partial(bind_command, "updextcmd")
 
     @staticmethod
     async def _range(message, command, silent=False):

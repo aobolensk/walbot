@@ -39,7 +39,7 @@ class Commands:
         for module in cmd_modules:
             log.debug2(f"Processing commands from module: {module}")
             commands_file = importlib.import_module(module)
-            self.module_help[module] = commands_file.__doc__
+            self.module_help[module.split('.')[-1]] = commands_file.__doc__
             if reload:
                 importlib.reload(commands_file)
             commands = [obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
@@ -92,23 +92,23 @@ class Commands:
                         s += " \\\n    *This command can be used as subcommand*"
                     s += '\n'
                     s = s.replace('<', '&lt;').replace('>', '&gt;')
-                    result[command.module_name].append(s)
+                    result[command.module_name.split('.')[-1]].append(s)
                 for name in to_remove:
                     del self.data[name]
             result = sorted(result.items())
             # Filling up ToC (table of contents)
             f.write("# Table of Contents:\n")
             for module_name, _ in result:
-                if self.module_help[module_name] is not None:
+                if module_name in self.module_help.keys() and self.module_help[module_name] is not None:
                     module_description = ": " + self.module_help[module_name].strip().split('\n')[0]
                 else:
                     module_description = ""
                 f.write(
-                    "* [Module: " + module_name.split('.')[-1] + "](#module-" + module_name.split('.')[-1] + ")"
+                    "* [Module: " + module_name + "](#module-" + module_name + ")"
                     + module_description + "\n")
             # Add commands grouped by modules
             for module_name, help_list in result:
-                f.write("\n# Module: " + module_name.split('.')[-1] + "\n\n" + '\n'.join(sorted(help_list)))
+                f.write("\n# Module: " + module_name + "\n\n" + '\n'.join(sorted(help_list)))
 
     def register_command(self, module_name: str, class_name: str, command_name: str, **kwargs) -> None:
         """Create Command object and save it to commands list"""

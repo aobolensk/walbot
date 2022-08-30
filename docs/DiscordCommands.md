@@ -3,12 +3,14 @@
 
 # Table of Contents:
 * [Module: builtin](#module-builtin): Built-in WalBot commands
-* [Module: markov](#module-markov): Markov model commands
-* [Module: math](#module-math): Math operations
+* [Module: custom-commands](#module-custom-commands)
+* [Module: interactive](#module-interactive)
+* [Module: markov](#module-markov)
+* [Module: math](#module-math)
 * [Module: plugin](#module-plugin): WalBot plugin system management
 * [Module: quote](#module-quote): Interaction with WalBot quote database
 * [Module: reaction](#module-reaction): Management of bot reactions to user messages
-* [Module: reminder](#module-reminder): WalBot reminders
+* [Module: reminder](#module-reminder)
 * [Module: role](#module-role): Role commands
 * [Module: services](#module-services): Commands that get data from online services
 * [Module: string](#module-string): Helper functions for working with strings
@@ -29,10 +31,6 @@
 
 **addcmd**: Add command \
     Example: !addcmd hello Hello!
-
-**addextcmd**: Add command that executes external process \
-    Note: Be careful when you are executing external commands! \
-    Example: !addextcmd uname uname -a
 
 **addimg**: Add image for !img command \
     Example: !addimg name url
@@ -59,8 +57,7 @@
 **curl**: Perform HTTP request \
     Usage: \
         !curl &lt;url&gt; \
-        !curl &lt;url&gt; --no-proxy \
-    *This command can be used as subcommand*
+        !curl &lt;url&gt; --no-proxy
 
 **delalias**: Delete command alias \
     Usage: !delalias &lt;alias&gt; \
@@ -71,10 +68,6 @@
 
 **delimg**: Delete image for !img command \
     Example: !delimg name
-
-**demojify**: Demojify text \
-    Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
-    *This command can be used as subcommand*
 
 **disablecmd**: Disable command in specified scope \
     Examples: \
@@ -90,10 +83,6 @@
     Usage: !donotupdatestate
 
 **echo**: @args@ \
-    *This command can be used as subcommand*
-
-**emojify**: Emojify text \
-    Example: !emojify Hello! \
     *This command can be used as subcommand*
 
 **enablecmd**: Enable command in specified scope \
@@ -149,10 +138,8 @@
     Example: !pin 0 \
     *This command can be used as subcommand*
 
-**ping**: 🏓 Pong! @author@ 🏓
-
-**poll**: Create poll and collect result after selected time \
-    Example: !poll 60 option 1;option 2;option 3
+**ping**: 🏓 Pong! @author@ 🏓 \
+    *This command can be used as subcommand*
 
 **profile**: Print information about user \
     Examples: \
@@ -231,10 +218,6 @@
 **updcmd**: Update command (works only for commands that already exist) \
     Example: !updcmd hello Hello!
 
-**updextcmd**: Update command that executes external process (works only for commands that already exist) \
-    Note: Be careful when you are executing external commands! \
-    Example: !updextcmd uname uname -a
-
 **updimg**: Update image for !img command \
     Example: !updimg name url
 
@@ -249,8 +232,7 @@
 **version**: Get version of the bot \
     Examples: \
         !version \
-        !version short \
-    *This command can be used as subcommand*
+        !version short
 
 **whitelist**: Bot's whitelist \
     Examples: \
@@ -260,6 +242,21 @@
 
 **wme**: Send direct message to author with something \
     Example: !wme Hello!
+
+# Module: custom-commands
+
+**addextcmd**: Add command that executes external process \
+    Note: Be careful when you are executing external commands! \
+    Example: !addextcmd uname uname -a
+
+**updextcmd**: Update command that executes external process (works only for commands that already exist) \
+    Note: Be careful when you are executing external commands! \
+    Example: !updextcmd uname uname -a
+
+# Module: interactive
+
+**poll**: Create poll and collect result after selected time \
+    Example: !poll 60 option 1;option 2;option 3
 
 # Module: markov
 
@@ -290,8 +287,7 @@
 **getmarkovword**: Get particular word from Markov model by regex \
     Examples: \
         !getmarkovword hello -a &lt;- get amount of found words \
-        !getmarkovword hello 0 &lt;- get word by index \
-    *This command can be used as subcommand*
+        !getmarkovword hello 0 &lt;- get word by index
 
 **inspectmarkov**: Inspect next words in Markov model for current one \
     Example: !inspectmarkov hello
@@ -537,6 +533,10 @@
     Example: !count some text \
     *This command can be used as subcommand*
 
+**demojify**: Demojify text \
+    Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
+    *This command can be used as subcommand*
+
 **dropchars**: Drop n characters of the string \
     Examples: \
         !dropchars 2 hello \
@@ -563,6 +563,10 @@
         Result: c \
         !dropwords -2 a b c \
         Result: a \
+    *This command can be used as subcommand*
+
+**emojify**: Emojify text \
+    Example: !emojify Hello! \
     *This command can be used as subcommand*
 
 **eqstrs**: Check if two strings separated by ';' are equal or not \

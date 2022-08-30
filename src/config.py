@@ -43,7 +43,10 @@ class Command:
         return self.subcommand or self.message or self.cmd_line
 
     def get_actor(self):
-        return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
+        try:
+            return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
+        except (AttributeError, KeyError):
+            return getattr(getattr(sys.modules["src.backend.discord.cmd.common"], "CommonCommands"), self.perform)
 
     @staticmethod
     async def process_subcommands(content, message, user, safe=False):
