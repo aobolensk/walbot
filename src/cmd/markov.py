@@ -29,7 +29,7 @@ class MarkovCommands(BaseCmd):
             subcommand=False, impl_func=self._findmarkov)
         bc.executor.commands["getmarkovword"] = Command(
             "markov", "getmarkovword", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._getmarkovword)
+            subcommand=True, impl_func=self._getmarkovword)
         bc.executor.commands["dropmarkov"] = Command(
             "markov", "dropmarkov", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=False, impl_func=self._dropmarkov)

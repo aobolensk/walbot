@@ -311,6 +311,9 @@ class Updater:
                         subcommand=True, impl_message=command.cmd_line)
             self._bump_version(config, "0.0.53")
         if config.version == "0.0.53":
+            config.commands.data["getmarkovword"].subcommand = True
+            self._bump_version(config, "0.0.54")
+        if config.version == "0.0.54":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

@@ -270,7 +270,8 @@
 **getmarkovword**: Get particular word from Markov model by regex \
     Examples: \
         !getmarkovword hello -a &lt;- get amount of found words \
-        !getmarkovword hello 0 &lt;- get word by index
+        !getmarkovword hello 0 &lt;- get word by index \
+    *This command can be used as subcommand*
 
 **inspectmarkov**: Inspect next words in Markov model for current one \
     Example: !inspectmarkov hello
