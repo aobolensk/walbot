@@ -81,14 +81,12 @@ class Command:
                 await self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
                 return
         self.times_called += 1
-        cmd_line = (await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)).split(' ')
         if not self.postpone_execution:
+            cmd_line = (await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)).split(' ')
             if self.impl_type == Implementation.MESSAGE:
                 result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
             elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
                 result = await self.process_variables(execution_ctx, self.impl_message, cmd_line, safe=True)
-            else:
-                raise RuntimeError("invalid implementation type")
             if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
                 from src.config import bc
                 result = await self.process_subcommands(execution_ctx, bc.executor, result)
