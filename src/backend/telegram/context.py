@@ -30,3 +30,6 @@ class TelegramExecutionContext(ExecutionContext):
 
     def message_author(self) -> str:
         return "@__telegram_message_author@"
+
+    def message_author_id(self) -> str:
+        return self.update.message.from_user.id

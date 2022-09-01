@@ -21,6 +21,9 @@ class BufferTestExecutionContext(ExecutionContext):
     def message_author(self) -> str:
         return ""
 
+    def message_author_id(self) -> int:
+        return 0
+
 
 def start_testing(args):
     if args.verbose2:

@@ -44,3 +44,6 @@ class DiscordExecutionContext(ExecutionContext):
 
     def message_author(self) -> str:
         return self.message.author.mention
+
+    def message_author_id(self) -> int:
+        return self.message.author.id
