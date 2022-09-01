@@ -87,6 +87,8 @@ class Command:
                 result = await self.process_variables(execution_ctx, self.impl_message, cmd_line)
             elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
                 result = await self.process_variables(execution_ctx, self.impl_message, cmd_line, safe=True)
+            else:
+                result = ' '.join(cmd_line)
             if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
                 from src.config import bc
                 result = await self.process_subcommands(execution_ctx, bc.executor, result)
@@ -95,7 +97,8 @@ class Command:
         if self.impl_type == Implementation.FUNCTION:
             return await self._exec(result.split(" "), execution_ctx)
         elif self.impl_type == Implementation.MESSAGE:
-            return await execution_ctx.send_message(result)
+            await execution_ctx.send_message(result)
+            return result
         elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
             from src.utils import Util
             return await Util.run_external_command(execution_ctx, result)

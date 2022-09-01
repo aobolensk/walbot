@@ -25,7 +25,7 @@ class BufferTestExecutionContext(ExecutionContext):
         return 0
 
     def channel_name(self) -> str:
-        return os.ttyname(sys.stdout.fileno())
+        return "console"
 
 
 def start_testing(args):
