@@ -305,7 +305,7 @@ class Launcher:
 
     def test(self):
         """Launch tests"""
-        importlib.import_module("src.test").start_testing(self.args)
+        return importlib.import_module("src.test").start_testing(self.args)
 
     def docs(self):
         """Generate command docs"""
