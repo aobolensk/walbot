@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Any
 
 from src import const
 
@@ -10,13 +11,13 @@ class ExecutionContext:
         self.silent = False
 
     @abstractmethod
-    async def send_message(self, message: str, *args, **kwargs) -> None:
+    async def send_message(self, message: str, *args, **kwargs) -> Any:
         pass
 
     @abstractmethod
-    def disable_pings(self, message: str) -> None:
+    def disable_pings(self, message: str) -> str:
         pass
 
     @abstractmethod
-    def message_author(self) -> None:
+    def message_author(self) -> str:
         pass

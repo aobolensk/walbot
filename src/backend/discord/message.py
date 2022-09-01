@@ -1,3 +1,7 @@
+from typing import Optional
+
+import discord
+
 from src import const
 from src.log import log
 
@@ -33,7 +37,7 @@ class Msg:
         return msg
 
     @staticmethod
-    async def response(message, content, silent, **kwargs):
+    async def response(message, content, silent, **kwargs) -> Optional[discord.Message]:
         """Send response"""
         if silent:
             return log.debug("[SILENT] -> " + content)

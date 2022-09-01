@@ -15,10 +15,10 @@ class BufferTestExecutionContext(ExecutionContext):
             return
         print(message)
 
-    def disable_pings(self, message: str) -> None:
+    def disable_pings(self, message: str) -> str:
         return message
 
-    def message_author(self) -> None:
+    def message_author(self) -> str:
         return ""
 
 

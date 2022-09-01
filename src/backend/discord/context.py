@@ -1,5 +1,6 @@
 import asyncio
 import re
+from typing import Optional
 
 import discord
 
@@ -17,11 +18,11 @@ class DiscordExecutionContext(ExecutionContext):
         self.permission_level = bc.config.discord.users[message.author.id].permission_level
         self.silent = silent
 
-    async def send_message(self, message: str, *args, **kwargs) -> None:
+    async def send_message(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
         t = asyncio.create_task(Msg.response(self.message, message, self.silent, *args, **kwargs))
         return asyncio.run(t)
 
-    def disable_pings(self, message: str) -> None:
+    def disable_pings(self, message: str) -> str:
         while True:
             r = const.USER_ID_REGEX.search(message)
             if r is None:
@@ -41,5 +42,5 @@ class DiscordExecutionContext(ExecutionContext):
         message = re.sub(const.ROLE_HERE, "`" + const.ROLE_HERE + "`", message)
         return message
 
-    def message_author(self) -> None:
+    def message_author(self) -> str:
         return self.message.author.mention

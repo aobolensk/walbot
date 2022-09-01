@@ -24,9 +24,9 @@ class TelegramExecutionContext(ExecutionContext):
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
         )
 
-    def disable_pings(self, message: str) -> None:
+    def disable_pings(self, message: str) -> str:
         # TODO: implement
         return message
 
-    def message_author(self) -> None:
+    def message_author(self) -> str:
         return "@__telegram_message_author@"
