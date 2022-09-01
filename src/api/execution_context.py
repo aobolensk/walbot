@@ -1,10 +1,10 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any
 
 from src import const
 
 
-class ExecutionContext:
+class ExecutionContext(ABC):
     def __init__(self) -> None:
         self.platform = "<unknown>"
         self.permission_level = const.Permission.USER
