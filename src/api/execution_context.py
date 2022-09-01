@@ -25,3 +25,7 @@ class ExecutionContext:
     @abstractmethod
     def message_author_id(self) -> int:
         pass
+
+    @abstractmethod
+    def channel_name(self) -> str:
+        pass

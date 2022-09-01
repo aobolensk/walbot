@@ -24,6 +24,9 @@ class BufferTestExecutionContext(ExecutionContext):
     def message_author_id(self) -> int:
         return 0
 
+    def channel_name(self) -> str:
+        return os.ttyname(sys.stdout.fileno())
+
 
 def start_testing(args):
     if args.verbose2:
