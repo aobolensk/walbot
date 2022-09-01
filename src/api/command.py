@@ -176,7 +176,7 @@ class Command:
                             command = subcommand_string.split(' ')
                             if not command:
                                 return
-                            if command[0] not in executor.commands.keys():
+                            if command[0] and command[0] not in executor.commands.keys():
                                 await execution_ctx.send_message(f"Unknown command '{command[0]}'")
                             result = ""
                             if command and command[0] in executor.commands.keys():
