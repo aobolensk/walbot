@@ -135,7 +135,8 @@ class ReminderCommands(BaseCmd):
             subcommand=False, impl_func=self._delreminder)
         bc.executor.commands["remindme"] = Command(
             "reminder", "remindme", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._remindme)
+            subcommand=False, impl_func=self._remindme,
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["remindwme"] = Command(
             "reminder", "remindwme", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._remindwme,
