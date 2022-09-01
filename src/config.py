@@ -122,6 +122,8 @@ class Command:
             log.debug2(f"Command (after processing subcommands): {message.content}")
         else:
             log.debug2("Subcommands are not processed!")
+        if not message.content:
+            return
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
