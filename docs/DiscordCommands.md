@@ -426,6 +426,11 @@
         !listreminder \
         !listreminder 5 &lt;- prints only first 5 reminders
 
+**listreminderlocal**: Print list of reminders for current channel \
+    Examples: \
+        !listreminderlocal \
+        !listreminderlocal 5 &lt;- prints only first 5 reminders
+
 **remindeme**: Ask bot to send you an e-mail when it sends reminder \
     Example: !remindeme 1 &lt;your-email-address&gt;
 

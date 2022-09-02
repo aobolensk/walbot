@@ -238,6 +238,12 @@
         !listreminder 5 &lt;- prints only first 5 reminders \
     *Default permission level: 0*
 
+**listreminderlocal**: Print list of reminders for current channel \
+    Examples: \
+        !listreminderlocal \
+        !listreminderlocal 5 &lt;- prints only first 5 reminders \
+    *Default permission level: 0*
+
 **remindeme**: Ask bot to send you an e-mail when it sends reminder \
     Example: !remindeme 1 &lt;your-email-address&gt; \
     *Default permission level: 0*
