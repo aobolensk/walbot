@@ -110,6 +110,61 @@ class _ReminderInternals:
             weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_DATETIME_FORMAT)
         return time
 
+    @staticmethod
+    async def listreminder_common(cmd_line: List[str], execution_ctx: ExecutionContext, is_only_locals=False) -> None:
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+            return
+        if len(cmd_line) == 2:
+            count = await Util.parse_int_for_command(
+                execution_ctx, cmd_line[1],
+                f"Second parameter for '{cmd_line[0]}' should be amount of reminders to print")
+            if count is None:
+                return
+            reminders_count = count
+        else:
+            reminders_count = len(bc.config.reminders)
+        reminder_list = []
+        for index, reminder in bc.config.reminders.items():
+            if is_only_locals and reminder.channel_id != execution_ctx.channel_id():
+                continue
+            rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
+            prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
+            notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
+            channel = f'{reminder.backend}: <#{reminder.channel_id}>'
+            reminder_list.append(
+                (reminder.time,
+                 Util.cut_string(reminder.message, 256),
+                 f"{notes if reminder.notes else ''}"
+                 f"{index} at {reminder.time} "
+                 f" in {channel}"
+                 f"{rep if reminder.repeat_after else ''}"
+                 f"{prereminders if reminder.prereminders_list else ''}"))
+        reminder_list.sort()
+        reminder_list = reminder_list[:reminders_count]
+        if execution_ctx.platform == "discord":
+            embed_color = random.randint(0x000000, 0xffffff)
+            for reminder_chunk in Msg.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+                e = DiscordEmbed()
+                e.title("List of reminders")
+                e.color(embed_color)
+                for rem in reminder_chunk:
+                    e.add_field(rem[1], rem[2])
+                await execution_ctx.send_message(None, embed=e.get())
+            if not reminder_list:
+                e = DiscordEmbed()
+                e.title("List of reminders")
+                e.color(embed_color)
+                e.add_field("No reminders found!", "Use `!addreminder` command to add new reminders")
+                await execution_ctx.send_message(None, embed=e.get())
+        else:
+            result = ""
+            for reminder in reminder_list:
+                result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
+            if result:
+                await Command.send_message(execution_ctx, result)
+            else:
+                await Command.send_message(execution_ctx, "No reminders found!")
+
 
 class ReminderCommands(BaseCmd):
     def __init__(self) -> None:
@@ -130,6 +185,9 @@ class ReminderCommands(BaseCmd):
         bc.executor.commands["listreminder"] = Command(
             "reminder", "listreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listreminder)
+        bc.executor.commands["listreminderlocal"] = Command(
+            "reminder", "listreminderlocal", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._listreminderlocal)
         bc.executor.commands["delreminder"] = Command(
             "reminder", "delreminder", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delreminder)
@@ -298,61 +356,21 @@ class ReminderCommands(BaseCmd):
                 execution_ctx,
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
 
+    async def _listreminderlocal(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print list of reminders for current channel
+    Examples:
+        !listreminderlocal
+        !listreminderlocal 5 <- prints only first 5 reminders"""
+
+        await _ReminderInternals.listreminder_common(cmd_line, execution_ctx, is_only_locals=True)
+
     async def _listreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print list of reminders
     Examples:
         !listreminder
         !listreminder 5 <- prints only first 5 reminders"""
-        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
-        if len(cmd_line) == 2:
-            count = await Util.parse_int_for_command(
-                execution_ctx, cmd_line[1],
-                f"Second parameter for '{cmd_line[0]}' should be amount of reminders to print")
-            if count is None:
-                return
-            reminders_count = count
-        else:
-            reminders_count = len(bc.config.reminders)
-        reminder_list = []
-        for index, reminder in bc.config.reminders.items():
-            rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
-            prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
-            notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
-            channel = f'{reminder.backend}: <#{reminder.channel_id}>'
-            reminder_list.append(
-                (reminder.time,
-                 Util.cut_string(reminder.message, 256),
-                 f"{notes if reminder.notes else ''}"
-                 f"{index} at {reminder.time} "
-                 f" in {channel}"
-                 f"{rep if reminder.repeat_after else ''}"
-                 f"{prereminders if reminder.prereminders_list else ''}"))
-        reminder_list.sort()
-        reminder_list = reminder_list[:reminders_count]
-        if execution_ctx.platform == "discord":
-            embed_color = random.randint(0x000000, 0xffffff)
-            for reminder_chunk in Msg.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
-                e = DiscordEmbed()
-                e.title("List of reminders")
-                e.color(embed_color)
-                for rem in reminder_chunk:
-                    e.add_field(rem[1], rem[2])
-                await execution_ctx.send_message(None, embed=e.get())
-            if not reminder_list:
-                e = DiscordEmbed()
-                e.title("List of reminders")
-                e.color(embed_color)
-                e.add_field("No reminders found!", "Use `!addreminder` command to add new reminders")
-                await execution_ctx.send_message(None, embed=e.get())
-        else:
-            result = ""
-            for reminder in reminder_list:
-                result += f"{reminder[0]}: {reminder[1]} {reminder[2]}\n"
-            if result:
-                await Command.send_message(execution_ctx, result)
-            else:
-                await Command.send_message(execution_ctx, "No reminders found!")
+
+        await _ReminderInternals.listreminder_common(cmd_line, execution_ctx)
 
     async def _delreminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Delete reminders by index
