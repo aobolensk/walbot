@@ -8,7 +8,7 @@ from src import const
 from src.api.command import Command
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message
-from src.config import bc
+from src.config import User, bc
 from src.log import log
 from src.mail import Mail
 
@@ -25,6 +25,8 @@ class BuiltinCommands:
     @Mail.send_exception_info_to_admin_emails
     def _authorize(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
+        if update.message.from_user.id not in bc.config.telegram.users.keys():
+            bc.config.telegram.users[update.message.from_user.id] = User(update.message.from_user.id)
         passphrase = context.args[0] if context.args else ""
         loop = asyncio.new_event_loop()
         if passphrase == bc.config.telegram.passphrase:
