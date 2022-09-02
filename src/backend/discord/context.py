@@ -50,3 +50,6 @@ class DiscordExecutionContext(ExecutionContext):
 
     def channel_name(self) -> str:
         return self.message.channel.mention
+
+    def channel_id(self) -> int:
+        return self.message.channel.id

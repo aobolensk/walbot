@@ -151,7 +151,7 @@ class WalBot(discord.Client):
                 await channel.send(' '.join(rem.ping_users if rem.ping_users else ""), embed=e.get())
                 for user_id in rem.discord_whisper_users:
                     await Msg.send_direct_message(
-                        self.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
+                        await self.fetch_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                 if rem.email_users:
                     mail = Mail(self.secret_config)
                     mail.send(
@@ -169,6 +169,8 @@ class WalBot(discord.Client):
                     to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
                     to_append[-1].prereminders_list = rem.prereminders_list
                     to_append[-1].used_prereminders_list = [False] * len(rem.prereminders_list)
+                    to_append[-1].discord_whisper_users = rem.discord_whisper_users
+                    to_append[-1].telegram_whisper_users = rem.telegram_whisper_users
                     to_append[-1].notes = rem.notes
                     log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                 to_remove.append(key)
@@ -220,13 +222,13 @@ class WalBot(discord.Client):
     @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
         await bc.discord.plugin_manager.broadcast_command("on_message", message)
+        if isinstance(message.channel, discord.DMChannel):
+            return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
         bc.discord.message_buffer.push(message)
         log.info(f"<{message.id}> {message.author} -> {message.content}")
         if message.author.id == self.user.id:
-            return
-        if isinstance(message.channel, discord.DMChannel):
             return
         if message.channel.guild.id is None:
             return

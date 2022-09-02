@@ -36,3 +36,6 @@ class TelegramExecutionContext(ExecutionContext):
 
     def channel_name(self) -> str:
         return self.update.message.chat.title or "<DM>"
+
+    def channel_id(self) -> int:
+        return self.update.message.chat.id

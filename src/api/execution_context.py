@@ -29,3 +29,7 @@ class ExecutionContext(ABC):
     @abstractmethod
     def channel_name(self) -> str:
         pass
+
+    @abstractmethod
+    def channel_id(self) -> int:
+        pass

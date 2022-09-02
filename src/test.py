@@ -27,6 +27,9 @@ class BufferTestExecutionContext(ExecutionContext):
     def channel_name(self) -> str:
         return "console"
 
+    def channel_id(self) -> int:
+        return 0
+
 
 def start_testing(args):
     if args.verbose2:
