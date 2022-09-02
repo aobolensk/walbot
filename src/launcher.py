@@ -143,6 +143,10 @@ class Launcher:
         if bc.secret_config is None:
             bc.secret_config = SecretConfig()
         bc.info = BotInfo()
+        if not os.path.exists(const.IMAGES_DIRECTORY):
+            os.makedirs(const.IMAGES_DIRECTORY)
+        if not os.path.exists(const.BACKUP_DIRECTORY):
+            os.makedirs(const.BACKUP_DIRECTORY)
         if main_bot:
             if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
                 bc.markov = Util.read_config_file(const.MARKOV_PATH)
@@ -167,10 +171,6 @@ class Launcher:
                 from src.db.walbot_db import WalbotDatabase
                 db = WalbotDatabase()
                 bc.markov = MarkovV2(db.markov)
-        if not os.path.exists(const.IMAGES_DIRECTORY):
-            os.makedirs(const.IMAGES_DIRECTORY)
-        if not os.path.exists(const.BACKUP_DIRECTORY):
-            os.makedirs(const.BACKUP_DIRECTORY)
         # Check config versions
         if main_bot:
             ok = True
