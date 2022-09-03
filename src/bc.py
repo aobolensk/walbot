@@ -48,6 +48,10 @@ class BotController:
             self.dispatcher = None
             self.handlers = dict()
 
+    class Repl:
+        def __init__(self) -> None:
+            pass
+
     def __init__(self):
         self.deployment_time = datetime.datetime.now()
         self.config = None
@@ -57,7 +61,6 @@ class BotController:
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
         self.stopwatches = dict()
-        self.instance_name = ""
         self.backends = {
             "discord": False,
             "telegram": False,
@@ -67,3 +70,4 @@ class BotController:
         self.executor = Executor()
         self.discord = self.Discord()
         self.telegram = self.Telegram()
+        self.repl = self.Repl()
