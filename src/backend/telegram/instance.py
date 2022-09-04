@@ -19,6 +19,7 @@ from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
 from src.mail import Mail
+from src.message_processing import MessageProcessing
 from src.utils import Util
 
 
@@ -36,6 +37,8 @@ class TelegramBotInstance(BotInstance):
         if not check_auth(update):
             return
         bc.markov.add_string(text)
+        loop = asyncio.new_event_loop()
+        loop.run_until_complete(MessageProcessing.process_responses(TelegramExecutionContext(update), text))
 
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:

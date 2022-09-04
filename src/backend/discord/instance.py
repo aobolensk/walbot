@@ -19,11 +19,12 @@ from src.backend.discord.message import Msg
 from src.backend.discord.voice import VoiceRoutine
 from src.bc import DoNotUpdateFlag
 from src.bot_cache import BotCache
-from src.config import Command, Config, GuildSettings, SecretConfig, User, bc
+from src.config import Config, GuildSettings, SecretConfig, User, bc
 from src.emoji import get_clock_emoji
 from src.ff import FF
 from src.log import log
 from src.mail import Mail
+from src.message_processing import MessageProcessing
 from src.utils import Util
 
 
@@ -314,15 +315,7 @@ class WalBot(discord.Client):
         if channel_id in self.config.discord.guilds[message.channel.guild.id].responses_whitelist:
             # If the message is in a channel that is supposed to respond to messages then
             # answer with corresponding response from config.responses dictionary
-            responses_count = 0
-            for response in self.config.responses.values():
-                if responses_count >= const.MAX_BOT_RESPONSES_ON_ONE_MESSAGE:
-                    break
-                if re.search(response.regex, message.content):
-                    text = await Command.process_subcommands(
-                        response.text, message, self.config.discord.users[message.author.id])
-                    await Msg.reply(message, text, False)
-                    responses_count += 1
+            await MessageProcessing.process_responses(DiscordExecutionContext(message), message.content)
         if channel_id in self.config.discord.guilds[message.channel.guild.id].reactions_whitelist:
             # If the message is in a channel that is supposed to react to messages then
             # react to the message with corresponding reaction from config.reactions dictionary
