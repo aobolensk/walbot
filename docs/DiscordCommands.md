@@ -389,8 +389,7 @@
     *This command can be used as subcommand*
 
 **listresponse**: Print list of responses \
-    Example: !listresponse \
-    *This command can be used as subcommand*
+    Example: !listresponse
 
 **updreaction**: Update reaction \
     Example: !updreaction index emoji regex
