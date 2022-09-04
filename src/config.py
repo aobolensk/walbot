@@ -5,17 +5,24 @@ import os
 import sys
 import threading
 import zipfile
+from typing import TYPE_CHECKING, Dict
 
 import discord
 import yaml
 
 from src import const
+from src.api.quote import Quote
+from src.api.reminder import Reminder
 from src.backend.discord.config import DiscordConfig
 from src.backend.discord.message import Msg
 from src.backend.telegram.config import TelegramConfig
 from src.bc import BotController, DoNotUpdateFlag
 from src.log import log
 from src.utils import Util, null
+
+if TYPE_CHECKING:
+    from src.backend.discord.commands import Commands
+
 
 bc = BotController()
 
@@ -196,13 +203,13 @@ class User:
 class Config:
     def __init__(self):
         commands = importlib.import_module("src.commands")
-        self.commands = commands.Commands()
+        self.commands: Commands = commands.Commands()
         self.commands.update()
         self.version = const.CONFIG_VERSION
-        self.reactions = dict()
-        self.reminders = dict()
-        self.responses = dict()
-        self.quotes = dict()
+        self.reactions: Dict[int, Reaction] = dict()
+        self.reminders: Dict[int, Reminder] = dict()
+        self.responses: Dict[int, Response] = dict()
+        self.quotes: Dict[int, Quote] = dict()
         self.plugins = dict()
         self.commands_prefix = "!"
         self.on_mention_command = "markov"
