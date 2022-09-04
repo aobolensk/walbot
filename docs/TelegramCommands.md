@@ -8,6 +8,7 @@
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
 * [Module: random](#module-random)
+* [Module: reaction](#module-reaction)
 * [Module: reminder](#module-reminder)
 * [Module: string](#module-string)
 
@@ -205,6 +206,25 @@
     Example: !randselects a;b;c \
     *This command can be used as subcommand* \
     *Default permission level: 0*
+
+# Module: reaction
+
+**addresponse**: Add bot response on message that contains particular regex \
+    Example: !addresponse regex;text \
+    *Default permission level: 1*
+
+**delresponse**: Delete response \
+    Examples: \
+        !delresponse index \
+    *Default permission level: 1*
+
+**listresponse**: Print list of responses \
+    Example: !listresponse \
+    *Default permission level: 0*
+
+**updresponse**: Update bot response \
+    Example: !updresponse index regex;text \
+    *Default permission level: 1*
 
 # Module: reminder
 
