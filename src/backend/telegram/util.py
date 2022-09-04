@@ -41,13 +41,19 @@ def escape_markdown_text(text: str):
     )
 
 
-def reply(update: Update, text: str, disable_web_page_preview: bool = False) -> None:
+def reply(update: Update, text: str, disable_web_page_preview: bool = False, reply_on_msg: bool = False) -> None:
     if not text:
         return
-    reply_message = update.message.bot.send_message(
-        update.message.chat_id,
-        text, parse_mode="MarkdownV2",
-        disable_web_page_preview=disable_web_page_preview,
-    )
+    if reply_on_msg:
+        reply_message = update.message.reply_text(
+            text, parse_mode="MarkdownV2",
+            disable_web_page_preview=disable_web_page_preview,
+        )
+    else:
+        reply_message = update.message.bot.send_message(
+            update.message.chat_id,
+            text, parse_mode="MarkdownV2",
+            disable_web_page_preview=disable_web_page_preview,
+        )
     title = reply_message.chat.title or "<DM>"
     log.info(f"({title}) {reply_message.from_user.username}: {reply_message.text}")
