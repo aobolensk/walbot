@@ -84,7 +84,7 @@ class _BuiltinInternals:
                         break
                 else:
                     # Custom emoji
-                    r = const.EMOJI_REGEX.match(command[i])
+                    r = const.DISCORD_EMOJI_REGEX.match(command[i])
                     if r is not None:
                         await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
                         break
@@ -436,7 +436,7 @@ class BuiltinCommands(BaseCmd):
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         if perm is None:
             return
-        r = const.USER_ID_REGEX.search(command[1])
+        r = const.DISCORD_USER_ID_REGEX.search(command[1])
         if r is None:
             return null(
                 await Msg.response(
@@ -854,7 +854,7 @@ class BuiltinCommands(BaseCmd):
                 hdr = {
                     "User-Agent": "Mozilla/5.0"
                 }
-                r = const.EMOJI_REGEX.match(image)
+                r = const.DISCORD_EMOJI_REGEX.match(image)
                 if r is not None:
                     # Discord emoji
                     log.debug(f"Downloading https://cdn.discordapp.com/emojis/{r.group(2)}.png")

@@ -67,13 +67,19 @@ REMINDER_DATE_FORMAT = "%Y-%m-%d"
 REMINDER_DATETIME_FORMAT = "%Y-%m-%d %H:%M"
 TIMESTAMP_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 EMBED_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
-EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
-USER_ID_REGEX = re.compile(r'<@!?(\d*)>')
-ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
 INTEGER_NUMBER = re.compile(r'[-+]?\d+')
 ARGS_REGEX = re.compile(r'@args(\d*)-(\d*)@')
 REMINDER_IN_REGEX = re.compile(r'(([0-9]*)w)?(([0-9]*)d)?(([0-9])*h)?(([0-9])*m)?')
+
+# Discord
+DISCORD_USER_ID_REGEX = re.compile(r'<@!?(\d*)>')
+DISCORD_ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
+DISCORD_EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
+
+# Telegram
 TELEGRAM_MARKDOWN_V2_MENTION_REGEX = re.compile(r"\[(.*)\]\(tg:\/\/user\?id=(.*)\)")
+
+
 # Reference: https://gist.github.com/Alex-Just/e86110836f3f93fe7932290526529cd1#gistcomment-3208085
 UNICODE_EMOJI_REGEX = re.compile(
     "["
