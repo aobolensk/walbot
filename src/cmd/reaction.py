@@ -27,7 +27,7 @@ class ReactionCommands(BaseCmd):
             supported_platforms=(SupportedPlatforms.DISCORD))
         bc.executor.commands["listresponse"] = Command(
             "reaction", "listresponse", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._listresponse,
+            subcommand=False, impl_func=self._listresponse,
             supported_platforms=(SupportedPlatforms.DISCORD))
 
     async def _addresponse(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
