@@ -573,6 +573,7 @@ class ReminderCommands(BaseCmd):
         bc.config.reminders[id_].used_prereminders_list = rem.used_prereminders_list
         bc.config.reminders[id_].discord_whisper_users = rem.discord_whisper_users
         bc.config.reminders[id_].telegram_whisper_users = rem.telegram_whisper_users
+        bc.config.reminders[id_].notes = rem.notes
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
         await Command.send_message(
