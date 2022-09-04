@@ -16,19 +16,19 @@ class ReactionCommands(BaseCmd):
         bc.executor.commands["addresponse"] = Command(
             "reaction", "addresponse", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addresponse,
-            supported_platforms=(SupportedPlatforms.DISCORD))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["updresponse"] = Command(
             "reaction", "updresponse", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._updresponse,
-            supported_platforms=(SupportedPlatforms.DISCORD))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["delresponse"] = Command(
             "reaction", "delresponse", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delresponse,
-            supported_platforms=(SupportedPlatforms.DISCORD))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["listresponse"] = Command(
             "reaction", "listresponse", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listresponse,
-            supported_platforms=(SupportedPlatforms.DISCORD))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
 
     async def _addresponse(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Add bot response on message that contains particular regex
