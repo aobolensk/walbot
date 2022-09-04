@@ -73,6 +73,7 @@ ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
 INTEGER_NUMBER = re.compile(r'[-+]?\d+')
 ARGS_REGEX = re.compile(r'@args(\d*)-(\d*)@')
 REMINDER_IN_REGEX = re.compile(r'(([0-9]*)w)?(([0-9]*)d)?(([0-9])*h)?(([0-9])*m)?')
+TELEGRAM_MARKDOWN_V2_MENTION_REGEX = re.compile(r"\[(.*)\]\(tg:\/\/user\?id=(.*)\)")
 # Reference: https://gist.github.com/Alex-Just/e86110836f3f93fe7932290526529cd1#gistcomment-3208085
 UNICODE_EMOJI_REGEX = re.compile(
     "["

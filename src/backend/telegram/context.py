@@ -1,5 +1,6 @@
 from telegram import Update
 
+from src import const
 from src.api.execution_context import ExecutionContext
 from src.backend.telegram.util import escape_markdown_text, reply
 from src.config import bc
@@ -16,20 +17,21 @@ class TelegramExecutionContext(ExecutionContext):
         if self.silent:
             return
         message = escape_markdown_text(message)
-        message = message.replace(
-            escape_markdown_text("@__telegram_message_author@"),
-            self.update.message.from_user.mention_markdown_v2())
         reply(
             self.update, message,
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
         )
 
     def disable_pings(self, message: str) -> str:
-        # TODO: implement
+        while True:
+            r = const.TELEGRAM_MARKDOWN_V2_MENTION_REGEX.search(message)
+            if r is None:
+                break
+            message = const.TELEGRAM_MARKDOWN_V2_MENTION_REGEX.sub(r.groups()[0], message)
         return message
 
     def message_author(self) -> str:
-        return "@__telegram_message_author@"
+        return self.update.message.from_user.mention_markdown_v2()
 
     def message_author_id(self) -> str:
         return self.update.message.from_user.id
