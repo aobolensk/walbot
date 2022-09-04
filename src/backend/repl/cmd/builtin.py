@@ -58,5 +58,5 @@ class REPLCommands:
         text = ' '.join(command[1:])
         if self._current_channel is None:
             return "Cannot send message to undefined channel. First execute: join <channel_id>"
-        t = bc.discord_background_loop.create_task(self._current_channel.send(text))
-        bc.discord_background_loop.run_until_complete(t)
+        t = bc.discord.background_loop.create_task(self._current_channel.send(text))
+        bc.discord.background_loop.run_until_complete(t)
