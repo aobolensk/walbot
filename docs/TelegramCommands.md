@@ -27,10 +27,6 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**delcmd**: Delete command \
-    Example: !delcmd hello \
-    *Default permission level: 1*
-
 **donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
     Usage: !donotupdatestate \
     *Default permission level: 1*
@@ -94,6 +90,10 @@
     Note: Be careful when you are executing external commands! \
     Example: !addextcmd uname uname -a \
     *Default permission level: 2*
+
+**delcmd**: Delete command \
+    Example: !delcmd hello \
+    *Default permission level: 1*
 
 **updextcmd**: Update command that executes external process (works only for commands that already exist) \
     Note: Be careful when you are executing external commands! \

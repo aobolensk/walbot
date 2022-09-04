@@ -20,7 +20,7 @@ class CustomCmdsCommands(BaseCmd):
             "custom-commands", "updextcmd", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=False, impl_func=self._updextcmd, postpone_execution=True)
         bc.executor.commands["delcmd"] = Command(
-            "builtin", "delcmd", const.Permission.MOD, Implementation.FUNCTION,
+            "custom-commands", "delcmd", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._delcmd)
 
     async def _addextcmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:

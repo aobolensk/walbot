@@ -65,9 +65,6 @@
     Usage: !delalias &lt;alias&gt; \
     Example: !delalias pong
 
-**delcmd**: Delete command \
-    Example: !delcmd hello
-
 **delimg**: Delete image for !img command \
     Example: !delimg name
 
@@ -231,6 +228,9 @@
 **addextcmd**: Add command that executes external process \
     Note: Be careful when you are executing external commands! \
     Example: !addextcmd uname uname -a
+
+**delcmd**: Delete command \
+    Example: !delcmd hello
 
 **updextcmd**: Update command that executes external process (works only for commands that already exist) \
     Note: Be careful when you are executing external commands! \
