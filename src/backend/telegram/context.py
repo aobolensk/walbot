@@ -12,15 +12,34 @@ class TelegramExecutionContext(ExecutionContext):
         self.platform = "telegram"
         self.update = update
         self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
+        self._replace_patterns = dict()
 
     async def send_message(self, message: str, *args, **kwargs) -> None:
         if self.silent:
             return
+        message = self._unescape_ping1(message)
         message = escape_markdown_text(message)
+        message = self._unescape_ping2(message)
         reply(
             self.update, message,
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
         )
+
+    def _unescape_ping1(self, message: str) -> str:
+        idx = 0
+        while True:
+            r = const.TELEGRAM_MARKDOWN_V2_MENTION_REGEX.search(message)
+            if r is None:
+                break
+            message = const.TELEGRAM_MARKDOWN_V2_MENTION_REGEX.sub(f"@__telegram_message_author_{idx}@", message)
+            self._replace_patterns[f"@__telegram_message_author_{idx}@"] = r.group(0)
+            idx += 1
+        return message
+
+    def _unescape_ping2(self, message: str) -> str:
+        for key, value in self._replace_patterns.items():
+            message = message.replace(escape_markdown_text(key), value)
+        return message
 
     def disable_pings(self, message: str) -> str:
         while True:
