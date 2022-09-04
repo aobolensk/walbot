@@ -24,6 +24,9 @@ class DiscordExecutionContext(ExecutionContext):
     async def reply(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
         return await Msg.reply(self.message, message, self.silent, *args, **kwargs)
 
+    async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> Optional[discord.Message]:
+        return await Msg.send_direct_message(bc.discord.get_user(user_id), message, self.silent, *args, **kwargs)
+
     def disable_pings(self, message: str) -> str:
         while True:
             r = const.DISCORD_USER_ID_REGEX.search(message)

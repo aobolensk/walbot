@@ -19,6 +19,10 @@ class ExecutionContext(ABC):
         pass
 
     @abstractmethod
+    async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> Any:
+        pass
+
+    @abstractmethod
     def disable_pings(self, message: str) -> str:
         pass
 

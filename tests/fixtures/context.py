@@ -14,6 +14,9 @@ class BufferTestExecutionContext(ExecutionContext):
     async def reply(self, message: str, *args, **kwargs) -> None:
         return await self.send_message(message, *args, **kwargs)
 
+    async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> None:
+        return await self.send_message(message, *args, **kwargs)
+
     def disable_pings(self, message: str) -> str:
         return message
 

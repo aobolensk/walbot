@@ -2,7 +2,7 @@ from telegram import Update
 
 from src import const
 from src.api.execution_context import ExecutionContext
-from src.backend.telegram.util import escape_markdown_text, reply
+from src.backend.telegram.util import escape_markdown_text, reply, send_message
 from src.config import bc
 
 
@@ -28,6 +28,9 @@ class TelegramExecutionContext(ExecutionContext):
 
     async def reply(self, message: str, *args, **kwargs) -> None:
         await self.send_message(message, *args, **kwargs, reply_on_msg=True)
+
+    async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> None:
+        send_message(user_id, message)
 
     def _unescape_ping1(self, message: str) -> str:
         idx = 0

@@ -1,7 +1,10 @@
+from urllib.parse import quote_plus
+
 from telegram import Update
 
 from src.config import User, bc
 from src.log import log
+from src.utils import Util
 
 
 def log_message(update: Update) -> None:
@@ -57,3 +60,16 @@ def reply(update: Update, text: str, disable_web_page_preview: bool = False, rep
         )
     title = reply_message.chat.title or "<DM>"
     log.info(f"({title}) {reply_message.from_user.username}: {reply_message.text}")
+
+
+def send_message(chat_id: int, text: str) -> None:
+    log.info(f"({chat_id}) /sendMessage: " + text)
+    text = quote_plus(escape_markdown_text(text))
+    url = (
+        f"https://api.telegram.org/bot{bc.secret_config.telegram['token']}/sendMessage"
+        f"?chat_id={chat_id}&text={text}&parse_mode=MarkdownV2"
+    )
+    rq = Util.request(url)
+    r = rq.get()
+    if r.status_code != 200:
+        log.error(f"Error sending message to {chat_id}: {r.status_code} {r.json()}")

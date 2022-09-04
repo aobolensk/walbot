@@ -1,7 +1,6 @@
 import asyncio
 import datetime
 import time
-from urllib.parse import quote_plus
 
 from telegram import Update
 from telegram.ext import CallbackContext, Filters, MessageHandler, Updater
@@ -13,8 +12,7 @@ from src.api.reminder import Reminder
 from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.common import CommonCommands
 from src.backend.telegram.context import TelegramExecutionContext
-from src.backend.telegram.util import (check_auth, escape_markdown_text,
-                                       log_message)
+from src.backend.telegram.util import check_auth, log_message, send_message
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
@@ -50,19 +48,6 @@ class TelegramBotInstance(BotInstance):
         loop.run_until_complete(bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update)))
 
     @Mail.send_exception_info_to_admin_emails
-    def _send_message(self, chat_id: int, text: str) -> None:
-        log.info(f"({chat_id}) /sendMessage: " + text)
-        text = quote_plus(escape_markdown_text(text))
-        url = (
-            f"https://api.telegram.org/bot{bc.secret_config.telegram['token']}/sendMessage"
-            f"?chat_id={chat_id}&text={text}&parse_mode=MarkdownV2"
-        )
-        rq = Util.request(url)
-        r = rq.get()
-        if r.status_code != 200:
-            log.error(f"Error sending message to {chat_id}: {r.status_code} {r.json()}")
-
-    @Mail.send_exception_info_to_admin_emails
     def _process_reminders_iteration(self) -> None:
         log.debug3("Telegram: Reminder processing iteration has started")
         now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
@@ -82,15 +67,15 @@ class TelegramBotInstance(BotInstance):
                 if rem == prereminder_time.strftime(const.REMINDER_DATETIME_FORMAT):
                     result = f"{prereminder} minutes left until reminder\n"
                     result += rem.message + "\n" + rem.notes + "\n"
-                    self._send_message(rem.channel_id, result)
+                    send_message(rem.channel_id, result)
                     rem.used_prereminders_list[i] = True
             if rem == now:
                 result = (' '.join(rem.ping_users) + "\n") if rem.ping_users else ""
                 result += f"⏰ You asked to remind at {now}\n"
                 result += rem.message + "\n" + rem.notes + "\n"
-                self._send_message(rem.channel_id, result)
+                send_message(rem.channel_id, result)
                 for user_id in rem.telegram_whisper_users:
-                    self._send_message(user_id, result)
+                    send_message(user_id, result)
                 if rem.email_users:
                     mail = Mail(bc.secret_config)
                     mail.send(
