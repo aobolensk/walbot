@@ -1,10 +1,21 @@
 import datetime
 import enum
 from collections import deque
+from typing import TYPE_CHECKING, Optional
 
 from src.backend.discord.message_buffer import MessageBuffer
 from src.executor import Executor
 from src.plugin import PluginManager
+
+if TYPE_CHECKING:
+    import asyncio
+
+    import telegram.ext
+    from discord import ClientUser
+
+    from src.backend.discord.commands import Commands
+    from src.config import Config, SecretConfig
+    from src.markov import Markov
 
 
 @enum.unique
@@ -32,10 +43,10 @@ class BotController:
 
     class Discord:
         def __init__(self) -> None:
-            self.bot_user = None
-            self.commands = None
+            self.bot_user: 'Optional[ClientUser]' = None
+            self.commands: 'Commands' = None
             self.get_channel = None
-            self.background_loop = None
+            self.background_loop: 'Optional[asyncio.AbstractEventLoop]' = None
             self.change_status = None
             self.change_presence = None
             self.latency = None
@@ -44,8 +55,8 @@ class BotController:
 
     class Telegram:
         def __init__(self) -> None:
-            self.bot_username = None
-            self.dispatcher = None
+            self.bot_username: 'Optional[str]' = None
+            self.dispatcher: 'Optional[telegram.ext.Dispatcher]' = None
             self.handlers = dict()
 
     class Repl:
@@ -54,9 +65,9 @@ class BotController:
 
     def __init__(self):
         self.deployment_time = datetime.datetime.now()
-        self.config = None
-        self.markov = None
-        self.secret_config = None
+        self.config: 'Optional[Config]' = None
+        self.markov: 'Optional[Markov]' = None
+        self.secret_config: 'Optional[SecretConfig]' = None
         self.yaml_dumper = None
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
