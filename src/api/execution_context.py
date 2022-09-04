@@ -15,6 +15,10 @@ class ExecutionContext(ABC):
         pass
 
     @abstractmethod
+    async def reply(self, message: str, *args, **kwargs) -> Any:
+        pass
+
+    @abstractmethod
     def disable_pings(self, message: str) -> str:
         pass
 

@@ -19,8 +19,10 @@ class DiscordExecutionContext(ExecutionContext):
         self.silent = silent
 
     async def send_message(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
-        t = asyncio.create_task(Msg.response(self.message, message, self.silent, *args, **kwargs))
-        return asyncio.run(t)
+        return await Msg.response(self.message, message, self.silent, *args, **kwargs)
+
+    async def reply(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
+        return await Msg.reply(self.message, message, self.silent, *args, **kwargs)
 
     def disable_pings(self, message: str) -> str:
         while True:

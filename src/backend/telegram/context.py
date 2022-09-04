@@ -23,7 +23,11 @@ class TelegramExecutionContext(ExecutionContext):
         reply(
             self.update, message,
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
+            reply_on_msg=kwargs.get("reply_on_msg", False),
         )
+
+    async def reply(self, message: str, *args, **kwargs) -> None:
+        await self.send_message(message, *args, **kwargs, reply_on_msg=True)
 
     def _unescape_ping1(self, message: str) -> str:
         idx = 0
