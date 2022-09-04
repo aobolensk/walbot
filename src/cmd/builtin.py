@@ -48,6 +48,9 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["curl"] = Command(
             "builtin", "curl", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._curl)
+        bc.executor.commands["wme"] = Command(
+            "builtin", "wme", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._wme)
         bc.executor.commands["donotupdatestate"] = Command(
             "builtin", "donotupdatestate", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._donotupdatestate)
@@ -164,6 +167,17 @@ class BuiltinCommands(BaseCmd):
             return result
         except Exception as e:
             await Command.send_message(execution_ctx, f"Request failed: {e}")
+
+    async def _wme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Send direct message to author with something
+    Example: !wme Hello!"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[1:])
+        if not result:
+            return
+        result = "You asked me to send you this: " + result
+        await execution_ctx.send_direct_message(execution_ctx.message_author_id(), result)
 
     async def _donotupdatestate(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print current state of "Do Not Update" flag which blocks automatic bot updates

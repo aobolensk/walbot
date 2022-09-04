@@ -134,8 +134,6 @@ class BuiltinCommands(BaseCmd):
             "permuser": dict(permission=const.Permission.ADMIN.value, subcommand=False),
             "whitelist": dict(permission=const.Permission.MOD.value, subcommand=False),
             "config": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "wme": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "poll": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
             "silent": dict(permission=const.Permission.USER.value, subcommand=False),
             "status": dict(permission=const.Permission.MOD.value, subcommand=False),
             "channelid": dict(permission=const.Permission.MOD.value, subcommand=True),
@@ -619,18 +617,6 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(message, f"Incorrect argument for command '{command[0]}'", silent)
         else:
             await Msg.response(message, f"Incorrect usage of command '{command[0]}'", silent)
-
-    @staticmethod
-    async def _wme(message, command, silent=False):
-        """Send direct message to author with something
-    Example: !wme Hello!"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        result = ' '.join(command[1:])
-        if not result:
-            return
-        result = "You asked me to send you this: " + result
-        await Msg.send_direct_message(message.author, result, silent)
 
     @staticmethod
     async def _silent(message, command, silent=False):

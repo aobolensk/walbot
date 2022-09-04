@@ -46,6 +46,7 @@ class BotController:
             self.bot_user: 'Optional[ClientUser]' = None
             self.commands: 'Commands' = None
             self.get_channel = None
+            self.get_user = None
             self.background_loop: 'Optional[asyncio.AbstractEventLoop]' = None
             self.change_status = None
             self.change_presence = None

@@ -48,6 +48,7 @@ class WalBot(discord.Client):
         bc.discord.change_presence = self.change_presence
         bc.discord.plugin_manager.register()
         bc.discord.get_channel = self.get_channel
+        bc.discord.get_user = self.get_user
         bc.discord.background_loop = self.loop
         if not fast_start:
             log.debug("Started Markov model checks...")

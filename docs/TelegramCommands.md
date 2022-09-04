@@ -85,6 +85,10 @@
         !version short \
     *Default permission level: 0*
 
+**wme**: Send direct message to author with something \
+    Example: !wme Hello! \
+    *Default permission level: 0*
+
 # Module: custom-commands
 
 **addextcmd**: Add command that executes external process \
