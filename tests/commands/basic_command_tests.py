@@ -2,7 +2,7 @@ import asyncio
 
 from src.cmd.builtin import BuiltinCommands
 from src.config import bc
-from src.test import BufferTestExecutionContext
+from tests.fixtures.context import BufferTestExecutionContext
 
 
 def test_empty_executor():

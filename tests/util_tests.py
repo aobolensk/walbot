@@ -1,7 +1,7 @@
 import asyncio
 
-from src.test import BufferTestExecutionContext
 from src.utils import Util
+from tests.fixtures.context import BufferTestExecutionContext
 
 
 def test_cut_string():

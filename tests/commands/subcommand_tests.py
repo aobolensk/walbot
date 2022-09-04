@@ -3,7 +3,7 @@ import asyncio
 from src.cmd.builtin import BuiltinCommands
 from src.cmd.math import MathCommands
 from src.config import bc
-from src.test import BufferTestExecutionContext
+from tests.fixtures.context import BufferTestExecutionContext
 
 
 def test_ping_command_with_subcommand(capsys):

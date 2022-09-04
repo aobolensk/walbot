@@ -2,7 +2,7 @@ import inspect
 
 from src.backend.discord.context import DiscordExecutionContext
 from src.backend.telegram.context import TelegramExecutionContext
-from src.test import BufferTestExecutionContext
+from tests.fixtures.context import BufferTestExecutionContext
 
 
 def test_discord_execution_ctx_api_completeness():
