@@ -130,9 +130,6 @@ class TelegramBotInstance(BotInstance):
         log.debug3("Telegram: Reminder processing iteration has finished")
 
     def _run(self, args) -> None:
-        if bc.secret_config.telegram["token"] is None:
-            log.warning("Telegram backend is not configured. Missing token in secret config")
-            return
         log.info("Starting Telegram instance...")
         updater = Updater(bc.secret_config.telegram["token"], request_kwargs={
             "proxy_url": Util.proxy.http(),
@@ -172,3 +169,6 @@ class TelegramBotInstance(BotInstance):
 
     def stop(self, args, main_bot=True) -> None:
         self._is_stopping = True
+
+    def has_credentials(self):
+        return bc.secret_config.telegram["token"] is not None

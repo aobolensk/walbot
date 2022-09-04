@@ -13,6 +13,10 @@ class BotInstance:
     def stop(self, args) -> None:
         pass
 
+    @abstractmethod
+    def has_credentials(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         return self.__class__.__name__

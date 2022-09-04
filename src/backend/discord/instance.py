@@ -396,6 +396,7 @@ class DiscordBotInstance(BotInstance):
         if bc.secret_config.discord["token"] is None:
             log.warning("Discord backend is not configured. Missing token in secret config")
             return
+        log.info("Starting Discord instance...")
         # Handle --nohup flag
         if sys.platform in ("linux", "darwin") and args.nohup:
             fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
@@ -422,3 +423,6 @@ class DiscordBotInstance(BotInstance):
 
     def stop(self, args, main_bot=True):
         pass
+
+    def has_credentials(self):
+        return bc.secret_config.discord["token"] is not None

@@ -33,6 +33,7 @@ class ReplBotInstance(BotInstance):
         loop.run_until_complete(t)
 
     async def _run(self) -> None:
+        log.info("Starting REPL...")
         self.port = bc.config.repl["port"]
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR or socket.SO_REUSEPORT, 1)
@@ -62,3 +63,6 @@ class ReplBotInstance(BotInstance):
     def stop(self, args, main_bot=True) -> None:
         if self.sock:
             self.sock.close()
+
+    def has_credentials(self):
+        return bc.config.repl["port"] is not None

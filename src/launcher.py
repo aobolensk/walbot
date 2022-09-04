@@ -202,11 +202,13 @@ class Launcher:
             if not ok and not self.args.ignore_version_check:
                 sys.exit(const.ExitStatus.CONFIG_FILE_ERROR)
 
-    def _append_backend(self, backend):
+    def _append_backend(self, backend: str) -> None:
         module = importlib.import_module(f"src.backend.{backend}.instance")
         instances = [obj[1] for obj in inspect.getmembers(module, inspect.isclass)
                      if issubclass(obj[1], BotInstance) and obj[1] != BotInstance]
         instance = instances[0]()
+        if not instance.has_credentials():
+            return
         self.backends.append(instance)
         log.debug2("Detected backend: " + self.backends[-1].name)
 
@@ -244,6 +246,11 @@ class Launcher:
             thread.start()
             log.debug2("Started backend: " + backend.name)
         signal.signal(signal.SIGINT, self._stop_signal_handler if main_bot else self._stop_signal_handler_mini)
+        if not self.backends:
+            log.info(
+                "No active backends found! "
+                "Please setup config.yaml and secret.yaml to configure desired backends.")
+            return
         if not sys.platform == "win32":
             signal.pause()
         else:
