@@ -127,6 +127,7 @@ class Command:
     async def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
         if execution_ctx.platform == "discord":
             string = string.replace("@server@", execution_ctx.message.guild.name)
+        string = string.replace("@channelid@", str(execution_ctx.channel_id()))
         string = string.replace("@channel@", execution_ctx.channel_name())
         string = string.replace("@authorid@", str(execution_ctx.message_author_id()))
         string = string.replace("@author@", execution_ctx.message_author())

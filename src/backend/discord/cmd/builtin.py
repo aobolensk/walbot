@@ -136,7 +136,6 @@ class BuiltinCommands(BaseCmd):
             "config": dict(permission=const.Permission.MOD.value, subcommand=False),
             "silent": dict(permission=const.Permission.USER.value, subcommand=False),
             "status": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "channelid": dict(permission=const.Permission.MOD.value, subcommand=True),
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
@@ -660,16 +659,6 @@ class BuiltinCommands(BaseCmd):
             await bc.discord.change_presence(status=discord.Status.invisible)
         else:
             await Msg.response(message, "Unknown type of activity", silent)
-
-    @staticmethod
-    async def _channelid(message, command, silent=False):
-        """Get channel ID
-    Example: !channelid"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = str(message.channel.id)
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _addalias(message, command, silent=False):
