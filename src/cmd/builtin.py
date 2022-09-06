@@ -3,6 +3,8 @@ import subprocess
 import sys
 from typing import List, Optional
 
+import discord
+import telegram
 from dateutil import tz
 
 from src import const
@@ -16,31 +18,36 @@ from src.utils import Util
 
 
 class _BuiltinInternals:
-    async def discord_profile(cmd_line: List[str], execution_ctx: ExecutionContext, info) -> None:
-        roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
-        nick = f'{info.nick} ({info})' if info.nick is not None else f'{info}'
-        title = nick + (' (bot)' if info.bot else '')
-        flags = ' '.join([str(flag[0]) for flag in info.public_flags if flag[1]])
+    async def discord_profile(cmd_line: List[str], execution_ctx: ExecutionContext, user: discord.Member) -> None:
+        roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, user.roles)])
+        nick = f'{user.nick} ({user})' if user.nick is not None else f'{user}'
+        title = nick + (' (bot)' if user.bot else '')
+        flags = ' '.join([str(flag[0]) for flag in user.public_flags if flag[1]])
         e = DiscordEmbed()
         e.title(title)
-        if info.avatar:
-            e.thumbnail(str(info.avatar))
-        e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
-        e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
+        if user.avatar:
+            e.thumbnail(str(user.avatar))
+        e.add_field("Created at", str(user.created_at).split('.', maxsplit=1)[0], True)
+        e.add_field("Joined this server at", str(user.joined_at).split('.', maxsplit=1)[0], True)
         e.add_field("Roles", roles, True)
         if len(cmd_line) == 1:
             # If user requests their own profile, show their status
             # otherwise it is not available
             e.add_field("Status",
-                        f"desktop: {info.desktop_status}\n"
-                        f"mobile: {info.mobile_status}\n"
-                        f"web: {info.web_status}", True)
+                        f"desktop: {user.desktop_status}\n"
+                        f"mobile: {user.mobile_status}\n"
+                        f"web: {user.web_status}", True)
         e.add_field(
             "Permission level",
-            bc.config.discord.users[info.id].permission_level if info.id in bc.config.discord.users.keys() else 0, True)
+            bc.config.discord.users[user.id].permission_level if user.id in bc.config.discord.users.keys() else 0, True)
         if flags:
             e.add_field("Flags", flags)
         await Command.send_message(execution_ctx, None, embed=e.get())
+
+    async def telegram_profile(cmd_line: List[str], execution_ctx: ExecutionContext, user: telegram.User) -> None:
+        result = f"{execution_ctx.message_author()} profile\n"
+        result += f"Permission level: {bc.config.telegram.users[user.id].permission_level}"
+        await Command.send_message(execution_ctx, result)
 
 
 class BuiltinCommands(BaseCmd):
@@ -93,7 +100,7 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["profile"] = Command(
             "builtin", "profile", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._profile,
-            supported_platforms=(SupportedPlatforms.DISCORD))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
 
     async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -266,18 +273,25 @@ class BuiltinCommands(BaseCmd):
         !profile `@user`"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
-        info = ""
+        user = ""
         if execution_ctx.platform == "discord":
             if len(cmd_line) == 1:
-                info = execution_ctx.message.author
+                user = execution_ctx.message.author
             elif len(cmd_line) == 2:
                 if not execution_ctx.message.mentions:
                     return await Command.send_message(
                         execution_ctx, "You need to mention the user you want to get profile of")
-                info = await execution_ctx.message.guild.fetch_member(execution_ctx.message.mentions[0].id)
-            if info is None:
+                user = await execution_ctx.message.guild.fetch_member(execution_ctx.message.mentions[0].id)
+            if user is None:
                 return await Command.send_message(execution_ctx, "Could not get information about this user")
-            await _BuiltinInternals.discord_profile(cmd_line, execution_ctx, info)
+            await _BuiltinInternals.discord_profile(cmd_line, execution_ctx, user)
+        elif execution_ctx.platform == "telegram":
+            if len(cmd_line) == 1:
+                user = execution_ctx.update.message.from_user
+            elif len(cmd_line) == 2:
+                return await Command.send_message(
+                    execution_ctx, "Getting others profile is not supported on Telegram backend")
+            await _BuiltinInternals.telegram_profile(cmd_line, execution_ctx, user)
         else:
             await Command.send_message(
                 execution_ctx,

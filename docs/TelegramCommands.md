@@ -51,6 +51,12 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
+**profile**: Print information about user \
+    Examples: \
+        !profile \
+        !profile `@user` \
+    *Default permission level: 0*
+
 **restart**: Restart the bot \
     Example: !restart \
     *Default permission level: 2*
