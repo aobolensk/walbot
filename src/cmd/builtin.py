@@ -6,11 +6,41 @@ from typing import List, Optional
 from dateutil import tz
 
 from src import const
-from src.api.command import BaseCmd, Command, Implementation
+from src.api.command import (BaseCmd, Command, Implementation,
+                             SupportedPlatforms)
 from src.api.execution_context import ExecutionContext
+from src.backend.discord.embed import DiscordEmbed
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.utils import Util
+
+
+class _BuiltinInternals:
+    async def discord_profile(cmd_line: List[str], execution_ctx: ExecutionContext, info) -> None:
+        roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
+        nick = f'{info.nick} ({info})' if info.nick is not None else f'{info}'
+        title = nick + (' (bot)' if info.bot else '')
+        flags = ' '.join([str(flag[0]) for flag in info.public_flags if flag[1]])
+        e = DiscordEmbed()
+        e.title(title)
+        if info.avatar:
+            e.thumbnail(str(info.avatar))
+        e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
+        e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
+        e.add_field("Roles", roles, True)
+        if len(cmd_line) == 1:
+            # If user requests their own profile, show their status
+            # otherwise it is not available
+            e.add_field("Status",
+                        f"desktop: {info.desktop_status}\n"
+                        f"mobile: {info.mobile_status}\n"
+                        f"web: {info.web_status}", True)
+        e.add_field(
+            "Permission level",
+            bc.config.discord.users[info.id].permission_level if info.id in bc.config.discord.users.keys() else 0, True)
+        if flags:
+            e.add_field("Flags", flags)
+        await Command.send_message(execution_ctx, None, embed=e.get())
 
 
 class BuiltinCommands(BaseCmd):
@@ -60,6 +90,10 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["setmentioncmd"] = Command(
             "builtin", "setmentioncmd", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setmentioncmd)
+        bc.executor.commands["profile"] = Command(
+            "builtin", "profile", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._profile,
+            supported_platforms=(SupportedPlatforms.DISCORD))
 
     async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -224,3 +258,27 @@ class BuiltinCommands(BaseCmd):
         command = ' '.join(cmd_line[1:])
         bc.config.on_mention_command = command
         await Command.send_message(execution_ctx, f"Command '{command}' was set on bot mention")
+
+    async def _profile(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print information about user
+    Examples:
+        !profile
+        !profile `@user`"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+            return
+        info = ""
+        if execution_ctx.platform == "discord":
+            if len(cmd_line) == 1:
+                info = execution_ctx.message.author
+            elif len(cmd_line) == 2:
+                if not execution_ctx.message.mentions:
+                    return await Command.send_message(
+                        execution_ctx, "You need to mention the user you want to get profile of")
+                info = await execution_ctx.message.guild.fetch_member(execution_ctx.message.mentions[0].id)
+            if info is None:
+                return await Command.send_message(execution_ctx, "Could not get information about this user")
+            await _BuiltinInternals.discord_profile(cmd_line, execution_ctx, info)
+        else:
+            await Command.send_message(
+                execution_ctx,
+                f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")

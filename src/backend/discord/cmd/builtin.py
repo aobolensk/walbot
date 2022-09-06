@@ -123,7 +123,6 @@ class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.discord.commands.register_commands(__name__, self.get_classname(), {
             "help": dict(permission=const.Permission.USER.value, subcommand=False),
-            "profile": dict(permission=const.Permission.USER.value, subcommand=False),
             "addcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "enablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -159,49 +158,6 @@ class BuiltinCommands(BaseCmd):
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False, max_execution_time=-1),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
-
-    @staticmethod
-    async def _profile(message, command, silent=False):
-        """Print information about user
-    Examples:
-        !profile
-        !profile `@user`"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        info = ""
-        if len(command) == 1:
-            info = message.author
-        elif len(command) == 2:
-            if not message.mentions:
-                return null(
-                    await Msg.response(message, "You need to mention the user you want to get profile of", silent))
-            info = await message.guild.fetch_member(message.mentions[0].id)
-        if info is None:
-            return null(await Msg.response(message, "Could not get information about this user", silent))
-        roles = ', '.join([x if x != const.ROLE_EVERYONE else const.ROLE_EVERYONE[1:] for x in map(str, info.roles)])
-        nick = f'{info.nick} ({info})' if info.nick is not None else f'{info}'
-        title = nick + (' (bot)' if info.bot else '')
-        flags = ' '.join([str(flag[0]) for flag in info.public_flags if flag[1]])
-        e = DiscordEmbed()
-        e.title(title)
-        if info.avatar:
-            e.thumbnail(str(info.avatar))
-        e.add_field("Created at", str(info.created_at).split('.', maxsplit=1)[0], True)
-        e.add_field("Joined this server at", str(info.joined_at).split('.', maxsplit=1)[0], True)
-        e.add_field("Roles", roles, True)
-        if len(command) == 1:
-            # If user requests their own profile, show their status
-            # otherwise it is not available
-            e.add_field("Status",
-                        f"desktop: {info.desktop_status}\n"
-                        f"mobile: {info.mobile_status}\n"
-                        f"web: {info.web_status}", True)
-        e.add_field(
-            "Permission level",
-            bc.config.discord.users[info.id].permission_level if info.id in bc.config.discord.users.keys() else 0, True)
-        if flags:
-            e.add_field("Flags", flags)
-        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _help(message, command, silent=False):
