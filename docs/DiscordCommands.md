@@ -201,10 +201,6 @@
     Example: !uptime \
     *This command can be used as subcommand*
 
-**urlencode**: Urlencode string \
-    Example: !urlencode hello, world! \
-    *This command can be used as subcommand*
-
 **version**: Get version of the bot \
     Examples: \
         !version \
@@ -622,6 +618,10 @@
 
 **toupper**: Convert text to upper case \
     Example: !toupper SoMe TeXt \
+    *This command can be used as subcommand*
+
+**urlencode**: Urlencode string \
+    Example: !urlencode hello, world! \
     *This command can be used as subcommand*
 
 # Module: timer

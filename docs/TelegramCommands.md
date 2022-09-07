@@ -366,3 +366,8 @@
         !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
     *This command can be used as subcommand* \
     *Default permission level: 0*
+
+**urlencode**: Urlencode string \
+    Example: !urlencode hello, world! \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*

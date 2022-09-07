@@ -144,7 +144,6 @@ class BuiltinCommands(BaseCmd):
             "updimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "tts": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "urlencode": dict(permission=const.Permission.USER.value, subcommand=True),
             "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
             "message": dict(permission=const.Permission.USER.value, subcommand=True),
             "server": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -747,17 +746,6 @@ class BuiltinCommands(BaseCmd):
         text = ' '.join(command[1:])
         await Msg.response(message, text, silent, tts=True)
         log.debug(f"Sent TTS message: {text}")
-
-    @staticmethod
-    async def _urlencode(message, command, silent=False):
-        """Urlencode string
-    Example: !urlencode hello, world!"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        result = ' '.join(command[1:])
-        result = urllib.request.quote(result.encode("cp1251"))
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _avatar(message, command, silent=False):

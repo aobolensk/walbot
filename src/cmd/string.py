@@ -1,3 +1,4 @@
+import urllib.request
 from typing import List, Optional
 
 from src import const, emoji
@@ -21,6 +22,9 @@ class StringCommands(BaseCmd):
         bc.executor.commands["range"] = Command(
             "string", "range", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._range)
+        bc.executor.commands["urlencode"] = Command(
+            "string", "urlencode", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._urlencode)
 
     async def _emojify(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Emojify text
@@ -92,5 +96,15 @@ class StringCommands(BaseCmd):
             result += str(number) + ' '
         else:
             result = result[:-1]
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _urlencode(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Urlencode string
+    Example: !urlencode hello, world!"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[1:])
+        result = urllib.request.quote(result.encode("cp1251"))
         await Command.send_message(execution_ctx, result)
         return result
