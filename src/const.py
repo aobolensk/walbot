@@ -69,7 +69,7 @@ TIMESTAMP_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 EMBED_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 INTEGER_NUMBER = re.compile(r'[-+]?\d+')
 ARGS_REGEX = re.compile(r'@args(\d*)-(\d*)@')
-REMINDER_IN_REGEX = re.compile(r'(([0-9]*)w)?(([0-9]*)d)?(([0-9])*h)?(([0-9])*m)?')
+REMINDER_IN_REGEX = re.compile(r'(([0-9]*)w)?(([0-9]*)d)?(([0-9]*)h)?(([0-9]*)m)?')
 
 # Discord
 DISCORD_USER_ID_REGEX = re.compile(r'<@!?(\d*)>')
