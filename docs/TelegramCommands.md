@@ -10,6 +10,7 @@
 * [Module: random](#module-random)
 * [Module: reaction](#module-reaction)
 * [Module: reminder](#module-reminder)
+* [Module: services](#module-services)
 * [Module: string](#module-string)
 
 # Module: builtin
@@ -345,6 +346,27 @@
         !updreminder 0 in 1w5d10h5m Test reminder \
         !updreminder 0 in 1w Test reminder 2 \
         !updreminder 0 in 5h10m Test reminder 3 \
+    *Default permission level: 0*
+
+# Module: services
+
+**netcheck**: Check network and proxy settings \
+    Usage: !netcheck \
+    *This command can be used as subcommand* \
+    *Default permission level: 2*
+
+**translate**: Translate text to specified language \
+    Usage: !translate &lt;lang&gt; &lt;text&gt; \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**weather**: Get current weather using wttr.in \
+    Usage: !weather &lt;city&gt; \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**weatherforecast**: Get weather forecast using wttr.in \
+    Usage: !weatherforecast &lt;city&gt; \
     *Default permission level: 0*
 
 # Module: string
