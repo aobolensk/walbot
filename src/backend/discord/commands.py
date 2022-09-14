@@ -99,13 +99,7 @@ class Commands:
             # Filling up ToC (table of contents)
             f.write("# Table of Contents:\n")
             for module_name, _ in result:
-                if module_name in self.module_help.keys() and self.module_help[module_name] is not None:
-                    module_description = ": " + self.module_help[module_name].strip().split('\n')[0]
-                else:
-                    module_description = ""
-                f.write(
-                    "* [Module: " + module_name + "](#module-" + module_name + ")"
-                    + module_description + "\n")
+                f.write("* [Module: " + module_name + "](#module-" + module_name + ")\n")
             # Add commands grouped by modules
             for module_name, help_list in result:
                 f.write("\n# Module: " + module_name + "\n\n" + '\n'.join(sorted(help_list)))
