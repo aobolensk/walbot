@@ -117,6 +117,7 @@ class TelegramBotInstance(BotInstance):
             bc.config.ids["reminder"] += 1
         log.debug3("Telegram: Reminder processing iteration has finished")
 
+    @Mail.send_exception_info_to_admin_emails
     def _run(self, args) -> None:
         log.info("Starting Telegram instance...")
         updater = Updater(bc.secret_config.telegram["token"], request_kwargs={

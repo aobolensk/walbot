@@ -385,6 +385,7 @@ class WalBot(discord.Client):
 
 
 class DiscordBotInstance(BotInstance):
+    @Mail.send_exception_info_to_admin_emails
     def start(self, args, main_bot=True):
         # Check whether bot is already running
         if bc.secret_config.discord["token"] is None:
