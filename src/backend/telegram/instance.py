@@ -15,6 +15,7 @@ from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message, send_message
 from src.bc import DoNotUpdateFlag
 from src.config import bc
+from src.emoji import get_clock_emoji
 from src.log import log
 from src.mail import Mail
 from src.message_processing import MessageProcessing
@@ -71,7 +72,8 @@ class TelegramBotInstance(BotInstance):
                     rem.used_prereminders_list[i] = True
             if rem == now:
                 result = (' '.join(rem.ping_users) + "\n") if rem.ping_users else ""
-                result += f"⏰ You asked to remind at {now}\n"
+                clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                result += f"{clock_emoji} You asked to remind at {now}\n"
                 result += rem.message + "\n" + rem.notes + "\n"
                 send_message(rem.channel_id, result)
                 for user_id in rem.telegram_whisper_users:

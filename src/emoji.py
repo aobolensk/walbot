@@ -124,6 +124,34 @@ emoji_to_text = {
 }
 
 
+_clock_emoji_mapping = {
+    (12, 0): "🕛",
+    (12, 30): "🕧",
+    (1, 0): "🕐",
+    (1, 30): "🕜",
+    (2, 0): "🕑",
+    (2, 30): "🕝",
+    (3, 0): "🕒",
+    (3, 30): "🕞",
+    (4, 0): "🕓",
+    (4, 30): "🕟",
+    (5, 0): "🕔",
+    (5, 30): "🕠",
+    (6, 0): "🕕",
+    (6, 30): "🕡",
+    (7, 0): "🕖",
+    (7, 30): "🕢",
+    (8, 0): "🕗",
+    (8, 30): "🕣",
+    (9, 0): "🕘",
+    (9, 30): "🕤",
+    (10, 0): "🕙",
+    (10, 30): "🕥",
+    (11, 0): "🕚",
+    (11, 30): "🕦",
+}
+
+
 def get_clock_emoji(time: str) -> Optional[str]:
     r = const.TIME_24H_REGEX.match(time)
     if r is None:
@@ -140,4 +168,5 @@ def get_clock_emoji(time: str) -> Optional[str]:
         hours -= 12
     while hours <= 0:
         hours += 12
-    return f":clock{hours}{minutes if minutes > 0 else ''}:"
+    assert (hours, minutes) in _clock_emoji_mapping.keys()
+    return _clock_emoji_mapping[(hours, minutes)]
