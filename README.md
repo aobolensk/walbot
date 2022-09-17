@@ -5,7 +5,10 @@
 # walbot
 Discord bot in Python*
 
-\* It also has Telegram backend which is under development.
+### Supported backends
+
+* Discord: [Setup guide]()
+* Telegram: [Setup guide]()
 
 ### Requirements:
 - [ffmpeg](https://www.ffmpeg.org/)
@@ -46,4 +49,4 @@ FAQ: [Read](docs/FAQ.rst)<br>
 #### Commands
 
 Discord commands help: [Read](docs/DiscordCommands.md)<br>
-Telegram commands help: [Read](docs/TelegramCommands.md)
+Telegram commands help: [Read](docs/TelegramCommands.md)<br>
