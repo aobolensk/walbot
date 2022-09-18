@@ -7,8 +7,8 @@ Discord bot in Python*
 
 ### Supported backends
 
-* Discord: [Setup guide]()
-* Telegram: [Setup guide]()
+* Discord: [Setup guide](docs/SetupBackends.md#discord)
+* Telegram: [Setup guide](docs/SetupBackends.md#telegram)
 
 ### Requirements:
 - [ffmpeg](https://www.ffmpeg.org/)
