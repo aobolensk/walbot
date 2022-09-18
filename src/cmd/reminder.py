@@ -1,4 +1,5 @@
 import datetime
+import math
 import random
 from typing import List, Optional
 
@@ -143,13 +144,19 @@ class _ReminderInternals:
         reminder_list = reminder_list[:reminders_count]
         if execution_ctx.platform == "discord":
             embed_color = random.randint(0x000000, 0xffffff)
+            cur_list = 1
+            total_list = int(math.ceil(reminders_count / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
             for reminder_chunk in Msg.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
                 e = DiscordEmbed()
-                e.title("List of reminders")
+                if total_list > 1:
+                    e.title(f"List of reminders {cur_list}/{total_list}")
+                else:
+                    e.title("List of reminders")
                 e.color(embed_color)
                 for rem in reminder_chunk:
                     e.add_field(rem[1], rem[2])
                 await execution_ctx.send_message(None, embed=e.get())
+                cur_list += 1
             if not reminder_list:
                 e = DiscordEmbed()
                 e.title("List of reminders")
