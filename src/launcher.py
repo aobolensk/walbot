@@ -254,7 +254,8 @@ class Launcher:
                 "Please setup config.yaml and secret.yaml to configure desired backends.")
             return
         bc.plugin_manager.register()
-        self._loop.run_until_complete(bc.plugin_manager.load_plugins())
+        self._loop.create_task(bc.plugin_manager.load_plugins())
+        self._loop.run_forever()
         if not sys.platform == "win32":
             signal.pause()
         else:

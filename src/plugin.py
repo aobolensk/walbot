@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 import inspect
 import os
@@ -82,9 +83,9 @@ class PluginManager:
                 }
         for plugin_name, plugin_state in bc.config.plugins.items():
             if plugin_state["autostart"]:
-                await self.send_command(plugin_name, "init")
+                asyncio.get_running_loop().create_task(self.send_command(plugin_name, "init"))
 
     async def unload_plugins(self) -> None:
         for plugin_name in self.get_plugins_list():
             if await self.send_command(plugin_name, "is_enabled"):
-                await self.send_command(plugin_name, "close")
+                asyncio.get_running_loop().create_task(self.send_command(plugin_name, "close"))
