@@ -46,7 +46,6 @@ class WalBot(discord.Client):
         bc.discord.latency = lambda: self.latency
         bc.discord.change_status = self._change_status
         bc.discord.change_presence = self.change_presence
-        bc.discord.plugin_manager.register()
         bc.discord.get_channel = self.get_channel
         bc.discord.get_user = self.get_user
         bc.discord.background_loop = self.loop
@@ -92,7 +91,6 @@ class WalBot(discord.Client):
     async def _on_shutdown(self) -> None:
         if self.repl is not None:
             self.repl.stop()
-        await bc.discord.plugin_manager.unload_plugins()
 
     @Mail.send_exception_info_to_admin_emails
     async def _precompile(self) -> None:
@@ -205,7 +203,6 @@ class WalBot(discord.Client):
     @Mail.send_exception_info_to_admin_emails
     async def on_ready(self) -> None:
         bc.backends["discord"] = True
-        await bc.discord.plugin_manager.load_plugins()
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
@@ -223,7 +220,6 @@ class WalBot(discord.Client):
 
     @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
-        await bc.discord.plugin_manager.broadcast_command("on_message", message)
         if isinstance(message.channel, discord.DMChannel):
             return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
@@ -246,6 +242,7 @@ class WalBot(discord.Client):
         else:
             await self._process_regular_message(message)
             await self._process_repetitions(message)
+        await bc.plugin_manager.broadcast_command("on_message", DiscordExecutionContext(message))
 
     @Mail.send_exception_info_to_admin_emails
     async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:

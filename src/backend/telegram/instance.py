@@ -38,6 +38,7 @@ class TelegramBotInstance(BotInstance):
         bc.markov.add_string(text)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(MessageProcessing.process_responses(TelegramExecutionContext(update), text))
+        loop.run_until_complete(bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update)))
 
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
@@ -47,6 +48,7 @@ class TelegramBotInstance(BotInstance):
         cmd_line = bc.config.on_mention_command.split(" ")
         loop = asyncio.new_event_loop()
         loop.run_until_complete(bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update)))
+        loop.run_until_complete(bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update)))
 
     @Mail.send_exception_info_to_admin_emails
     def _process_reminders_iteration(self) -> None:

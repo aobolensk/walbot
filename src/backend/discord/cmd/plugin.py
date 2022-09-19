@@ -26,11 +26,11 @@ class PluginCommands(BaseCmd):
         !listplugin"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        plugin_names = bc.discord.plugin_manager.get_plugins_list()
+        plugin_names = bc.plugin_manager.get_plugins_list()
         e = DiscordEmbed()
         e.title("List of plugins")
         for plugin_name in plugin_names:
-            is_enabled = await bc.discord.plugin_manager.send_command(plugin_name, "is_enabled")
+            is_enabled = await bc.plugin_manager.send_command(plugin_name, "is_enabled")
             e.add_field(plugin_name, "enabled" if is_enabled else "disabled", True)
         await Msg.response(message, None, silent, embed=e.get())
 
@@ -42,9 +42,9 @@ class PluginCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         plugin_name = command[1]
-        if plugin_name not in bc.discord.plugin_manager.get_plugins_list():
+        if plugin_name not in bc.plugin_manager.get_plugins_list():
             return null(await Msg.response(message, f"Could not find plugin '{plugin_name}'", silent))
-        await bc.discord.plugin_manager.send_command(plugin_name, "init")
+        await bc.plugin_manager.send_command(plugin_name, "init")
         await Msg.response(message, f"Plugin '{plugin_name}' has been loaded", silent)
 
     @staticmethod
@@ -53,9 +53,9 @@ class PluginCommands(BaseCmd):
     Usage: !reloadpluginmanager"""
         if not await Util.check_args_count(message, command, silent, min=1, max=1):
             return
-        await bc.discord.plugin_manager.unload_plugins()
-        bc.discord.plugin_manager.register(reload=True)
-        await bc.discord.plugin_manager.load_plugins()
+        await bc.plugin_manager.unload_plugins()
+        bc.plugin_manager.register(reload=True)
+        await bc.plugin_manager.load_plugins()
         await Msg.response(message, "Plugin manager has been reloaded", silent)
 
     @staticmethod
@@ -66,9 +66,9 @@ class PluginCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         plugin_name = command[1]
-        if plugin_name not in bc.discord.plugin_manager.get_plugins_list():
+        if plugin_name not in bc.plugin_manager.get_plugins_list():
             return null(await Msg.response(message, f"Could not find plugin '{plugin_name}'", silent))
-        await bc.discord.plugin_manager.send_command(plugin_name, "close")
+        await bc.plugin_manager.send_command(plugin_name, "close")
         await Msg.response(message, f"Plugin '{plugin_name}' has been unloaded", silent)
 
     @staticmethod
@@ -79,10 +79,10 @@ class PluginCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         plugin_name = command[1]
-        if plugin_name not in bc.discord.plugin_manager.get_plugins_list():
+        if plugin_name not in bc.plugin_manager.get_plugins_list():
             return null(await Msg.response(message, f"Could not find plugin '{plugin_name}'", silent))
-        await bc.discord.plugin_manager.send_command(plugin_name, "close")
-        await bc.discord.plugin_manager.send_command(plugin_name, "init")
+        await bc.plugin_manager.send_command(plugin_name, "close")
+        await bc.plugin_manager.send_command(plugin_name, "init")
         await Msg.response(message, f"Plugin '{plugin_name}' has been reloaded", silent)
 
     @staticmethod

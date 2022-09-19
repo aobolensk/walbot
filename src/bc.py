@@ -51,7 +51,6 @@ class BotController:
             self.change_status = None
             self.change_presence = None
             self.latency = None
-            self.plugin_manager = PluginManager()
             self.message_buffer = MessageBuffer()
 
     class Telegram:
@@ -83,3 +82,4 @@ class BotController:
         self.discord = self.Discord()
         self.telegram = self.Telegram()
         self.repl = self.Repl()
+        self.plugin_manager = PluginManager()

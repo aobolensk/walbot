@@ -3,6 +3,7 @@ WalBot launcher
 """
 
 import argparse
+import asyncio
 import importlib
 import inspect
 import os
@@ -96,6 +97,7 @@ class Launcher:
     def __init__(self):
         self._parser = self._get_argparser()
         self.args = self._parser.parse_args()
+        self._loop = asyncio.new_event_loop()
 
     def _prepare_args(self):
         if self.args.action in ("start", "restart", "suspend", "startmini", "stopmini"):
@@ -251,6 +253,8 @@ class Launcher:
                 "No active backends found! "
                 "Please setup config.yaml and secret.yaml to configure desired backends.")
             return
+        bc.plugin_manager.register()
+        self._loop.run_until_complete(bc.plugin_manager.load_plugins())
         if not sys.platform == "win32":
             signal.pause()
         else:
@@ -261,6 +265,7 @@ class Launcher:
         if not BotCache(main_bot).exists():
             log.error("Could not stop the bot (cache file does not exist)")
             return const.ExitStatus.GENERAL_ERROR
+        self._loop.run_until_complete(bc.plugin_manager.unload_plugins())
         bot_cache = BotCache(main_bot).parse()
         pid = bot_cache["pid"]
         if pid is None:

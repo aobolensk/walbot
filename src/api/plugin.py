@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-import discord
+from src.api.execution_context import ExecutionContext
 
 
 class BasePlugin:
@@ -24,7 +24,7 @@ class BasePlugin:
         self._enabled = True
 
     @abstractmethod
-    async def on_message(self, message: discord.Message) -> None:
+    async def on_message(self, execution_ctx: ExecutionContext) -> None:
         """Executes when message was sent"""
         pass
 
