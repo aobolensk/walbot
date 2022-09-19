@@ -7,8 +7,7 @@
 ```py
 import asyncio
 
-import discord
-
+from src.api.execution_context import ExecutionContext
 from src.log import log
 from src.plugin import BasePlugin
 
@@ -30,9 +29,12 @@ class DummyPlugin(BasePlugin):
             log.info("Hello, world!")
             await asyncio.sleep(3600)
 
-    async def on_message(self, message: discord.Message) -> None:
-        await super().on_message(message)
-        log.info(f"Message: {message}")
+    async def on_message(self, execution_ctx: ExecutionContext) -> None:
+        await super().on_message(execution_ctx)
+        if execution_ctx.platform == "discord":
+            log.debug(execution_ctx.message)
+        elif execution_ctx.platform == "telegram":
+            log.debug(execution_ctx.update)
 
     async def close(self) -> None:
         await super().close()
