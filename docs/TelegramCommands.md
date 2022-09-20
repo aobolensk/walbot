@@ -7,6 +7,7 @@
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
+* [Module: plugin](#module-plugin)
 * [Module: random](#module-random)
 * [Module: reaction](#module-reaction)
 * [Module: reminder](#module-reminder)
@@ -200,6 +201,39 @@
         !if 0 It's true;It's false -&gt; It's false \
     *This command can be used as subcommand* \
     *Default permission level: 0*
+
+# Module: plugin
+
+**autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \
+    Usage: \
+        !autostartplugin &lt;plugin_name&gt;          &lt;- check if autostart is enabled \
+        !autostartplugin &lt;plugin_name&gt; enable   &lt;- enable autostart for plugin \
+        !autostartplugin &lt;plugin_name&gt; disable  &lt;- disable autostart for plugin \
+    *Default permission level: 1*
+
+**listplugin**: Print list of plugins \
+    Usage: \
+        !listplugin \
+    *Default permission level: 0*
+
+**loadplugin**: Load plugin by its name \
+    Usage: \
+        !loadplugin &lt;plugin_name&gt; \
+    *Default permission level: 1*
+
+**reloadplugin**: Reload plugin by its name \
+    Usage: \
+        !reloadplugin &lt;plugin_name&gt; \
+    *Default permission level: 1*
+
+**reloadpluginmanager**: Reload plugin manager \
+    Usage: !reloadpluginmanager \
+    *Default permission level: 1*
+
+**unloadplugin**: Unload plugin by its name \
+    Usage: \
+        !unloadplugin &lt;plugin_name&gt; \
+    *Default permission level: 1*
 
 # Module: random
 
