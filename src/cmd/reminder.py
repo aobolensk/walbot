@@ -224,6 +224,9 @@ class ReminderCommands(BaseCmd):
         bc.executor.commands["addremindernotes"] = Command(
             "reminder", "addremindernotes", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addremindernotes)
+        bc.executor.commands["delremindernotes"] = Command(
+            "reminder", "delremindernotes", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delremindernotes)
         bc.executor.commands["setreminderchannel"] = Command(
             "reminder", "setreminderchannel", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setreminderchannel)
@@ -640,7 +643,7 @@ class ReminderCommands(BaseCmd):
         await Command.send_message(execution_ctx, result)
 
     async def _addremindernotes(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        """Add reminder notes
+        """Add reminder notes for specific reminder
     Example: !addremindernotes 1 Some text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
             return
@@ -653,6 +656,20 @@ class ReminderCommands(BaseCmd):
         rem = bc.config.reminders[index]
         rem.notes = ' '.join(cmd_line[2:])
         await Command.send_message(execution_ctx, f"Set notes for reminder {index}: {rem.notes}")
+
+    async def _delremindernotes(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Delete reminder notes for specific reminder
+    Example: !delremindernotes 1"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = await Util.parse_int_for_command(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return await Command.send_message(execution_ctx, "Invalid index of reminder!")
+        bc.config.reminders[index].notes = ""
+        await Command.send_message(execution_ctx, f"Notes for reminder {index} have been removed!")
 
     async def _setreminderchannel(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Set channel where reminder will be sent
