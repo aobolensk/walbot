@@ -8,6 +8,7 @@
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
 * [Module: plugin](#module-plugin)
+* [Module: quote](#module-quote)
 * [Module: random](#module-random)
 * [Module: reaction](#module-reaction)
 * [Module: reminder](#module-reminder)
@@ -234,6 +235,30 @@
     Usage: \
         !unloadplugin &lt;plugin_name&gt; \
     *Default permission level: 1*
+
+# Module: quote
+
+**addquote**: Add quote to quotes database \
+    Example: !addquote Hello, world! \
+    *Default permission level: 0*
+
+**delquote**: Delete quote from quotes database by index \
+    Example: !delquote 0 \
+    *Default permission level: 0*
+
+**listquote**: Print list of all quotes \
+    Example: !listquote \
+    *Default permission level: 0*
+
+**quote**: Print some quote from quotes database \
+    Examples: \
+        !quote \
+        !quote 1 \
+    *Default permission level: 0*
+
+**setquoteauthor**: Set author of quote by its index \
+    Example: !setquoteauthor 0 WalBot \
+    *Default permission level: 0*
 
 # Module: random
 
