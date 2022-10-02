@@ -111,7 +111,7 @@ class VoiceCommands(BaseCmd):
     Usage: !vjoin <voice_channel_id>"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        voice_channel_id = await Util.parse_int(
+        voice_channel_id = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be an id of voice channel", silent)
         if voice_channel_id is None:
             return
@@ -280,7 +280,7 @@ class VoiceCommands(BaseCmd):
             else:
                 await Msg.response(message, "Automatic rejoin is not set", silent)
             return
-        voice_channel_id = await Util.parse_int(
+        voice_channel_id = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be an id of voice channel", silent)
         if voice_channel_id is None:
             return

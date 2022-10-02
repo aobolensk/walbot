@@ -27,7 +27,7 @@ class TimerCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
         start = datetime.datetime.now()
-        duration = await Util.parse_int(
+        duration = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
         if duration is None:
             return
@@ -65,7 +65,7 @@ class TimerCommands(BaseCmd):
     Usage: !stoptimer 1"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        id_ = await Util.parse_int(
+        id_ = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be an integer", silent)
         if id_ is None:
             return
@@ -105,7 +105,7 @@ class TimerCommands(BaseCmd):
     Usage: !stopstopwatch 1"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        id_ = await Util.parse_int(
+        id_ = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be an integer", silent)
         if id_ is None:
             return

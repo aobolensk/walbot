@@ -32,7 +32,7 @@ class ReactionCommands(BaseCmd):
     Example: !updreaction index emoji regex"""
         if not await Util.check_args_count(message, command, silent, min=4):
             return
-        index = await Util.parse_int(
+        index = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should an index (integer)", silent)
         if index is None:
             return
@@ -50,7 +50,7 @@ class ReactionCommands(BaseCmd):
         !delreaction index"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        index = await Util.parse_int(
+        index = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be an index of reaction", silent)
         if index is None:
             return

@@ -45,7 +45,7 @@ class RandomCommands(BaseCmd):
         if not bc.config.quotes:
             return await Command.send_message(execution_ctx, "<Quotes database is empty>")
         if len(cmd_line) == 2:
-            index = await Util.parse_int_for_command(
+            index = await Util.parse_int(
                 execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of quote")
             if index is None:
                 return
@@ -95,7 +95,7 @@ class RandomCommands(BaseCmd):
     Example: !delquote 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of quote")
         if index is None:
             return
@@ -110,7 +110,7 @@ class RandomCommands(BaseCmd):
     Example: !setquoteauthor 0 WalBot"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of quote")
         if index is None:
             return

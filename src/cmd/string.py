@@ -76,15 +76,15 @@ class StringCommands(BaseCmd):
             return
         start, stop, step = 0, 0, 1
         if len(cmd_line) == 2:
-            stop = await Util.parse_int_for_command(
+            stop = await Util.parse_int(
                 execution_ctx, cmd_line[1], f"Stop parameter in range '{cmd_line[0]}' should be an integer")
         else:
-            start = await Util.parse_int_for_command(
+            start = await Util.parse_int(
                 execution_ctx, cmd_line[1], f"Start parameter in range '{cmd_line[0]}' should be an integer")
-            stop = await Util.parse_int_for_command(
+            stop = await Util.parse_int(
                 execution_ctx, cmd_line[2], f"Stop parameter in range '{cmd_line[0]}' should be an integer")
             if len(cmd_line) == 4:
-                step = await Util.parse_int_for_command(
+                step = await Util.parse_int(
                     execution_ctx, cmd_line[3], f"Step parameter in range '{cmd_line[0]}' should be an integer")
         if start is None or stop is None or step is None:
             return

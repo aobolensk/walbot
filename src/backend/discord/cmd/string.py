@@ -37,7 +37,7 @@ class StringCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:])
-        num = await Util.parse_int(
+        num = await Util.parse_int_for_discord(
             message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
         if num is None:
             return
@@ -59,7 +59,7 @@ class StringCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:])
-        num = await Util.parse_int(
+        num = await Util.parse_int_for_discord(
             message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
         if num is None:
             return
@@ -89,7 +89,7 @@ class StringCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:]).split()
-        num = await Util.parse_int(
+        num = await Util.parse_int_for_discord(
             message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
         if num is None:
             return
@@ -111,7 +111,7 @@ class StringCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:]).split()
-        num = await Util.parse_int(
+        num = await Util.parse_int_for_discord(
             message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
         if num is None:
             return
@@ -147,7 +147,7 @@ class StringCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:]).split('\n')
-        num = await Util.parse_int(
+        num = await Util.parse_int_for_discord(
             message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
         if num is None:
             return
@@ -173,7 +173,7 @@ class StringCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=2):
             return
         result = ' '.join(command[2:]).split('\n')
-        num = await Util.parse_int(
+        num = await Util.parse_int_for_discord(
             message, command[1], f"Second argument of command '{command[0]}' should be an integer", silent)
         if num is None:
             return

@@ -41,7 +41,7 @@ class _ReminderInternals:
                 datetime.datetime.now() + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
         elif date.endswith("d"):
             days_amount = date[:-1]
-            days_amount = await Util.parse_int_for_command(
+            days_amount = await Util.parse_int(
                 execution_ctx, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
             if days_amount is None:
                 return
@@ -49,7 +49,7 @@ class _ReminderInternals:
                 datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("d"):
             days_amount = date[:-1]
-            days_amount = await Util.parse_int_for_command(
+            days_amount = await Util.parse_int(
                 execution_ctx, days_amount, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
             if days_amount is None:
                 return
@@ -57,7 +57,7 @@ class _ReminderInternals:
                 datetime.datetime.now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("w"):
             weeks_amount = date[:-1]
-            weeks_amount = await Util.parse_int_for_command(
+            weeks_amount = await Util.parse_int(
                 execution_ctx, weeks_amount, "You need to specify amount of weeks before 'w'. Example: 2w for 2 weeks")
             if weeks_amount is None:
                 return
@@ -65,7 +65,7 @@ class _ReminderInternals:
                 datetime.datetime.now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
         elif date.endswith("m"):
             months_amount = date[:-1]
-            months_amount = await Util.parse_int_for_command(
+            months_amount = await Util.parse_int(
                 execution_ctx, months_amount,
                 "You need to specify amount of months before 'm'. Example: 3m for 3 months")
             if months_amount is None:
@@ -75,7 +75,7 @@ class _ReminderInternals:
                 dateutil.relativedelta.relativedelta(months=months_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("y"):
             years_amount = date[:-1]
-            years_amount = await Util.parse_int_for_command(
+            years_amount = await Util.parse_int(
                 execution_ctx, years_amount,
                 "You need to specify amount of years before 'y'. Example: 3y for 3 years")
             if years_amount is None:
@@ -116,7 +116,7 @@ class _ReminderInternals:
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         if len(cmd_line) == 2:
-            count = await Util.parse_int_for_command(
+            count = await Util.parse_int(
                 execution_ctx, cmd_line[1],
                 f"Second parameter for '{cmd_line[0]}' should be amount of reminders to print")
             if count is None:
@@ -237,7 +237,7 @@ class ReminderCommands(BaseCmd):
         !reminder 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -340,7 +340,7 @@ class ReminderCommands(BaseCmd):
 """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=5):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -390,7 +390,7 @@ class ReminderCommands(BaseCmd):
         errors = []
         passed = []
         for i in range(1, len(cmd_line)):
-            index = await Util.parse_int_for_command(
+            index = await Util.parse_int(
                 execution_ctx, cmd_line[i], f"Parameters for '{cmd_line[0]}' should be indexes of reminder")
             if index is None:
                 return
@@ -419,7 +419,7 @@ class ReminderCommands(BaseCmd):
     Example: !remindme 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -433,7 +433,7 @@ class ReminderCommands(BaseCmd):
     Example: !remindwme 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -457,7 +457,7 @@ class ReminderCommands(BaseCmd):
     Example: !remindeme 1 <your-email-address>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -485,7 +485,7 @@ class ReminderCommands(BaseCmd):
     Note: number without postfix is translated to minutes. 0 means disabling repetition"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -505,41 +505,41 @@ class ReminderCommands(BaseCmd):
 
         if cmd_line[2].endswith("h"):
             duration = cmd_line[2][:-1]
-            duration = await Util.parse_int_for_command(
+            duration = await Util.parse_int(
                 execution_ctx, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
             if duration is None:
                 return
             duration *= 60
         elif cmd_line[2].endswith("d"):
             duration = cmd_line[2][:-1]
-            duration = await Util.parse_int_for_command(
+            duration = await Util.parse_int(
                 execution_ctx, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
             if duration is None:
                 return
             duration *= 1440
         elif cmd_line[2].endswith("w"):
             duration = cmd_line[2][:-1]
-            duration = await Util.parse_int_for_command(
+            duration = await Util.parse_int(
                 execution_ctx, duration, "You need to specify amount of days before 'd'. Example: 3d for 3 days")
             if duration is None:
                 return
             duration *= 10080
         elif cmd_line[2].endswith("m"):
             duration = cmd_line[2][:-1]
-            duration = await Util.parse_int_for_command(
+            duration = await Util.parse_int(
                 execution_ctx, duration, "You need to specify amount of days before 'm'. Example: 3m for 3 months")
             if duration is None:
                 return
             bc.config.reminders[index].repeat_interval_measure = "months"
         elif cmd_line[2].endswith("y"):
             duration = cmd_line[2][:-1]
-            duration = await Util.parse_int_for_command(
+            duration = await Util.parse_int(
                 execution_ctx, duration, "You need to specify amount of days before 'y'. Example: 3y for 3 years")
             if duration is None:
                 return
             bc.config.reminders[index].repeat_interval_measure = "years"
         else:
-            duration = await Util.parse_int_for_command(
+            duration = await Util.parse_int(
                 execution_ctx, cmd_line[2],
                 f"Third parameter for '{cmd_line[0]}' should be duration of period between reminders")
             if duration is None:
@@ -561,7 +561,7 @@ class ReminderCommands(BaseCmd):
     Note: only recurring (repeating) reminders are affected by this command"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -596,7 +596,7 @@ class ReminderCommands(BaseCmd):
     Example: !timeuntilreminder 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -619,7 +619,7 @@ class ReminderCommands(BaseCmd):
         !setprereminders 2 5 10 15"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -628,7 +628,7 @@ class ReminderCommands(BaseCmd):
         rem = bc.config.reminders[index]
         prereminders_list = []
         for i in range(2, len(cmd_line)):
-            time_before_reminder = await Util.parse_int_for_command(
+            time_before_reminder = await Util.parse_int(
                 execution_ctx, cmd_line[i], f"Parameter #{i} for '{cmd_line[0]}' should be time in minutes")
             if time_before_reminder is None:
                 return
@@ -647,7 +647,7 @@ class ReminderCommands(BaseCmd):
     Example: !addremindernotes 1 Some text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -662,7 +662,7 @@ class ReminderCommands(BaseCmd):
     Example: !delremindernotes 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
@@ -676,14 +676,14 @@ class ReminderCommands(BaseCmd):
     Example: !setreminderchannel 1 <channel_id>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
         if index is None:
             return
         if index not in bc.config.reminders.keys():
             return await Command.send_message(execution_ctx, "Invalid index of reminder!")
         rem = bc.config.reminders[index]
-        channel_id = await Util.parse_int_for_command(
+        channel_id = await Util.parse_int(
             execution_ctx, cmd_line[2], f"Third parameter for '{cmd_line[0]}' should be channel id")
         if channel_id is None:
             return

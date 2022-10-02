@@ -39,7 +39,7 @@ class Util:
             return TimeoutStatus.TIMEOUT, None
 
     @staticmethod
-    async def parse_int(message, string, error_message, silent):
+    async def parse_int_for_discord(message, string, error_message, silent):
         try:
             return int(string)
         except ValueError:
@@ -47,7 +47,7 @@ class Util:
             return
 
     @staticmethod
-    async def parse_int_for_command(execution_ctx: ExecutionContext, string: str, error_message: str):
+    async def parse_int(execution_ctx: ExecutionContext, string: str, error_message: str):
         try:
             return int(string)
         except ValueError:
@@ -55,15 +55,7 @@ class Util:
             return
 
     @staticmethod
-    async def parse_float(message, string, error_message, silent):
-        try:
-            return float(string)
-        except ValueError:
-            await Msg.response(message, error_message, silent)
-            return
-
-    @staticmethod
-    async def parse_float_for_command(execution_ctx: ExecutionContext, string: str, error_message: str):
+    async def parse_float(execution_ctx: ExecutionContext, string: str, error_message: str):
         try:
             return float(string)
         except ValueError:

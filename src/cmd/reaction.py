@@ -49,7 +49,7 @@ class ReactionCommands(BaseCmd):
     Example: !updresponse index regex;text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should an index (integer)")
         if index is None:
             return
@@ -69,7 +69,7 @@ class ReactionCommands(BaseCmd):
         !delresponse index"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of response")
         if index is None:
             return

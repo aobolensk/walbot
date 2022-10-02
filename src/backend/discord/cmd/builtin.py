@@ -329,7 +329,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
-        perm = await Util.parse_int(
+        perm = await Util.parse_int_for_discord(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         if perm is None:
             return
@@ -372,7 +372,7 @@ class BuiltinCommands(BaseCmd):
         if command[1] not in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
         com = bc.discord.commands.data[command[1]]
-        max_exec_time = await Util.parse_int(
+        max_exec_time = await Util.parse_int_for_discord(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         com.max_execution_time = max_exec_time
         await Msg.response(
@@ -384,7 +384,7 @@ class BuiltinCommands(BaseCmd):
     Example: !permuser @nickname 0"""
         if not await Util.check_args_count(message, command, silent, min=3, max=3):
             return
-        perm = await Util.parse_int(
+        perm = await Util.parse_int_for_discord(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         if perm is None:
             return
@@ -819,7 +819,7 @@ class BuiltinCommands(BaseCmd):
     Example: !message"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        number = await Util.parse_int(
+        number = await Util.parse_int_for_discord(
             message, command[1], "Message number should be an integer", silent)
         if number is None:
             return
@@ -870,8 +870,8 @@ class BuiltinCommands(BaseCmd):
     Example: !pin 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        index = await Util.parse_int(message, command[1],
-                                     "Message index should be an integer", silent)
+        index = await Util.parse_int_for_discord(
+            message, command[1], "Message index should be an integer", silent)
         if index is None:
             return
         pins = await message.channel.pins()
@@ -889,7 +889,7 @@ class BuiltinCommands(BaseCmd):
     Example: !slowmode 0"""
         if not await Util.check_args_count(message, command, silent, min=2, max=2):
             return
-        duration = await Util.parse_int(
+        duration = await Util.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
         if duration is None:
             return

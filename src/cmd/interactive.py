@@ -86,7 +86,7 @@ class InteractiveCommands(BaseCmd):
         if execution_ctx.silent:
             return
         # Validate duration
-        duration = await Util.parse_int_for_command(
+        duration = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be duration in seconds")
         if duration is None:
             return

@@ -140,7 +140,7 @@ class MarkovCommands(BaseCmd):
             result = str(amount)
             await Command.send_message(execution_ctx, result)
             return result
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[2],
             f"Third parameter '{cmd_line[2]}' should be a valid index")
         if index is None:
@@ -223,7 +223,7 @@ class MarkovCommands(BaseCmd):
     Example: !delmarkovfilter 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1],
             f"Second parameter for '{cmd_line[0]}' should be an index of filter")
         if index is None:
@@ -260,7 +260,7 @@ class MarkovCommands(BaseCmd):
     Example: !delmarkovignoredprefix 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        index = await Util.parse_int_for_command(
+        index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of ignored prefix")
         if index is None:
             return

@@ -28,11 +28,11 @@ class RandomCommands(BaseCmd):
     Example: !random 5 10"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
             return
-        left = await Util.parse_float_for_command(
+        left = await Util.parse_float(
             execution_ctx, cmd_line[1], "Left border should be a number")
         if left is None:
             return
-        right = await Util.parse_float_for_command(
+        right = await Util.parse_float(
             execution_ctx, cmd_line[2], "Right border should be a number")
         if right is None:
             return
