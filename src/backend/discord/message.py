@@ -25,15 +25,15 @@ class Msg:
                     chunk,
                     tts=kwargs.get("tts", False),
                     files=kwargs.get("files", None),
-                    embed=kwargs.get("embed", None))
-                if kwargs.get("suppress_embeds", False):
-                    await msg.edit(suppress=True)
+                    embed=kwargs.get("embed", None),
+                    suppress=kwargs.get("suppress_embeds", False))
         elif kwargs.get("files", None):
             msg = await message.reply(None, files=kwargs.get("files", None))
         elif kwargs.get("embed", None):
-            msg = await message.reply(embed=kwargs["embed"], tts=kwargs.get("tts", False))
-            if kwargs.get("suppress_embeds", False):
-                await msg.edit(suppress=True)
+            msg = await message.reply(
+                embed=kwargs["embed"],
+                tts=kwargs.get("tts", False),
+                suppress=kwargs.get("suppress_embeds", False))
         return msg
 
     @staticmethod
@@ -49,15 +49,15 @@ class Msg:
                     tts=kwargs.get("tts", False),
                     view=kwargs.get("view", False),
                     files=kwargs.get("files", None),
-                    embed=kwargs.get("embed", None))
-                if kwargs.get("suppress_embeds", False):
-                    await msg.edit(suppress=True)
+                    embed=kwargs.get("embed", None),
+                    suppress=kwargs.get("suppress_embeds", False))
         elif kwargs.get("files", None):
             msg = await message.channel.send(None, files=kwargs.get("files", None))
         elif kwargs.get("embed", None):
-            msg = await message.channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
-            if kwargs.get("suppress_embeds", False):
-                await msg.edit(suppress=True)
+            msg = await message.channel.send(
+                embed=kwargs["embed"],
+                tts=kwargs.get("tts", False),
+                suppress=kwargs.get("suppress_embeds", False))
         return msg
 
     @staticmethod
@@ -74,13 +74,13 @@ class Msg:
                     chunk,
                     tts=kwargs.get("tts", False),
                     files=kwargs.get("files", None),
-                    embed=kwargs.get("embed", None))
-                if kwargs.get("suppress_embeds", False):
-                    await msg.edit(suppress=True)
+                    embed=kwargs.get("embed", None),
+                    suppress=kwargs.get("suppress_embeds", False))
         elif kwargs.get("files", None):
             msg = await author.dm_channel.send(None, files=kwargs.get("files", None))
         elif kwargs.get("embed", None):
-            msg = await author.dm_channel.send(embed=kwargs["embed"], tts=kwargs.get("tts", False))
-            if kwargs.get("suppress_embeds", False):
-                await msg.edit(suppress=True)
+            msg = await author.dm_channel.send(
+                embed=kwargs["embed"],
+                tts=kwargs.get("tts", False),
+                suppress=kwargs.get("suppress_embeds", False))
         return msg
