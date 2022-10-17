@@ -21,6 +21,8 @@ class Msg:
         msg = None
         if content:
             for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                if not chunk.strip():
+                    continue
                 msg = await message.reply(
                     chunk,
                     tts=kwargs.get("tts", False),
@@ -44,6 +46,8 @@ class Msg:
         msg = None
         if content:
             for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                if not chunk.strip():
+                    continue
                 msg = await message.channel.send(
                     chunk,
                     tts=kwargs.get("tts", False),
@@ -70,6 +74,8 @@ class Msg:
         msg = None
         if content:
             for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+                if not chunk.strip():
+                    continue
                 msg = await author.dm_channel.send(
                     chunk,
                     tts=kwargs.get("tts", False),
