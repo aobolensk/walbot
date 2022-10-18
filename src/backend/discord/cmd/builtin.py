@@ -2,6 +2,7 @@
 
 import base64
 import imghdr
+import math
 import os
 import random
 import re
@@ -194,8 +195,14 @@ class BuiltinCommands(BaseCmd):
                     0, ("Built-in commands", (
                         f"<{const.GIT_REPO_LINK}/blob/" +
                         (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">")))
+                cur_list = 1
+                total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
                 for chunk in Msg.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
-                    embed = discord.Embed(title="Help", color=0x717171)
+                    title = "Help"
+                    if total_list > 1:
+                        title += f" ({cur_list}/{total_list})"
+                    cur_list += 1
+                    embed = discord.Embed(title=title, color=0x717171)
                     for cmd in chunk:
                         cmd_name = cmd[0]
                         description = cmd[1]
