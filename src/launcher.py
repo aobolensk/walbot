@@ -14,7 +14,6 @@ import threading
 import time
 import zipfile
 
-import discord
 import nest_asyncio
 import psutil
 
@@ -178,11 +177,6 @@ class Launcher:
         # Check config versions
         if main_bot:
             ok = True
-            ok &= Util.check_version(
-                "discord.py", discord.__version__, const.DISCORD_LIB_VERSION,
-                solutions=[
-                    "execute: python -m pip install -r requirements.txt",
-                ])
             ok &= Util.check_version(
                 "Config", bc.config.version, const.CONFIG_VERSION,
                 solutions=[
