@@ -4,21 +4,6 @@ import re
 
 import src.version as ver
 
-
-def _extract_discord_lib_version_from_requirements_txt():
-    with open("requirements.txt", "r") as f:
-        for line in f:
-            if line.startswith("discord.py"):
-                return (line.split('==')[1].strip(), "<unknown>")
-            if line.startswith("git+https://github.com/Pycord-Development/pycord"):
-                return ("2.0.0a", line.split('@')[1].strip())
-            if line.startswith("py-cord"):
-                return (line.split('==')[1].strip(), "<unknown>")
-    return ("<unknown>", "<unknown>")
-
-
-DISCORD_LIB_VERSION, DISCORD_LIB_COMMIT = _extract_discord_lib_version_from_requirements_txt()
-
 CONFIG_VERSION = ver.CONFIG_VERSION
 MARKOV_CONFIG_VERSION = ver.MARKOV_CONFIG_VERSION
 SECRET_CONFIG_VERSION = ver.SECRET_CONFIG_VERSION
