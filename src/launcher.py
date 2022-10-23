@@ -112,7 +112,7 @@ class Launcher:
                         "Please note that currently SIGHUP signal is not ignored, "
                         "but output is redirected to nohup.out")
 
-    def launch_bot(self):
+    def launch_bot(self) -> const.ExitStatus:
         """Launch Discord bot instance"""
         self._list_env_var_flags()
         self._prepare_args()
@@ -213,7 +213,7 @@ class Launcher:
         self.backends.append(instance)
         log.debug2("Detected backend: " + self.backends[-1].name)
 
-    def start(self, main_bot=True):
+    def start(self, main_bot=True) -> const.ExitStatus:
         """Start the bot"""
         if main_bot and self.args.autoupdate:
             return self.autoupdate()
@@ -230,7 +230,8 @@ class Launcher:
         if bot_cache is not None:
             pid = bot_cache["pid"]
             if pid is not None and psutil.pid_exists(pid):
-                return log.error("Bot is already running!")
+                log.error("Bot is already running!")
+                return const.ExitStatus.GENERAL_ERROR
         BotCache(main_bot).dump_to_file()
 
         for backend in os.listdir(const.BOT_BACKENDS_PATH):
@@ -251,7 +252,7 @@ class Launcher:
             log.info(
                 "No active backends found! "
                 "Please setup config.yaml and secret.yaml to configure desired backends.")
-            return
+            return const.ExitStatus.GENERAL_ERROR
         bc.plugin_manager.register()
         self._loop.create_task(bc.plugin_manager.load_plugins())
         self._loop.run_forever()
@@ -260,8 +261,9 @@ class Launcher:
         else:
             while True:
                 time.sleep(15)
+        return const.ExitStatus.NO_ERROR
 
-    def _stop_bot_process(self, _, main_bot=True):
+    def _stop_bot_process(self, _, main_bot=True) -> const.ExitStatus:
         if not BotCache(main_bot).exists():
             log.error("Could not stop the bot (cache file does not exist)")
             return const.ExitStatus.GENERAL_ERROR
@@ -293,53 +295,58 @@ class Launcher:
             BotCache(main_bot).remove()
         return const.ExitStatus.NO_ERROR
 
-    def stop(self):
+    def stop(self) -> const.ExitStatus:
         """Stop the bot"""
         return self._stop_bot_process(self.args)
 
-    def restart(self):
+    def restart(self) -> const.ExitStatus:
         """Restart the bot"""
-        self._stop_bot_process(self.args)
-        self.start()
+        ret = self._stop_bot_process(self.args)
+        if ret != const.ExitStatus.NO_ERROR:
+            return ret
+        return self.start()
 
-    def suspend(self):
+    def suspend(self) -> const.ExitStatus:
         """Stop the main bot and start mini-bot"""
-        self._stop_bot_process(self.args)
-        self.start(main_bot=False)
+        ret = self._stop_bot_process(self.args)
+        if ret != const.ExitStatus.NO_ERROR:
+            return ret
+        return self.start(main_bot=False)
 
-    def startmini(self):
+    def startmini(self) -> const.ExitStatus:
         """Start mini-bot"""
-        self.start(main_bot=False)
+        return self.start(main_bot=False)
 
-    def stopmini(self):
+    def stopmini(self) -> const.ExitStatus:
         """Stop mini-bot"""
-        sys.exit(self._stop_bot_process(self.args, main_bot=False))
+        return self._stop_bot_process(self.args, main_bot=False)
 
-    def test(self):
+    def test(self) -> const.ExitStatus:
         """Launch tests"""
         return importlib.import_module("src.test").start_testing(self.args)
 
-    def docs(self):
+    def docs(self) -> const.ExitStatus:
         """Generate command docs"""
-        importlib.import_module("tools.docs").main(self.args)
+        return importlib.import_module("tools.docs").main(self.args)
 
-    def help(self):
+    def help(self) -> const.ExitStatus:
         """Print help message"""
         self._parser.print_help()
+        return const.ExitStatus.NO_ERROR
 
-    def patch(self):
+    def patch(self) -> const.ExitStatus:
         """Patch config"""
-        importlib.import_module("tools.patch").main(self.args, self.config_files)
+        return importlib.import_module("tools.patch").main(self.args, self.config_files)
 
-    def autoupdate(self):
+    def autoupdate(self) -> const.ExitStatus:
         """Start autoupdate process for bot"""
-        importlib.import_module("src.autoupdate").start(self.args)
+        return importlib.import_module("src.autoupdate").start(self.args)
 
-    def mexplorer(self):
+    def mexplorer(self) -> const.ExitStatus:
         """Markov model explorer"""
-        importlib.import_module("tools.mexplorer").main(self.args)
+        return importlib.import_module("tools.mexplorer").main(self.args)
 
-    def autocomplete(self):
+    def autocomplete(self) -> const.ExitStatus:
         """Update shell autocompletion scripts (requires `shtab` dependency)"""
         shell = next(iter(self.args.type), None)
         if shell == "bash":
@@ -348,16 +355,18 @@ class Launcher:
             except ImportError:
                 log.error("Shell autocompletion scripts update failed.")
                 log.error(f"    Install `shtab`: {sys.executable} -m pip install shtab")
-                return
+                return const.ExitStatus.GENERAL_ERROR
             result = shtab.complete(self._parser, shell="bash").replace("walbot.py", "./walbot.py")
             script_path = os.path.join(os.getcwd(), "tools", "autocomplete", "walbot-completion.bash")
             with open(script_path, "w") as f:
                 print(result, file=f)
             log.info("bash autocompletion script has been updated: " + script_path)
+            return const.ExitStatus.NO_ERROR
         else:
             log.error("Unsupported shell type")
+            return const.ExitStatus.GENERAL_ERROR
 
-    def setuphooks(self):
+    def setuphooks(self) -> const.ExitStatus:
         if sys.platform != "win32":
             shutil.copyfile(
                 os.path.join("tools", "githooks", "pre-commit.linux"),
@@ -367,8 +376,10 @@ class Launcher:
                 os.path.join("tools", "githooks", "pre-commit.windows"),
                 os.path.join(".git", "hooks", "pre-commit"))
         log.info("Git hooks are successfully set up!")
+        return const.ExitStatus.NO_ERROR
 
-    def removehooks(self):
+    def removehooks(self) -> const.ExitStatus:
         if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
             os.unlink(os.path.join(".git", "hooks", "pre-commit"))
         log.info("Git hooks are successfully removed!")
+        return const.ExitStatus.NO_ERROR
