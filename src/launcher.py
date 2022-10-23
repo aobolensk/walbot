@@ -102,6 +102,11 @@ class Launcher:
         if self.args.action in ("start", "restart", "suspend", "startmini", "stopmini"):
             if sys.platform in ("linux", "darwin"):
                 if self.args.nohup:
+                    fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
+                    log.info(f"Output is redirected to {const.NOHUP_FILE_PATH}")
+                    os.dup2(fd, sys.stdout.fileno())
+                    os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
+                    os.close(fd)
                     log.warning(
                         "You are using --nohup option. "
                         "Please note that currently SIGHUP signal is not ignored, "

@@ -2,7 +2,6 @@ import asyncio
 import datetime
 import importlib
 import itertools
-import os
 import random
 import re
 import sys
@@ -389,15 +388,6 @@ class DiscordBotInstance(BotInstance):
             log.warning("Discord backend is not configured. Missing token in secret config")
             return
         log.info("Starting Discord instance...")
-        # Handle --nohup flag
-        if sys.platform in ("linux", "darwin") and args.nohup:
-            fd = os.open(const.NOHUP_FILE_PATH, os.O_WRONLY | os.O_CREAT | os.O_APPEND)
-            log.info(f"Output is redirected to {const.NOHUP_FILE_PATH}")
-            os.dup2(fd, sys.stdout.fileno())
-            os.dup2(sys.stdout.fileno(), sys.stderr.fileno())
-            os.close(fd)
-            # NOTE: Does not work when not in main thread
-            # signal.signal(signal.SIGHUP, signal.SIG_IGN)
         # Constructing bot instance
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
