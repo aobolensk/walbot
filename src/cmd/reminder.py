@@ -128,18 +128,20 @@ class _ReminderInternals:
         for index, reminder in bc.config.reminders.items():
             if is_only_locals and reminder.channel_id != execution_ctx.channel_id():
                 continue
-            rep = f' (repeats every {reminder.repeat_after} {reminder.repeat_interval_measure})'
-            prereminders = f' ({", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled)'
             notes = "Notes: " + Util.cut_string(reminder.notes, 200) + "\n"
             channel = f'{reminder.backend}: <#{reminder.channel_id}>'
+            props = list()
+            if reminder.repeat_after:
+                props.append(f'repeats every {reminder.repeat_after} {reminder.repeat_interval_measure}')
+            if reminder.prereminders_list:
+                props.append(f'{", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled')
             reminder_list.append(
                 (reminder.time,
                  Util.cut_string(reminder.message, 256),
                  f"{notes if reminder.notes else ''}"
                  f"{index} at {reminder.time} "
                  f" in {channel}"
-                 f"{rep if reminder.repeat_after else ''}"
-                 f"{prereminders if reminder.prereminders_list else ''}"))
+                 f"{' - ' if props else ''}{'; '.join(props)}"))
         reminder_list.sort()
         reminder_list = reminder_list[:reminders_count]
         if execution_ctx.platform == "discord":
