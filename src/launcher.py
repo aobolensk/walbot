@@ -13,6 +13,7 @@ import sys
 import threading
 import time
 import zipfile
+from types import FrameType
 
 import nest_asyncio
 import psutil
@@ -32,7 +33,7 @@ from src.utils import Util
 class Launcher:
     """This class parses provided command line options and dispatches execution depending on them."""
 
-    def _get_argparser(self):
+    def _get_argparser(self) -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
         subparsers = parser.add_subparsers(dest="action")
         subparsers = {
@@ -84,7 +85,7 @@ class Launcher:
         subparsers["autocomplete"].add_argument("type", nargs=1, help="Shell type", choices=["bash"])
         return parser
 
-    def _list_env_var_flags(self):
+    def _list_env_var_flags(self) -> None:
         log.debug2("--- Environment variable flags: ---")
         for key, value in FF.get_list().items():
             log.debug2(f"{key}: {value}")
@@ -93,12 +94,12 @@ class Launcher:
         if invalid_flags:
             log.warning(f"Invalid feature flags: {invalid_flags}")
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._parser = self._get_argparser()
         self.args = self._parser.parse_args()
         self._loop = asyncio.new_event_loop()
 
-    def _prepare_args(self):
+    def _prepare_args(self) -> None:
         if self.args.action in ("start", "restart", "suspend", "startmini", "stopmini"):
             if sys.platform in ("linux", "darwin"):
                 if self.args.nohup:
@@ -122,7 +123,7 @@ class Launcher:
         else:
             return getattr(self, self.args.action)()
 
-    def _stop_signal_handler(self, sig, frame):
+    def _stop_signal_handler(self, sig: int, frame: FrameType) -> None:
         for backend in self.backends:
             backend.stop(self.args)
             log.debug2("Stopped backend: " + backend.name)
@@ -140,7 +141,7 @@ class Launcher:
         log.info('Stopped the minibot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
-    def _read_configs(self, main_bot=True):
+    def _read_configs(self, main_bot: bool = True) -> None:
         # Selecting YAML parser
         bc.yaml_loader, bc.yaml_dumper = Util.get_yaml()
         # Read configuration files
@@ -213,7 +214,7 @@ class Launcher:
         self.backends.append(instance)
         log.debug2("Detected backend: " + self.backends[-1].name)
 
-    def start(self, main_bot=True) -> const.ExitStatus:
+    def start(self, main_bot: bool = True) -> const.ExitStatus:
         """Start the bot"""
         if main_bot and self.args.autoupdate:
             return self.autoupdate()
@@ -263,7 +264,7 @@ class Launcher:
                 time.sleep(15)
         return const.ExitStatus.NO_ERROR
 
-    def _stop_bot_process(self, _, main_bot=True) -> const.ExitStatus:
+    def _stop_bot_process(self, _, main_bot: bool = True) -> const.ExitStatus:
         if not BotCache(main_bot).exists():
             log.error("Could not stop the bot (cache file does not exist)")
             return const.ExitStatus.GENERAL_ERROR
