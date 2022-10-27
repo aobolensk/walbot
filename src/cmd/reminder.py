@@ -135,6 +135,8 @@ class _ReminderInternals:
                 props.append(f'repeats every {reminder.repeat_after} {reminder.repeat_interval_measure}')
             if reminder.prereminders_list:
                 props.append(f'{", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled')
+            if reminder.remaining_repetitions != -1:
+                props.append(f'{reminder.remaining_repetitions} repetitions left')
             reminder_list.append(
                 (reminder.time,
                  Util.cut_string(reminder.message, 256),
@@ -575,6 +577,8 @@ class ReminderCommands(BaseCmd):
         if bc.config.reminders[index].repeat_after == 0:
             return await Command.send_message(execution_ctx, "This reminder is not recurring!")
         rem = bc.config.reminders[index]
+        if rem.remaining_repetitions == 0:
+            return await Command.send_message(execution_ctx, f"Repetition limit exceeded for reminder {index}")
         new_time = datetime.datetime.strftime(
             datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) +
             rem.get_next_event_delta(), const.REMINDER_DATETIME_FORMAT)
@@ -589,6 +593,8 @@ class ReminderCommands(BaseCmd):
         bc.config.reminders[id_].discord_whisper_users = rem.discord_whisper_users
         bc.config.reminders[id_].telegram_whisper_users = rem.telegram_whisper_users
         bc.config.reminders[id_].notes = rem.notes
+        bc.config.reminders[id_].remaining_repetitions = (
+            rem.remaining_repetitions - 1 if rem.remaining_repetitions != -1 else -1)
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
         await Command.send_message(
