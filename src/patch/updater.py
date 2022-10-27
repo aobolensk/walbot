@@ -314,6 +314,10 @@ class Updater:
             config.commands.data["getmarkovword"].subcommand = True
             self._bump_version(config, "0.0.54")
         if config.version == "0.0.54":
+            for index in config.reminders.keys():
+                config.reminders[index].__dict__["remaining_repetitions"] = -1
+            self._bump_version(config, "0.0.55")
+        if config.version == "0.0.55":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
