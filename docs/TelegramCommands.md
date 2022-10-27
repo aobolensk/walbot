@@ -372,6 +372,10 @@
     Note: number without postfix is translated to minutes. 0 means disabling repetition \
     *Default permission level: 0*
 
+**repeatreminderfor**: Limit amount of repetitions for reminder \
+    Example: !repeatreminderfor 1 5 &lt;- repeat reminder 1 only 5 times \
+    *Default permission level: 0*
+
 **setprereminders**: Set pre reminders notifying that reminder will be sent in particular time. \
         For example, send pre reminder 10 minutes before actual event (to prepare or something) \
     Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \
