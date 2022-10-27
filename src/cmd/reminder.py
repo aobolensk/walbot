@@ -135,6 +135,8 @@ class _ReminderInternals:
                 props.append(f'repeats every {reminder.repeat_after} {reminder.repeat_interval_measure}')
             if reminder.prereminders_list:
                 props.append(f'{", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled')
+            if reminder.remaining_repetitions != -1:
+                props.append(f'{reminder.remaining_repetitions} repetitions left')
             reminder_list.append(
                 (reminder.time,
                  Util.cut_string(reminder.message, 256),
@@ -232,6 +234,9 @@ class ReminderCommands(BaseCmd):
         bc.executor.commands["setreminderchannel"] = Command(
             "reminder", "setreminderchannel", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._setreminderchannel)
+        bc.executor.commands["repeatreminderfor"] = Command(
+            "reminder", "repeatreminderfor", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._repeatreminderfor)
 
     async def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print information about reminder
@@ -572,6 +577,8 @@ class ReminderCommands(BaseCmd):
         if bc.config.reminders[index].repeat_after == 0:
             return await Command.send_message(execution_ctx, "This reminder is not recurring!")
         rem = bc.config.reminders[index]
+        if rem.remaining_repetitions == 0:
+            return await Command.send_message(execution_ctx, f"Repetition limit exceeded for reminder {index}")
         new_time = datetime.datetime.strftime(
             datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) +
             rem.get_next_event_delta(), const.REMINDER_DATETIME_FORMAT)
@@ -586,6 +593,8 @@ class ReminderCommands(BaseCmd):
         bc.config.reminders[id_].discord_whisper_users = rem.discord_whisper_users
         bc.config.reminders[id_].telegram_whisper_users = rem.telegram_whisper_users
         bc.config.reminders[id_].notes = rem.notes
+        bc.config.reminders[id_].remaining_repetitions = (
+            rem.remaining_repetitions - 1 if rem.remaining_repetitions != -1 else -1)
         bc.config.ids["reminder"] += 1
         bc.config.reminders.pop(index)
         await Command.send_message(
@@ -691,3 +700,22 @@ class ReminderCommands(BaseCmd):
             return
         rem.channel_id = channel_id
         await Command.send_message(execution_ctx, f"Set channel id {channel_id} for reminder {index}")
+
+    async def _repeatreminderfor(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Limit amount of repetitions for reminder
+    Example: !repeatreminderfor 1 5 <- repeat reminder 1 only 5 times"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        index = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        times = await Util.parse_int(
+            execution_ctx, cmd_line[2],
+            f"Second parameter for '{cmd_line[0]}' should be max number of repetitions for reminder")
+        if times is None:
+            return
+        if index not in bc.config.reminders.keys():
+            return await Command.send_message(execution_ctx, "Invalid index of reminder!")
+        bc.config.reminders[index].remaining_repetitions = times
+        await Command.send_message(execution_ctx, f"Max amount of repetitions for reminder {index} is set to {times}")

@@ -89,17 +89,20 @@ class TelegramBotInstance(BotInstance):
                 if rem.repeat_after > 0:
                     new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                     new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
-                    to_append.append(
-                        Reminder(
-                            str(new_time), rem.message, rem.channel_id, rem.author,
-                            rem.time_created, const.BotBackend.TELEGRAM))
-                    to_append[-1].repeat_after = rem.repeat_after
-                    to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
-                    to_append[-1].prereminders_list = rem.prereminders_list
-                    to_append[-1].used_prereminders_list = [False] * len(rem.prereminders_list)
-                    to_append[-1].discord_whisper_users = rem.discord_whisper_users
-                    to_append[-1].telegram_whisper_users = rem.telegram_whisper_users
-                    to_append[-1].notes = rem.notes
+                    if rem.remaining_repetitions != 0:
+                        to_append.append(
+                            Reminder(
+                                str(new_time), rem.message, rem.channel_id, rem.author,
+                                rem.time_created, const.BotBackend.TELEGRAM))
+                        to_append[-1].repeat_after = rem.repeat_after
+                        to_append[-1].repeat_interval_measure = rem.repeat_interval_measure
+                        to_append[-1].prereminders_list = rem.prereminders_list
+                        to_append[-1].used_prereminders_list = [False] * len(rem.prereminders_list)
+                        to_append[-1].discord_whisper_users = rem.discord_whisper_users
+                        to_append[-1].telegram_whisper_users = rem.telegram_whisper_users
+                        to_append[-1].notes = rem.notes
+                        to_append[-1].remaining_repetitions = (
+                            rem.remaining_repetitions - 1 if rem.remaining_repetitions != -1 else -1)
                     log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                 to_remove.append(key)
             elif rem < now:
