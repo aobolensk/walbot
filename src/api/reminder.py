@@ -23,6 +23,7 @@ class Reminder:
         self.time_created = time_created
         self.notes = ""
         self.remaining_repetitions = -1
+        self.limit_repetitions_time = None
 
     def get_next_event_delta(self):
         if self.repeat_interval_measure == "minutes":
