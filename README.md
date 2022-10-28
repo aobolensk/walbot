@@ -12,7 +12,7 @@ Discord bot in Python*
 
 ### Requirements:
 - [ffmpeg](https://www.ffmpeg.org/)
-- [Python](https://www.python.org/) 3.8-3.10
+- [Python](https://www.python.org/) 3.8-3.11
 
 ### Quick start:
 ```shell
