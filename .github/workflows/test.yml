@@ -28,6 +28,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build Docker image
-      run: |
-        docker build -t walbot .
-        docker run -i walbot /bin/bash -c "pip install -r tests/requirements.txt && python walbot.py test"
+      run: docker build -t walbot .
+    - name: Run tests in Docker
+      run: docker run -i walbot /bin/bash -c "pip install -r tests/requirements.txt && python walbot.py test"
