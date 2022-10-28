@@ -88,8 +88,10 @@ class TelegramBotInstance(BotInstance):
                         f"You asked to remind at {now} -> {rem.message}")
                 if rem.repeat_after > 0:
                     new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
-                    new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
-                    if rem.remaining_repetitions != 0:
+                    if (rem.remaining_repetitions != 0 and
+                            (rem.limit_repetitions_time is None or new_time <= datetime.datetime.strptime(
+                                rem.limit_repetitions_time, const.REMINDER_DATETIME_FORMAT))):
+                        new_time = new_time.strftime(const.REMINDER_DATETIME_FORMAT)
                         to_append.append(
                             Reminder(
                                 str(new_time), rem.message, rem.channel_id, rem.author,
@@ -103,6 +105,7 @@ class TelegramBotInstance(BotInstance):
                         to_append[-1].notes = rem.notes
                         to_append[-1].remaining_repetitions = (
                             rem.remaining_repetitions - 1 if rem.remaining_repetitions != -1 else -1)
+                        to_append[-1].limit_repetitions_time = rem.limit_repetitions_time
                     log.debug2(f"Scheduled renew of recurring reminder - old id: {key}")
                 to_remove.append(key)
             elif rem < now:
