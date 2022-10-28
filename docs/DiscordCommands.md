@@ -457,6 +457,11 @@
 **repeatreminderfor**: Limit amount of repetitions for reminder \
     Example: !repeatreminderfor 1 5 &lt;- repeat reminder 1 only 5 times
 
+**repeatreminderuntil**: Limit amount of repetitions with particular date \
+    Example: \
+        !repeatreminderuntil 1 2022-12-01 &lt;- repeat reminder 1 until Dec 1, 2022 00:00 \
+        !repeatreminderuntil 1 2022-12-31 23:59 &lt;- repeat reminder 1 until Dec 31, 2022 23:59
+
 **setprereminders**: Set pre reminders notifying that reminder will be sent in particular time. \
         For example, send pre reminder 10 minutes before actual event (to prepare or something) \
     Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \

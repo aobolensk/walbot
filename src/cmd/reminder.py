@@ -237,6 +237,9 @@ class ReminderCommands(BaseCmd):
         bc.executor.commands["repeatreminderfor"] = Command(
             "reminder", "repeatreminderfor", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._repeatreminderfor)
+        bc.executor.commands["repeatreminderuntil"] = Command(
+            "reminder", "repeatreminderuntil", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._repeatreminderuntil)
 
     async def _reminder(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print information about reminder
@@ -719,3 +722,29 @@ class ReminderCommands(BaseCmd):
             return await Command.send_message(execution_ctx, "Invalid index of reminder!")
         bc.config.reminders[index].remaining_repetitions = times
         await Command.send_message(execution_ctx, f"Max amount of repetitions for reminder {index} is set to {times}")
+
+    async def _repeatreminderuntil(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Limit amount of repetitions with particular date
+    Example:
+        !repeatreminderuntil 1 2022-12-01 <- repeat reminder 1 until Dec 1, 2022 00:00
+        !repeatreminderuntil 1 2022-12-31 23:59 <- repeat reminder 1 until Dec 31, 2022 23:59
+    """
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=4):
+            return
+        index = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reminder")
+        if index is None:
+            return
+        date = cmd_line[2]
+        time = cmd_line[3] if len(cmd_line) > 3 else "0:00"
+        limit_repetitions_time = await _ReminderInternals.parse_reminder_args(execution_ctx, date, time)
+        if limit_repetitions_time is None:
+            return
+        if datetime.datetime.strptime(
+                str(limit_repetitions_time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
+            return await Command.send_message(execution_ctx, "Limit datetime timestamp is earlier than now")
+        if index not in bc.config.reminders.keys():
+            return await Command.send_message(execution_ctx, "Invalid index of reminder!")
+        bc.config.reminders[index].limit_repetitions_time = str(limit_repetitions_time)
+        await Command.send_message(
+            execution_ctx, f"Max repetitions date for reminder {index} is set to {limit_repetitions_time}")
