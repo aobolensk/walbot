@@ -70,6 +70,9 @@ class ImageCommands(BaseCmd):
         bc.executor.commands["img"] = Command(
             "image", "img", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._img)
+        bc.executor.commands["listimg"] = Command(
+            "image", "listimg", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._listimg)
 
     async def _img(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Send image (use !listimg for list of available images)
@@ -93,3 +96,20 @@ class ImageCommands(BaseCmd):
                 execution_ctx, None,
                 files=[os.path.join(const.IMAGES_DIRECTORY, list_images[result])])
         await _ImageInternals.get_image(execution_ctx, cmd_line)
+
+    async def _listimg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print list of available images for !img command
+    Example: !listimg"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        result = []
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
+                continue
+            for file in files:
+                result.append(os.path.splitext(os.path.basename(file))[0])
+        result.sort()
+        if result:
+            await Command.send_message(execution_ctx, "List of available images: [" + ', '.join(result) + "]")
+        else:
+            await Command.send_message(execution_ctx, "No available images found!")

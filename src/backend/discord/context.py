@@ -24,9 +24,13 @@ class DiscordExecutionContext(ExecutionContext):
         return await Msg.response(self.message, message, self.silent, *args, **kwargs)
 
     async def reply(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
+        if "files" in kwargs:
+            kwargs["files"] = [discord.File(x) for x in kwargs["files"]]
         return await Msg.reply(self.message, message, self.silent, *args, **kwargs)
 
     async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> Optional[discord.Message]:
+        if "files" in kwargs:
+            kwargs["files"] = [discord.File(x) for x in kwargs["files"]]
         return await Msg.send_direct_message(bc.discord.get_user(user_id), message, self.silent, *args, **kwargs)
 
     def disable_pings(self, message: str) -> str:

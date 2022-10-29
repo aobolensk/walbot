@@ -107,9 +107,6 @@
     Example: !listalias \
     *This command can be used as subcommand*
 
-**listimg**: Print list of available images for !img command \
-    Example: !listimg
-
 **message**: Get message by its order number (from the end of channel history) \
     Example: !message \
     *This command can be used as subcommand*
@@ -230,6 +227,9 @@
 
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;
+
+**listimg**: Print list of available images for !img command \
+    Example: !listimg
 
 # Module: interactive
 

@@ -121,6 +121,10 @@
     Example: !img &lt;image_name&gt; \
     *Default permission level: 0*
 
+**listimg**: Print list of available images for !img command \
+    Example: !listimg \
+    *Default permission level: 0*
+
 # Module: interactive
 
 **poll**: Create poll and collect result after selected time \

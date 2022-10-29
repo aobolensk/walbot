@@ -89,7 +89,6 @@ class BuiltinCommands(BaseCmd):
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
-            "listimg": dict(permission=const.Permission.USER.value, subcommand=False),
             "addimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delimg": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -615,24 +614,6 @@ class BuiltinCommands(BaseCmd):
             result += f"{', '.join(aliases)} -> {command}\n"
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _listimg(message, command, silent=False):
-        """Print list of available images for !img command
-    Example: !listimg"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        result = []
-        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
-            if not root.endswith(const.IMAGES_DIRECTORY):
-                continue
-            for file in files:
-                result.append(os.path.splitext(os.path.basename(file))[0])
-        result.sort()
-        if result:
-            await Msg.response(message, "List of available images: [" + ', '.join(result) + "]", silent)
-        else:
-            await Msg.response(message, "No available images found!", silent)
 
     @staticmethod
     async def _addimg(message, command, silent=False):
