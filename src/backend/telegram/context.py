@@ -17,6 +17,7 @@ class TelegramExecutionContext(ExecutionContext):
     async def send_message(self, message: str, *args, **kwargs) -> None:
         if self.silent:
             return
+        message = message or ""
         message = self._unescape_ping1(message)
         message = escape_markdown_text(message)
         message = self._unescape_ping2(message)
