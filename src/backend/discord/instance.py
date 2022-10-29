@@ -297,14 +297,10 @@ class WalBot(discord.Client):
 class DiscordBotInstance(BotInstance):
     @Mail.send_exception_info_to_admin_emails
     def start(self, args, main_bot=True):
-        # Check whether bot is already running
-        if bc.secret_config.discord["token"] is None:
-            log.warning("Discord backend is not configured. Missing token in secret config")
-            return
         log.info("Starting Discord instance...")
-        # Constructing bot instance
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        # Constructing bot instance
         intents = discord.Intents.all()
         if main_bot:
             walbot = WalBot(args.name, bc.config, bc.secret_config, intents=intents, fast_start=args.fast_start)
