@@ -3,7 +3,6 @@
 import imghdr
 import math
 import os
-import random
 import re
 import tempfile
 import urllib.parse
@@ -90,7 +89,6 @@ class BuiltinCommands(BaseCmd):
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
-            "img": dict(permission=const.Permission.USER.value, subcommand=False, max_execution_time=-1),
             "listimg": dict(permission=const.Permission.USER.value, subcommand=False),
             "addimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updimg": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -617,31 +615,6 @@ class BuiltinCommands(BaseCmd):
             result += f"{', '.join(aliases)} -> {command}\n"
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _img(message, command, silent=False):
-        """Send image (use !listimg for list of available images)
-    Example: !img <image_name>"""
-        if len(command) > 1 + const.MAX_IMAGES_AMOUNT_FOR_IMG_COMMAND:
-            return null(
-                await Msg.response(
-                    message,
-                    "ERROR: Too many images were provided "
-                    f"({len(command) - 1} > {const.MAX_IMAGES_AMOUNT_FOR_IMG_COMMAND})",
-                    silent))
-        if len(command) == 1:
-            try:
-                list_images = os.listdir(const.IMAGES_DIRECTORY)
-            except FileNotFoundError:
-                return null(await Msg.response(message, "Images directory does not exist", silent))
-            if len(list_images) == 0:
-                return null(await Msg.response(message, "No images found!", silent))
-            result = random.randint(0, len(list_images) - 1)  # integer random
-            return null(
-                await Msg.response(
-                    message, None, silent,
-                    files=[discord.File(os.path.join(const.IMAGES_DIRECTORY, list_images[result]))]))
-        await _BuiltinInternals.get_image(message, command, silent)
 
     @staticmethod
     async def _listimg(message, command, silent=False):
