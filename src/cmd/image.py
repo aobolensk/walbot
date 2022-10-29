@@ -69,7 +69,7 @@ class ImageCommands(BaseCmd):
     def bind(self) -> None:
         bc.executor.commands["img"] = Command(
             "image", "img", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._img)
+            subcommand=False, impl_func=self._img, max_execution_time=-1)
         bc.executor.commands["listimg"] = Command(
             "image", "listimg", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listimg)

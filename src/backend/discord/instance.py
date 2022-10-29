@@ -254,6 +254,8 @@ class WalBot(discord.Client):
                     f"probably you meant '{self._suggest_similar_command(command[0])}'")
                 return
         max_exec_time = self.config.commands.data[command[0]].max_execution_time
+        if command[0] in self.config.executor["commands_data"].keys():
+            max_exec_time = bc.executor.commands[command[0]].max_execution_time
         if max_exec_time != -1:
             timeout_error, result = await Util.run_function_with_time_limit(
                 self.config.commands.data[command[0]].run(

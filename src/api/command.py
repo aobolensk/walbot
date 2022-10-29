@@ -38,7 +38,7 @@ class Command:
             impl_type: Implementation, subcommand: bool = False,
             impl_func: FunctionType = None, impl_message: str = None,
             supported_platforms: SupportedPlatforms = SupportedPlatforms.ALL,
-            postpone_execution=False) -> None:
+            postpone_execution: bool = False, max_execution_time: int = 3) -> None:
         self.module_name = module_name
         self.command_name = command_name
         self.permission_level = permission_level
@@ -47,6 +47,7 @@ class Command:
         self.times_called = 0
         self.supported_platforms = supported_platforms
         self.postpone_execution = postpone_execution
+        self.max_execution_time = max_execution_time
         if impl_type == Implementation.FUNCTION:
             self._exec = impl_func
             self.description = self._exec.__doc__
@@ -67,16 +68,32 @@ class Command:
             self.permission_level = const.Permission(state["permission_level"])
         if "times_called" in state.keys():
             self.times_called = state["times_called"]
+        if "max_execution_time" in state.keys():
+            self.max_execution_time = state["max_execution_time"]
 
     def store_persistent_state(self, commands_data: Dict[str, Any]):
         if self.command_name not in commands_data.keys():
             commands_data[self.command_name] = dict()
         commands_data[self.command_name]["permission_level"] = int(self.permission_level)
         commands_data[self.command_name]["times_called"] = self.times_called
+        commands_data[self.command_name]["max_execution_time"] = self.max_execution_time
 
     async def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        if execution_ctx.platform == "discord":
+            # On Discord platform we are using legacy separate time limit handling for now
+            return await self._run_impl(cmd_line, execution_ctx)
+        if self.max_execution_time == -1:
+            return await self._run_impl(cmd_line, execution_ctx)
+        from src.utils import Util
+        timeout_error, result = await Util.run_function_with_time_limit(
+            self._run_impl(cmd_line, execution_ctx), self.max_execution_time)
+        if timeout_error:
+            await Command.send_message(f"Command '{' '.join(cmd_line)}' took too long to execute")
+        return result
+
+    async def _run_impl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         if execution_ctx.platform != "discord":
-            # On Discord platform we are using legacy separate permission handling or now
+            # On Discord platform we are using legacy separate permission handling for now
             if execution_ctx.permission_level < self.permission_level:
                 await self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
                 return
