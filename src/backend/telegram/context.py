@@ -1,3 +1,5 @@
+import os
+
 from telegram import Update
 
 from src import const
@@ -26,6 +28,12 @@ class TelegramExecutionContext(ExecutionContext):
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
             reply_on_msg=kwargs.get("reply_on_msg", False),
         )
+        if "files" in kwargs:
+            for file in kwargs["files"]:
+                await self._send_file(file)
+
+    async def _send_file(self, file_path: str) -> None:
+        self.update.message.reply_document(open(file_path, 'rb'), os.path.basename(file_path))
 
     async def reply(self, message: str, *args, **kwargs) -> None:
         await self.send_message(message, *args, **kwargs, reply_on_msg=True)
