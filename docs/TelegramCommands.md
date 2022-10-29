@@ -4,6 +4,7 @@
 # Table of Contents:
 * [Module: builtin](#module-builtin)
 * [Module: custom-commands](#module-custom-commands)
+* [Module: image](#module-image)
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
@@ -113,6 +114,12 @@
     Note: Be careful when you are executing external commands! \
     Example: !updextcmd uname uname -a \
     *Default permission level: 2*
+
+# Module: image
+
+**img**: Send image (use !listimg for list of available images) \
+    Example: !img &lt;image_name&gt; \
+    *Default permission level: 0*
 
 # Module: interactive
 

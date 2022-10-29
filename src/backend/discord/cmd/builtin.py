@@ -1,12 +1,10 @@
 """Built-in WalBot commands"""
 
-import base64
 import imghdr
 import math
 import os
 import random
 import re
-import shutil
 import tempfile
 import urllib.parse
 import urllib.request
@@ -71,53 +69,6 @@ class _BuiltinInternals:
             await Msg.response(message, f"Image '{name}' is successfully added!", silent)
         else:
             await Msg.response(message, f"Image '{name}' is successfully updated!", silent)
-
-    @staticmethod
-    async def get_image(message, command, silent):
-        for i in range(1, len(command)):
-            for root, _, files in os.walk(const.IMAGES_DIRECTORY):
-                if not root.endswith(const.IMAGES_DIRECTORY):
-                    continue
-                for file in files:
-                    if not silent and os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower():
-                        await Msg.response(message, None, silent,
-                                           files=[discord.File(os.path.join(const.IMAGES_DIRECTORY, file))])
-                        break
-                else:
-                    # Custom emoji
-                    r = const.DISCORD_EMOJI_REGEX.match(command[i])
-                    if r is not None:
-                        await Msg.response(message, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png", silent)
-                        break
-                    # Unicode emoji
-                    if const.UNICODE_EMOJI_REGEX.match(command[i]):
-                        rq = Util.request("https://unicode.org/emoji/charts/full-emoji-list.html")
-                        emojis_page = rq.get_text()
-                        emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
-                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
-                        if emoji_match:
-                            os.makedirs(Util.tmp_dir(), exist_ok=True)
-                            with tempfile.NamedTemporaryFile(dir=Util.tmp_dir()) as temp_image_file:
-                                with open(temp_image_file.name, 'wb') as f:
-                                    f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under this index
-                                shutil.copy(temp_image_file.name, temp_image_file.name + ".png")
-                                await Msg.response(
-                                    message, None, silent, files=[discord.File(temp_image_file.name + ".png")])
-                                os.unlink(temp_image_file.name + ".png")
-                            break
-                    min_dist = 100000
-                    suggestion = ""
-                    for file in (os.path.splitext(os.path.basename(file))[0].lower() for file in files):
-                        dist = levenshtein_distance(command[i], file)
-                        if dist < min_dist:
-                            suggestion = file
-                            min_dist = dist
-                    await Msg.response(
-                        message,
-                        f"Image '{command[i]}' is not found! "
-                        f"Probably you meant '{suggestion}'",
-                        silent)
-                break
 
 
 class BuiltinCommands(BaseCmd):

@@ -4,6 +4,7 @@
 # Table of Contents:
 * [Module: builtin](#module-builtin)
 * [Module: custom-commands](#module-custom-commands)
+* [Module: image](#module-image)
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
 * [Module: math](#module-math)
@@ -101,9 +102,6 @@
         !help \
         !help -p \
         !help help
-
-**img**: Send image (use !listimg for list of available images) \
-    Example: !img &lt;image_name&gt;
 
 **listalias**: Print list of aliases \
     Example: !listalias \
@@ -227,6 +225,11 @@
 **updextcmd**: Update command that executes external process (works only for commands that already exist) \
     Note: Be careful when you are executing external commands! \
     Example: !updextcmd uname uname -a
+
+# Module: image
+
+**img**: Send image (use !listimg for list of available images) \
+    Example: !img &lt;image_name&gt;
 
 # Module: interactive
 
