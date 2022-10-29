@@ -19,6 +19,8 @@ class DiscordExecutionContext(ExecutionContext):
         self.silent = silent
 
     async def send_message(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
+        if "files" in kwargs:
+            kwargs["files"] = [discord.File(x) for x in kwargs["files"]]
         return await Msg.response(self.message, message, self.silent, *args, **kwargs)
 
     async def reply(self, message: str, *args, **kwargs) -> Optional[discord.Message]:
