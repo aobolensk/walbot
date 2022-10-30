@@ -21,16 +21,16 @@ class TimerCommands(BaseCmd):
     def bind(self):
         bc.executor.commands["netcheck"] = Command(
             "services", "netcheck", const.Permission.ADMIN, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._netcheck)
+            subcommand=True, impl_func=self._netcheck, max_execution_time=60)
         bc.executor.commands["translate"] = Command(
             "services", "translate", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._translate)
+            subcommand=True, impl_func=self._translate, max_execution_time=10)
         bc.executor.commands["weather"] = Command(
             "services", "weather", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=True, impl_func=self._weather)
+            subcommand=True, impl_func=self._weather, max_execution_time=15)
         bc.executor.commands["weatherforecast"] = Command(
             "services", "weatherforecast", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._weatherforecast)
+            subcommand=False, impl_func=self._weatherforecast, max_execution_time=15)
 
     async def _netcheck(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Check network and proxy settings
