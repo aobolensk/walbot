@@ -19,6 +19,7 @@ import nest_asyncio
 import psutil
 
 from src import const
+from src.algorithms import precompile_algs
 from src.api.bot_instance import BotInstance
 from src.api.command import SupportedPlatforms
 from src.bot_cache import BotCache
@@ -226,6 +227,7 @@ class Launcher:
         bc.executor.load_persistent_state(bc.config.executor)
         bc.config.commands.update()
         nest_asyncio.apply()
+        precompile_algs()
 
         # Saving bot_cache to safely stop it later
         bot_cache = BotCache(main_bot).parse()

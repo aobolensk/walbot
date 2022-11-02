@@ -86,12 +86,6 @@ class WalBot(discord.Client):
         if self.repl is not None:
             self.repl.stop()
 
-    @Mail.send_exception_info_to_admin_emails
-    async def _precompile(self) -> None:
-        log.debug("Started precompiling functions...")
-        levenshtein_distance("", "")
-        log.debug("Finished precompiling functions")
-
     async def _change_status(self, string: str, type_: discord.ActivityType) -> None:
         await self.change_presence(activity=discord.Activity(name=string, type=type_))
 
@@ -129,7 +123,6 @@ class WalBot(discord.Client):
                 self.config.discord.guilds[guild.id] = GuildSettings(guild.id)
         bc.discord.bot_user = self.user
         self.loop.create_task(self._config_autosave())
-        self.loop.create_task(self._precompile())
 
     @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
