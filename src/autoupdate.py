@@ -10,7 +10,11 @@ from src.log import log
 def start(args) -> None:
     au = importlib.import_module("src.autoupdate_impl")
     signal.signal(signal.SIGHUP, au.at_exit)
-    context = au.AutoUpdateContext()
+    try:
+        context = au.AutoUpdateContext()
+    except RuntimeError as e:
+        log.error(e)
+        return
     au.at_start()
     try:
         while True:

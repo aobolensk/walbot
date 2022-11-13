@@ -33,7 +33,7 @@ class AutoUpdateContext:
         try:
             self.repo = git.Repo(search_parent_directories=True)
         except git.exc.InvalidGitRepositoryError:
-            log.error(
+            raise RuntimeError(
                 "Failed to find walbot git repo. Autoupdate function is available only for git repository")
 
     def check_versions(self) -> bool:
