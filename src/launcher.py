@@ -146,12 +146,8 @@ class Launcher:
         # Selecting YAML parser
         bc.yaml_loader, bc.yaml_dumper = Util.get_yaml()
         # Read configuration files
-        bc.config = Util.read_config_file(const.CONFIG_PATH)
-        if bc.config is None:
-            bc.config = Config()
-        bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
-        if bc.secret_config is None:
-            bc.secret_config = SecretConfig()
+        bc.config = Util.read_config_file(const.CONFIG_PATH) or Config()
+        bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH) or SecretConfig()
         bc.info = BotInfo()
         if not os.path.exists(const.IMAGES_DIRECTORY):
             os.makedirs(const.IMAGES_DIRECTORY)
