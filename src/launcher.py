@@ -96,18 +96,9 @@ class Launcher:
             log.warning(f"Invalid feature flags: {invalid_flags}")
 
     def __init__(self) -> None:
-        self._tune_current_working_directory()
         self._parser = self._get_argparser()
         self.args = self._parser.parse_args()
         self._loop = asyncio.new_event_loop()
-
-    def _tune_current_working_directory(self) -> None:
-        """Change current working directory (cwd) to directory where root walbot.py file is located
-        Some relative paths (e.g. plugins, commands) in WalBot relies on basedir set to root walbot project folder.
-        If directory is different we need to tine it"""
-        if os.path.normpath(os.getcwd()) != os.path.normpath(
-                os.path.dirname(os.path.abspath(os.path.join("..", "walbot.py")))):
-            os.chdir(os.path.normpath(os.path.dirname(os.path.abspath(os.path.join("..", "walbot.py")))))
 
     def _prepare_args(self) -> None:
         if self.args.action in ("start", "restart", "suspend", "startmini", "stopmini"):

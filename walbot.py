@@ -5,6 +5,7 @@ Check out `python walbot.py -h` for list of available options
 """
 
 import importlib
+import os
 import sys
 
 
@@ -15,6 +16,8 @@ def main():
         print("Python {}.{}.{} is not supported. You need Python 3.8 - 3.11".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
         sys.exit(1)
+    if os.path.normpath(os.getcwd()) != os.path.normpath(os.path.dirname(os.path.abspath(__file__))):
+        os.chdir(os.path.normpath(os.path.dirname(os.path.abspath(__file__))))
     launcher = importlib.import_module("src.launcher").Launcher()
     err_code = launcher.launch_bot()
     sys.exit(err_code)
