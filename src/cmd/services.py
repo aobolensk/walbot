@@ -5,7 +5,6 @@ import sys
 from typing import List, Optional
 from urllib.parse import urlparse
 
-import discord
 from googletrans import Translator
 from httpcore import SyncHTTPProxy
 
@@ -113,7 +112,7 @@ class TimerCommands(BaseCmd):
         try:
             r = Util.request(f"https://wttr.in/{city}.png?m")
             file_name = r.get_file(extension=".png")
-            await Command.send_message(execution_ctx, None, files=[discord.File(file_name)])
+            await Command.send_message(execution_ctx, None, files=[file_name])
             os.unlink(file_name)
         except HTTPRequestException as e:
             if e.status_code == 404:
