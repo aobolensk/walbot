@@ -85,7 +85,7 @@ class TimerCommands(BaseCmd):
     Usage: !weather <city>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
-        city = "'" + ' '.join(cmd_line[1:]) + "'"
+        city = ' '.join(cmd_line[1:])
         try:
             r = Util.request(f"https://wttr.in/{city}?format=4")
             result = r.get_text()
@@ -108,7 +108,7 @@ class TimerCommands(BaseCmd):
     Usage: !weatherforecast <city>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
-        city = "'" + ' '.join(cmd_line[1:]) + "'"
+        city = ' '.join(cmd_line[1:])
         try:
             r = Util.request(f"https://wttr.in/{city}.png?m")
             file_name = r.get_file(extension=".png")
