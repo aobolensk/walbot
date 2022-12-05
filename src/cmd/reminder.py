@@ -132,7 +132,24 @@ class _ReminderInternals:
             channel = f'{reminder.backend}: <#{reminder.channel_id}>'
             props = list()
             if reminder.repeat_after:
-                props.append(f'repeats every {reminder.repeat_after} {reminder.repeat_interval_measure}')
+                if reminder.repeat_interval_measure == "minutes":
+                    weeks, remainder = divmod(reminder.repeat_after, 60 * 24 * 7)
+                    days, remainder = divmod(remainder, 60 * 24)
+                    hours, minutes = divmod(remainder, 60)
+                    prop_text = "repeats every "
+                    prop_measures = []
+                    if weeks > 0:
+                        prop_measures.append(f"{weeks} weeks")
+                    if days > 0:
+                        prop_measures.append(f"{days} days")
+                    if hours > 0:
+                        prop_measures.append(f"{hours} hours")
+                    if minutes > 0:
+                        prop_measures.append(f"{minutes} minutes")
+                    prop_text += ', '.join(prop_measures)
+                    props.append(prop_text)
+                else:
+                    props.append(f'repeats every {reminder.repeat_after} {reminder.repeat_interval_measure}')
             if reminder.prereminders_list:
                 props.append(f'{", ".join([str(x) + " min" for x in reminder.prereminders_list])} prereminders enabled')
             if reminder.remaining_repetitions != -1:
