@@ -1,4 +1,4 @@
-class MessageBuffer:
+class MessageCache:
     BUFFER_CAPACITY = 1001
 
     def __init__(self) -> None:
