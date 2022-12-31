@@ -3,8 +3,8 @@ import enum
 from collections import deque
 from typing import TYPE_CHECKING, Optional
 
-from src.backend.discord.message_buffer import MessageBuffer
 from src.executor import Executor
+from src.message_cache import MessageCache
 from src.plugin import PluginManager
 
 if TYPE_CHECKING:
@@ -51,7 +51,6 @@ class BotController:
             self.change_status = None
             self.change_presence = None
             self.latency = None
-            self.message_buffer = MessageBuffer()
 
     class Telegram:
         def __init__(self) -> None:
@@ -83,3 +82,4 @@ class BotController:
         self.telegram = self.Telegram()
         self.repl = self.Repl()
         self.plugin_manager = PluginManager()
+        self.message_cache = MessageCache()

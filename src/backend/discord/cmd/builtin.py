@@ -743,13 +743,12 @@ class BuiltinCommands(BaseCmd):
                     message,
                     f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
                     silent))
-        result = bc.discord.message_buffer.get(message.channel.id, number)
-        if result is not None:
-            result = result.content
-        else:
+        result = bc.message_cache.get(str(message.channel.id), number)
+        if result is None:
             result = await message.channel.history(limit=number + 1).flatten()
-            bc.discord.message_buffer.reset(message.channel.id, result)
-            result = result[-1].content
+            history_data = [x.content for x in result]
+            bc.message_cache.reset(str(message.channel.id), history_data)
+            result = history_data[-1]
         await Msg.response(message, result, silent)
         return result
 
