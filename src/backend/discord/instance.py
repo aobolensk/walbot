@@ -17,6 +17,7 @@ from src.config import Config, GuildSettings, SecretConfig, User, bc
 from src.ff import FF
 from src.log import log
 from src.mail import Mail
+from src.message_cache import CachedMsg
 from src.message_processing import MessageProcessing
 from src.reminder import ReminderProcessing
 from src.utils import Util
@@ -130,7 +131,7 @@ class WalBot(discord.Client):
             return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
-        bc.message_cache.push(str(message.channel.id), message.content)
+        bc.message_cache.push(str(message.channel.id), CachedMsg(message.content, message.author.id))
         log.info(f"<{message.id}> {message.author} -> {message.content}")
         if message.author.id == self.user.id:
             return
@@ -157,7 +158,7 @@ class WalBot(discord.Client):
             return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
-        bc.message_cache.push(str(message.channel.id), message.content)
+        bc.message_cache.push(str(message.channel.id), CachedMsg(message.content, str(message.author.id)))
         log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
         if message.author.id == self.user.id:
             return
@@ -180,11 +181,11 @@ class WalBot(discord.Client):
 
     async def _process_repetitions(self, message: discord.Message) -> None:
         m = tuple(bc.message_cache.get(str(message.channel.id), i) for i in range(3))
-        if (all(m) and m[0].content and m[0].content == m[1].content == m[2].content and
+        if (all(m) and m[0].message and m[0].message == m[1].message == m[2].message and
             (m[0].author.id != self.user.id and
              m[1].author.id != self.user.id and
              m[2].author.id != self.user.id)):
-            await message.channel.send(m[0].content)
+            await message.channel.send(m[0].message)
 
     async def _process_regular_message(self, message: discord.Message) -> None:
         channel_id = message.channel.id

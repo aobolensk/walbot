@@ -1,4 +1,11 @@
+from dataclasses import dataclass
 from typing import Dict, List
+
+
+@dataclass
+class CachedMsg:
+    message: str
+    author: str
 
 
 class MessageCache:
@@ -7,7 +14,7 @@ class MessageCache:
     def __init__(self) -> None:
         self._data: Dict[str, List[str]] = dict()
 
-    def push(self, channel_id: str, message: str):
+    def push(self, channel_id: str, message: CachedMsg):
         if channel_id not in self._data.keys():
             self._data[channel_id] = []
         self._data[channel_id].insert(0, message)

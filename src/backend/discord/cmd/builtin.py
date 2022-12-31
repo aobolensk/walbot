@@ -16,6 +16,7 @@ from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import Command, bc, log
+from src.message_cache import CachedMsg
 from src.utils import Util, null
 
 
@@ -746,9 +747,10 @@ class BuiltinCommands(BaseCmd):
         result = bc.message_cache.get(str(message.channel.id), number)
         if result is None:
             result = await message.channel.history(limit=number + 1).flatten()
-            history_data = [x.content for x in result]
+            history_data = [CachedMsg(msg.content, str(msg.author.id)) for msg in result]
             bc.message_cache.reset(str(message.channel.id), history_data)
             result = history_data[-1]
+        result = result.message
         await Msg.response(message, result, silent)
         return result
 
