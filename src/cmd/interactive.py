@@ -91,7 +91,7 @@ class InteractiveCommands(BaseCmd):
         if duration is None:
             return
         max_duration = 24 * 60 * 60  # 1 day
-        if execution_ctx.platform == "telegram":
+        if execution_ctx.platform == const.BotBackend.TELEGRAM:
             max_duration = 600
         if duration > max_duration:
             return await Command.send_message(
@@ -100,17 +100,17 @@ class InteractiveCommands(BaseCmd):
         options = ' '.join(cmd_line[2:])
         options = options.split(';')
         max_poll_options = 0
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             max_poll_options = 20
-        elif execution_ctx.platform == "telegram":
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             max_poll_options = 10
         if len(options) > max_poll_options:
             return await Command.send_message(
                 execution_ctx, f"Too many options for poll (got: {len(options)}, max: {max_poll_options})")
         # Run poll
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             await _InteractiveCmdsInternals.discord_poll(execution_ctx, duration, options)
-        elif execution_ctx.platform == "telegram":
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             await _InteractiveCmdsInternals.telegram_poll(execution_ctx, duration, options)
         else:
             raise NotImplementedError

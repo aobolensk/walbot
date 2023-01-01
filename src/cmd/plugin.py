@@ -44,7 +44,7 @@ class PluginCommands(BaseCmd):
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
         plugin_names = bc.plugin_manager.get_plugins_list()
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             e = DiscordEmbed()
             e.title("List of plugins")
             for plugin_name in plugin_names:

@@ -41,7 +41,7 @@ class CustomCmdsCommands(BaseCmd):
             subcommand=True, impl_message=external_cmd_line)
         bc.discord.commands.data[command_name] = LegacyDiscordCommand(
             command_name, cmd_line=external_cmd_line)
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             bc.discord.commands.data[command_name].channels.append(execution_ctx.message.channel.id)
         if bc.backends["telegram"]:
             CommonCommands.add_handler(bc.telegram.dispatcher, bc.executor.commands[cmd_line[1]])

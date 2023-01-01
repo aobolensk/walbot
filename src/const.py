@@ -128,7 +128,8 @@ class Verbosity(enum.IntEnum):
 
 @enum.unique
 class BotBackend(enum.IntEnum):
-    DISCORD = 0
+    DUMMY_BACKEND = 0
+    DISCORD = enum.auto()
     TELEGRAM = enum.auto()
     REPL = enum.auto()
 

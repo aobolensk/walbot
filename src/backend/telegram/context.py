@@ -11,7 +11,7 @@ from src.config import bc
 class TelegramExecutionContext(ExecutionContext):
     def __init__(self, update: Update) -> None:
         super().__init__()
-        self.platform = "telegram"
+        self.platform = const.BotBackend.TELEGRAM
         self.update = update
         self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
         self._replace_patterns = dict()

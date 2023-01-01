@@ -165,7 +165,7 @@ class _ReminderInternals:
                  f"{' - ' if props else ''}{'; '.join(props)}"))
         reminder_list.sort()
         reminder_list = reminder_list[:reminders_count]
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             embed_color = random.randint(0x000000, 0xffffff)
             cur_list = 1
             total_list = int(math.ceil(reminders_count / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
@@ -273,7 +273,7 @@ class ReminderCommands(BaseCmd):
         if index not in bc.config.reminders.keys():
             return await Command.send_message(execution_ctx, "Invalid index of reminder!")
         reminder = bc.config.reminders[index]
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             e = DiscordEmbed()
             e.title("Reminder info")
             e.description(reminder.message)
@@ -331,13 +331,13 @@ class ReminderCommands(BaseCmd):
         id_ = bc.config.ids["reminder"]
         if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
             return await Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             bc.config.reminders[id_] = Reminder(
                 str(time), text, execution_ctx.message.channel.id, execution_ctx.message.author.name,
                 datetime.datetime.now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
             bc.config.ids["reminder"] += 1
             await Command.send_message(execution_ctx, f"Reminder '{text}' with id {id_} added at {time}")
-        elif execution_ctx.platform == "telegram":
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             username = (
                 execution_ctx.update.message.from_user.username or execution_ctx.update.message.from_user.full_name)
             bc.config.reminders[id_] = Reminder(
@@ -468,11 +468,11 @@ class ReminderCommands(BaseCmd):
             return
         if index not in bc.config.reminders.keys():
             return await Command.check_args_count(execution_ctx, "Invalid index of reminder!")
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             bc.config.reminders[index].discord_whisper_users.append(execution_ctx.message_author_id())
             await Command.send_message(
                 execution_ctx, f"You will be notified in direct messages when reminder {index} is sent")
-        elif execution_ctx.platform == "telegram":
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             bc.config.reminders[index].telegram_whisper_users.append(execution_ctx.message_author_id())
             await Command.send_message(
                 execution_ctx, f"You will be notified in direct messages when reminder {index} is sent")

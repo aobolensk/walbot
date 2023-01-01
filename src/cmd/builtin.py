@@ -246,7 +246,7 @@ class BuiltinCommands(BaseCmd):
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         user = ""
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             if len(cmd_line) == 1:
                 user = execution_ctx.message.author
             elif len(cmd_line) == 2:
@@ -257,7 +257,7 @@ class BuiltinCommands(BaseCmd):
             if user is None:
                 return await Command.send_message(execution_ctx, "Could not get information about this user")
             await _BuiltinInternals.discord_profile(cmd_line, execution_ctx, user)
-        elif execution_ctx.platform == "telegram":
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             if len(cmd_line) == 1:
                 user = execution_ctx.update.message.from_user
             elif len(cmd_line) == 2:
@@ -286,7 +286,7 @@ class BuiltinCommands(BaseCmd):
                 f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})")
         result = bc.message_cache.get(str(execution_ctx.channel_id()), number)
         if result is None:
-            if execution_ctx.platform == "discord":
+            if execution_ctx.platform == const.BotBackend.DISCORD:
                 result = await execution_ctx.message.channel.history(limit=number + 1).flatten()
                 history_data = [CachedMsg(msg.content, str(msg.author.id)) for msg in result]
                 bc.message_cache.reset(str(execution_ctx.channel_id()), history_data)

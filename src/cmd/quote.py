@@ -54,7 +54,7 @@ class RandomCommands(BaseCmd):
         if index not in bc.config.quotes.keys():
             return await Command.send_message(execution_ctx, "Invalid index of quote!")
         quote = bc.config.quotes[index]
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             e = DiscordEmbed()
             e.title("Quote")
             e.description(quote.message)

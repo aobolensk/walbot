@@ -13,7 +13,7 @@ from src.config import bc
 class DiscordExecutionContext(ExecutionContext):
     def __init__(self, message: discord.Message, silent=False) -> None:
         super().__init__()
-        self.platform = "discord"
+        self.platform = const.BotBackend.DISCORD
         self.message = message
         self.permission_level = bc.config.discord.users[message.author.id].permission_level
         self.silent = silent

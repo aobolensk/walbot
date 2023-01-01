@@ -79,7 +79,7 @@ class Command:
         commands_data[self.command_name]["max_execution_time"] = self.max_execution_time
 
     async def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             # On Discord platform we are using legacy separate time limit handling for now
             return await self._run_impl(cmd_line, execution_ctx)
         if self.max_execution_time == -1:
@@ -142,7 +142,7 @@ class Command:
 
     @staticmethod
     async def process_variables(execution_ctx: ExecutionContext, string: str, cmd_line: List[str], safe=False) -> str:
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             string = string.replace("@server@", execution_ctx.message.guild.name)
         string = string.replace("@channelid@", str(execution_ctx.channel_id()))
         string = string.replace("@channel@", execution_ctx.channel_name())

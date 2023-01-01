@@ -31,9 +31,9 @@ class DummyPlugin(BasePlugin):
 
     async def on_message(self, execution_ctx: ExecutionContext) -> None:
         await super().on_message(execution_ctx)
-        if execution_ctx.platform == "discord":
+        if execution_ctx.platform == const.BotBackend.DISCORD:
             log.debug(execution_ctx.message)
-        elif execution_ctx.platform == "telegram":
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             log.debug(execution_ctx.update)
 
     async def close(self) -> None:
