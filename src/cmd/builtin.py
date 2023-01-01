@@ -282,8 +282,8 @@ class BuiltinCommands(BaseCmd):
             await Command.send_message(execution_ctx, "Invalid message number")
         if number > const.MAX_MESSAGE_HISTORY_DEPTH:
             return await Command.send_message(
-                    execution_ctx,
-                    f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})")
+                execution_ctx,
+                f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})")
         result = bc.message_cache.get(str(execution_ctx.channel_id()), number)
         if result is None:
             if execution_ctx.platform == "discord":
