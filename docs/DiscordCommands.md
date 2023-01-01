@@ -226,6 +226,10 @@
 **dbg**: Debug command \
     Example: !dbg &lt;diagnostic-name&gt;
 
+**eval**: Evaluate Python code in bot context. \
+    Note: Dangerous, use it only if you know what you are doing \
+    Example: !eval &lt;code&gt;
+
 # Module: image
 
 **img**: Send image (use !listimg for list of available images) \

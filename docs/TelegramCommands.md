@@ -121,6 +121,12 @@
 
 **dbg**: Debug command \
     Example: !dbg &lt;diagnostic-name&gt; \
+    *This command can be used as subcommand* \
+    *Default permission level: 2*
+
+**eval**: Evaluate Python code in bot context. \
+    Note: Dangerous, use it only if you know what you are doing \
+    Example: !eval &lt;code&gt; \
     *Default permission level: 2*
 
 # Module: image

@@ -1,4 +1,6 @@
 import json
+import sys
+from io import StringIO
 from typing import List, Optional
 
 from src import const
@@ -33,7 +35,10 @@ class DebugCommands(BaseCmd):
     def bind(self) -> None:
         bc.executor.commands["dbg"] = Command(
             "debug", "dbg", const.Permission.ADMIN, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._dbg)
+            subcommand=True, impl_func=self._dbg)
+        bc.executor.commands["eval"] = Command(
+            "debug", "eval", const.Permission.ADMIN, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._eval)
 
     async def _dbg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Debug command
@@ -44,3 +49,16 @@ class DebugCommands(BaseCmd):
         result = debug_info.run()
         await Command.send_message(execution_ctx, result)
         return result
+
+    async def _eval(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Evaluate Python code in bot context.
+    Note: Dangerous, use it only if you know what you are doing
+    Example: !eval <code>"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        old_stdout = sys.stdout
+        sys.stdout = tmp_stdout = StringIO()
+        eval(' '.join(cmd_line[1:]))
+        sys.stdout = old_stdout
+        result = tmp_stdout.getvalue()
+        await Command.send_message(execution_ctx, result)
