@@ -182,9 +182,9 @@ class WalBot(discord.Client):
     async def _process_repetitions(self, message: discord.Message) -> None:
         m = tuple(bc.message_cache.get(str(message.channel.id), i) for i in range(3))
         if (all(m) and m[0].message and m[0].message == m[1].message == m[2].message and
-            (m[0].author.id != self.user.id and
-             m[1].author.id != self.user.id and
-             m[2].author.id != self.user.id)):
+            (m[0].author != self.user.id and
+             m[1].author != self.user.id and
+             m[2].author != self.user.id)):
             await message.channel.send(m[0].message)
 
     async def _process_regular_message(self, message: discord.Message) -> None:
