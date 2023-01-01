@@ -108,7 +108,7 @@
     Example: !listalias \
     *This command can be used as subcommand*
 
-**message**: Get message by its order number (from the end of channel history) \
+**message**: Get message by its order number counting from the newest message \
     Example: !message \
     *This command can be used as subcommand*
 

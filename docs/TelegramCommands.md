@@ -52,6 +52,11 @@
     *This command can be used as subcommand* \
     *Default permission level: 1*
 
+**message**: Get message by its order number counting from the newest message \
+    Example: !message \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
 **ping**: 🏓 Pong! @author@ 🏓 \
     *This command can be used as subcommand* \
     *Default permission level: 0*

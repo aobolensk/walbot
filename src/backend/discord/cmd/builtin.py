@@ -16,7 +16,6 @@ from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import Command, bc, log
-from src.message_cache import CachedMsg
 from src.utils import Util, null
 
 
@@ -95,7 +94,6 @@ class BuiltinCommands(BaseCmd):
             "delimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "tts": dict(permission=const.Permission.MOD.value, subcommand=False),
             "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "message": dict(permission=const.Permission.USER.value, subcommand=True),
             "server": dict(permission=const.Permission.USER.value, subcommand=False),
             "pin": dict(permission=const.Permission.MOD.value, subcommand=True),
             "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -725,34 +723,6 @@ class BuiltinCommands(BaseCmd):
                 suggestion = file
                 min_dist = dist
         await Msg.response(message, f"Image '{image}' is not found! Probably you meant '{suggestion}'", silent)
-
-    @staticmethod
-    async def _message(message, command, silent=False):
-        """Get message by its order number (from the end of channel history)
-    Example: !message"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        number = await Util.parse_int_for_discord(
-            message, command[1], "Message number should be an integer", silent)
-        if number is None:
-            return
-        if number <= 0:
-            return null(await Msg.response(message, "Invalid message number", silent))
-        if number > const.MAX_MESSAGE_HISTORY_DEPTH:
-            return null(
-                await Msg.response(
-                    message,
-                    f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})",
-                    silent))
-        result = bc.message_cache.get(str(message.channel.id), number)
-        if result is None:
-            result = await message.channel.history(limit=number + 1).flatten()
-            history_data = [CachedMsg(msg.content, str(msg.author.id)) for msg in result]
-            bc.message_cache.reset(str(message.channel.id), history_data)
-            result = history_data[-1]
-        result = result.message
-        await Msg.response(message, result, silent)
-        return result
 
     @staticmethod
     async def _server(message, command, silent=False):

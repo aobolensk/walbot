@@ -14,6 +14,7 @@ from src.backend.telegram.util import check_auth, log_message
 from src.config import bc
 from src.log import log
 from src.mail import Mail
+from src.message_cache import CachedMsg
 from src.message_processing import MessageProcessing
 from src.reminder import ReminderProcessing
 from src.utils import Util
@@ -32,6 +33,7 @@ class TelegramBotInstance(BotInstance):
         log_message(update)
         if not check_auth(update):
             return
+        bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
         bc.markov.add_string(text)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(MessageProcessing.process_responses(TelegramExecutionContext(update), text))
@@ -39,9 +41,11 @@ class TelegramBotInstance(BotInstance):
 
     @Mail.send_exception_info_to_admin_emails
     def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
+        text = update.message.text
         log_message(update)
         if not check_auth(update):
             return
+        bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
         cmd_line = bc.config.on_mention_command.split(" ")
         loop = asyncio.new_event_loop()
         loop.run_until_complete(bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update)))

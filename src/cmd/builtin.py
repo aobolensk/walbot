@@ -14,6 +14,7 @@ from src.api.execution_context import ExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.bc import DoNotUpdateFlag
 from src.config import bc
+from src.message_cache import CachedMsg
 from src.utils import Util
 
 
@@ -101,6 +102,9 @@ class BuiltinCommands(BaseCmd):
             "builtin", "profile", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._profile,
             supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
+        bc.executor.commands["message"] = Command(
+            "builtin", "message", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._message)
 
     async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -296,3 +300,31 @@ class BuiltinCommands(BaseCmd):
             await Command.send_message(
                 execution_ctx,
                 f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+
+    async def _message(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Get message by its order number counting from the newest message
+    Example: !message"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        number = await Util.parse_int(
+            execution_ctx, cmd_line[1], "Message number should be an integer")
+        if number is None:
+            return
+        if number <= 0:
+            await Command.send_message(execution_ctx, "Invalid message number")
+        if number > const.MAX_MESSAGE_HISTORY_DEPTH:
+            return await Command.send_message(
+                    execution_ctx,
+                    f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})")
+        result = bc.message_cache.get(str(execution_ctx.channel_id()), number)
+        if result is None:
+            if execution_ctx.platform == "discord":
+                result = await execution_ctx.message.channel.history(limit=number + 1).flatten()
+                history_data = [CachedMsg(msg.content, str(msg.author.id)) for msg in result]
+                bc.message_cache.reset(str(execution_ctx.channel_id()), history_data)
+                result = history_data[-1]
+            else:
+                return await Command.send_message(execution_ctx, "Message index is too big")
+        result = result.message
+        await Command.send_message(execution_ctx, result)
+        return result
