@@ -14,8 +14,10 @@ class _DebugCommand:
         self._args = args
 
     def run(self) -> str:
-        func = getattr(self, "diag_" + self._cmd)
-        return func() if func is not None else "Unknown diagnostic"
+        diag_func_name = "diag_" + self._cmd
+        if not hasattr(self, diag_func_name):
+            return f"Unknown diagnostic '{diag_func_name}'"
+        return getattr(self, diag_func_name)()
 
     def diag_ids(self) -> str:
         return json.dumps(bc.config.ids)
