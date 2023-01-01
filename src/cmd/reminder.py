@@ -384,7 +384,7 @@ class ReminderCommands(BaseCmd):
             return
         if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < datetime.datetime.now():
             return await Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
-        if execution_ctx.platform in ("discord", "telegram"):
+        if execution_ctx.platform in (const.BotBackend.DISCORD, const.BotBackend.TELEGRAM):
             bc.config.reminders[index].time = str(time)
             bc.config.reminders[index].message = text
             bc.config.reminders[index].channel_id = execution_ctx.channel_id()

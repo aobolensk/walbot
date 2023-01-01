@@ -92,7 +92,7 @@ class Command:
         return result
 
     async def _run_impl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
-        if execution_ctx.platform != "discord":
+        if execution_ctx.platform != const.BotBackend.DISCORD:
             # On Discord platform we are using legacy separate permission handling for now
             if execution_ctx.permission_level < self.permission_level:
                 await self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
@@ -106,7 +106,7 @@ class Command:
                 result = await self.process_variables(execution_ctx, self.impl_message, cmd_line, safe=True)
             else:
                 result = ' '.join(cmd_line)
-            if execution_ctx.platform != "discord":  # discord uses legacy subcommands processing
+            if execution_ctx.platform != const.BotBackend.DISCORD:  # discord uses legacy subcommands processing
                 from src.config import bc
                 result = await self.process_subcommands(execution_ctx, bc.executor, result)
         else:
