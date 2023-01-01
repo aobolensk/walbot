@@ -33,10 +33,6 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
-**donotupdatestate**: Print current state of "Do Not Update" flag which blocks automatic bot updates \
-    Usage: !donotupdatestate \
-    *Default permission level: 1*
-
 **echo**: @args@ \
     *This command can be used as subcommand* \
     *Default permission level: 0*
