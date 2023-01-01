@@ -4,6 +4,7 @@
 # Table of Contents:
 * [Module: builtin](#module-builtin)
 * [Module: custom-commands](#module-custom-commands)
+* [Module: debug](#module-debug)
 * [Module: image](#module-image)
 * [Module: interactive](#module-interactive)
 * [Module: markov](#module-markov)
@@ -113,6 +114,12 @@
 **updextcmd**: Update command that executes external process (works only for commands that already exist) \
     Note: Be careful when you are executing external commands! \
     Example: !updextcmd uname uname -a \
+    *Default permission level: 2*
+
+# Module: debug
+
+**dbg**: Debug command \
+    Example: !dbg &lt;diagnostic-name&gt; \
     *Default permission level: 2*
 
 # Module: image
