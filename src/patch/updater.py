@@ -322,6 +322,9 @@ class Updater:
                 config.reminders[index].__dict__["limit_repetitions_time"] = None
             self._bump_version(config, "0.0.56")
         if config.version == "0.0.56":
+            config.commands.data["dbg"].subcommand = True
+            self._bump_version(config, "0.0.57")
+        if config.version == "0.0.56":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

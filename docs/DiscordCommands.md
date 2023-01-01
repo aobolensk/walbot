@@ -224,7 +224,8 @@
 # Module: debug
 
 **dbg**: Debug command \
-    Example: !dbg &lt;diagnostic-name&gt;
+    Example: !dbg &lt;diagnostic-name&gt; \
+    *This command can be used as subcommand*
 
 **eval**: Evaluate Python code in bot context. \
     Note: Dangerous, use it only if you know what you are doing \
