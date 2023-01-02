@@ -1,5 +1,6 @@
 [![CI Status](https://github.com/aobolensk/walbot/workflows/Lint/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/lint.yml)
 [![CI Status](https://github.com/aobolensk/walbot/workflows/Test/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/test.yml)
+[![CI Status](https://github.com/aobolensk/walbot/workflows/Nightly/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml)
 [![CI Status](https://github.com/aobolensk/walbot/workflows/CodeQL/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
 
 # walbot
