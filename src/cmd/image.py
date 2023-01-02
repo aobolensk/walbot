@@ -1,5 +1,4 @@
 import base64
-import imghdr
 import os
 import random
 import re
@@ -7,6 +6,8 @@ import shutil
 import tempfile
 import urllib
 from typing import List
+
+import magic
 
 from src import const
 from src.algorithms import levenshtein_distance
@@ -102,11 +103,13 @@ class _ImageInternals:
                 log.error("Image downloading failed!", exc_info=True)
                 return await Command.send_message(execution_ctx, f"Image downloading failed: {e}")
 
-        if imghdr.what(image_path) is None:
-            log.error("Received file is not an image!")
+        file_mime = magic.from_file(image_path, mime=True)
+        if "image/" not in file_mime:
+            log.debug(magic.from_file(image_path, mime=True))
+            log.error(f"Received file is not an image: {file_mime}")
             os.remove(image_path)
             log.info(f"Removed file {image_path}")
-            return await Command.send_message(execution_ctx, "Received file is not an image")
+            return await Command.send_message(execution_ctx, f"Received file is not an image. MIME: {file_mime}")
 
         if not update:
             await Command.send_message(execution_ctx, f"Image '{name}' is successfully added!")
