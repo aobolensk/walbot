@@ -2,7 +2,6 @@
 
 import math
 import os
-import re
 import tempfile
 import urllib.parse
 import urllib.request
@@ -37,7 +36,6 @@ class BuiltinCommands(BaseCmd):
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
-            "delimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "tts": dict(permission=const.Permission.MOD.value, subcommand=False),
             "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
             "server": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -559,24 +557,6 @@ class BuiltinCommands(BaseCmd):
             result += f"{', '.join(aliases)} -> {command}\n"
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _delimg(message, command, silent=False):
-        """Delete image for !img command
-    Example: !delimg name"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
-            return
-        name = command[1]
-        if not re.match(const.FILENAME_REGEX, name):
-            return null(await Msg.response(message, f"Incorrect name '{name}'", silent))
-        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
-            if not root.endswith(const.IMAGES_DIRECTORY):
-                continue
-            for file in files:
-                if name == os.path.splitext(os.path.basename(file))[0]:
-                    os.remove(os.path.join(const.IMAGES_DIRECTORY, file))
-                    return null(await Msg.response(message, f"Successfully removed image '{name}'", silent))
-        await Msg.response(message, f"Image '{name}' not found!", silent)
 
     @staticmethod
     async def _tts(message, command, silent=False):
