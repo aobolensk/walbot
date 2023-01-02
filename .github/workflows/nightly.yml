@@ -1,0 +1,15 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  alpine-docker-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build Docker image
+      run: docker build -f docker/alpine.Dockerfile -t walbot .
+    - name: Run tests in Docker
+      run: docker run -i walbot /bin/bash -c "pip install -r tests/requirements.txt && python walbot.py test"
