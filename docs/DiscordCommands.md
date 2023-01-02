@@ -60,9 +60,6 @@
     Usage: !delalias &lt;alias&gt; \
     Example: !delalias pong
 
-**delimg**: Delete image for !img command \
-    Example: !delimg name
-
 **disablecmd**: Disable command in specified scope \
     Examples: \
         !disablecmd ping \
@@ -229,6 +226,9 @@
 
 **addimg**: Add image for !img command \
     Example: !addimg name url
+
+**delimg**: Delete image for !img command \
+    Example: !delimg name
 
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;

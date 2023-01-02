@@ -131,6 +131,9 @@ class ImageCommands(BaseCmd):
         bc.executor.commands["listimg"] = Command(
             "image", "listimg", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listimg)
+        bc.executor.commands["delimg"] = Command(
+            "image", "delimg", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delimg)
 
     async def _img(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Send image (use !listimg for list of available images)
@@ -185,3 +188,20 @@ class ImageCommands(BaseCmd):
             await Command.send_message(execution_ctx, "List of available images: [" + ', '.join(result) + "]")
         else:
             await Command.send_message(execution_ctx, "No available images found!")
+
+    async def _delimg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Delete image for !img command
+    Example: !delimg name"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        name = cmd_line[1]
+        if not re.match(const.FILENAME_REGEX, name):
+            return await Command.send_message(execution_ctx, f"Incorrect name '{name}'")
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
+                continue
+            for file in files:
+                if name == os.path.splitext(os.path.basename(file))[0]:
+                    os.remove(os.path.join(const.IMAGES_DIRECTORY, file))
+                    return await Command.send_message(execution_ctx, f"Successfully removed image '{name}'")
+        await Command.send_message(execution_ctx, f"Image '{name}' not found!")

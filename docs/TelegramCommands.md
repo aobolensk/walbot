@@ -135,6 +135,10 @@
     Example: !addimg name url \
     *Default permission level: 1*
 
+**delimg**: Delete image for !img command \
+    Example: !delimg name \
+    *Default permission level: 1*
+
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt; \
     *Default permission level: 0*
