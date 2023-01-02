@@ -41,5 +41,5 @@ Using walbot in Docker container
 
 .. code-block:: bash
 
-  $ docker build -t walbot .
+  $ docker build -f docker/default.Dockerfile -t walbot .
   $ docker run -it walbot /bin/bash
