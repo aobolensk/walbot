@@ -1,0 +1,12 @@
+# Editors cache
+.vscode
+
+# Python cache
+__pycache__
+
+# venv
+venv
+
+# Bot cache
+.bot_cache
+.minibot_cache
