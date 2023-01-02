@@ -131,6 +131,10 @@
 
 # Module: image
 
+**addimg**: Add image for !img command \
+    Example: !addimg name url \
+    *Default permission level: 1*
+
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt; \
     *Default permission level: 0*
@@ -138,6 +142,10 @@
 **listimg**: Print list of available images for !img command \
     Example: !listimg \
     *Default permission level: 0*
+
+**updimg**: Update image for !img command \
+    Example: !updimg name url \
+    *Default permission level: 1*
 
 # Module: interactive
 

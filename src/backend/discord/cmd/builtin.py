@@ -1,6 +1,5 @@
 """Built-in WalBot commands"""
 
-import imghdr
 import math
 import os
 import re
@@ -17,57 +16,6 @@ from src.backend.discord.message import Msg
 from src.commands import BaseCmd
 from src.config import Command, bc, log
 from src.utils import Util, null
-
-
-class _BuiltinInternals:
-    @staticmethod
-    async def add_image(message, command, silent, update):
-        name = command[1]
-        if not re.match(const.FILENAME_REGEX, name):
-            return null(await Msg.response(message, f"Incorrect name '{name}'", silent))
-        url = command[2]
-        ext = urllib.parse.urlparse(url).path.split('.')[-1]
-        if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
-            return null(await Msg.response(message, "Please, provide direct link to image", silent))
-
-        found = False
-        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
-            if not root.endswith(const.IMAGES_DIRECTORY):
-                continue
-            for file in files:
-                if name == os.path.splitext(os.path.basename(file))[0]:
-                    found = True
-                    if not update:
-                        return null(await Msg.response(message, f"Image '{name}' already exists", silent))
-        if update and not found:
-            return null(await Msg.response(message, f"Image '{name}' does not exist", silent))
-
-        image_path = os.path.join(const.IMAGES_DIRECTORY, name + '.' + ext)
-        with open(image_path, 'wb') as f:
-            try:
-                hdr = {
-                    "User-Agent": "Mozilla/5.0"
-                }
-                rq = urllib.request.Request(url, headers=hdr)
-                with urllib.request.urlopen(rq) as response:
-                    f.write(response.read())
-            except ValueError:
-                return null(await Msg.response(message, "Incorrect image URL format!", silent))
-            except Exception as e:
-                os.remove(image_path)
-                log.error("Image downloading failed!", exc_info=True)
-                return null(await Msg.response(message, f"Image downloading failed: {e}", silent))
-
-        if imghdr.what(image_path) is None:
-            log.error("Received file is not an image!")
-            os.remove(image_path)
-            log.info(f"Removed file {image_path}")
-            return null(await Msg.response(message, "Received file is not an image", silent))
-
-        if not update:
-            await Msg.response(message, f"Image '{name}' is successfully added!", silent)
-        else:
-            await Msg.response(message, f"Image '{name}' is successfully updated!", silent)
 
 
 class BuiltinCommands(BaseCmd):
@@ -89,8 +37,6 @@ class BuiltinCommands(BaseCmd):
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
-            "addimg": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "updimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delimg": dict(permission=const.Permission.MOD.value, subcommand=False),
             "tts": dict(permission=const.Permission.MOD.value, subcommand=False),
             "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -613,22 +559,6 @@ class BuiltinCommands(BaseCmd):
             result += f"{', '.join(aliases)} -> {command}\n"
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _addimg(message, command, silent=False):
-        """Add image for !img command
-    Example: !addimg name url"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        await _BuiltinInternals.add_image(message, command, silent, update=False)
-
-    @staticmethod
-    async def _updimg(message, command, silent=False):
-        """Update image for !img command
-    Example: !updimg name url"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
-            return
-        await _BuiltinInternals.add_image(message, command, silent, update=True)
 
     @staticmethod
     async def _delimg(message, command, silent=False):

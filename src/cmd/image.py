@@ -1,9 +1,11 @@
 import base64
+import imghdr
 import os
 import random
 import re
 import shutil
 import tempfile
+import urllib
 from typing import List
 
 from src import const
@@ -11,35 +13,36 @@ from src.algorithms import levenshtein_distance
 from src.api.command import BaseCmd, Command, Implementation
 from src.api.execution_context import ExecutionContext
 from src.config import bc
+from src.log import log
 from src.utils import Util
 
 
 class _ImageInternals:
     @staticmethod
-    async def get_image(execution_ctx, command):
-        for i in range(1, len(command)):
+    async def get_image(execution_ctx: ExecutionContext, cmd_line: List[str]):
+        for i in range(1, len(cmd_line)):
             for root, _, files in os.walk(const.IMAGES_DIRECTORY):
                 if not root.endswith(const.IMAGES_DIRECTORY):
                     continue
                 for file in files:
                     if (not execution_ctx.silent and
-                            os.path.splitext(os.path.basename(file))[0].lower() == command[i].lower()):
+                            os.path.splitext(os.path.basename(file))[0].lower() == cmd_line[i].lower()):
                         await Command.send_message(
                             execution_ctx, None, files=[os.path.join(const.IMAGES_DIRECTORY, file)])
                         break
                 else:
                     # Custom emoji
-                    r = const.DISCORD_EMOJI_REGEX.match(command[i])
+                    r = const.DISCORD_EMOJI_REGEX.match(cmd_line[i])
                     if r is not None:
                         await Command.send_message(
                             execution_ctx, f"https://cdn.discordapp.com/emojis/{r.group(2)}.png")
                         break
                     # Unicode emoji
-                    if const.UNICODE_EMOJI_REGEX.match(command[i]):
+                    if const.UNICODE_EMOJI_REGEX.match(cmd_line[i]):
                         rq = Util.request("https://unicode.org/emoji/charts/full-emoji-list.html")
                         emojis_page = rq.get_text()
                         emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
-                        emoji_match = re.findall(emoji_match.format(command[i]), emojis_page)
+                        emoji_match = re.findall(emoji_match.format(cmd_line[i]), emojis_page)
                         if emoji_match:
                             os.makedirs(Util.tmp_dir(), exist_ok=True)
                             with tempfile.NamedTemporaryFile(dir=Util.tmp_dir()) as temp_image_file:
@@ -53,13 +56,62 @@ class _ImageInternals:
                     min_dist = 100000
                     suggestion = ""
                     for file in (os.path.splitext(os.path.basename(file))[0].lower() for file in files):
-                        dist = levenshtein_distance(command[i], file)
+                        dist = levenshtein_distance(cmd_line[i], file)
                         if dist < min_dist:
                             suggestion = file
                             min_dist = dist
                     await Command.send_message(
-                        execution_ctx, f"Image '{command[i]}' is not found! Probably you meant '{suggestion}'")
+                        execution_ctx, f"Image '{cmd_line[i]}' is not found! Probably you meant '{suggestion}'")
                 break
+
+    @staticmethod
+    async def add_image(execution_ctx: ExecutionContext, cmd_line: List[str], update: bool) -> None:
+        name = cmd_line[1]
+        if not re.match(const.FILENAME_REGEX, name):
+            return await Command.send_message(execution_ctx, f"Incorrect name '{name}'")
+        url = cmd_line[2]
+        ext = urllib.parse.urlparse(url).path.split('.')[-1]
+        if ext not in ["jpg", "jpeg", "png", "ico", "gif", "bmp"]:
+            return await Command.send_message(execution_ctx, "Please, provide direct link to image")
+
+        found = False
+        for root, _, files in os.walk(const.IMAGES_DIRECTORY):
+            if not root.endswith(const.IMAGES_DIRECTORY):
+                continue
+            for file in files:
+                if name == os.path.splitext(os.path.basename(file))[0]:
+                    found = True
+                    if not update:
+                        return await Command.send_message(execution_ctx, f"Image '{name}' already exists")
+        if update and not found:
+            return await Command.send_message(execution_ctx, f"Image '{name}' does not exist")
+
+        image_path = os.path.join(const.IMAGES_DIRECTORY, name + '.' + ext)
+        with open(image_path, 'wb') as f:
+            try:
+                hdr = {
+                    "User-Agent": "Mozilla/5.0"
+                }
+                rq = urllib.request.Request(url, headers=hdr)
+                with urllib.request.urlopen(rq) as response:
+                    f.write(response.read())
+            except ValueError:
+                return await Command.send_message(execution_ctx, "Incorrect image URL format!")
+            except Exception as e:
+                os.remove(image_path)
+                log.error("Image downloading failed!", exc_info=True)
+                return await Command.send_message(execution_ctx, f"Image downloading failed: {e}")
+
+        if imghdr.what(image_path) is None:
+            log.error("Received file is not an image!")
+            os.remove(image_path)
+            log.info(f"Removed file {image_path}")
+            return await Command.send_message(execution_ctx, "Received file is not an image")
+
+        if not update:
+            await Command.send_message(execution_ctx, f"Image '{name}' is successfully added!")
+        else:
+            await Command.send_message(execution_ctx, f"Image '{name}' is successfully updated!")
 
 
 class ImageCommands(BaseCmd):
@@ -70,6 +122,12 @@ class ImageCommands(BaseCmd):
         bc.executor.commands["img"] = Command(
             "image", "img", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._img, max_execution_time=-1)
+        bc.executor.commands["addimg"] = Command(
+            "image", "addimg", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addimg)
+        bc.executor.commands["updimg"] = Command(
+            "image", "updimg", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._updimg)
         bc.executor.commands["listimg"] = Command(
             "image", "listimg", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listimg)
@@ -96,6 +154,20 @@ class ImageCommands(BaseCmd):
                 execution_ctx, None,
                 files=[os.path.join(const.IMAGES_DIRECTORY, list_images[result])])
         await _ImageInternals.get_image(execution_ctx, cmd_line)
+
+    async def _addimg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Add image for !img command
+    Example: !addimg name url"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        await _ImageInternals.add_image(execution_ctx, cmd_line, update=False)
+
+    async def _updimg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Update image for !img command
+    Example: !updimg name url"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        await _ImageInternals.add_image(execution_ctx, cmd_line, update=True)
 
     async def _listimg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print list of available images for !img command

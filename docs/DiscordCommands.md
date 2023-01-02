@@ -35,9 +35,6 @@
 **addcmd**: Add command \
     Example: !addcmd hello Hello!
 
-**addimg**: Add image for !img command \
-    Example: !addimg name url
-
 **avatar**: Change bot avatar \
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images
@@ -187,9 +184,6 @@
 **updcmd**: Update command (works only for commands that already exist) \
     Example: !updcmd hello Hello!
 
-**updimg**: Update image for !img command \
-    Example: !updimg name url
-
 **uptime**: Show bot uptime \
     Example: !uptime \
     *This command can be used as subcommand*
@@ -233,11 +227,17 @@
 
 # Module: image
 
+**addimg**: Add image for !img command \
+    Example: !addimg name url
+
 **img**: Send image (use !listimg for list of available images) \
     Example: !img &lt;image_name&gt;
 
 **listimg**: Print list of available images for !img command \
     Example: !listimg
+
+**updimg**: Update image for !img command \
+    Example: !updimg name url
 
 # Module: interactive
 
