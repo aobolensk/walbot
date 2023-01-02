@@ -31,11 +31,3 @@ jobs:
       run: docker build -f docker/default.Dockerfile -t walbot .
     - name: Run tests in Docker
       run: docker run -i walbot /bin/bash -c "pip install -r tests/requirements.txt && python walbot.py test"
-  light-docker-tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Build Docker image
-      run: docker build -f docker/light.Dockerfile -t walbot .
-    - name: Run tests in Docker
-      run: docker run -i walbot /bin/bash -c "pip install -r tests/requirements.txt && python walbot.py test"
