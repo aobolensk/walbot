@@ -324,7 +324,10 @@ class Updater:
         if config.version == "0.0.56":
             config.commands.data["dbg"].subcommand = True
             self._bump_version(config, "0.0.57")
-        if config.version == "0.0.56":
+        if config.version == "0.0.57":
+            config.executor["commands_data"]["poll"]["max_execution_time"] = -1
+            self._bump_version(config, "0.0.58")
+        if config.version == "0.0.58":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

@@ -76,7 +76,8 @@ class InteractiveCommands(BaseCmd):
         bc.executor.commands["poll"] = Command(
             "interactive", "poll", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._poll,
-            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM),
+            max_execution_time=-1)
 
     async def _poll(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Create poll and collect result after selected time
