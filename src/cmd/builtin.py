@@ -101,6 +101,10 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["message"] = Command(
             "builtin", "message", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._message)
+        bc.executor.commands["tts"] = Command(
+            "builtin", "tts", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._tts,
+            supported_platforms=SupportedPlatforms.DISCORD)
 
     async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -296,3 +300,11 @@ class BuiltinCommands(BaseCmd):
         result = result.message
         await Command.send_message(execution_ctx, result)
         return result
+
+    async def _tts(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Send text-to-speech (TTS) message
+    Example: !tts Hello!"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        text = ' '.join(cmd_line[1:])
+        await Command.send_message(execution_ctx, text, tts=True)

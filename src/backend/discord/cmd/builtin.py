@@ -36,7 +36,6 @@ class BuiltinCommands(BaseCmd):
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
-            "tts": dict(permission=const.Permission.MOD.value, subcommand=False),
             "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
             "server": dict(permission=const.Permission.USER.value, subcommand=False),
             "pin": dict(permission=const.Permission.MOD.value, subcommand=True),
@@ -557,16 +556,6 @@ class BuiltinCommands(BaseCmd):
             result += f"{', '.join(aliases)} -> {command}\n"
         await Msg.response(message, result, silent)
         return result
-
-    @staticmethod
-    async def _tts(message, command, silent=False):
-        """Send text-to-speech (TTS) message
-    Example: !tts Hello!"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        text = ' '.join(command[1:])
-        await Msg.response(message, text, silent, tts=True)
-        log.debug(f"Sent TTS message: {text}")
 
     @staticmethod
     async def _avatar(message, command, silent=False):
