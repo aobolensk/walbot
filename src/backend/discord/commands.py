@@ -1,3 +1,4 @@
+import functools
 import importlib
 import inspect
 import os
@@ -7,10 +8,26 @@ from typing import Any, Dict, List
 import discord
 
 from src import const
-from src.api.command import BaseCmd
+from src.api.command import BaseCmd, CommandBinding
 from src.backend.discord.context import DiscordExecutionContext
 from src.config import Command, bc, log
 from src.utils import Util
+
+
+class DiscordCommandBinding(CommandBinding):
+    def bind(self, cmd_name: str, command: Command):
+        if command.module_name is None:
+            return
+        bc.discord.commands.register_command(
+            command.module_name, "CommonCommands", command.command_name,
+            permission=command.permission_level, subcommand=command.subcommand,
+        )
+        # Add bound commands to CommonCommands class for now
+        from src.backend.discord.cmd.common import CommonCommands
+        setattr(CommonCommands, "_" + command.command_name, functools.partial(bind_command, command.command_name))
+
+    def unbind(self, cmd_name: str):
+        pass
 
 
 class Commands:

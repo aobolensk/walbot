@@ -4,13 +4,24 @@ import os
 from collections import defaultdict
 from typing import Any, Dict
 
-from src.api.command import BaseCmd, SupportedPlatforms
+from src import const
+from src.api.command import (BaseCmd, Command, CommandBinding,
+                             SupportedPlatforms)
 from src.log import log
 
 
 class Executor:
     def __init__(self) -> None:
         self.commands = {}
+        self.binders: Dict[const.BotBackend, CommandBinding] = {}
+
+    def register_command(self, cmd_name: str, command: Command) -> None:
+        for binder in self.binders.values():
+            binder.bind(cmd_name, command)
+
+    def unregister_command(self, cmd_name: str) -> None:
+        for binder in self.binders.values():
+            binder.unbind(cmd_name)
 
     def load_commands(self) -> None:
         cmd_directory = os.path.join(os.getcwd(), "src", "cmd")

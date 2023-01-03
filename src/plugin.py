@@ -2,8 +2,10 @@ import asyncio
 import importlib
 import inspect
 import os
-from typing import Any, Dict, KeysView
+from typing import Any, Callable, Dict, KeysView
 
+from src import const
+from src.api.command import Command, Implementation
 from src.api.plugin import BasePlugin
 from src.log import log
 from src.utils import Util
@@ -89,3 +91,13 @@ class PluginManager:
         for plugin_name in self.get_plugins_list():
             if await self.send_command(plugin_name, "is_enabled"):
                 asyncio.get_running_loop().create_task(self.send_command(plugin_name, "close"))
+
+    async def register_bot_command(
+            self, plugin_name: str, cmd_name: str, permission_level: const.Permission,
+            command_func: Callable, *args, **kwargs) -> None:
+        from src.config import bc
+        log.debug(f"Registered bot command '{cmd_name}' for '{plugin_name}' plugin")
+        bc.executor.commands[cmd_name] = Command(
+            "plugin_" + plugin_name, cmd_name, permission_level, Implementation.FUNCTION,
+            impl_func=command_func, *args, **kwargs)
+        bc.executor.register_command(cmd_name, bc.executor.commands[cmd_name])
