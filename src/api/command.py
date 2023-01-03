@@ -1,5 +1,5 @@
 import enum
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from types import FunctionType
 from typing import TYPE_CHECKING, Any, Dict, List
 
@@ -218,3 +218,13 @@ class Command:
             if not updated:
                 break
         return string
+
+
+class CommandBinding(ABC):
+    @abstractmethod
+    def bind(self, cmd_name: str, command: Command):
+        pass
+
+    @abstractmethod
+    def unbind(self, cmd_name: str):
+        pass

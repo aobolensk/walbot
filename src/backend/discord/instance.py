@@ -10,6 +10,7 @@ import discord
 from src import const
 from src.algorithms import levenshtein_distance
 from src.api.bot_instance import BotInstance
+from src.backend.discord.commands import DiscordCommandBinding
 from src.backend.discord.context import DiscordExecutionContext
 from src.backend.discord.voice import VoiceRoutine
 from src.bot_cache import BotCache
@@ -44,6 +45,7 @@ class WalBot(discord.Client):
         bc.discord.get_channel = self.get_channel
         bc.discord.get_user = self.get_user
         bc.discord.background_loop = self.loop
+        bc.executor.binders[const.BotBackend.DISCORD] = DiscordCommandBinding()
         if not fast_start:
             log.debug("Started Markov model checks...")
             if bc.markov.check():

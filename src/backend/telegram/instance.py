@@ -9,6 +9,7 @@ from src import const
 from src.api.bot_instance import BotInstance
 from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.common import CommonCommands
+from src.backend.telegram.command import TelegramCommandBinding
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message
 from src.config import bc
@@ -72,6 +73,7 @@ class TelegramBotInstance(BotInstance):
 
         log.info("Telegram instance is started!")
         bc.backends["telegram"] = True
+        bc.executor.binders[const.BotBackend.TELEGRAM] = TelegramCommandBinding(updater.dispatcher)
         bc.telegram.bot_username = updater.bot.name
         bc.telegram.dispatcher = updater.dispatcher
         updater.start_polling(timeout=600)
