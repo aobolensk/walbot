@@ -26,6 +26,10 @@ class DoNotUpdateFlag(enum.IntEnum):
     POLL = enum.auto()
     TIMER = enum.auto()
     STOPWATCH = enum.auto()
+    # Reserved fields for using in custom scenarios (e.g. user plugins)
+    RESERVED1 = enum.auto()
+    RESERVED2 = enum.auto()
+    RESERVED3 = enum.auto()
 
 
 class BotController:
