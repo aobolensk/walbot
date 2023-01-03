@@ -105,6 +105,10 @@ class BuiltinCommands(BaseCmd):
             "builtin", "tts", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._tts,
             supported_platforms=SupportedPlatforms.DISCORD)
+        bc.executor.commands["status"] = Command(
+            "builtin", "status", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._status,
+            supported_platforms=SupportedPlatforms.DISCORD)
 
     async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -308,3 +312,31 @@ class BuiltinCommands(BaseCmd):
             return
         text = ' '.join(cmd_line[1:])
         await Command.send_message(execution_ctx, text, tts=True)
+
+    async def _status(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Change bot status
+    Examples:
+        !status idle
+        !status playing Dota 2
+    Possible activities: [playing, streaming, watching, listening]
+    Possible bot statuses: [online, idle, dnd, invisible]"""
+        if len(cmd_line) == 1:
+            await bc.discord.change_status("", discord.ActivityType.playing)
+        elif cmd_line[1] == "playing":
+            await bc.discord.change_status(' '.join(cmd_line[2:]), discord.ActivityType.playing)
+        elif cmd_line[1] == "streaming":
+            await bc.discord.change_status(' '.join(cmd_line[2:]), discord.ActivityType.streaming)
+        elif cmd_line[1] == "watching":
+            await bc.discord.change_status(' '.join(cmd_line[2:]), discord.ActivityType.watching)
+        elif cmd_line[1] == "listening":
+            await bc.discord.change_status(' '.join(cmd_line[2:]), discord.ActivityType.listening)
+        elif cmd_line[1] == "online":
+            await bc.discord.change_presence(status=discord.Status.online)
+        elif cmd_line[1] == "idle":
+            await bc.discord.change_presence(status=discord.Status.idle)
+        elif cmd_line[1] == "dnd":
+            await bc.discord.change_presence(status=discord.Status.dnd)
+        elif cmd_line[1] == "invisible":
+            await bc.discord.change_presence(status=discord.Status.invisible)
+        else:
+            await Command.send_message(execution_ctx, "Unknown type of activity")

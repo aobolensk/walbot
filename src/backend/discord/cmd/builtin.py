@@ -32,7 +32,6 @@ class BuiltinCommands(BaseCmd):
             "whitelist": dict(permission=const.Permission.MOD.value, subcommand=False),
             "config": dict(permission=const.Permission.MOD.value, subcommand=False),
             "silent": dict(permission=const.Permission.USER.value, subcommand=False),
-            "status": dict(permission=const.Permission.MOD.value, subcommand=False),
             "addalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
@@ -482,35 +481,6 @@ class BuiltinCommands(BaseCmd):
             cmd = bc.discord.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, None, silent=True)
-
-    @staticmethod
-    async def _status(message, command, silent=False):
-        """Change bot status
-    Examples:
-        !status idle
-        !status playing Dota 2
-    Possible activities: [playing, streaming, watching, listening]
-    Possible bot statuses: [online, idle, dnd, invisible]"""
-        if len(command) == 1:
-            await bc.discord.change_status("", discord.ActivityType.playing)
-        elif command[1] == "playing":
-            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.playing)
-        elif command[1] == "streaming":
-            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.streaming)
-        elif command[1] == "watching":
-            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.watching)
-        elif command[1] == "listening":
-            await bc.discord.change_status(' '.join(command[2:]), discord.ActivityType.listening)
-        elif command[1] == "online":
-            await bc.discord.change_presence(status=discord.Status.online)
-        elif command[1] == "idle":
-            await bc.discord.change_presence(status=discord.Status.idle)
-        elif command[1] == "dnd":
-            await bc.discord.change_presence(status=discord.Status.dnd)
-        elif command[1] == "invisible":
-            await bc.discord.change_presence(status=discord.Status.invisible)
-        else:
-            await Msg.response(message, "Unknown type of activity", silent)
 
     @staticmethod
     async def _addalias(message, command, silent=False):
