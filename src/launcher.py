@@ -129,6 +129,7 @@ class Launcher:
             backend.stop(self.args)
             log.debug2("Stopped backend: " + backend.name)
         BotCache(True).remove()
+        self._loop.run_until_complete(bc.plugin_manager.unload_plugins())
         bc.executor.store_persistent_state(bc.config.executor)
         bc.config.save(const.CONFIG_PATH, const.MARKOV_PATH, const.SECRET_CONFIG_PATH, wait=True)
         log.info('Stopped the bot!')
@@ -267,7 +268,6 @@ class Launcher:
         if not BotCache(main_bot).exists():
             log.error("Could not stop the bot (cache file does not exist)")
             return const.ExitStatus.GENERAL_ERROR
-        self._loop.run_until_complete(bc.plugin_manager.unload_plugins())
         bot_cache = BotCache(main_bot).parse()
         pid = bot_cache["pid"]
         if pid is None:
