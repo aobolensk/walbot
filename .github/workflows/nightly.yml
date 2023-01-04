@@ -13,7 +13,7 @@ jobs:
         - 'pypy3.9'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
@@ -26,7 +26,7 @@ jobs:
   alpine-docker-tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Build Docker image
       run: docker build -f docker/alpine.Dockerfile -t walbot .
     - name: Run tests in Docker
