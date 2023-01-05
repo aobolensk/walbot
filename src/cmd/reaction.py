@@ -4,7 +4,7 @@ from src import const
 from src.api.command import (BaseCmd, Command, Implementation,
                              SupportedPlatforms)
 from src.api.execution_context import ExecutionContext
-from src.config import Response, bc
+from src.config import Reaction, Response, bc
 from src.utils import Util
 
 
@@ -13,6 +13,22 @@ class ReactionCommands(BaseCmd):
         pass
 
     def bind(self) -> None:
+        bc.executor.commands["addreaction"] = Command(
+            "reaction", "addreaction", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._addreaction,
+            supported_platforms=SupportedPlatforms.DISCORD)
+        bc.executor.commands["updreaction"] = Command(
+            "reaction", "updreaction", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._updreaction,
+            supported_platforms=SupportedPlatforms.DISCORD)
+        bc.executor.commands["delreaction"] = Command(
+            "reaction", "delreaction", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._delreaction,
+            supported_platforms=SupportedPlatforms.DISCORD)
+        bc.executor.commands["listreaction"] = Command(
+            "reaction", "listreaction", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._listreaction,
+            supported_platforms=SupportedPlatforms.DISCORD)
         bc.executor.commands["addresponse"] = Command(
             "reaction", "addresponse", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._addresponse,
@@ -29,6 +45,59 @@ class ReactionCommands(BaseCmd):
             "reaction", "listresponse", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._listresponse,
             supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
+
+    async def _addreaction(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Add reaction
+    Example: !addreaction emoji regex"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        bc.config.reactions[bc.config.ids["reaction"]] = Reaction(' '.join(cmd_line[2:]), cmd_line[1])
+        bc.config.ids["reaction"] += 1
+        await Command.send_message(
+            execution_ctx, f"Reaction '{cmd_line[1]}' on '{' '.join(cmd_line[2:])}' successfully added")
+
+    async def _updreaction(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Update reaction
+    Example: !updreaction index emoji regex"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=4):
+            return
+        index = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should an index (integer)")
+        if index is None:
+            return
+        if index in bc.config.reactions.keys():
+            bc.config.reactions[index] = Reaction(' '.join(cmd_line[3:]), cmd_line[2])
+            await Command.send_message(
+                execution_ctx, f"Reaction '{cmd_line[1]}' on '{' '.join(cmd_line[2:])}' successfully updated")
+        else:
+            await Command.send_message(execution_ctx, "Incorrect index of reaction!")
+
+    async def _delreaction(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Delete reaction
+    Examples:
+        !delreaction index"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        index = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reaction")
+        if index is None:
+            return
+        if index in bc.config.reactions.keys():
+            bc.config.reactions.pop(index)
+            await Command.send_message(execution_ctx, "Successfully deleted reaction!")
+        else:
+            await Command.send_message(execution_ctx, "Invalid index of reaction!")
+
+    async def _listreaction(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+        """Print list of reactions
+    Example: !listreaction"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        result = ""
+        for index, reaction in bc.config.reactions.items():
+            result += f"{index} - {reaction.emoji}: `{reaction.regex}`\n"
+        await Command.send_message(execution_ctx, result or "No reactions found!")
+        return result
 
     async def _addresponse(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Add bot response on message that contains particular regex
