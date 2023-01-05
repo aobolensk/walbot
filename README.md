@@ -12,8 +12,10 @@ Discord bot in Python*
 * Telegram: [Setup guide](docs/SetupBackends.md#telegram)
 
 ### Requirements:
-- [ffmpeg](https://www.ffmpeg.org/)
 - [Python](https://www.python.org/) 3.8-3.11
+
+#### Optional
+- [ffmpeg](https://www.ffmpeg.org/) - for built-in DiscordVideoQueue plugin
 
 ### Quick start:
 ```shell
