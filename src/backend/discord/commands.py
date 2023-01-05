@@ -27,7 +27,7 @@ class DiscordCommandBinding(CommandBinding):
         setattr(CommonCommands, "_" + command.command_name, functools.partial(bind_command, command.command_name))
 
     def unbind(self, cmd_name: str):
-        pass
+        bc.discord.commands.unregister_command(cmd_name)
 
 
 class Commands:
@@ -134,6 +134,9 @@ class Commands:
             self.data[command_name] = Command(module_name, class_name, '_' + command_name, **kwargs)
         self.data[command_name].is_global = True
         self.data[command_name].is_private = ".private." in module_name
+
+    def unregister_command(self, command_name: str) -> None:
+        self.data.pop(command_name, None)
 
     def register_commands(self, module_name: str, class_name: str, commands: Dict[str, Dict[str, Any]]) -> None:
         """Register multiple commands. It calls register_command"""

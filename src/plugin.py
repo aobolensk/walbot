@@ -100,3 +100,9 @@ class PluginManager:
             "plugin_" + plugin_name, cmd_name, permission_level, Implementation.FUNCTION,
             impl_func=command_func, *args, **kwargs)
         bc.executor.register_command(cmd_name, bc.executor.commands[cmd_name])
+
+    async def unregister_bot_command(
+            self, plugin_name: str, cmd_name: str) -> None:
+        from src.config import bc
+        log.debug(f"Unregistered bot command '{cmd_name}' for '{plugin_name}' plugin")
+        bc.executor.unregister_command(cmd_name)
