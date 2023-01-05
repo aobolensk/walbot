@@ -32,6 +32,10 @@ class PluginCommands(BaseCmd):
             "plugin", "reloadplugin", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._reloadplugin,
             supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
+        bc.executor.commands["updateplugin"] = Command(
+            "plugin", "updateplugin", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._updateplugin,
+            supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
         bc.executor.commands["autostartplugin"] = Command(
             "plugin", "autostartplugin", const.Permission.MOD, Implementation.FUNCTION,
             subcommand=False, impl_func=self._autostartplugin,
@@ -105,6 +109,29 @@ class PluginCommands(BaseCmd):
         await bc.plugin_manager.send_command(plugin_name, "close")
         await bc.plugin_manager.send_command(plugin_name, "init")
         await Command.send_message(execution_ctx, f"Plugin '{plugin_name}' has been reloaded")
+
+    async def _updateplugin(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Update plugin by its name (if updater is implemented for this plugin).
+    Note: This command only updates implementation files!
+        To enable updated plugin you need to execute the following commands:
+        !reloadpluginmanager
+        !reloadplugin <plugin_name>
+    Usage:
+        !updateplugin <plugin_name>"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
+            return
+        plugin_name = cmd_line[1]
+        if plugin_name not in bc.plugin_manager.get_plugins_list():
+            return await Command.send_message(execution_ctx, f"Could not find plugin '{plugin_name}'")
+        try:
+            await bc.plugin_manager.send_command(plugin_name, "update_implementation")
+        except NotImplementedError:
+            await Command.send_message(execution_ctx, f"Plugin '{plugin_name}' does not support self updates!")
+            return
+        await Command.send_message(
+            execution_ctx,
+            f"Plugin '{plugin_name}' has been updated. "
+            f"To enable updated plugin execute `reloadpluginmanager` and `reloadplugin {plugin_name}` commands")
 
     async def _autostartplugin(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Check if plugin automatically starts when bot loads up and set autostart flag for plugin

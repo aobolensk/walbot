@@ -338,6 +338,14 @@
     Usage: \
         !unloadplugin &lt;plugin_name&gt;
 
+**updateplugin**: Update plugin by its name (if updater is implemented for this plugin). \
+    Note: This command only updates implementation files! \
+        To enable updated plugin you need to execute the following commands: \
+        !reloadpluginmanager \
+        !reloadplugin &lt;plugin_name&gt; \
+    Usage: \
+        !updateplugin &lt;plugin_name&gt;
+
 # Module: quote
 
 **addquote**: Add quote to quotes database \

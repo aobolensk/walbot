@@ -32,3 +32,12 @@ class BasePlugin:
     async def close(self) -> None:
         """Executes when plugin was unloaded"""
         self._enabled = False
+
+    async def update_implementation(self) -> None:
+        """Update plugin implementation. This method should execute command or sequence of commands
+        that will update plugin source code files in src/plugins or src/plugins/private directory.
+        Implementation is not needed if plugin is not going to support self-update feature and
+        should be updated manually.
+        In plugin implementation override this method and do NOT call super().update_implementation()
+        """
+        raise NotImplementedError
