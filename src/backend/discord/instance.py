@@ -12,7 +12,6 @@ from src.algorithms import levenshtein_distance
 from src.api.bot_instance import BotInstance
 from src.backend.discord.commands import DiscordCommandBinding
 from src.backend.discord.context import DiscordExecutionContext
-from src.backend.discord.voice import VoiceRoutine
 from src.bot_cache import BotCache
 from src.config import Config, GuildSettings, SecretConfig, User, bc
 from src.ff import FF
@@ -37,7 +36,7 @@ class WalBot(discord.Client):
         self.secret_config = secret_config
         self.bot_cache = BotCache(True)
         self.loop.create_task(self._process_reminders())
-        self.loop.create_task(VoiceRoutine(self.bot_cache).start())
+        self.loop.create_task(self._update_autoupdate_flag())
         bc.discord.commands = self.config.commands
         bc.discord.latency = lambda: self.latency
         bc.discord.change_status = self._change_status
@@ -52,6 +51,11 @@ class WalBot(discord.Client):
                 log.info("Markov model has passed all checks")
             else:
                 log.info("Markov model has not passed checks, but all errors were fixed")
+
+    async def _update_autoupdate_flag(self) -> None:
+        if bc.do_not_update != self.bot_cache.get_state()["do_not_update"]:
+            self.bot_cache.update({"do_not_update": bc.do_not_update})
+            self.bot_cache.dump_to_file()
 
     async def _bot_runner_task(self, *args, **kwargs):
         try:

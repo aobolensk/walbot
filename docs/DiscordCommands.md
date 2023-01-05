@@ -18,7 +18,6 @@
 * [Module: services](#module-services)
 * [Module: string](#module-string)
 * [Module: timer](#module-timer)
-* [Module: voice](#module-voice)
 
 # Module: builtin
 
@@ -667,36 +666,3 @@
 
 **timer**: Set timer \
     Usage: !timer 10
-
-# Module: voice
-
-**vjoin**: Join voice channel \
-    Usage: !vjoin &lt;voice_channel_id&gt;
-
-**vleave**: Leave (part) voice channel \
-    Usage: !vleave
-
-**vq**: List voice channel queue \
-    Usage: !vq
-
-**vqautorejoin**: Set/unset automatic rejoin to voice channel when queue is not empty \
-    Usage: \
-        !vqautorejoin &lt;voice_channel_id&gt;  &lt;- set \
-        !vqautorejoin                     &lt;- unset
-
-**vqcurrent**: Show current video in queue \
-    Usage: !vqcurrent
-
-**vqfpush**: Find and push YT video \
-    Usage: !vqfpush &lt;search query&gt;
-
-**vqpush**: Push YT video or playlist to queue in voice channel \
-    Usage: !vqpush &lt;youtube_url&gt;
-
-**vqskip**: Skip current track in voice queue \
-    Usage: !vqskip
-
-**ytinfo**: Print info about YT video \
-    Usage: \
-        !ytinfo &lt;youtube_url&gt; \
-        !ytinfo &lt;youtube_url&gt; -f  &lt;- full description

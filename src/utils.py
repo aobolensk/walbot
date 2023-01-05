@@ -108,8 +108,10 @@ class Util:
         """Convert OS path to Python module"""
         result = ''
         for c in path:
-            if c not in (os.pathsep, '.') or result[-1] != '.':
+            if c not in (os.sep, '.'):
                 result += c
+            elif result[-1] != '.':
+                result += '.'
         return result
 
     @staticmethod

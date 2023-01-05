@@ -35,7 +35,8 @@ def add_handler(dispatcher: Dispatcher, command: Command) -> None:
 
 
 def remove_handler(dispatcher: Dispatcher, cmd_name: str) -> None:
-    dispatcher.remove_handler(bc.telegram.handlers[cmd_name])
+    if cmd_name in bc.telegram.handlers.keys():
+        dispatcher.remove_handler(bc.telegram.handlers[cmd_name])
 
 
 class TelegramCommandBinding(CommandBinding):

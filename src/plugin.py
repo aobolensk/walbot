@@ -21,14 +21,11 @@ class PluginManager:
     def register(self, reload: bool = False) -> None:
         """Find plugins in plugins directory and register them"""
         plugin_directory = os.path.join(os.getcwd(), "src", "plugins")
-        plugin_modules = ['src.plugins.' + os.path.splitext(path)[0] for path in os.listdir(plugin_directory)
-                          if os.path.isfile(os.path.join(plugin_directory, path)) and path.endswith(".py")]
-        private_plugin_directory = os.path.join(os.getcwd(), "src", "plugins", "private")
-        plugin_modules += [Util.path_to_module(
-            f"src.plugins.private.{os.path.relpath(path, private_plugin_directory)}."
+        plugin_modules = [Util.path_to_module(
+            f"src.plugins.{os.path.relpath(path, plugin_directory)}."
             f"{os.path.splitext(file)[0]}")
-            for path, _, files in os.walk(private_plugin_directory) for file in files
-            if os.path.isfile(os.path.join(private_plugin_directory, path, file)) and file.endswith(".py")]
+            for path, _, files in os.walk(plugin_directory) for file in files
+            if os.path.isfile(os.path.join(plugin_directory, path, file)) and file.endswith(".py")]
         importlib.invalidate_caches()
         for module in plugin_modules:
             log.debug2(f"Processing plugins from module: {module}")

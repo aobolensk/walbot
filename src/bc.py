@@ -1,6 +1,5 @@
 import datetime
 import enum
-from collections import deque
 from typing import TYPE_CHECKING, Optional
 
 from src.executor import Executor
@@ -20,12 +19,12 @@ if TYPE_CHECKING:
 
 @enum.unique
 class DoNotUpdateFlag(enum.IntEnum):
-    VOICE = 0
     DISCORD_REMINDER = enum.auto()
     TELEGRAM_REMINDER = enum.auto()
     POLL = enum.auto()
     TIMER = enum.auto()
     STOPWATCH = enum.auto()
+    BUILTIN_PLUGIN_VQ = enum.auto()
     # Reserved fields for using in custom scenarios (e.g. user plugins)
     RESERVED1 = enum.auto()
     RESERVED2 = enum.auto()
@@ -37,13 +36,6 @@ class BotController:
         if not hasattr(cls, '_instance'):
             cls._instance = super().__new__(cls)
         return cls._instance
-
-    class VoiceCtx:
-        def __init__(self):
-            self.client = None
-            self.queue = deque()
-            self.auto_rejoin_channel = None
-            self.current_video = None
 
     class Discord:
         def __init__(self) -> None:
@@ -80,7 +72,6 @@ class BotController:
             "telegram": False,
             "repl": False,
         }
-        self.voice_ctx = self.VoiceCtx()
         self.executor = Executor()
         self.discord = self.Discord()
         self.telegram = self.Telegram()
