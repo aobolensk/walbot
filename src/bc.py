@@ -1,7 +1,9 @@
 import datetime
 import enum
+import itertools
 from typing import TYPE_CHECKING, Optional
 
+from src import const
 from src.executor import Executor
 from src.message_cache import MessageCache
 from src.plugin import PluginManager
@@ -67,11 +69,7 @@ class BotController:
         self.do_not_update = [0] * len(DoNotUpdateFlag)
         self.timers = dict()
         self.stopwatches = dict()
-        self.backends = {
-            "discord": False,
-            "telegram": False,
-            "repl": False,
-        }
+        self.backends = dict(zip([backend.name.lower() for backend in const.BotBackend][1:], itertools.repeat(False)))
         self.executor = Executor()
         self.discord = self.Discord()
         self.telegram = self.Telegram()
