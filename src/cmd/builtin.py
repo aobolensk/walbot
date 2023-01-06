@@ -61,6 +61,14 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["echo"] = Command(
             "builtin", "echo", const.Permission.USER, Implementation.MESSAGE,
             subcommand=True, impl_message="@args@")
+        bc.executor.commands["code"] = Command(
+            "builtin", "code", const.Permission.USER, Implementation.MESSAGE,
+            subcommand=True, impl_message="`@args@`",
+            supported_platforms=SupportedPlatforms.DISCORD)
+        bc.executor.commands["codeblock"] = Command(
+            "builtin", "codeblock", const.Permission.USER, Implementation.MESSAGE,
+            subcommand=True, impl_message="```\n@args@\n```",
+            supported_platforms=SupportedPlatforms.DISCORD)
         bc.executor.commands["uptime"] = Command(
             "builtin", "uptime", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._uptime)

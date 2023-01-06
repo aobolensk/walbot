@@ -41,8 +41,6 @@ class BuiltinCommands(BaseCmd):
             "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
             "reloadbotcommands": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
-            "code": dict(message="`@args@`", permission=const.Permission.USER.value, subcommand=True),
-            "codeblock": dict(message="```\n@args@\n```", permission=const.Permission.USER.value, subcommand=True),
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False, max_execution_time=-1),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })

@@ -38,6 +38,14 @@
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images
 
+**code**: `@args@` \
+    *This command can be used as subcommand*
+
+**codeblock**: ``` \
+@args@ \
+``` \
+    *This command can be used as subcommand*
+
 **config**: Setup some channel specific configurations \
     Examples: \
         !config reactions &lt;enable/disable&gt; \
