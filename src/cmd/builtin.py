@@ -109,6 +109,10 @@ class BuiltinCommands(BaseCmd):
             "builtin", "status", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._status,
             supported_platforms=SupportedPlatforms.DISCORD)
+        bc.executor.commands["nick"] = Command(
+            "builtin", "nick", const.Permission.MOD, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._nick,
+            supported_platforms=SupportedPlatforms.DISCORD)
 
     async def _uptime(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Show bot uptime
@@ -340,3 +344,16 @@ class BuiltinCommands(BaseCmd):
             await bc.discord.change_presence(status=discord.Status.invisible)
         else:
             await Command.send_message(execution_ctx, "Unknown type of activity")
+
+    async def _nick(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Change nickname
+    Usage: !nick walbot"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        new_nick = ' '.join(cmd_line[1:])
+        try:
+            await execution_ctx.message.guild.me.edit(nick=new_nick)
+        except discord.HTTPException as e:
+            await Command.send_message(execution_ctx, f"Bot nickname change failed. ERROR: '{e}'")
+            return
+        await Command.send_message(execution_ctx, f"Bot nickname was changed to '{new_nick}'")

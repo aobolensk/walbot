@@ -39,7 +39,6 @@ class BuiltinCommands(BaseCmd):
             "server": dict(permission=const.Permission.USER.value, subcommand=False),
             "pin": dict(permission=const.Permission.MOD.value, subcommand=True),
             "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "nick": dict(permission=const.Permission.MOD.value, subcommand=False),
             "reloadbotcommands": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
             "code": dict(message="`@args@`", permission=const.Permission.USER.value, subcommand=True),
@@ -650,20 +649,6 @@ class BuiltinCommands(BaseCmd):
             await Msg.response(message, "Slowmode is disabled for current channel", silent)
         else:
             await Msg.response(message, f"Slowmode is set to {duration} seconds", silent)
-
-    @staticmethod
-    async def _nick(message, command, silent=False):
-        """Change nickname
-    Usage: !nick walbot"""
-        if not await Util.check_args_count(message, command, silent, min=2):
-            return
-        new_nick = ' '.join(command[1:])
-        try:
-            await message.guild.me.edit(nick=new_nick)
-        except discord.HTTPException as e:
-            await Msg.response(message, f"Bot nickname change failed. ERROR: '{e}'", silent)
-            return
-        await Msg.response(message, f"Bot nickname was changed to '{new_nick}'", silent)
 
     @staticmethod
     async def _reloadbotcommands(message, command, silent=False):
