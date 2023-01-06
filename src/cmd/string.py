@@ -25,6 +25,48 @@ class StringCommands(BaseCmd):
         bc.executor.commands["urlencode"] = Command(
             "string", "urlencode", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._urlencode)
+        bc.executor.commands["takechars"] = Command(
+            "string", "takechars", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._takechars)
+        bc.executor.commands["dropchars"] = Command(
+            "string", "dropchars", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._dropchars)
+        bc.executor.commands["countchars"] = Command(
+            "string", "countchars", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._countchars)
+        bc.executor.commands["takewords"] = Command(
+            "string", "takewords", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._takewords)
+        bc.executor.commands["dropwords"] = Command(
+            "string", "dropwords", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._dropwords)
+        bc.executor.commands["countwords"] = Command(
+            "string", "countwords", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._countwords)
+        bc.executor.commands["takelines"] = Command(
+            "string", "takelines", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._takelines)
+        bc.executor.commands["droplines"] = Command(
+            "string", "droplines", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._droplines)
+        bc.executor.commands["countlines"] = Command(
+            "string", "countlines", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._countlines)
+        bc.executor.commands["tolower"] = Command(
+            "string", "tolower", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._tolower)
+        bc.executor.commands["toupper"] = Command(
+            "string", "toupper", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._toupper)
+        bc.executor.commands["join"] = Command(
+            "string", "join", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._join)
+        bc.executor.commands["eqwords"] = Command(
+            "string", "eqwords", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._eqwords)
+        bc.executor.commands["eqstrs"] = Command(
+            "string", "eqstrs", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._eqstrs)
 
     async def _emojify(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Emojify text
@@ -106,5 +148,219 @@ class StringCommands(BaseCmd):
             return
         result = ' '.join(cmd_line[1:])
         result = urllib.request.quote(result.encode("cp1251"))
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _takechars(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Take n characters of the string
+    Examples:
+        !takechars 2 hello
+        Result: he
+        !takechars -2 hello
+        Result: lo"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[2:])
+        num = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
+        if num is None:
+            return
+        if num < 0:
+            result = result[len(result) + num:]
+        else:
+            result = result[:num]
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _dropchars(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Drop n characters of the string
+    Examples:
+        !dropchars 2 hello
+        Result: llo
+        !dropchars -2 hello
+        Result: hel"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[2:])
+        num = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
+        if num is None:
+            return
+        if num < 0:
+            result = result[:len(result) + num]
+        else:
+            result = result[num:]
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _countchars(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Calculate length of the message
+    Example: !countchars some text"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = str(len(' '.join(cmd_line[1:])))
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _takewords(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Take n words of the string
+    Examples:
+        !takewords 2 a b c
+        Result: a b
+        !takewords -2 a b c
+        Result: b c"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[2:]).split()
+        num = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
+        if num is None:
+            return
+        if num < 0:
+            result = ' '.join(result[len(result) + num:])
+        else:
+            result = ' '.join(result[:num])
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _dropwords(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Drop n words of the string
+    Examples:
+        !dropwords 2 a b c
+        Result: c
+        !dropwords -2 a b c
+        Result: a"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[2:]).split()
+        num = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
+        if num is None:
+            return
+        if num < 0:
+            result = ' '.join(result[:len(result) + num])
+        else:
+            result = ' '.join(result[num:])
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _countwords(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Count amount of words
+    Example: !countwords some text"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = str(len(' '.join(cmd_line).split()) - 1)
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _takelines(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Take n lines of the string
+    Examples:
+        !takelines 2 a
+        b
+        c
+        Result: a
+        b
+        !takelines -2 a
+        b
+        c
+        Result: b
+        c"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[2:]).split('\n')
+        num = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
+        if num is None:
+            return
+        if num < 0:
+            result = '\n'.join(result[len(result) + num:])
+        else:
+            result = '\n'.join(result[:num])
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _droplines(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Drop n lines of the string
+    Examples:
+        !droplines 2 a
+        b
+        c
+        Result: c
+        !droplines -2 a
+        b
+        c
+        Result: a"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[2:]).split('\n')
+        num = await Util.parse_int(
+            execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
+        if num is None:
+            return
+        if num < 0:
+            result = '\n'.join(result[:len(result) + num])
+        else:
+            result = '\n'.join(result[num:])
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _countlines(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Count amount of lines
+    Example: !countlines some text"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = str(len(' '.join(cmd_line).split('\n')))
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _tolower(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Convert text to lower case
+    Example: !tolower SoMe TeXt"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[1:]).lower()
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _toupper(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Convert text to upper case
+    Example: !toupper SoMe TeXt"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        result = ' '.join(cmd_line[1:]).upper()
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _join(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Join words with string as separator
+    Example: !join + 1 2 3 -> 1+2+3"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        separator = cmd_line[1]
+        result = separator.join(cmd_line[2:])
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _eqwords(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Check if two words are equal or not
+    Example: !eqwords a b"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
+            return
+        result = "true" if cmd_line[1] == cmd_line[2] else "false"
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _eqstrs(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Check if two strings separated by ';' are equal or not
+    Example: !eqstrs a;b"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
+            return
+        options = ' '.join(cmd_line[1:]).split(';')
+        if len(options) < 2:
+            return await Command.send_message(execution_ctx, "Too few options to compare")
+        if len(options) > 2:
+            return await Command.send_message(execution_ctx, "Too many options to compare")
+        result = "true" if options[0] == options[1] else "false"
         await Command.send_message(execution_ctx, result)
         return result

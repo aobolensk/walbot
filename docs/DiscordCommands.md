@@ -557,11 +557,11 @@
     *This command can be used as subcommand*
 
 **countlines**: Count amount of lines \
-    Example: !count some text \
+    Example: !countlines some text \
     *This command can be used as subcommand*
 
 **countwords**: Count amount of words \
-    Example: !count some text \
+    Example: !countwords some text \
     *This command can be used as subcommand*
 
 **demojify**: Demojify text \

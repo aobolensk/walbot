@@ -490,8 +490,54 @@
 
 # Module: string
 
+**countchars**: Calculate length of the message \
+    Example: !countchars some text \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**countlines**: Count amount of lines \
+    Example: !countlines some text \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**countwords**: Count amount of words \
+    Example: !countwords some text \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
 **demojify**: Demojify text \
     Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**dropchars**: Drop n characters of the string \
+    Examples: \
+        !dropchars 2 hello \
+        Result: llo \
+        !dropchars -2 hello \
+        Result: hel \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**droplines**: Drop n lines of the string \
+    Examples: \
+        !droplines 2 a \
+        b \
+        c \
+        Result: c \
+        !droplines -2 a \
+        b \
+        c \
+        Result: a \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**dropwords**: Drop n words of the string \
+    Examples: \
+        !dropwords 2 a b c \
+        Result: c \
+        !dropwords -2 a b c \
+        Result: a \
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
@@ -500,11 +546,69 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
+**eqstrs**: Check if two strings separated by ';' are equal or not \
+    Example: !eqstrs a;b \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**eqwords**: Check if two words are equal or not \
+    Example: !eqwords a b \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**join**: Join words with string as separator \
+    Example: !join + 1 2 3 -&gt; 1+2+3 \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
 **range**: Generate range of numbers \
     Examples: \
         !range &lt;stop&gt; \
         !range &lt;start&gt; &lt;stop&gt; \
         !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**takechars**: Take n characters of the string \
+    Examples: \
+        !takechars 2 hello \
+        Result: he \
+        !takechars -2 hello \
+        Result: lo \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**takelines**: Take n lines of the string \
+    Examples: \
+        !takelines 2 a \
+        b \
+        c \
+        Result: a \
+        b \
+        !takelines -2 a \
+        b \
+        c \
+        Result: b \
+        c \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**takewords**: Take n words of the string \
+    Examples: \
+        !takewords 2 a b c \
+        Result: a b \
+        !takewords -2 a b c \
+        Result: b c \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**tolower**: Convert text to lower case \
+    Example: !tolower SoMe TeXt \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**toupper**: Convert text to upper case \
+    Example: !toupper SoMe TeXt \
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
