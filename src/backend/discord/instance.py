@@ -53,8 +53,8 @@ class WalBot(discord.Client):
                 log.info("Markov model has not passed checks, but all errors were fixed")
 
     async def _update_autoupdate_flag(self) -> None:
-        if bc.do_not_update != self.bot_cache.get_state()["do_not_update"]:
-            self.bot_cache.update({"do_not_update": bc.do_not_update})
+        if any(bc.do_not_update) != self.bot_cache.get_state()["do_not_update"]:
+            self.bot_cache.update({"do_not_update": any(bc.do_not_update)})
             self.bot_cache.dump_to_file()
 
     async def _bot_runner_task(self, *args, **kwargs):
