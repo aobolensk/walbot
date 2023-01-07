@@ -17,7 +17,6 @@ backup/
 images/
 
 # Private user files
-src/cmd/private/**
 src/plugins/private/**
 
 # Bot cache
