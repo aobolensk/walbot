@@ -12,6 +12,15 @@ Discord bot in Python*
 * Telegram: [Setup guide](docs/SetupBackends.md#telegram)
 
 ### Requirements:
+- libmagic
+  Debian/Ubuntu:
+  ```sh
+  $ sudo apt-get install libmagic-dev
+  ```
+  macOS:
+  ```sh
+  $ brew install libmagic
+  ```
 - [Python](https://www.python.org/) 3.8-3.11
 
 #### Optional
