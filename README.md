@@ -4,7 +4,9 @@
 [![CI Status](https://github.com/aobolensk/walbot/workflows/CodeQL/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
 
 # walbot
-Discord bot in Python*
+Discord bot written in Python*
+
+\* Bot has partial support for Telegram backend. See [supported backends](#supported-backends) section
 
 ### Supported backends
 
@@ -12,7 +14,7 @@ Discord bot in Python*
 * Telegram: [Setup guide](docs/SetupBackends.md#telegram)
 
 ### Requirements:
-- libmagic
+- libmagic<br>
   Debian/Ubuntu:
   ```sh
   $ sudo apt-get install libmagic-dev
