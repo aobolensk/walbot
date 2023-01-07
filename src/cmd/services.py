@@ -5,8 +5,8 @@ import sys
 from typing import List, Optional
 from urllib.parse import urlparse
 
-from googletrans import Translator
 from httpcore import SyncHTTPProxy
+from pygoogletranslation import Translator
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
