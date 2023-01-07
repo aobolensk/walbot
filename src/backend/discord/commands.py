@@ -1,17 +1,14 @@
 import functools
-import importlib
-import inspect
-import os
 from collections import defaultdict
 from typing import Any, Dict, List
 
 import discord
 
 from src import const
-from src.api.command import BaseCmd, CommandBinding
+from src.api.command import CommandBinding, SupportedPlatforms
+from src.backend.discord.cmd.builtin import BuiltinCommands
 from src.backend.discord.context import DiscordExecutionContext
 from src.config import Command, bc, log
-from src.utils import Util
 
 
 class DiscordCommandBinding(CommandBinding):
@@ -19,12 +16,12 @@ class DiscordCommandBinding(CommandBinding):
         if command.module_name is None:
             return
         bc.discord.commands.register_command(
-            command.module_name, "CommonCommands", command.command_name,
+            command.module_name, "DiscordCommandBinding", command.command_name,
             permission=command.permission_level, subcommand=command.subcommand,
         )
         # Add bound commands to CommonCommands class for now
-        from src.backend.discord.cmd.common import CommonCommands
-        setattr(CommonCommands, "_" + command.command_name, functools.partial(bind_command, command.command_name))
+        setattr(
+            DiscordCommandBinding, "_" + command.command_name, functools.partial(bind_command, command.command_name))
 
     def unbind(self, cmd_name: str):
         bc.discord.commands.unregister_command(cmd_name)
@@ -39,39 +36,15 @@ class Commands:
         self.module_help = dict()
 
     def update(self, reload: bool = False) -> None:
-        """Update commands list by loading (reloading) all command modules:
-        Public commands: src/*.py
-        Private commands: src/private/*.py
-        """
         bc.discord.commands = self
-        cmd_directory = os.path.join(os.getcwd(), "src", "backend", "discord", "cmd")
-        cmd_modules = ['src.backend.discord.cmd.' + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
-                       if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
-        private_cmd_directory = os.path.join(os.getcwd(), "src", "backend", "discord", "cmd", "private")
-        cmd_modules += [Util.path_to_module(
-            f"src.backend.discord.cmd.private.{os.path.relpath(path, private_cmd_directory)}."
-            f"{os.path.splitext(file)[0]}")
-            for path, _, files in os.walk(private_cmd_directory) for file in files
-            if os.path.isfile(os.path.join(private_cmd_directory, path, file)) and file.endswith(".py")]
-        for module in cmd_modules:
-            log.debug2(f"Processing commands from module: {module}")
-            commands_file = importlib.import_module(module)
-            self.module_help[module.split('.')[-1]] = commands_file.__doc__
-            if reload:
-                importlib.reload(commands_file)
-            commands = [obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
-                        if (obj[1].__module__ == module) and issubclass(obj[1], BaseCmd)]
-            if len(commands) == 1:
-                commands = commands[0]
-                if "bind" in [func[0] for func in inspect.getmembers(commands, inspect.isfunction)
-                              if not func[0].startswith('_')]:
-                    commands.bind(commands)
-                else:
-                    log.error(f"Class '{commands.__name__}' does not have bind() function")
-            elif len(commands) > 1:
-                log.error(f"Module '{module}' have more than 1 class in it")
-            else:
-                log.error(f"Module '{module}' have no classes in it")
+        # BuiltinCommands class is going to be moved to common commands
+        # and finally removed from src/backend/discord/cmd
+        builtin_commands = BuiltinCommands()
+        builtin_commands.bind()
+        binding = DiscordCommandBinding()
+        for command in bc.executor.commands.values():
+            if command.supported_platforms & SupportedPlatforms.DISCORD:
+                binding.bind(command.command_name, command)
         if not reload:
             self.export_help(const.DISCORD_COMMANDS_DOC_PATH)  # Discord legacy help export
 

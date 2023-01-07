@@ -53,7 +53,7 @@ class Command:
         try:
             return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
         except (AttributeError, KeyError):
-            return getattr(getattr(sys.modules["src.backend.discord.cmd.common"], "CommonCommands"), self.perform)
+            return getattr(getattr(sys.modules["src.backend.discord.commands"], "DiscordCommandBinding"), self.perform)
 
     @staticmethod
     async def process_subcommands(content, message, user, safe=False):
