@@ -15,6 +15,10 @@ Discord bot written in Python*
 
 ### Requirements:
 - libmagic<br>
+  Windows:
+  ```sh
+  $ pip install python-magic-bin
+  ```
   Debian/Ubuntu:
   ```sh
   $ sudo apt-get install libmagic-dev
