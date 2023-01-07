@@ -10,9 +10,9 @@ import discord
 
 from src import const
 from src.algorithms import levenshtein_distance
+from src.api.command import BaseCmd
 from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
-from src.commands import BaseCmd
 from src.config import Command, bc, log
 from src.utils import Util, null
 
