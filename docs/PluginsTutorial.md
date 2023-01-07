@@ -23,6 +23,12 @@ class DummyPlugin(BasePlugin):
             self._task = loop.create_task(self._routine())
         except Exception:
             log.error("", exc_info=True)
+        await bc.plugin_manager.register_bot_command(
+            self.get_classname(), "testcommand", const.Permission.USER, self._testcommand, max_execution_time=10)
+
+    async def _testcommand(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Usage: !testcommand"""
+        await Command.send_message(execution_ctx, "Test command")
 
     async def _routine(self) -> None:
         while True:
@@ -38,7 +44,7 @@ class DummyPlugin(BasePlugin):
 
     async def close(self) -> None:
         await super().close()
-
+        await bc.plugin_manager.unregister_bot_command(self.get_classname(), "testcommand")
 ```
 
 Note: if you want to create private plugin module you need to create in in `src/plugins/private`. Private plugins are fully functional but they are separated from public ones and automatically gitignored.
