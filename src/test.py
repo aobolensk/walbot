@@ -14,10 +14,7 @@ def start_testing(args):
         pytest_args.append("-v")
     if args.verbose2:
         pytest_args.append("--capture=tee-sys")  # Capture and print stdout/stderr
-    ret_code = subprocess.call(
-        pytest_args,
-        env={
-            "PYTHON_PATH": os.getcwd()
-        },
-    )
+    env = os.environ.copy()
+    env["PYTHON_PATH"] = os.getcwd()
+    ret_code = subprocess.call(pytest_args, env=env)
     return ret_code
