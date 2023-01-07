@@ -9,6 +9,7 @@ import git
 
 from src import const
 from src.config import bc
+from src.shell import Shell
 
 
 class BotInfo:
@@ -142,4 +143,8 @@ class BotInfo:
                 elif os.path.isfile("/etc/os-release"):
                     with open("/etc/os-release") as f:
                         result += f"Linux distro information:\n{f.read().strip()}\n"
+            elif sys.platform == "darwin":
+                result += "macOS version: " + Shell.run('sw_vers -productName').stdout.strip() + " "
+                result += Shell.run('sw_vers -productVersion').stdout.strip() + " "
+                result += "(" + Shell.run('sw_vers -buildVersion').stdout.strip() + ")\n"
         return result
