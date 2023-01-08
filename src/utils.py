@@ -1,6 +1,5 @@
 import asyncio
 import os
-import subprocess
 import tempfile
 from enum import IntEnum
 from typing import Any, Coroutine, Optional, Tuple
@@ -75,20 +74,6 @@ class Util:
             for solution in solutions:
                 log.info(f" - {solution}")
         return not fatal
-
-    @staticmethod
-    async def run_external_command(execution_ctx: ExecutionContext, cmd_line: str) -> str:
-        result = ""
-        try:
-            log.debug(f"Processing external command: '{cmd_line}'")
-            process = subprocess.run(cmd_line, shell=True, check=True,
-                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=os.environ)
-            log.debug(f"External command '{cmd_line}' finished execution with return code: {process.returncode}")
-            result = process.stdout.decode("utf-8")
-            await Command.send_message(execution_ctx, result)
-        except subprocess.CalledProcessError as e:
-            await Command.send_message(execution_ctx, f"<Command failed with error code {e.returncode}>")
-        return result
 
     @staticmethod
     def read_config_file(path: str) -> Any:

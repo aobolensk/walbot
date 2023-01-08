@@ -18,7 +18,8 @@ from src.backend.discord.message import Msg
 from src.backend.telegram.config import TelegramConfig
 from src.bc import BotController, DoNotUpdateFlag
 from src.log import log
-from src.utils import Util, null
+from src.shell import Shell
+from src.utils import null
 
 if TYPE_CHECKING:
     from src.backend.discord.commands import Commands
@@ -164,7 +165,7 @@ class Command:
             log.debug2(f"Command (after processing variables): {cmd_line}")
             cmd_line = await self.process_subcommands(cmd_line, message, user, safe=True)
             log.debug2(f"Command (after processing subcommands): {cmd_line}")
-            return await Util.run_external_command(DiscordExecutionContext(message, silent), cmd_line)
+            return await Shell.run_and_send_stdout(DiscordExecutionContext(message, silent), cmd_line)
         else:
             await message.channel.send(f"Command '{command[0]}' is not callable")
 

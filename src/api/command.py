@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Dict, List
 from src import const
 from src.api.execution_context import ExecutionContext
 from src.log import log
+from src.shell import Shell
 
 if TYPE_CHECKING:
     from src.executor import Executor
@@ -117,8 +118,7 @@ class Command:
             await execution_ctx.send_message(result)
             return result
         elif self.impl_type == Implementation.EXTERNAL_CMDLINE:
-            from src.utils import Util
-            return await Util.run_external_command(execution_ctx, result)
+            return await Shell.run_and_send_stdout(execution_ctx, result)
         else:
             raise RuntimeError("invalid implementation type")
 

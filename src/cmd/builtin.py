@@ -14,6 +14,7 @@ from src.api.execution_context import ExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.config import bc
 from src.message_cache import CachedMsg
+from src.shell import Shell
 from src.utils import Util
 
 
@@ -209,7 +210,7 @@ class BuiltinCommands(BaseCmd):
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
         print(' '.join(cmd_line[1:]))
-        return await Util.run_external_command(execution_ctx, ' '.join(cmd_line[1:]))
+        return await Shell.run_and_send_stdout(execution_ctx, ' '.join(cmd_line[1:]))
 
     async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Perform HTTP request
