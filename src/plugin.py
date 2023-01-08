@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, KeysView
 
 from src import const
 from src.api.command import Command, Implementation
+from src.api.execution_context import ExecutionContext
 from src.api.plugin import BasePlugin
 from src.log import log
 from src.utils import Util
@@ -41,9 +42,12 @@ class PluginManager:
                     if not func[0].startswith('_')
                 ]
                 if all(x in actual_functions_list for x in self._plugin_functions_interface):
-                    p = plugin()
-                    self._plugins[p.get_classname()] = p
-                    log.debug(f"Registered plugin '{p.get_classname()}'")
+                    try:
+                        p = plugin()
+                        self._plugins[p.get_classname()] = p
+                        log.debug(f"Registered plugin '{p.get_classname()}'")
+                    except Exception as e:
+                        log.error(f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
                 else:
                     log.error(f"Class '{p.get_classname()}' does comply with BasePlugin interface")
             elif len(plugins) > 1:
@@ -60,6 +64,13 @@ class PluginManager:
         if await self._plugins[plugin_name].is_enabled() or command_name == "init":
             return await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
+    async def send_command_interactive(
+            self, execution_ctx: ExecutionContext, plugin_name: str, command_name: str, *args, **kwargs) -> Any:
+        try:
+            return await self.send_command(plugin_name, command_name, *args, **kwargs)
+        except Exception as e:
+            execution_ctx.send_message(f"Failed to send command '{command_name}' to plugin '{plugin_name}'. Error: {e}")
+
     async def broadcast_command(self, command_name: str, *args, **kwargs) -> None:
         """Broadcast command for all plugins"""
         if command_name not in self._plugin_functions_interface:
@@ -67,6 +78,13 @@ class PluginManager:
         for plugin_name in self._plugins.keys():
             if await self._plugins[plugin_name].is_enabled() or command_name == "init":
                 await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
+
+    async def broadcast_command_interactive(
+            self, execution_ctx: ExecutionContext, command_name: str, *args, **kwargs) -> None:
+        try:
+            return await self.broadcast_command(command_name, *args, **kwargs)
+        except Exception as e:
+            execution_ctx.send_message(f"Failed to broadcast command '{command_name}'. Error: {e}")
 
     def get_plugins_list(self) -> KeysView[str]:
         """Get list of plugin names that were registered"""
@@ -81,12 +99,18 @@ class PluginManager:
                 }
         for plugin_name, plugin_state in bc.config.plugins.items():
             if plugin_state["autostart"]:
-                await self.send_command(plugin_name, "init")
+                try:
+                    await self.send_command(plugin_name, "init")
+                except Exception as e:
+                    log.error(f"Failed to run 'init' command for plugin '{plugin_name}'. Error: {e}")
 
     async def unload_plugins(self) -> None:
         for plugin_name in self.get_plugins_list():
-            if await self.send_command(plugin_name, "is_enabled"):
-                await self.send_command(plugin_name, "close")
+            try:
+                if await self.send_command(plugin_name, "is_enabled"):
+                    await self.send_command(plugin_name, "close")
+            except Exception as e:
+                log.error(f"Failed to run 'close' command for plugin '{plugin_name}'. Error: {e}")
 
     async def register_bot_command(
             self, plugin_name: str, cmd_name: str, permission_level: const.Permission,

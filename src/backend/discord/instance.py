@@ -155,7 +155,8 @@ class WalBot(discord.Client):
         else:
             await self._process_regular_message(message)
             await self._process_repetitions(message)
-        await bc.plugin_manager.broadcast_command("on_message", DiscordExecutionContext(message))
+        execution_ctx = DiscordExecutionContext(message)
+        await bc.plugin_manager.broadcast_command_interactive(execution_ctx, "on_message", execution_ctx)
 
     @Mail.send_exception_info_to_admin_emails
     async def on_message_edit(self, old_message: discord.Message, message: discord.Message) -> None:
