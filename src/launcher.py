@@ -368,11 +368,11 @@ class Launcher:
 
     def setuphooks(self) -> const.ExitStatus:
         if sys.platform != "win32":
-            shutil.copyfile(
+            shutil.copy(
                 os.path.join("tools", "githooks", "pre-commit.linux"),
                 os.path.join(".git", "hooks", "pre-commit"))
         else:
-            shutil.copyfile(
+            shutil.copy(
                 os.path.join("tools", "githooks", "pre-commit.windows"),
                 os.path.join(".git", "hooks", "pre-commit"))
         log.info("Git hooks are successfully set up!")
