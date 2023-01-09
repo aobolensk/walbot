@@ -203,7 +203,7 @@ class User:
 
 class Config:
     def __init__(self):
-        commands = importlib.import_module("src.commands")
+        commands = importlib.import_module("src.backend.discord.commands")
         self.commands: Commands = commands.Commands()
         self.commands.update()
         self.version = const.CONFIG_VERSION

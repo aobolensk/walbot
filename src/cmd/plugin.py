@@ -3,10 +3,10 @@
 from typing import List
 
 from src import const
-from src.api.command import Command, Implementation, SupportedPlatforms
+from src.api.command import (BaseCmd, Command, Implementation,
+                             SupportedPlatforms)
 from src.api.execution_context import ExecutionContext
 from src.backend.discord.embed import DiscordEmbed
-from src.commands import BaseCmd
 from src.config import bc
 
 

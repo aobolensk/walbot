@@ -5,11 +5,10 @@ import random
 from typing import List
 
 from src import const
-from src.api.command import Command, Implementation
+from src.api.command import BaseCmd, Command, Implementation
 from src.api.execution_context import ExecutionContext
 from src.api.quote import Quote
 from src.backend.discord.embed import DiscordEmbed
-from src.commands import BaseCmd
 from src.config import bc
 from src.utils import Util
 
