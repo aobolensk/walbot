@@ -357,7 +357,7 @@ class Launcher:
                 log.error(f"    Install `shtab`: {sys.executable} -m pip install shtab")
                 return const.ExitStatus.GENERAL_ERROR
             result = shtab.complete(self._parser, shell="bash").replace("walbot.py", "./walbot.py")
-            script_path = os.path.join(os.getcwd(), "tools", "autocomplete", "walbot-completion.bash")
+            script_path = os.path.join(const.WALBOT_DIR, "tools", "autocomplete", "walbot-completion.bash")
             with open(script_path, "w") as f:
                 print(result, file=f)
             log.info("bash autocompletion script has been updated: " + script_path)

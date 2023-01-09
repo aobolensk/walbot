@@ -135,7 +135,7 @@ class BotInfo:
             result += '\n'.join(f"    {name}: {ver}" for name, ver in self.query_dependencies_info().items()) + '\n'
         if verbosity >= const.Verbosity.VERBOSE2:
             result += f"OS info: {' '.join(platform.uname())}\n"
-            result += f"Working directory: {os.getcwd()}\n"
+            result += f"Working directory: {const.WALBOT_DIR}\n"
             if sys.platform == "linux":
                 if os.path.isfile("/etc/lsb-release"):
                     with open("/etc/lsb-release") as f:

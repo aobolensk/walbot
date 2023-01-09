@@ -96,7 +96,7 @@ def check_updates(context: AutoUpdateContext) -> bool:
         return log.debug("Automatic update is not permitted. Skipping this cycle, will try to update on the next one")
     context.repo.git.reset("--hard")
     try:
-        g = git.cmd.Git(os.getcwd())
+        g = git.cmd.Git(const.WALBOT_DIR)
         g.pull()
     except git.exc.GitCommandError as e:
         if "Connection timed out" in e.stderr or "Could not resolve host" in e.stderr:

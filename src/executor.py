@@ -24,7 +24,7 @@ class Executor:
             binder.unbind(cmd_name)
 
     def load_commands(self) -> None:
-        cmd_directory = os.path.join(os.getcwd(), "src", "cmd")
+        cmd_directory = os.path.join(const.WALBOT_DIR, "src", "cmd")
         cmd_modules = [
             "src.cmd." + os.path.splitext(path)[0] for path in os.listdir(cmd_directory)
             if os.path.isfile(os.path.join(cmd_directory, path)) and path.endswith(".py")]
