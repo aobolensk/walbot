@@ -39,13 +39,13 @@ class Util:
 
     @staticmethod
     async def parse_int_for_discord(message, string, error_message, silent):
-        if string.isdecimal():
+        if string.strip().isdecimal():
             return int(string)
         await Msg.response(message, error_message, silent)
 
     @staticmethod
     async def parse_int(execution_ctx: ExecutionContext, string: str, error_message: str):
-        if string.isdecimal():
+        if string.strip().isdecimal():
             return int(string)
         await Command.send_message(execution_ctx, error_message)
 
