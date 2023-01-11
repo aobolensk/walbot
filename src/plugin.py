@@ -1,6 +1,7 @@
 import importlib
 import inspect
 import os
+import sys
 from typing import Any, Callable, Dict, KeysView
 
 from src import const
@@ -18,6 +19,13 @@ class PluginManager:
             func[0] for func in inspect.getmembers(BasePlugin, inspect.isfunction)
             if not func[0].startswith('_')
         ]
+
+    def _handle_register_error(self, module_path: str, error_message: str) -> None:
+        try:
+            del sys.modules[module_path]
+        except Exception as e:
+            log.error(f"Failed to unload Python module when plugin registration has failed. Error: {e}")
+        log.error(error_message)
 
     def register(self, reload: bool = False) -> None:
         """Find plugins in plugins directory and register them"""
@@ -47,13 +55,17 @@ class PluginManager:
                         self._plugins[p.get_classname()] = p
                         log.debug(f"Registered plugin '{p.get_classname()}'")
                     except Exception as e:
-                        log.error(f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
+                        self._handle_register_error(
+                            module, f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
                 else:
-                    log.error(f"Class '{p.get_classname()}' does comply with BasePlugin interface")
+                    self._handle_register_error(
+                        module, f"Class '{p.get_classname()}' does comply with BasePlugin interface")
             elif len(plugins) > 1:
-                log.error(f"Module '{module}' have more than 1 class in it")
+                self._handle_register_error(
+                    module, f"Module '{module}' have more than 1 class in it")
             else:
-                log.error(f"Module '{module}' have no classes in it")
+                self._handle_register_error(
+                    module, f"Module '{module}' have no classes in it")
 
     async def send_command(self, plugin_name: str, command_name: str, *args, **kwargs) -> Any:
         """Send command to specific plugin"""
