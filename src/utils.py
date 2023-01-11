@@ -39,19 +39,15 @@ class Util:
 
     @staticmethod
     async def parse_int_for_discord(message, string, error_message, silent):
-        try:
+        if string.isdecimal():
             return int(string)
-        except ValueError:
-            await Msg.response(message, error_message, silent)
-            return
+        await Msg.response(message, error_message, silent)
 
     @staticmethod
     async def parse_int(execution_ctx: ExecutionContext, string: str, error_message: str):
-        try:
+        if string.isdecimal():
             return int(string)
-        except ValueError:
-            await Command.send_message(execution_ctx, error_message)
-            return
+        await Command.send_message(execution_ctx, error_message)
 
     @staticmethod
     async def parse_float(execution_ctx: ExecutionContext, string: str, error_message: str):
