@@ -1,7 +1,7 @@
 import datetime
 import enum
 import itertools
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Union
 
 from src import const
 from src.executor import Executor
@@ -12,7 +12,9 @@ if TYPE_CHECKING:
     import asyncio
 
     import telegram.ext
+    import yaml
     from discord import ClientUser
+    from telegram.ext import CommandHandler
 
     from src.backend.discord.commands import Commands
     from src.config import Config, SecretConfig
@@ -43,18 +45,18 @@ class BotController:
         def __init__(self) -> None:
             self.bot_user: 'Optional[ClientUser]' = None
             self.commands: 'Commands' = None
-            self.get_channel = None
-            self.get_user = None
+            self.get_channel: Optional[Callable] = None
+            self.get_user: Optional[Callable] = None
             self.background_loop: 'Optional[asyncio.AbstractEventLoop]' = None
-            self.change_status = None
-            self.change_presence = None
-            self.latency = None
+            self.change_status: Optional[Callable] = None
+            self.change_presence: Optional[Callable] = None
+            self.latency: Optional[Callable] = None
 
     class Telegram:
         def __init__(self) -> None:
             self.bot_username: 'Optional[str]' = None
             self.dispatcher: 'Optional[telegram.ext.Dispatcher]' = None
-            self.handlers = dict()
+            self.handlers: 'Dict[CommandHandler]' = dict()
 
     class Repl:
         def __init__(self) -> None:
@@ -65,11 +67,13 @@ class BotController:
         self.config: 'Optional[Config]' = None
         self.markov: 'Optional[Markov]' = None
         self.secret_config: 'Optional[SecretConfig]' = None
-        self.yaml_dumper = None
-        self.do_not_update = [0] * len(DoNotUpdateFlag)
-        self.timers = dict()
-        self.stopwatches = dict()
-        self.backends = dict(zip([backend.name.lower() for backend in const.BotBackend][1:], itertools.repeat(False)))
+        self.yaml_loader: 'Optional[Union[yaml.Loader, yaml.CLoader]]' = None
+        self.yaml_dumper: 'Optional[Union[yaml.Dumper, yaml.CDumper]]' = None
+        self.do_not_update: List[Union[int, bool]] = [0] * len(DoNotUpdateFlag)
+        self.timers: Dict[int, bool] = dict()
+        self.stopwatches: Dict[int, bool] = dict()
+        self.backends: Dict[str, bool] = dict(zip(
+            [backend.name.lower() for backend in const.BotBackend][1:], itertools.repeat(False)))
         self.executor = Executor()
         self.discord = self.Discord()
         self.telegram = self.Telegram()
