@@ -24,7 +24,9 @@ class Shell:
         stdout, stderr = proc.communicate()
         return ShellCommandResult(proc.returncode, stdout.decode('utf-8'), stderr.decode('utf-8'))
 
-    async def run_async(cmd_line: str, cwd: Optional[str] = None, shell: bool = False) -> ShellCommandResult:
+    async def run_async(
+            cmd_line: str, cwd: Optional[str] = None, shell: bool = False,
+            timeout: int = 10) -> ShellCommandResult:
         log.debug("Executing shell command: " + cmd_line)
         cmd = shlex.split(cmd_line)
         if shell:
@@ -35,13 +37,19 @@ class Shell:
             program_args = cmd[1:]
             proc = await asyncio.create_subprocess_exec(
                 program, *program_args, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = await proc.communicate()
-        return ShellCommandResult(proc.returncode, stdout.decode('utf-8'), stderr.decode('utf-8'))
+        try:
+            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+            ret_code = proc.returncode
+        except asyncio.exceptions.TimeoutError:
+            ret_code, stdout, stderr = -1, b'', b''
+        return ShellCommandResult(ret_code, stdout.decode('utf-8'), stderr.decode('utf-8'))
 
     async def run_and_send_stdout(
             execution_ctx: ExecutionContext, cmd_line: str, cwd: Optional[str] = None) -> Optional[str]:
-        log.debug("Executing shell command: " + cmd_line)
         result = await Shell.run_async(cmd_line, cwd=cwd, shell=True)
+        if result.exit_code == -1:
+            await execution_ctx.send_message("<Command timed out>")
+            return
         if result.exit_code != 0:
             await execution_ctx.send_message(f"<Command failed with error code {result.exit_code}>")
             return
