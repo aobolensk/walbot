@@ -1,4 +1,5 @@
 import asyncio
+import os
 import shlex
 import subprocess
 from dataclasses import dataclass
@@ -13,6 +14,13 @@ class ShellCommandResult:
     exit_code: int
     stdout: str
     stderr: str
+
+
+@dataclass
+class SSHCredentials:
+    username: str
+    ip: str
+    password: str
 
 
 class Shell:
@@ -43,6 +51,23 @@ class Shell:
         except asyncio.exceptions.TimeoutError:
             ret_code, stdout, stderr = -1, b'', b''
         return ShellCommandResult(ret_code, stdout.decode('utf-8'), stderr.decode('utf-8'))
+
+    async def run_ssh_async(
+            cmd_line: str, ssh_credentials: SSHCredentials, *args,
+            **kwargs) -> ShellCommandResult:
+        os.environ["SSHPASS"] = ssh_credentials.password
+        if kwargs.get("cwd", None):
+            cmd_line = f"cd {kwargs['cwd']}; " + cmd_line
+        cmd_line = (
+            f"sshpass -e ssh -t -o StrictHostKeyChecking=no -o LogLevel=QUIET "
+            f"{ssh_credentials.username}@{ssh_credentials.ip} '{cmd_line}'")
+        kwargs["cwd"] = None
+        try:
+            return await Shell.run_async(cmd_line, *args, **kwargs)
+        except Exception as e:
+            raise e
+        finally:
+            del os.environ["SSHPASS"]
 
     async def run_and_send_stdout(
             execution_ctx: ExecutionContext, cmd_line: str, cwd: Optional[str] = None) -> Optional[str]:
