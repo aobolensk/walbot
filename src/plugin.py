@@ -35,6 +35,7 @@ class PluginManager:
         py_files.extend(glob.glob(f"{plugin_directory}/*/*.py"))
         py_files.extend(glob.glob(f"{plugin_directory}/private/*.py"))
         py_files.extend(glob.glob(f"{plugin_directory}/private/*/*.py"))
+        py_files = list(set(py_files))
         plugin_modules = [Util.path_to_module(
             f"src.plugins.{os.path.splitext(os.path.relpath(file, plugin_directory))[0]}") for file in py_files]
         importlib.invalidate_caches()
