@@ -1,3 +1,4 @@
+import glob
 import importlib
 import inspect
 import os
@@ -30,11 +31,12 @@ class PluginManager:
     def register(self, reload: bool = False) -> None:
         """Find plugins in plugins directory and register them"""
         plugin_directory = os.path.join(os.getcwd(), "src", "plugins")
+        py_files = glob.glob(f"{plugin_directory}/*.py")
+        py_files.extend(glob.glob(f"{plugin_directory}/*/*.py"))
+        py_files.extend(glob.glob(f"{plugin_directory}/private/*.py"))
+        py_files.extend(glob.glob(f"{plugin_directory}/private/*/*.py"))
         plugin_modules = [Util.path_to_module(
-            f"src.plugins.{os.path.relpath(path, plugin_directory)}."
-            f"{os.path.splitext(file)[0]}")
-            for path, _, files in os.walk(plugin_directory) for file in files
-            if os.path.isfile(os.path.join(plugin_directory, path, file)) and file.endswith(".py")]
+            f"src.plugins.{os.path.splitext(os.path.relpath(file, plugin_directory))[0]}") for file in py_files]
         importlib.invalidate_caches()
         for module in plugin_modules:
             log.debug2(f"Processing plugins from module: {module}")
