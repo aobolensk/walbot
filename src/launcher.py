@@ -371,6 +371,7 @@ class Launcher:
             return const.ExitStatus.GENERAL_ERROR
 
     def setuphooks(self) -> const.ExitStatus:
+        """Install git hooks for walbot repo"""
         if sys.platform != "win32":
             shutil.copy(
                 os.path.join("tools", "githooks", "pre-commit.linux"),
@@ -383,6 +384,7 @@ class Launcher:
         return const.ExitStatus.NO_ERROR
 
     def removehooks(self) -> const.ExitStatus:
+        """Remove git hooks for walbot repo"""
         if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
             os.unlink(os.path.join(".git", "hooks", "pre-commit"))
         log.info("Git hooks are successfully removed!")
