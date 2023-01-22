@@ -116,14 +116,13 @@ class Launcher:
 
     def launch_bot(self) -> const.ExitStatus:
         """Launch Discord bot instance"""
-        self._list_env_var_flags()
-        self._prepare_args()
-        self._init_bc_vars()
         if self.args.action is None:
             self._parser.print_help()
             return const.ExitStatus.NO_ERROR
-        else:
-            return getattr(self, self.args.action)()
+        self._list_env_var_flags()
+        self._prepare_args()
+        self._init_bc_vars()
+        return getattr(self, self.args.action)()
 
     def _stop_signal_handler(self, sig: int, frame: FrameType) -> None:
         for backend in self.backends:
