@@ -39,7 +39,6 @@ class BuiltinCommands(BaseCmd):
             "server": dict(permission=const.Permission.USER.value, subcommand=False),
             "pin": dict(permission=const.Permission.MOD.value, subcommand=True),
             "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "reloadbotcommands": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False, max_execution_time=-1),
             "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -647,16 +646,6 @@ class BuiltinCommands(BaseCmd):
             await Msg.response(message, "Slowmode is disabled for current channel", silent)
         else:
             await Msg.response(message, f"Slowmode is set to {duration} seconds", silent)
-
-    @staticmethod
-    async def _reloadbotcommands(message, command, silent=False):
-        """Reload bot commands
-    Usage: !reloadbotcommands"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        await Msg.response(message, "Bot commands reloading is started...", silent)
-        bc.discord.commands.update(reload=True)
-        await Msg.response(message, "Bot commands reloading is finished", silent)
 
     @staticmethod
     async def _permlevel(message, command, silent=False):

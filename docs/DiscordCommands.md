@@ -135,9 +135,6 @@
         !profile \
         !profile `@user`
 
-**reloadbotcommands**: Reload bot commands \
-    Usage: !reloadbotcommands
-
 **restart**: Restart the bot \
     Example: !restart
 
