@@ -118,6 +118,7 @@ class Launcher:
         """Launch Discord bot instance"""
         self._list_env_var_flags()
         self._prepare_args()
+        self._init_bc_vars()
         if self.args.action is None:
             self._parser.print_help()
             return const.ExitStatus.NO_ERROR
@@ -143,17 +144,21 @@ class Launcher:
         log.info('Stopped the minibot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
-    def _read_configs(self, main_bot: bool = True) -> None:
+    def _init_bc_vars(self) -> None:
         # Selecting YAML parser
         bc.yaml_loader, bc.yaml_dumper = Util.get_yaml()
-        # Read configuration files
-        bc.config = Util.read_config_file(const.CONFIG_PATH) or Config()
-        bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH) or SecretConfig()
+        # Init bot info
         bc.info = BotInfo()
+        # Create necessary dirs if they are not present
         if not os.path.exists(const.IMAGES_DIRECTORY):
             os.makedirs(const.IMAGES_DIRECTORY)
         if not os.path.exists(const.BACKUP_DIRECTORY):
             os.makedirs(const.BACKUP_DIRECTORY)
+
+    def _read_configs(self, main_bot: bool = True) -> None:
+        # Read configuration files
+        bc.config = Util.read_config_file(const.CONFIG_PATH) or Config()
+        bc.secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH) or SecretConfig()
         if main_bot:
             if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
                 bc.markov = Util.read_config_file(const.MARKOV_PATH)
