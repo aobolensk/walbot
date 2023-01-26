@@ -12,6 +12,7 @@ from src.config import bc
 from src.emoji import get_clock_emoji
 from src.log import log
 from src.mail import Mail
+from src.utils import Time
 
 
 class ReminderProcessing:
@@ -19,7 +20,7 @@ class ReminderProcessing:
     async def iteration(execution_ctx: ExecutionContext, backend: const.BotBackend) -> None:
         """This function is called no less than 1 time per minute"""
         log.debug3(f"{backend}: Reminder processing iteration has started")
-        now = datetime.datetime.now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
+        now = Time().now().replace(second=0).strftime(const.REMINDER_DATETIME_FORMAT)
         to_remove = []
         to_append = []
         reminder_do_not_update_flag = False
@@ -32,12 +33,12 @@ class ReminderProcessing:
                 if prereminder == 0 or used_prereminder:
                     continue
                 prereminder_time = (
-                    datetime.datetime.now().replace(second=0) + datetime.timedelta(minutes=prereminder))
+                    Time().now().replace(second=0) + datetime.timedelta(minutes=prereminder))
                 if rem == prereminder_time.strftime(const.REMINDER_DATETIME_FORMAT):
                     if backend == const.BotBackend.DISCORD:
                         channel = bc.discord.get_channel(rem.channel_id)
                         e = DiscordEmbed()
-                        clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                        clock_emoji = get_clock_emoji(Time().now().strftime("%H:%M"))
                         e.title(f"{prereminder} minutes left until reminder")
                         e.description(rem.message + "\n" + rem.notes)
                         e.color(random.randint(0x000000, 0xffffff))
@@ -55,7 +56,7 @@ class ReminderProcessing:
             if rem == now:
                 if backend == const.BotBackend.DISCORD:
                     channel = bc.discord.get_channel(rem.channel_id)
-                    clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                    clock_emoji = get_clock_emoji(Time().now().strftime("%H:%M"))
                     e = DiscordEmbed()
                     e.title(f"{clock_emoji} You asked to remind")
                     e.description(rem.message + "\n" + rem.notes)
@@ -68,7 +69,7 @@ class ReminderProcessing:
                             bc.discord.get_user(user_id), f"You asked to remind at {now} -> {rem.message}", False)
                 elif backend == const.BotBackend.TELEGRAM:
                     result = (' '.join(rem.ping_users) + "\n") if rem.ping_users else ""
-                    clock_emoji = get_clock_emoji(datetime.datetime.now().strftime("%H:%M"))
+                    clock_emoji = get_clock_emoji(Time().now().strftime("%H:%M"))
                     result += f"{clock_emoji} You asked to remind at {now}\n"
                     result += rem.message + "\n" + rem.notes + "\n"
                     send_message(rem.channel_id, result)
@@ -83,7 +84,7 @@ class ReminderProcessing:
                         f"Reminder: {rem.message}",
                         f"You asked to remind at {now} -> {rem.message}")
                 if rem.repeat_after > 0:
-                    new_time = datetime.datetime.now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
+                    new_time = Time().now().replace(second=0, microsecond=0) + rem.get_next_event_delta()
                     if (rem.remaining_repetitions != 0 and
                             (rem.limit_repetitions_time is None or new_time <= datetime.datetime.strptime(
                                 rem.limit_repetitions_time, const.REMINDER_DATETIME_FORMAT))):
@@ -110,7 +111,7 @@ class ReminderProcessing:
                 prereminders_delay = 0
                 if rem.prereminders_list:
                     prereminders_delay = max(rem.prereminders_list)
-                if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - datetime.datetime.now())
+                if ((datetime.datetime.strptime(rem.time, const.REMINDER_DATETIME_FORMAT) - Time().now())
                         < datetime.timedelta(minutes=(5 + prereminders_delay / 60))):
                     reminder_do_not_update_flag = True
         if backend == const.BotBackend.DISCORD:

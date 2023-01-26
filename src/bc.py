@@ -1,4 +1,3 @@
-import datetime
 import enum
 import itertools
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Union
@@ -7,6 +6,7 @@ from src import const
 from src.executor import Executor
 from src.message_cache import MessageCache
 from src.plugin import PluginManager
+from src.utils import Time
 
 if TYPE_CHECKING:
     import asyncio
@@ -63,7 +63,7 @@ class BotController:
             pass
 
     def __init__(self):
-        self.deployment_time = datetime.datetime.now()
+        self.deployment_time = Time().now()
         self.config: 'Optional[Config]' = None
         self.markov: 'Optional[Markov]' = None
         self.secret_config: 'Optional[SecretConfig]' = None

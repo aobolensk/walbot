@@ -20,7 +20,7 @@ from src.mail import Mail
 from src.message_cache import CachedMsg
 from src.message_processing import MessageProcessing
 from src.reminder import ReminderProcessing
-from src.utils import Util
+from src.utils import Time, Util
 
 
 class WalBot(discord.Client):
@@ -180,7 +180,7 @@ class WalBot(discord.Client):
             self.config.discord.users[message.author.id] = User(message.author.id)
         if self.config.discord.users[message.author.id].permission_level < 0:
             return
-        if (datetime.datetime.now().astimezone() - message.created_at >
+        if (Time().now().astimezone() - message.created_at >
                 datetime.timedelta(seconds=const.MAX_MESSAGE_TIMEDELTA_FOR_RECALCULATION)):
             return
         if message.content.startswith(self.config.commands_prefix):

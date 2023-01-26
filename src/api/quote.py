@@ -1,4 +1,4 @@
-import datetime
+from src.utils import Time
 
 
 class Quote:
@@ -6,7 +6,7 @@ class Quote:
         self.message = message
         self.author = ""
         self.added_by = added_by
-        self.timestamp = datetime.datetime.now().replace(microsecond=0)
+        self.timestamp = Time().now().replace(microsecond=0)
 
     def __str__(self):
         return self.quote()

@@ -1,4 +1,3 @@
-import datetime
 import importlib
 import inspect
 import os
@@ -19,7 +18,7 @@ from src.backend.telegram.config import TelegramConfig
 from src.bc import BotController, DoNotUpdateFlag
 from src.log import log
 from src.shell import Shell
-from src.utils import null
+from src.utils import Time, null
 
 if TYPE_CHECKING:
     from src.backend.discord.commands import Commands
@@ -246,7 +245,7 @@ class Config:
         for file in files:
             path = os.path.dirname(file)
             name, ext = os.path.splitext(os.path.basename(file))
-            name += "_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            name += "_" + Time().now().strftime("%Y-%m-%d_%H-%M-%S")
             backup_file = name + ext
             backup_archive = os.path.join(path, "backup", name + ext + ".zip")
             try:

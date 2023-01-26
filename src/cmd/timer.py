@@ -11,7 +11,7 @@ from src.api.execution_context import ExecutionContext
 from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag
 from src.config import bc
-from src.utils import Util
+from src.utils import Time, Util
 
 
 class TimerCommands(BaseCmd):
@@ -38,7 +38,7 @@ class TimerCommands(BaseCmd):
     Usage: !timer 10"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
             return
-        start = datetime.datetime.now()
+        start = Time().now()
         duration = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be duration in seconds")
         if duration is None:
@@ -47,7 +47,7 @@ class TimerCommands(BaseCmd):
             return await Command.send_message(execution_ctx, "Timer duration should be more than 0 seconds")
         if duration > const.MAX_TIMER_DURATION_IN_SECONDS:
             return await Command.send_message(execution_ctx, "Timer duration should be less than 24 hours")
-        finish = datetime.datetime.now() + datetime.timedelta(seconds=duration)
+        finish = Time().now() + datetime.timedelta(seconds=duration)
         id_ = bc.config.ids["timer"]
         bc.config.ids["timer"] += 1
         timer_msg = await Msg.response(execution_ctx.message, f"⏰ Timer #{id_}: {finish - start}", execution_ctx.silent)
@@ -55,7 +55,7 @@ class TimerCommands(BaseCmd):
         bc.timers[id_] = True
         print_counter = 0
         while True:
-            current = datetime.datetime.now()
+            current = Time().now()
             if not bc.timers[id_]:
                 await timer_msg.edit(content=f"⏰ Timer #{id_}: {finish - current}! (stopped)")
                 bc.do_not_update[DoNotUpdateFlag.TIMER] -= 1
@@ -90,7 +90,7 @@ class TimerCommands(BaseCmd):
     Usage: !stopwatch"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
             return
-        start = datetime.datetime.now()
+        start = Time().now()
         id_ = bc.config.ids["stopwatch"]
         bc.config.ids["stopwatch"] += 1
         stopwatch_msg = await Msg.response(
@@ -99,7 +99,7 @@ class TimerCommands(BaseCmd):
         bc.stopwatches[id_] = True
         print_counter = 0
         while True:
-            current = datetime.datetime.now()
+            current = Time().now()
             if not bc.stopwatches[id_]:
                 await stopwatch_msg.edit(content=f"⏰ Stopwatch #{id_}: {current - start}! (stopped)")
                 bc.do_not_update[DoNotUpdateFlag.STOPWATCH] -= 1

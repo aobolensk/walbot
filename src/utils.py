@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import os
 import tempfile
 from enum import IntEnum
@@ -176,6 +177,19 @@ class Util:
             else:
                 log.error(f"Request failed with status code {response.status_code}")
                 raise HTTPRequestException(response)
+
+
+class Time:
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self) -> None:
+        self._tz = None
+
+    def now(self) -> datetime.datetime:
+        return datetime.datetime.now(tz=self._tz)
 
 
 def null(*args, **kwargs):

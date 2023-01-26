@@ -1,4 +1,3 @@
-import datetime
 import subprocess
 import sys
 from typing import List, Optional
@@ -15,7 +14,7 @@ from src.backend.discord.embed import DiscordEmbed
 from src.config import bc
 from src.message_cache import CachedMsg
 from src.shell import Shell
-from src.utils import Util
+from src.utils import Time, Util
 
 
 class _BuiltinInternals:
@@ -199,7 +198,7 @@ class BuiltinCommands(BaseCmd):
                     execution_ctx,
                     "Incorrect timezone. "
                     "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>")
-        result = str(datetime.datetime.now(timezone)).split('.', maxsplit=1)[0]
+        result = str(Time.now(timezone)).split('.', maxsplit=1)[0]
         await Command.send_message(execution_ctx, result)
         return result
 

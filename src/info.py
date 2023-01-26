@@ -1,4 +1,3 @@
-import datetime
 import importlib
 import os
 import platform
@@ -10,6 +9,7 @@ import git
 from src import const
 from src.config import bc
 from src.shell import Shell
+from src.utils import Time
 
 
 class BotInfo:
@@ -97,7 +97,7 @@ class BotInfo:
     def uptime(self) -> str:
         """Get walbot uptime"""
         days, remainder = divmod(
-            int((datetime.datetime.now() - bc.deployment_time).total_seconds()), 24 * 3600)
+            int((Time().now() - bc.deployment_time).total_seconds()), 24 * 3600)
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
         return f"{days}:{hours:02}:{minutes:02}:{seconds:02}"
