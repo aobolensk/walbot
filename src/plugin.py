@@ -18,6 +18,7 @@ class PluginManager:
     def __init__(self, executor: Executor) -> None:
         self._executor = executor
         self._plugins: Dict[str, BasePlugin] = dict()
+        self._plugin_modules: Dict[str, Any] = dict()
         self._plugin_functions_interface = [
             func[0] for func in inspect.getmembers(BasePlugin, inspect.isfunction)
             if not func[0].startswith('_')
@@ -40,35 +41,46 @@ class PluginManager:
             f"src.plugins.{os.path.splitext(os.path.relpath(file, plugin_directory))[0]}") for file in py_files]
         importlib.invalidate_caches()
         for module in plugin_modules:
-            log.debug2(f"Processing plugins from module: {module}")
-            plugins_file = importlib.import_module(module)
-            if reload:
-                importlib.reload(plugins_file)
-            plugins = [obj[1] for obj in inspect.getmembers(plugins_file, inspect.isclass)
-                       if (obj[1].__module__ == module) and issubclass(obj[1], BasePlugin)]
-            if len(plugins) == 1:
-                plugin = plugins[0]
-                actual_functions_list = [
-                    func[0] for func in inspect.getmembers(plugin, inspect.isfunction)
-                    if not func[0].startswith('_')
-                ]
-                if all(x in actual_functions_list for x in self._plugin_functions_interface):
-                    try:
-                        p = plugin()
-                        self._plugins[p.get_classname()] = p
-                        log.debug(f"Registered plugin '{p.get_classname()}'")
-                    except Exception as e:
-                        self._handle_register_error(
-                            module, f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
-                else:
+            self._process_module(module, reload=reload)
+
+    def _process_module(self, module: Any, reload: bool = True):
+        log.debug2(f"Processing plugins from module: {module}")
+        plugins_file = importlib.import_module(module)
+        if reload:
+            importlib.reload(plugins_file)
+        plugins = [
+            obj[1] for obj in inspect.getmembers(plugins_file, inspect.isclass)
+            if (obj[1].__module__ == module) and issubclass(obj[1], BasePlugin)
+        ]
+        if len(plugins) == 1:
+            plugin = plugins[0]
+            actual_functions_list = [
+                func[0] for func in inspect.getmembers(plugin, inspect.isfunction)
+                if not func[0].startswith('_')
+            ]
+            if all(x in actual_functions_list for x in self._plugin_functions_interface):
+                try:
+                    p = plugin()
+                    self._plugins[p.get_classname()] = p
+                    self._plugin_modules[p.get_classname()] = module
+                    log.debug(f"Registered plugin '{p.get_classname()}'")
+                except Exception as e:
                     self._handle_register_error(
-                        module, f"Class '{p.get_classname()}' does comply with BasePlugin interface")
-            elif len(plugins) > 1:
-                self._handle_register_error(
-                    module, f"Module '{module}' have more than 1 class in it")
+                        module, f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
             else:
                 self._handle_register_error(
-                    module, f"Module '{module}' have no classes in it")
+                    module, f"Class '{p.get_classname()}' does comply with BasePlugin interface")
+        elif len(plugins) > 1:
+            self._handle_register_error(
+                module, f"Module '{module}' have more than 1 class in it")
+        else:
+            self._handle_register_error(
+                module, f"Module '{module}' have no classes in it")
+
+    async def reload_plugin_interactive(self, execution_ctx: ExecutionContext, plugin_name: str) -> None:
+        await self.send_command_interactive(execution_ctx, plugin_name, "close")
+        self._process_module(self._plugin_modules[plugin_name], reload=True)
+        await self.send_command_interactive(execution_ctx, plugin_name, "init")
 
     async def send_command(self, plugin_name: str, command_name: str, *args, **kwargs) -> Any:
         """Send command to specific plugin"""

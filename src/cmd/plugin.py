@@ -106,8 +106,7 @@ class PluginCommands(BaseCmd):
         plugin_name = cmd_line[1]
         if plugin_name not in bc.plugin_manager.get_plugins_list():
             return await Command.send_message(execution_ctx, f"Could not find plugin '{plugin_name}'")
-        await bc.plugin_manager.send_command_interactive(execution_ctx, plugin_name, "close")
-        await bc.plugin_manager.send_command_interactive(execution_ctx, plugin_name, "init")
+        await bc.plugin_manager.reload_plugin_interactive(execution_ctx, plugin_name)
         await Command.send_message(execution_ctx, f"Plugin '{plugin_name}' has been reloaded")
 
     async def _updateplugin(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
@@ -131,7 +130,7 @@ class PluginCommands(BaseCmd):
         await Command.send_message(
             execution_ctx,
             f"Plugin '{plugin_name}' has been updated. "
-            f"To enable updated plugin execute `reloadpluginmanager` and `reloadplugin {plugin_name}` commands")
+            f"To enable updated plugin execute `reloadplugin {plugin_name}` command")
 
     async def _autostartplugin(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Check if plugin automatically starts when bot loads up and set autostart flag for plugin
