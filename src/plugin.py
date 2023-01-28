@@ -88,7 +88,11 @@ class PluginManager:
             return log.error(f"Unknown plugin '{plugin_name}'")
         if command_name not in self._plugin_functions_interface:
             return log.error(f"Unknown command '{command_name}' for plugin")
-        if await self._plugins[plugin_name].is_enabled() or command_name == "init":
+        if await self._plugins[plugin_name].is_enabled() or command_name in (
+            "init",
+            "is_enabled",
+            "update_implementation",
+        ):
             return await getattr(self._plugins[plugin_name], command_name)(*args, **kwargs)
 
     async def send_command_interactive(
@@ -96,7 +100,8 @@ class PluginManager:
         try:
             return await self.send_command(plugin_name, command_name, *args, **kwargs)
         except Exception as e:
-            execution_ctx.send_message(f"Failed to send command '{command_name}' to plugin '{plugin_name}'. Error: {e}")
+            await execution_ctx.send_message(
+                f"Failed to send command '{command_name}' to plugin '{plugin_name}'. Error: {e}")
 
     async def broadcast_command(self, command_name: str, *args, **kwargs) -> None:
         """Broadcast command for all plugins"""
@@ -111,7 +116,7 @@ class PluginManager:
         try:
             return await self.broadcast_command(command_name, *args, **kwargs)
         except Exception as e:
-            execution_ctx.send_message(f"Failed to broadcast command '{command_name}'. Error: {e}")
+            await execution_ctx.send_message(f"Failed to broadcast command '{command_name}'. Error: {e}")
 
     def get_plugins_list(self) -> KeysView[str]:
         """Get list of plugin names that were registered"""

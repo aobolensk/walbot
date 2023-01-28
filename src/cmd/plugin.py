@@ -123,7 +123,7 @@ class PluginCommands(BaseCmd):
         if plugin_name not in bc.plugin_manager.get_plugins_list():
             return await Command.send_message(execution_ctx, f"Could not find plugin '{plugin_name}'")
         try:
-            await bc.plugin_manager.send_command_interactive(execution_ctx, plugin_name, "update_implementation")
+            await bc.plugin_manager.send_command(plugin_name, "update_implementation")
         except NotImplementedError:
             await Command.send_message(execution_ctx, f"Plugin '{plugin_name}' does not support self updates!")
             return
