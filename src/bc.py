@@ -78,5 +78,5 @@ class BotController:
         self.discord = self.Discord()
         self.telegram = self.Telegram()
         self.repl = self.Repl()
-        self.plugin_manager = PluginManager()
+        self.plugin_manager = PluginManager(self.executor)
         self.message_cache = MessageCache()
