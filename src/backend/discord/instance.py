@@ -120,6 +120,7 @@ class WalBot(discord.Client):
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")
+        bc.discord.bot_user_id = self.user.id
         self.bot_cache.update({
             "ready": True,
         })
@@ -154,7 +155,7 @@ class WalBot(discord.Client):
             await self._process_command(message)
         else:
             await self._process_regular_message(message)
-            await self._process_repetitions(message)
+            await MessageProcessing.process_repetitions(DiscordExecutionContext(message))
         execution_ctx = DiscordExecutionContext(message)
         await bc.plugin_manager.broadcast_command_interactive(execution_ctx, "on_message", execution_ctx)
 
@@ -185,14 +186,6 @@ class WalBot(discord.Client):
             return
         if message.content.startswith(self.config.commands_prefix):
             await self._process_command(message)
-
-    async def _process_repetitions(self, message: discord.Message) -> None:
-        m = tuple(bc.message_cache.get(str(message.channel.id), i) for i in range(3))
-        if (all(m) and m[0].message and m[0].message == m[1].message == m[2].message and
-            (m[0].author != self.user.id and
-             m[1].author != self.user.id and
-             m[2].author != self.user.id)):
-            await message.channel.send(m[0].message)
 
     async def _process_regular_message(self, message: discord.Message) -> None:
         channel_id = message.channel.id

@@ -51,6 +51,7 @@ class BotController:
             self.change_status: Optional[Callable] = None
             self.change_presence: Optional[Callable] = None
             self.latency: Optional[Callable] = None
+            self.bot_user_id: Optional[int] = None
 
     class Telegram:
         def __init__(self) -> None:

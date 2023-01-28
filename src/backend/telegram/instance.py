@@ -34,10 +34,11 @@ class TelegramBotInstance(BotInstance):
         log_message(update)
         if not check_auth(update):
             return
-        bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
+        bc.message_cache.push(update.message.chat.id, CachedMsg(text, str(update.message.from_user.id)))
         bc.markov.add_string(text)
         loop = asyncio.new_event_loop()
         loop.run_until_complete(MessageProcessing.process_responses(TelegramExecutionContext(update), text))
+        loop.run_until_complete(MessageProcessing.process_repetitions(TelegramExecutionContext(update)))
         loop.run_until_complete(bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update)))
 
     @Mail.send_exception_info_to_admin_emails
@@ -46,7 +47,7 @@ class TelegramBotInstance(BotInstance):
         log_message(update)
         if not check_auth(update):
             return
-        bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
+        bc.message_cache.push(update.message.chat.id, CachedMsg(text, str(update.message.from_user.id)))
         cmd_line = bc.config.on_mention_command.split(" ")
         loop = asyncio.new_event_loop()
         loop.run_until_complete(bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update)))
