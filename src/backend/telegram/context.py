@@ -78,4 +78,4 @@ class TelegramExecutionContext(ExecutionContext):
         return self.update.message.chat.id
 
     def bot_user_id(self) -> int:
-        return
+        return 0
