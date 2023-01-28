@@ -41,3 +41,7 @@ class ExecutionContext(ABC):
     @abstractmethod
     def channel_id(self) -> int:
         pass
+
+    @abstractmethod
+    def bot_user_id(self) -> int:
+        pass

@@ -32,3 +32,6 @@ class BufferTestExecutionContext(ExecutionContext):
 
     def channel_id(self) -> int:
         return 0
+
+    def bot_user_id(self) -> int:
+        return 0

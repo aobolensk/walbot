@@ -76,3 +76,6 @@ class TelegramExecutionContext(ExecutionContext):
 
     def channel_id(self) -> int:
         return self.update.message.chat.id
+
+    def bot_user_id(self) -> int:
+        return
