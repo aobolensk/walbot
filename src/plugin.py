@@ -9,12 +9,14 @@ from src import const
 from src.api.command import Command, Implementation
 from src.api.execution_context import ExecutionContext
 from src.api.plugin import BasePlugin
+from src.executor import Executor
 from src.log import log
 from src.utils import Util
 
 
 class PluginManager:
-    def __init__(self) -> None:
+    def __init__(self, executor: Executor) -> None:
+        self._executor = executor
         self._plugins: Dict[str, BasePlugin] = dict()
         self._plugin_functions_interface = [
             func[0] for func in inspect.getmembers(BasePlugin, inspect.isfunction)
@@ -128,15 +130,13 @@ class PluginManager:
     async def register_bot_command(
             self, plugin_name: str, cmd_name: str, permission_level: const.Permission,
             command_func: Callable, *args, **kwargs) -> None:
-        from src.config import bc
         log.debug(f"Registered bot command '{cmd_name}' for '{plugin_name}' plugin")
-        bc.executor.commands[cmd_name] = Command(
+        self._executor.commands[cmd_name] = Command(
             "plugin_" + plugin_name, cmd_name, permission_level, Implementation.FUNCTION,
             impl_func=command_func, *args, **kwargs)
-        bc.executor.register_command(cmd_name, bc.executor.commands[cmd_name])
+        self._executor.register_command(cmd_name, self._executor.commands[cmd_name])
 
     async def unregister_bot_command(
             self, plugin_name: str, cmd_name: str) -> None:
-        from src.config import bc
         log.debug(f"Unregistered bot command '{cmd_name}' for '{plugin_name}' plugin")
-        bc.executor.unregister_command(cmd_name)
+        self._executor.unregister_command(cmd_name)
