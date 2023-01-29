@@ -14,6 +14,15 @@ Discord bot written in Python*
 * Telegram: [Setup guide](docs/SetupBackends.md#telegram)
 
 ### Requirements:
+
+#### Operating systems:
+- Linux
+- macOS
+- Windows
+
+#### Dependencies
+##### Required
+
 - libmagic<br>
   Windows:
   ```sh
@@ -29,7 +38,7 @@ Discord bot written in Python*
   ```
 - [Python](https://www.python.org/) 3.8-3.11
 
-#### Optional
+##### Optional
 - [ffmpeg](https://www.ffmpeg.org/) - for built-in DiscordVideoQueue plugin
 
 ### Quick start:
