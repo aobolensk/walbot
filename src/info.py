@@ -147,4 +147,6 @@ class BotInfo:
                 result += "macOS version: " + Shell.run('sw_vers -productName').stdout.strip() + " "
                 result += Shell.run('sw_vers -productVersion').stdout.strip() + " "
                 result += "(" + Shell.run('sw_vers -buildVersion').stdout.strip() + ")\n"
+            elif sys.platform == "win32":
+                result += "Windows version: " + platform.platform()
         return result
