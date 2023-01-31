@@ -228,7 +228,6 @@ class Launcher:
         bc.executor.load_persistent_state(bc.config.executor)
         bc.config.commands.update()
         nest_asyncio.apply()
-        precompile_algs()
 
         # Saving bot_cache to safely stop it later
         bot_cache = BotCache(main_bot).parse()
@@ -260,6 +259,7 @@ class Launcher:
             return const.ExitStatus.GENERAL_ERROR
         bc.plugin_manager.register()
         self._loop.create_task(bc.plugin_manager.load_plugins())
+        precompile_algs()
         self._loop.run_forever()
         if not sys.platform == "win32":
             signal.pause()
