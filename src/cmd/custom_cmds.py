@@ -43,7 +43,7 @@ class CustomCmdsCommands(BaseCmd):
             command_name, cmd_line=external_cmd_line)
         if execution_ctx.platform == const.BotBackend.DISCORD:
             bc.discord.commands.data[command_name].channels.append(execution_ctx.message.channel.id)
-        if bc.backends["telegram"]:
+        if bc.be.is_running(const.BotBackend.TELEGRAM):
             CommonCommands.add_handler(bc.telegram.dispatcher, bc.executor.commands[cmd_line[1]])
         await Command.send_message(
             execution_ctx,
@@ -81,6 +81,6 @@ class CustomCmdsCommands(BaseCmd):
                 execution_ctx, f"WARN: Command '{command_name}' does not exist (on Discord backend")
         bc.executor.commands.pop(command_name, None)
         bc.discord.commands.data.pop(command_name, None)
-        if bc.backends["telegram"] and command_name in bc.telegram.handlers.keys():
+        if bc.be.is_running(const.BotBackend.TELEGRAM) and command_name in bc.telegram.handlers.keys():
             CommonCommands.remove_handler(bc.telegram.dispatcher, command_name)
         return await Command.send_message(execution_ctx, f"Command '{command_name}' successfully deleted")

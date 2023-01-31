@@ -63,6 +63,17 @@ class BotController:
         def __init__(self) -> None:
             pass
 
+    class Backend:
+        def __init__(self) -> None:
+            self._backends: Dict[str, bool] = dict(zip(
+                [backend for backend in const.BotBackend][1:], itertools.repeat(False)))
+
+        def set_running(self, backend: const.BotBackend, new_state: bool) -> None:
+            self._backends[backend] = new_state
+
+        def is_running(self, backend: const.BotBackend) -> None:
+            return self._backends[backend]
+
     def __init__(self):
         self.deployment_time = Time().now()
         self.config: 'Optional[Config]' = None
@@ -73,11 +84,10 @@ class BotController:
         self.do_not_update: List[Union[int, bool]] = [0] * len(DoNotUpdateFlag)
         self.timers: Dict[int, bool] = dict()
         self.stopwatches: Dict[int, bool] = dict()
-        self.backends: Dict[str, bool] = dict(zip(
-            [backend.name.lower() for backend in const.BotBackend][1:], itertools.repeat(False)))
         self.executor = Executor()
         self.discord = self.Discord()
         self.telegram = self.Telegram()
         self.repl = self.Repl()
         self.plugin_manager = PluginManager(self.executor)
         self.message_cache = MessageCache()
+        self.be = self.Backend()

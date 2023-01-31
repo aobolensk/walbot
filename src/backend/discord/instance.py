@@ -116,7 +116,7 @@ class WalBot(discord.Client):
 
     @Mail.send_exception_info_to_admin_emails
     async def on_ready(self) -> None:
-        bc.backends["discord"] = True
+        bc.be.set_running(const.BotBackend.DISCORD, True)
         log.info(
             f"Logged in as: {self.user.name} {self.user.id} ({self.__class__.__name__}), "
             f"instance: {self.instance_name}")

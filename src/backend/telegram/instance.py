@@ -73,7 +73,7 @@ class TelegramBotInstance(BotInstance):
                 Filters.text & ~Filters.command & ~Filters.entity(MessageEntity.MENTION), self._handle_messages))
 
         log.info("Telegram instance is started!")
-        bc.backends["telegram"] = True
+        bc.be.set_running(const.BotBackend.TELEGRAM, True)
         bc.executor.binders[const.BotBackend.TELEGRAM] = TelegramCommandBinding(updater.dispatcher)
         bc.telegram.bot_username = updater.bot.name
         bc.telegram.dispatcher = updater.dispatcher

@@ -105,15 +105,15 @@ class BotInfo:
     def get_full_info(self, verbosity) -> str:
         result = f"{const.INSTANCE_NAME} (WalBot instance)\n"
         result += "Backends:\n"
-        if bc.backends['discord']:
+        if bc.be.is_running(const.BotBackend.DISCORD):
             result += f"    Discord: on ({bc.discord.bot_user})\n"
         else:
             result += "    Discord: off\n"
-        if bc.backends['telegram']:
+        if bc.be.is_running(const.BotBackend.TELEGRAM):
             result += f"    Telegram: on ({bc.telegram.bot_username})\n"
         else:
             result += "    Telegram: off\n"
-        if bc.backends['repl']:
+        if bc.be.is_running(const.BotBackend.REPL):
             result += "    REPL: on\n"
         else:
             result += "    REPL: off\n"
