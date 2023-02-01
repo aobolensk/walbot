@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Union
 
 from src import const
 from src.executor import Executor
+from src.log import log
 from src.message_cache import MessageCache
 from src.plugin import PluginManager
 from src.utils import Time
@@ -69,6 +70,10 @@ class BotController:
                 [backend for backend in const.BotBackend][1:], itertools.repeat(False)))
 
         def set_running(self, backend: const.BotBackend, new_state: bool) -> None:
+            if new_state:
+                log.info(f"Backend controller: {str(backend).title()} instance has started!")
+            else:
+                log.info(f"Backend controller: {str(backend).title()} instance has stopped!")
             self._backends[backend] = new_state
 
         def is_running(self, backend: const.BotBackend) -> None:
