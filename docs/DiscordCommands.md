@@ -182,6 +182,9 @@
 **tts**: Send text-to-speech (TTS) message \
     Example: !tts Hello!
 
+**tz**: Get current timezone \
+    Usage: !tz
+
 **updcmd**: Update command (works only for commands that already exist) \
     Example: !updcmd hello Hello!
 

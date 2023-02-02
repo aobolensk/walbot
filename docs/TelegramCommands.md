@@ -86,6 +86,10 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
+**tz**: Get current timezone \
+    Usage: !tz \
+    *Default permission level: 0*
+
 **uptime**: Show bot uptime \
     Example: !uptime \
     *This command can be used as subcommand* \
