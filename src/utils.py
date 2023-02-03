@@ -40,23 +40,25 @@ class Util:
 
     @staticmethod
     async def parse_int_for_discord(message, string, error_message, silent):
-        if string.strip().isdecimal():
+        try:
             return int(string)
-        await Msg.response(message, error_message, silent)
+        except ValueError:
+            await Msg.response(message, error_message, silent)
+            return
 
     @staticmethod
     async def parse_int(execution_ctx: ExecutionContext, string: str, error_message: str):
-        if string.strip().isdecimal():
+        try:
             return int(string)
-        await Command.send_message(execution_ctx, error_message)
+        except ValueError:
+            return await Command.send_message(execution_ctx, error_message)
 
     @staticmethod
     async def parse_float(execution_ctx: ExecutionContext, string: str, error_message: str):
         try:
             return float(string)
         except ValueError:
-            await Command.send_message(execution_ctx, error_message)
-            return
+            return await Command.send_message(execution_ctx, error_message)
 
     @staticmethod
     def check_version(name, actual, expected, solutions=None, fatal=True):
