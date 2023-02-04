@@ -134,12 +134,12 @@ class WalBot(discord.Client):
 
     @Mail.send_exception_info_to_admin_emails
     async def on_message(self, message: discord.Message) -> None:
+        log.info(f"<{message.id}> {message.author} -> {message.content}")
         if isinstance(message.channel, discord.DMChannel):
             return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
         bc.message_cache.push(str(message.channel.id), CachedMsg(message.content, message.author.id))
-        log.info(f"<{message.id}> {message.author} -> {message.content}")
         if message.author.id == self.user.id:
             return
         if message.channel.guild.id is None:
@@ -164,13 +164,13 @@ class WalBot(discord.Client):
         if message.content == old_message.content and message.embeds != old_message.embeds:
             log.info(f"<{message.id}> (edit, embed update) {message.author} -> {message.content}")
             return
+        log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
+        if isinstance(message.channel, discord.DMChannel):
+            return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
         bc.message_cache.push(str(message.channel.id), CachedMsg(message.content, str(message.author.id)))
-        log.info(f"<{message.id}> (edit) {message.author} -> {message.content}")
         if message.author.id == self.user.id:
-            return
-        if isinstance(message.channel, discord.DMChannel):
             return
         if message.channel.guild.id is None:
             return
