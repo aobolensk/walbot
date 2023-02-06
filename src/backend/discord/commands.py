@@ -18,6 +18,7 @@ class DiscordCommandBinding(CommandBinding):
         bc.discord.commands.register_command(
             command.module_name, "DiscordCommandBinding", command.command_name,
             permission=command.permission_level, subcommand=command.subcommand,
+            max_execution_time=command.max_execution_time,
         )
         # Add bound commands to CommonCommands class for now
         setattr(
