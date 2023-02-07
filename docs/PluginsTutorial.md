@@ -74,6 +74,7 @@ class TestCommandPlugin(BasePlugin):
 import asyncio
 
 from src.api.execution_context import ExecutionContext
+from src.config import bc
 from src.log import log
 from src.plugin import BasePlugin
 
