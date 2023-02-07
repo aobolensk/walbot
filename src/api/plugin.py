@@ -1,6 +1,12 @@
+import enum
 from abc import abstractmethod
 
 from src.api.execution_context import ExecutionContext
+
+
+class PluginAPIVersion(enum.Enum):
+    LATEST = 0
+    UNSTABLE = LATEST
 
 
 class BasePlugin:
@@ -41,3 +47,7 @@ class BasePlugin:
         In plugin implementation override this method and do NOT call super().update_implementation()
         """
         raise NotImplementedError
+
+    def plugin_api_version() -> PluginAPIVersion:
+        """Plugin API version"""
+        return PluginAPIVersion.LATEST
