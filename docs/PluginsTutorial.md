@@ -19,9 +19,9 @@ class TestPlugin(BasePlugin):
     async def on_message(self, execution_ctx: ExecutionContext) -> None:
         await super().on_message(execution_ctx)
         if execution_ctx.platform == "discord":
-            print(execution_ctx.message)
+            log.info(execution_ctx.message)
         elif execution_ctx.platform == "telegram":
-            print(execution_ctx.update)
+            log.info(execution_ctx.update)
         else:
             pass
 

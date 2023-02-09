@@ -253,7 +253,6 @@ class MarkovV2:
                 count += next_count
                 if count > index:
                     result += (word if word != "__markov_terminate" else "") + ' '
-                    print("result:", result)
                     next_node = self.get_next(word)
                     if current_node["word"] is None and next_node["type"] == self.NodeType.end:
                         continue

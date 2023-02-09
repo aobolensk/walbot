@@ -219,7 +219,6 @@ class BuiltinCommands(BaseCmd):
     Example: !extexec uname -a"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
             return
-        print(' '.join(cmd_line[1:]))
         return await Shell.run_and_send_stdout(execution_ctx, ' '.join(cmd_line[1:]))
 
     async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
