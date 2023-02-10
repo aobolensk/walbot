@@ -89,7 +89,7 @@ class BotInfo:
         res["PyYAML"] = importlib.import_module("yaml").__version__
         res["yt_dlp"] = importlib.import_module("yt_dlp.update").__version__
         res["python-telegram-bot"] = importlib.import_module("telegram").__version__
-        res["googletrans"] = importlib.import_module("googletrans").__version__
+        res["aiogoogletrans"] = importlib.import_module("aiogoogletrans").__version__
         res["nest-asyncio"] = self._get_version_from_requirements_txt("nest-asyncio")
         return res
 
