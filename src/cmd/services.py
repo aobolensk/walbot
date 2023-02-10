@@ -3,10 +3,8 @@ import os
 import subprocess
 import sys
 from typing import List, Optional
-from urllib.parse import urlparse
 
-from googletrans import Translator
-from httpcore import SyncHTTPProxy
+from aiogoogletrans import Translator
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -58,22 +56,11 @@ class TimerCommands(BaseCmd):
     Usage: !translate <lang> <text>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
             return
-        proxy = dict()
-        if Util.proxy.http():
-            http_parse_res = urlparse(Util.proxy.http())
-            proxy["http"] = SyncHTTPProxy((
-                http_parse_res.scheme.encode("utf-8"), http_parse_res.hostname.encode("utf-8"),
-                int(http_parse_res.port)))
-        if Util.proxy.https():
-            https_parse_res = urlparse(Util.proxy.https())
-            proxy["https"] = SyncHTTPProxy((
-                https_parse_res.scheme.encode("utf-8"), https_parse_res.hostname.encode("utf-8"),
-                int(https_parse_res.port)))
-        translator = Translator(proxies=proxy)
+        translator = Translator(proxy=Util.proxy.http() or None)
         dst_language = cmd_line[1]
         text = " ".join(cmd_line[2:])
         try:
-            translation = translator.translate(text, dest=dst_language)
+            translation = await translator.translate(text, dest=dst_language)
             result = translation.text
             await Command.send_message(execution_ctx, result)
             return result
