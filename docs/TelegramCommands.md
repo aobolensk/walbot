@@ -48,6 +48,13 @@
     *This command can be used as subcommand* \
     *Default permission level: 1*
 
+**help**: Print list of commands and get examples \
+    Examples: \
+        !help \
+        !help -p \
+        !help &lt;command_name&gt; \
+    *Default permission level: 0*
+
 **message**: Get message by its order number counting from the newest message \
     Example: !message \
     *This command can be used as subcommand* \

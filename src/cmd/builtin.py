@@ -72,6 +72,11 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["uptime"] = Command(
             "builtin", "uptime", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._uptime)
+        bc.executor.commands["help"] = Command(
+            "builtin", "help", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._help,
+            supported_platforms=(SupportedPlatforms.ALL & ~SupportedPlatforms.DISCORD))
+        # Help command for Discord is executed using legacy way for now
         bc.executor.commands["about"] = Command(
             "builtin", "about", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._about)
@@ -133,6 +138,18 @@ class BuiltinCommands(BaseCmd):
         result = bc.info.uptime
         await Command.send_message(execution_ctx, result)
         return result
+
+    async def _help(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print list of commands and get examples
+    Examples:
+        !help
+        !help -p
+        !help <command_name>"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+            return
+        version = bc.info.version
+        result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
+        await Command.send_message(execution_ctx, result)
 
     async def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get information about the bot

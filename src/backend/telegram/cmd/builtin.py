@@ -3,7 +3,6 @@ import uuid
 from telegram import Update
 from telegram.ext import Application, CallbackContext, CommandHandler
 
-from src import const
 from src.api.command import Command
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message
@@ -19,7 +18,6 @@ class BuiltinCommands:
     def add_handlers(self, app: Application) -> None:
         app.add_handler(CommandHandler("authorize", self._authorize))
         app.add_handler(CommandHandler("resetpass", self._resetpass))
-        app.add_handler(CommandHandler("help", self._help))
 
     @Mail.send_exception_info_to_admin_emails
     async def _authorize(self, update: Update, context: CallbackContext) -> None:
@@ -41,12 +39,3 @@ class BuiltinCommands:
         bc.config.telegram.passphrase = uuid.uuid4().hex
         log.warning("New passphrase: " + bc.config.telegram.passphrase)
         await Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!')
-
-    @Mail.send_exception_info_to_admin_emails
-    async def _help(self, update: Update, context: CallbackContext) -> None:
-        log_message(update)
-        if not check_auth(update):
-            return
-        version = bc.info.version
-        result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
-        await Command.send_message(TelegramExecutionContext(update), result)
