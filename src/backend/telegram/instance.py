@@ -72,9 +72,9 @@ class TelegramBotInstance(BotInstance):
                     constants.MessageEntityType.MENTION), self._handle_messages))
 
         log.info("Telegram instance is started!")
-        bc.be.set_running(const.BotBackend.TELEGRAM, True)
-        bc.executor.binders[const.BotBackend.TELEGRAM] = TelegramCommandBinding(app)
         bc.telegram.bot_username = loop.run_until_complete(app.bot.get_me()).username
+        bc.be.set_running(const.BotBackend.TELEGRAM, True, f"{bc.telegram.bot_username} ({self.__class__.__name__})")
+        bc.executor.binders[const.BotBackend.TELEGRAM] = TelegramCommandBinding(app)
         bc.telegram.app = app
         app.run_polling(timeout=600, stop_signals=())
         counter = 0

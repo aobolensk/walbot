@@ -69,9 +69,11 @@ class BotController:
             self._backends: Dict[str, bool] = dict(zip(
                 [backend for backend in const.BotBackend][1:], itertools.repeat(False)))
 
-        def set_running(self, backend: const.BotBackend, new_state: bool) -> None:
+        def set_running(self, backend: const.BotBackend, new_state: bool, user_data_msg: str = "") -> None:
             if new_state:
                 log.info(f"Backend controller: {str(backend).title()} instance has started!")
+                if user_data_msg:
+                    log.info(f"[{backend}] Logged in as: {user_data_msg}")
             else:
                 log.info(f"Backend controller: {str(backend).title()} instance has stopped!")
             self._backends[backend] = new_state
