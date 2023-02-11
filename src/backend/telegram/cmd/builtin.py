@@ -1,8 +1,7 @@
-import asyncio
 import uuid
 
 from telegram import Update
-from telegram.ext import CallbackContext, CommandHandler
+from telegram.ext import Application, CallbackContext, CommandHandler
 
 from src import const
 from src.api.command import Command
@@ -17,41 +16,37 @@ class BuiltinCommands:
     def __init__(self) -> None:
         pass
 
-    def add_handlers(self, dispatcher) -> None:
-        dispatcher.add_handler(CommandHandler("authorize", self._authorize, run_async=True))
-        dispatcher.add_handler(CommandHandler("resetpass", self._resetpass, run_async=True))
-        dispatcher.add_handler(CommandHandler("help", self._help, run_async=True))
+    def add_handlers(self, app: Application) -> None:
+        app.add_handler(CommandHandler("authorize", self._authorize))
+        app.add_handler(CommandHandler("resetpass", self._resetpass))
+        app.add_handler(CommandHandler("help", self._help))
 
     @Mail.send_exception_info_to_admin_emails
-    def _authorize(self, update: Update, context: CallbackContext) -> None:
+    async def _authorize(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
         if update.message.from_user.id not in bc.config.telegram.users.keys():
             bc.config.telegram.users[update.message.from_user.id] = User(update.message.from_user.id)
         passphrase = context.args[0] if context.args else ""
-        loop = asyncio.new_event_loop()
         if passphrase == bc.config.telegram.passphrase:
             bc.config.telegram.channel_whitelist.add(update.effective_chat.id)
-            loop.run_until_complete(
-                Command.send_message(TelegramExecutionContext(update), "Channel has been added to whitelist"))
+            await Command.send_message(TelegramExecutionContext(update), "Channel has been added to whitelist")
         else:
-            loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), "Wrong passphrase!"))
+            await Command.send_message(TelegramExecutionContext(update), "Wrong passphrase!")
 
     @Mail.send_exception_info_to_admin_emails
-    def _resetpass(self, update: Update, context: CallbackContext) -> None:
+    async def _resetpass(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
         if not check_auth(update):
             return
-        loop = asyncio.new_event_loop()
         bc.config.telegram.passphrase = uuid.uuid4().hex
         log.warning("New passphrase: " + bc.config.telegram.passphrase)
-        loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!'))
+        await Command.send_message(TelegramExecutionContext(update), 'Passphrase has been reset!')
 
     @Mail.send_exception_info_to_admin_emails
-    def _help(self, update: Update, context: CallbackContext) -> None:
+    async def _help(self, update: Update, context: CallbackContext) -> None:
         log_message(update)
         if not check_auth(update):
             return
-        loop = asyncio.new_event_loop()
         version = bc.info.version
         result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
-        loop.run_until_complete(Command.send_message(TelegramExecutionContext(update), result))
+        await Command.send_message(TelegramExecutionContext(update), result)

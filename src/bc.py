@@ -57,7 +57,7 @@ class BotController:
     class Telegram:
         def __init__(self) -> None:
             self.bot_username: 'Optional[str]' = None
-            self.dispatcher: 'Optional[telegram.ext.Dispatcher]' = None
+            self.app: 'Optional[telegram.ext.Application]' = None
             self.handlers: 'Dict[CommandHandler]' = dict()
 
     class Repl:

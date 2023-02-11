@@ -44,16 +44,16 @@ def escape_markdown_text(text: str):
     )
 
 
-def reply(update: Update, text: str, disable_web_page_preview: bool = False, reply_on_msg: bool = False) -> None:
+async def reply(update: Update, text: str, disable_web_page_preview: bool = False, reply_on_msg: bool = False) -> None:
     if not text:
         return
     if reply_on_msg:
-        reply_message = update.message.reply_text(
+        reply_message = await update.message.reply_text(
             text, parse_mode="MarkdownV2",
             disable_web_page_preview=disable_web_page_preview,
         )
     else:
-        reply_message = update.message.bot.send_message(
+        reply_message = await update.message.get_bot().send_message(
             update.message.chat_id,
             text, parse_mode="MarkdownV2",
             disable_web_page_preview=disable_web_page_preview,
