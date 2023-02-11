@@ -23,7 +23,7 @@ class TelegramExecutionContext(ExecutionContext):
         message = self._unescape_ping1(message)
         message = escape_markdown_text(message)
         message = self._unescape_ping2(message)
-        reply(
+        await reply(
             self.update, message,
             disable_web_page_preview=kwargs.get("suppress_embeds", False),
             reply_on_msg=kwargs.get("reply_on_msg", False),
@@ -33,13 +33,13 @@ class TelegramExecutionContext(ExecutionContext):
                 await self._send_file(file)
 
     async def _send_file(self, file_path: str) -> None:
-        self.update.message.reply_document(open(file_path, 'rb'), os.path.basename(file_path))
+        await self.update.message.reply_document(open(file_path, 'rb'), os.path.basename(file_path))
 
     async def reply(self, message: str, *args, **kwargs) -> None:
         await self.send_message(message, *args, **kwargs, reply_on_msg=True)
 
     async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> None:
-        send_message(user_id, message)
+        await send_message(user_id, message)
 
     def _unescape_ping1(self, message: str) -> str:
         idx = 0

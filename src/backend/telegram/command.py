@@ -1,8 +1,7 @@
-import asyncio
 import functools
 
 from telegram import Update
-from telegram.ext import CallbackContext, CommandHandler, Dispatcher
+from telegram.ext import Application, CallbackContext, CommandHandler
 
 from src.api.command import Command, CommandBinding, SupportedPlatforms
 from src.backend.telegram.context import TelegramExecutionContext
@@ -17,36 +16,35 @@ async def _command_handler(command_name: str, update: Update, context: CallbackC
 
 
 @Mail.send_exception_info_to_admin_emails
-def command_handler(command_name: str, update: Update, context: CallbackContext) -> None:
+async def command_handler(command_name: str, update: Update, context: CallbackContext) -> None:
     text = update.message.text
     log_message(update)
     if not check_auth(update):
         return
     bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(_command_handler(command_name, update, context))
+    await _command_handler(command_name, update, context)
 
 
-def add_handler(dispatcher: Dispatcher, command: Command) -> None:
+def add_handler(app: Application, command: Command) -> None:
     bc.telegram.handlers[command.command_name] = CommandHandler(
         command.command_name,
-        functools.partial(command_handler, command.command_name), run_async=True)
-    dispatcher.add_handler(bc.telegram.handlers[command.command_name])
+        functools.partial(command_handler, command.command_name))
+    app.add_handler(bc.telegram.handlers[command.command_name])
 
 
-def remove_handler(dispatcher: Dispatcher, cmd_name: str) -> None:
+def remove_handler(app: Application, cmd_name: str) -> None:
     if cmd_name in bc.telegram.handlers.keys():
-        dispatcher.remove_handler(bc.telegram.handlers[cmd_name])
+        app.remove_handler(bc.telegram.handlers[cmd_name])
 
 
 class TelegramCommandBinding(CommandBinding):
-    def __init__(self, dispatcher: Dispatcher) -> None:
-        self._dispatcher = dispatcher
+    def __init__(self, app: Application) -> None:
+        self._app = app
 
     def bind(self, cmd_name: str, command: Command):
         if not (command.supported_platforms & SupportedPlatforms.TELEGRAM):
             return
-        add_handler(self._dispatcher, command)
+        add_handler(self._app, command)
 
     def unbind(self, cmd_name: str):
-        remove_handler(self._dispatcher, cmd_name)
+        remove_handler(self._app, cmd_name)

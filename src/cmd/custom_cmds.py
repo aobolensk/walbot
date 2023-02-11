@@ -44,7 +44,7 @@ class CustomCmdsCommands(BaseCmd):
         if execution_ctx.platform == const.BotBackend.DISCORD:
             bc.discord.commands.data[command_name].channels.append(execution_ctx.message.channel.id)
         if bc.be.is_running(const.BotBackend.TELEGRAM):
-            CommonCommands.add_handler(bc.telegram.dispatcher, bc.executor.commands[cmd_line[1]])
+            CommonCommands.add_handler(bc.telegram.app, bc.executor.commands[cmd_line[1]])
         await Command.send_message(
             execution_ctx,
             f"Command '{command_name}' that calls external command `{external_cmd_line}` is successfully added")
@@ -82,5 +82,5 @@ class CustomCmdsCommands(BaseCmd):
         bc.executor.commands.pop(command_name, None)
         bc.discord.commands.data.pop(command_name, None)
         if bc.be.is_running(const.BotBackend.TELEGRAM) and command_name in bc.telegram.handlers.keys():
-            CommonCommands.remove_handler(bc.telegram.dispatcher, command_name)
+            CommonCommands.remove_handler(bc.telegram.app, command_name)
         return await Command.send_message(execution_ctx, f"Command '{command_name}' successfully deleted")
