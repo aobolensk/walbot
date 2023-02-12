@@ -6,7 +6,6 @@ from telegram.ext import Application, CallbackContext, MessageHandler, filters
 
 from src import const
 from src.api.bot_instance import BotInstance
-from src.backend.telegram.cmd.builtin import BuiltinCommands
 from src.backend.telegram.cmd.common import CommonCommands
 from src.backend.telegram.command import TelegramCommandBinding
 from src.backend.telegram.context import TelegramExecutionContext
@@ -35,9 +34,9 @@ class TelegramBotInstance(BotInstance):
             return
         bc.message_cache.push(update.message.chat.id, CachedMsg(text, str(update.message.from_user.id)))
         bc.markov.add_string(text)
-        await MessageProcessing.process_responses(TelegramExecutionContext(update), text)
-        await MessageProcessing.process_repetitions(TelegramExecutionContext(update))
-        await bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update))
+        await MessageProcessing.process_responses(TelegramExecutionContext(update, context), text)
+        await MessageProcessing.process_repetitions(TelegramExecutionContext(update, context))
+        await bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update, context))
 
     @Mail.send_exception_info_to_admin_emails
     async def _handle_mentions(self, update: Update, context: CallbackContext) -> None:
@@ -47,8 +46,8 @@ class TelegramBotInstance(BotInstance):
             return
         bc.message_cache.push(update.message.chat.id, CachedMsg(text, str(update.message.from_user.id)))
         cmd_line = bc.config.on_mention_command.split(" ")
-        await bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update))
-        await bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update))
+        await bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update, context))
+        await bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update, context))
 
     @Mail.send_exception_info_to_admin_emails
     def _run(self, args) -> None:
@@ -58,8 +57,6 @@ class TelegramBotInstance(BotInstance):
         app = Application.builder().token(bc.secret_config.telegram["token"]).build()
         if Util.proxy.http() is not None:
             log.info("Telegram instance is using proxy: " + Util.proxy.http())
-        builtin_cmds = BuiltinCommands()
-        builtin_cmds.add_handlers(app)
         common_cmds = CommonCommands()
         common_cmds.add_handlers(app)
         app.add_handler(

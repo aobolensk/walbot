@@ -12,14 +12,16 @@ from src.message_cache import CachedMsg
 
 
 async def _command_handler(command_name: str, update: Update, context: CallbackContext) -> None:
-    await bc.executor.commands[command_name].run([command_name] + context.args, TelegramExecutionContext(update))
+    await bc.executor.commands[command_name].run(
+        [command_name] + context.args, TelegramExecutionContext(update, context))
 
 
 @Mail.send_exception_info_to_admin_emails
 async def command_handler(command_name: str, update: Update, context: CallbackContext) -> None:
     text = update.message.text
     log_message(update)
-    if not check_auth(update):
+    # 'authorize' and 'resetpass' commands should be available for all channels to authorize bot there
+    if command_name not in ("authorize", "resetpass") and not check_auth(update):
         return
     bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
     await _command_handler(command_name, update, context)

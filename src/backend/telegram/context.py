@@ -1,6 +1,7 @@
 import os
 
 from telegram import Update
+from telegram.ext import CallbackContext
 
 from src import const
 from src.api.execution_context import ExecutionContext
@@ -9,10 +10,11 @@ from src.config import bc
 
 
 class TelegramExecutionContext(ExecutionContext):
-    def __init__(self, update: Update) -> None:
+    def __init__(self, update: Update, context: CallbackContext) -> None:
         super().__init__()
         self.platform = const.BotBackend.TELEGRAM
         self.update = update
+        self.context = context
         self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
         self._replace_patterns = dict()
 
