@@ -58,7 +58,10 @@ class DebugCommands(BaseCmd):
             return
         old_stdout = sys.stdout
         sys.stdout = tmp_stdout = StringIO()
-        eval(' '.join(cmd_line[1:]))
+        try:
+            eval(' '.join(cmd_line[1:]))
+        except Exception:
+            pass
         sys.stdout = old_stdout
         result = tmp_stdout.getvalue()
         await Command.send_message(execution_ctx, result)
