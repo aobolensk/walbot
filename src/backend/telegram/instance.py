@@ -6,8 +6,8 @@ from telegram.ext import Application, CallbackContext, MessageHandler, filters
 
 from src import const
 from src.api.bot_instance import BotInstance
-from src.backend.telegram.cmd.common import CommonCommands
-from src.backend.telegram.command import TelegramCommandBinding
+from src.backend.telegram.command import (CommonCommandsHandlers,
+                                          TelegramCommandBinding)
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message
 from src.config import bc
@@ -57,7 +57,7 @@ class TelegramBotInstance(BotInstance):
         app = Application.builder().token(bc.secret_config.telegram["token"]).build()
         if Util.proxy.http() is not None:
             log.info("Telegram instance is using proxy: " + Util.proxy.http())
-        common_cmds = CommonCommands()
+        common_cmds = CommonCommandsHandlers()
         common_cmds.add_handlers(app)
         app.add_handler(
             MessageHandler(

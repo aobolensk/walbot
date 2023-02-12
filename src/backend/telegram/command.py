@@ -50,3 +50,16 @@ class TelegramCommandBinding(CommandBinding):
 
     def unbind(self, cmd_name: str):
         remove_handler(self._app, cmd_name)
+
+
+class CommonCommandsHandlers:
+    def __init__(self) -> None:
+        pass
+
+    def add_handlers(self, app: Application) -> None:
+        for command in bc.executor.commands.values():
+            if command.supported_platforms & SupportedPlatforms.TELEGRAM:
+                add_handler(app, command)
+
+    def remove_handler(app: Application, cmd_name: str) -> None:
+        remove_handler(app, cmd_name)
