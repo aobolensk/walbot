@@ -2,6 +2,7 @@
 <!-- To regenerate this file launch `python walbot.py docs` command or simply launch the bot -->
 
 # Table of Contents:
+* [Module: auth](#module-auth)
 * [Module: builtin](#module-builtin)
 * [Module: custom-commands](#module-custom-commands)
 * [Module: debug](#module-debug)
@@ -16,6 +17,17 @@
 * [Module: reminder](#module-reminder)
 * [Module: services](#module-services)
 * [Module: string](#module-string)
+
+# Module: auth
+
+**authorize**: Authorize Telegram backend for current channel \
+        Run this command and give passphrase from config.yaml as an argument \
+    Example: !authorize &lt;passphrase&gt; \
+    *Default permission level: 0*
+
+**resetpass**: Reset passphrase for Telegram backend authorization, set it to config.yaml and dump to walbot log \
+    Example: !resetpass \
+    *Default permission level: 0*
 
 # Module: builtin
 
