@@ -1,5 +1,4 @@
 import importlib
-import threading
 from typing import Any
 
 import numpy as np
@@ -35,11 +34,7 @@ def levenshtein_distance(a: str, b: str):
     return d[m, n]
 
 
-def _precompile() -> None:
+def precompile_algs() -> None:
     log.debug("Started precompiling functions...")
     levenshtein_distance("", "")
     log.debug("Finished precompiling functions")
-
-
-def precompile_algs():
-    threading.Thread(_precompile(), daemon=True).start()
