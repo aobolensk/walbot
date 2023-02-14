@@ -32,6 +32,7 @@ class Shell:
         stdout, stderr = proc.communicate()
         return ShellCommandResult(proc.returncode, stdout.decode('utf-8'), stderr.decode('utf-8'))
 
+    @staticmethod
     async def run_async(
             cmd_line: str, cwd: Optional[str] = None, shell: bool = False,
             timeout: int = 10) -> ShellCommandResult:
@@ -52,6 +53,7 @@ class Shell:
             ret_code, stdout, stderr = -1, b'', b''
         return ShellCommandResult(ret_code, stdout.decode('utf-8'), stderr.decode('utf-8'))
 
+    @staticmethod
     async def run_ssh_async(
             cmd_line: str, ssh_credentials: SSHCredentials, *args,
             **kwargs) -> ShellCommandResult:
@@ -69,6 +71,7 @@ class Shell:
         finally:
             del os.environ["SSHPASS"]
 
+    @staticmethod
     async def run_and_send_stdout(
             execution_ctx: ExecutionContext, cmd_line: str, cwd: Optional[str] = None) -> Optional[str]:
         result = await Shell.run_async(cmd_line, cwd=cwd, shell=True)
