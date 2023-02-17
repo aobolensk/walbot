@@ -1,5 +1,5 @@
 numpy==1.23.5
-py-cord[voice]==2.3.2
+py-cord[voice]==2.4.0
 requests==2.28.2
 numba==0.56.3;python_version<"3.11" and platform_python_implementation=="CPython"
 psutil==5.9.4
