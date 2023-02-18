@@ -11,6 +11,7 @@ from src.api.command import (BaseCmd, Command, Implementation,
                              SupportedPlatforms)
 from src.api.execution_context import ExecutionContext
 from src.backend.discord.embed import DiscordEmbed
+from src.cmdarg_parser import CmdArgParser
 from src.config import bc
 from src.message_cache import CachedMsg
 from src.shell import Shell
@@ -160,16 +161,11 @@ class BuiltinCommands(BaseCmd):
 """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
-        verbosity = 0
-        if len(cmd_line) > 1:
-            if cmd_line[1] == '-v':
-                verbosity = 1
-            elif cmd_line[1] == '-vv':
-                verbosity = 2
-            else:
-                return await Command.send_message(
-                    execution_ctx, f"Unknown argument '{cmd_line[1]}' for '{cmd_line[0]}' command")
-        result = bc.info.get_full_info(verbosity)
+        parser = CmdArgParser()
+        parser.add_argument("verbosity", ["-v", "--verbose"], int, 0, value_to_set=1)
+        parser.add_argument("verbosity", ["-vv", "--verbose2", "--very-verbose"], int, 0, value_to_set=2)
+        args = parser.parse(cmd_line)
+        result = bc.info.get_full_info(args.verbosity)
         await Command.send_message(execution_ctx, result, suppress_embeds=True)
 
     async def _shutdown(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
@@ -246,10 +242,12 @@ class BuiltinCommands(BaseCmd):
     """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
             return
-        url = cmd_line[1]
-        use_proxy = True if len(cmd_line) == 3 and cmd_line[2] == "--no-proxy" else False
+        parser = CmdArgParser()
+        parser.add_positional_argument("url")
+        parser.add_argument("use_proxy", ["--no-proxy"], bool, True, value_to_set=False)
+        args = parser.parse(cmd_line)
         try:
-            r = Util.request(url, use_proxy=use_proxy)
+            r = Util.request(args.url, use_proxy=args.use_proxy)
             result = r.get_text()
             await Command.send_message(execution_ctx, result)
             return result
