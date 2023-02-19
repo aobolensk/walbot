@@ -165,7 +165,7 @@ class BuiltinCommands(BaseCmd):
         parser.add_argument("-v", "--verbose", action="store_const", dest="verbosity", const=1, default=0)
         parser.add_argument(
             "-vv", "--verbose2", "--very-verbose", action="store_const", dest="verbosity", const=2, default=0)
-        args = parser.parse_args(cmd_line[1:])
+        args = parser.parse_args(cmd_line)
         if args is None:
             return
         result = bc.info.get_full_info(args.verbosity)

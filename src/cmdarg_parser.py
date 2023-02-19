@@ -7,7 +7,7 @@ from src.config import bc
 
 class CmdArgParser(argparse.ArgumentParser):
     def __init__(self, execution_ctx: ExecutionContext) -> None:
-        super().__init__()
+        super().__init__(prog="")
         self._execution_ctx = execution_ctx
         self._error = False
 
@@ -32,3 +32,11 @@ class CmdArgParser(argparse.ArgumentParser):
         """Original argparse method is hidden.
         Ignore argparse exit calls"""
         pass
+
+    def print_help(self, file=None):
+        bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(self.format_help()))
+        self._error = True  # Do not return parsed args
+
+    def print_usage(self, file=None):
+        bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(self.format_usage()))
+        self._error = True  # Do not return parsed args
