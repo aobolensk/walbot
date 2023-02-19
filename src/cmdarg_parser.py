@@ -5,9 +5,20 @@ from src.api.execution_context import ExecutionContext
 from src.config import bc
 
 
+class _CmdArgSubParsersAction(argparse._SubParsersAction):
+    def __init__(self, execution_ctx: ExecutionContext, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._execution_ctx = execution_ctx
+
+    def add_parser(self, name, **kwargs):
+        return super().add_parser(name, execution_ctx=self._execution_ctx, **kwargs)
+
+
 class CmdArgParser(argparse.ArgumentParser):
-    def __init__(self, execution_ctx: ExecutionContext) -> None:
-        super().__init__(prog="")
+    def __init__(self, execution_ctx: ExecutionContext, *args, **kwargs) -> None:
+        kwargs["prog"] = ""  # Suppress executable name in the output
+        super().__init__(*args, **kwargs)
+        self.register('action', 'parsers', _CmdArgSubParsersAction)
         self._execution_ctx = execution_ctx
         self._error = False
 
@@ -40,3 +51,6 @@ class CmdArgParser(argparse.ArgumentParser):
     def print_usage(self, file=None):
         bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(self.format_usage()))
         self._error = True  # Do not return parsed args
+
+    def add_subparsers(self, **kwargs):
+        return super().add_subparsers(parser_class=CmdArgParser, execution_ctx=self._execution_ctx, **kwargs)
