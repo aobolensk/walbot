@@ -27,9 +27,10 @@ class WalBot(discord.Client):
     def __init__(
             self, name: str, config: Config, secret_config: SecretConfig, intents: discord.Intents,
             fast_start: bool = False) -> None:
-        super().__init__(intents=intents, proxy=Util.proxy.http())
-        if Util.proxy.http() is not None:
-            log.info("Discord instance is using proxy: " + Util.proxy.http())
+        http_proxy = Util.proxy.http()
+        if http_proxy is not None:
+            log.info("Discord instance is using proxy: " + http_proxy)
+        super().__init__(intents=intents, proxy=http_proxy)
         self.repl = None
         self.instance_name = name
         self.config = config
