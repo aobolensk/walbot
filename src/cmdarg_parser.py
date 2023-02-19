@@ -17,14 +17,15 @@ class _CmdArgSubParsersAction(argparse._SubParsersAction):
 class CmdArgParser(argparse.ArgumentParser):
     def __init__(self, execution_ctx: ExecutionContext, *args, **kwargs) -> None:
         kwargs["prog"] = ""  # Suppress executable name in the output
+        kwargs["exit_on_error"] = False  # Forbid any exit on error
         super().__init__(*args, **kwargs)
         self.register('action', 'parsers', _CmdArgSubParsersAction)
         self._execution_ctx = execution_ctx
         self._error = False
 
     def parse_args(self, cmd_line: List[str]) -> Optional[argparse.Namespace]:
-        """Original argparse method is hidden.
-        Use cmd_line (required argument) as an input.
+        """Use cmd_line (required argument) as an input.
+        Original argparse method is hidden.
         Return parsed args in Namespace class.
         If error happened return None"""
         self._error = False
@@ -45,10 +46,12 @@ class CmdArgParser(argparse.ArgumentParser):
         pass
 
     def print_help(self, file=None):
+        """Print help to the channel where it was called"""
         bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(self.format_help()))
         self._error = True  # Do not return parsed args
 
     def print_usage(self, file=None):
+        """Print usage to the channel where it was called"""
         bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(self.format_usage()))
         self._error = True  # Do not return parsed args
 
