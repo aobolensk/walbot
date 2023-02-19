@@ -161,10 +161,13 @@ class BuiltinCommands(BaseCmd):
 """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
-        parser = CmdArgParser()
-        parser.add_argument("verbosity", ["-v", "--verbose"], int, 0, value_to_set=1)
-        parser.add_argument("verbosity", ["-vv", "--verbose2", "--very-verbose"], int, 0, value_to_set=2)
-        args = parser.parse(cmd_line)
+        parser = CmdArgParser(execution_ctx)
+        parser.add_argument("-v", "--verbose", action="store_const", dest="verbosity", const=1, default=0)
+        parser.add_argument(
+            "-vv", "--verbose2", "--very-verbose", action="store_const", dest="verbosity", const=2, default=0)
+        args = parser.parse_args(cmd_line[1:])
+        if args is None:
+            return
         result = bc.info.get_full_info(args.verbosity)
         await Command.send_message(execution_ctx, result, suppress_embeds=True)
 
@@ -242,10 +245,12 @@ class BuiltinCommands(BaseCmd):
     """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
             return
-        parser = CmdArgParser()
-        parser.add_positional_argument("url")
-        parser.add_argument("use_proxy", ["--no-proxy"], bool, True, value_to_set=False)
-        args = parser.parse(cmd_line)
+        parser = CmdArgParser(execution_ctx)
+        parser.add_argument("url")
+        parser.add_argument("--no-proxy", action="store_false", dest="use_proxy")
+        args = parser.parse_args(cmd_line)
+        if args is None:
+            return
         try:
             r = Util.request(args.url, use_proxy=args.use_proxy)
             result = r.get_text()

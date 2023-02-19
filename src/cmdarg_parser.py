@@ -1,66 +1,34 @@
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+import argparse
+from typing import List, Optional
+
+from src.api.execution_context import ExecutionContext
+from src.config import bc
 
 
-class ParsedArgs(dict):
-    __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+class CmdArgParser(argparse.ArgumentParser):
+    def __init__(self, execution_ctx: ExecutionContext) -> None:
+        super().__init__()
+        self._execution_ctx = execution_ctx
+        self._error = False
 
+    def parse_args(self, cmd_line: List[str]) -> Optional[argparse.Namespace]:
+        """Original argparse method is hidden.
+        Use cmd_line (required argument) as an input.
+        Return parsed args in Namespace class.
+        If error happened return None"""
+        self._error = False
+        result = super().parse_args(cmd_line[1:])
+        if self._error:
+            return None
+        return result
 
-class CmdArgParser:
-    @dataclass
-    class ArgRule:
-        arg_name: str
-        cmdline_names: List[str]
-        type: object
-        nargs: int
-        default_value: Any
-        value_to_set: Any
+    def error(self, message) -> None:
+        """Original argparse method is hidden.
+        Send error to text channel"""
+        bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(message))
+        self._error = True
 
-    def __init__(self) -> None:
-        self._positional_args: List[str] = []
-        self._named_args: Dict[str, self.ArgRule] = {}
-
-    def parse(self, cmd_line: List[str]) -> Optional[ParsedArgs]:
-        self._args = ParsedArgs()
-        for value in self._named_args.values():
-            self._args[value.arg_name] = value.default_value
-        positional_args_idx = 0
-        for idx in range(1, len(cmd_line)):
-            if positional_args_idx < len(self._positional_args):
-                self._args[self._positional_args[positional_args_idx]] = cmd_line[idx]
-                positional_args_idx += 1
-            else:
-                if cmd_line[idx] in self._named_args.keys():
-                    rule = self._named_args[cmd_line[idx]]
-                    if rule.value_to_set is not None:
-                        self._args[rule.arg_name] = rule.value_to_set
-                    elif rule.nargs == 1:
-                        self._args[rule.arg_name] = cmd_line[idx + 1]
-                        idx += 1
-                    else:
-                        raise NotImplementedError("nargs > 1 is not supported yet")
-                else:
-                    raise RuntimeError(f"Unknown argument '{cmd_line[idx]}'")
-            idx += 1
-        return self._args
-
-    def add_positional_argument(self, name: str) -> None:
-        self._positional_args.append(name)
-
-    def add_argument(
-            self, arg_name: str, cmdline_names: List[str], type: object,
-            default_value: Any = None, nargs: int = 0, value_to_set: Any = None):
-        if nargs > 1:
-            raise NotImplementedError("nargs > 1 is not supported yet")
-        if nargs != 0 and value_to_set is not None:
-            raise RuntimeError(
-                "Value to set should be either defined using 'value_to_set' argument or retrieved from "
-                "command line using 'nargs' (number of next args to take), but not both")
-        if nargs == 0 and value_to_set is None:
-            raise RuntimeError(
-                "Either 'nargs' or 'value_to_set' need to be provided")
-        for cmdline_name in cmdline_names:
-            self._named_args[cmdline_name] = self.ArgRule(
-                arg_name, cmdline_name, type, nargs, default_value, value_to_set)
+    def exit(self, status=0, message=None) -> None:
+        """Original argparse method is hidden.
+        Ignore argparse exit calls"""
+        pass
