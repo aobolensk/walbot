@@ -66,4 +66,4 @@ class DiscordExecutionContext(ExecutionContext):
         return self.message.channel.id
 
     def bot_user_id(self) -> int:
-        return self.user.id
+        return bc.discord.bot_user_id
