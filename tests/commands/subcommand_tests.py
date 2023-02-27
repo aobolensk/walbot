@@ -9,7 +9,7 @@ from tests.fixtures.context import BufferTestExecutionContext
 def test_ping_command_with_subcommand(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
-    loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
     loop.run_until_complete(
         bc.executor.commands["echo"].run(["echo", "$(ping)"], BufferTestExecutionContext()))
     captured = capsys.readouterr()
@@ -19,7 +19,7 @@ def test_ping_command_with_subcommand(capsys):
 def test_ping_command_with_multilevel_nested_subcommands(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
-    loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
     cmd = "echo $(echo Test 1)"
     loop.run_until_complete(
         bc.executor.commands[cmd.split()[0]].run(cmd.split(), BufferTestExecutionContext()))
@@ -44,7 +44,7 @@ def test_ping_command_with_multilevel_nested_subcommands(capsys):
 def test_command_that_does_not_support_subcommand_usage(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
-    loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
     cmd = "echo $(about)"
     loop.run_until_complete(
         bc.executor.commands[cmd.split()[0]].run(cmd.split(), BufferTestExecutionContext()))
@@ -55,7 +55,7 @@ def test_command_that_does_not_support_subcommand_usage(capsys):
 def test_empty_subcommand_returns_nothing(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
-    loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
     cmd = "echo $()"
     loop.run_until_complete(
         bc.executor.commands[cmd.split()[0]].run(cmd.split(), BufferTestExecutionContext()))
@@ -67,7 +67,7 @@ def test_if_and_calc_commands_as_subcommands(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
     bc.executor.add_module(MathCommands())
-    loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
     loop.run_until_complete(bc.executor.commands["echo"].run(
         "echo $(if $(calc 2 < 3) less;not less)".split(" "), BufferTestExecutionContext()))
     loop.run_until_complete(bc.executor.commands["echo"].run(

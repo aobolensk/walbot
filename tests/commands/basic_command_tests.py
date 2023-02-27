@@ -12,7 +12,7 @@ def test_empty_executor():
 def test_ping_command(capsys):
     bc.executor.commands = dict()
     bc.executor.add_module(BuiltinCommands())
-    loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
     loop.run_until_complete(
         bc.executor.commands["ping"].run(["ping"], BufferTestExecutionContext()))
     captured = capsys.readouterr()
