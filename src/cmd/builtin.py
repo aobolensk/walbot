@@ -334,12 +334,12 @@ class BuiltinCommands(BaseCmd):
             return await Command.send_message(
                 execution_ctx,
                 f"Message search depth is too big (it can't be more than {const.MAX_MESSAGE_HISTORY_DEPTH})")
-        result = bc.message_cache.get(str(execution_ctx.channel_id()), number)
+        result = bc.message_cache.get(execution_ctx.channel_id(), number)
         if result is None:
             if execution_ctx.platform == const.BotBackend.DISCORD:
                 result = await execution_ctx.message.channel.history(limit=number + 1).flatten()
                 history_data = [CachedMsg(msg.content, str(msg.author.id)) for msg in result]
-                bc.message_cache.reset(str(execution_ctx.channel_id()), history_data)
+                bc.message_cache.reset(execution_ctx.channel_id(), history_data)
                 result = history_data[-1]
             else:
                 return await Command.send_message(execution_ctx, "Message index is too big")
