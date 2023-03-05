@@ -23,7 +23,7 @@ async def command_handler(command_name: str, update: Update, context: CallbackCo
     # 'authorize' and 'resetpass' commands should be available for all channels to authorize bot there
     if command_name not in ("authorize", "resetpass") and not check_auth(update):
         return
-    bc.message_cache.push(str(update.message.chat.id), CachedMsg(text, str(update.message.from_user.id)))
+    bc.message_cache.push(update.message.chat.id, CachedMsg(text, str(update.message.from_user.id)))
     await _command_handler(command_name, update, context)
 
 

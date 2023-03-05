@@ -169,7 +169,7 @@ class WalBot(discord.Client):
             return
         if self.config.discord.guilds[message.channel.guild.id].ignored:
             return
-        bc.message_cache.push(str(message.channel.id), CachedMsg(message.content, str(message.author.id)))
+        bc.message_cache.push(message.channel.id, CachedMsg(message.content, str(message.author.id)))
         if message.author.id == self.user.id:
             return
         if message.channel.guild.id is None:
