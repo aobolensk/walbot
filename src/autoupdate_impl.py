@@ -184,10 +184,10 @@ def at_failure(e: Exception) -> None:
         return log.error("Failed to read secret config file")
     mail = Mail(secret_config)
     mail.send(
-            secret_config.admin_email_list,
-            "Autoupdate error",
-            get_autoupdate_error_message(
-                f"Autoupdate fatal error: {e}"))
+        secret_config.admin_email_list,
+        "Autoupdate error",
+        get_autoupdate_error_message(
+            f"Autoupdate fatal error: {e}"))
 
 
 def at_exit(e: Exception) -> None:
