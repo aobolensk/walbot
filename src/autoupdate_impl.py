@@ -178,10 +178,19 @@ def at_start() -> None:
 
 def at_failure(e: Exception) -> None:
     """Autoupdate fatal error handling"""
-    pass
+    log.error(f"Fatal error: {e}")
+    secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
+    if secret_config is None:
+        return log.error("Failed to read secret config file")
+    mail = Mail(secret_config)
+    mail.send(
+            secret_config.admin_email_list,
+            "Autoupdate error",
+            get_autoupdate_error_message(
+                f"Autoupdate fatal error: {e}"))
 
 
-def at_exit() -> None:
+def at_exit(e: Exception) -> None:
     """Autoupdate finalize"""
     if os.path.isfile(const.BOT_CACHE_FILE_PATH):
         os.remove(const.BOT_CACHE_FILE_PATH)

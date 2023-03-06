@@ -28,8 +28,7 @@ def start(args) -> None:
                 signal.signal(signal.SIGHUP, au.at_exit)
                 log.debug("Reloaded autoupdate implementation module")
     except KeyboardInterrupt as e:
-        au.at_failure(e)
+        au.at_exit(e)
     except Exception as e:
-        au.at_exit()
+        au.at_failure(e)
         raise e
-    au.at_exit()
