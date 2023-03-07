@@ -11,8 +11,7 @@ import sys
 
 def main():
     """WalBot launcher entrypoint"""
-    if not ((sys.version_info.major == 3 and sys.version_info.minor >= 8) and
-            (sys.version_info.major == 3 and sys.version_info.minor <= 11)):
+    if not ((3, 8) <= sys.version_info[:3] <= (3, 11)):
         print("Python {}.{}.{} is not supported. You need Python 3.8 - 3.11".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
         sys.exit(1)
