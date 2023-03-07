@@ -1,4 +1,5 @@
 import argparse
+import sys
 from typing import List, Optional
 
 from src.api.execution_context import ExecutionContext
@@ -17,7 +18,8 @@ class _CmdArgSubParsersAction(argparse._SubParsersAction):
 class CmdArgParser(argparse.ArgumentParser):
     def __init__(self, execution_ctx: ExecutionContext, *args, **kwargs) -> None:
         kwargs["prog"] = ""  # Suppress executable name in the output
-        kwargs["exit_on_error"] = False  # Forbid any exit on error
+        if sys.version_info >= (3, 9):
+            kwargs["exit_on_error"] = False  # Forbid any exit on error
         super().__init__(*args, **kwargs)
         self.register('action', 'parsers', _CmdArgSubParsersAction)
         self._execution_ctx = execution_ctx
