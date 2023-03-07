@@ -91,6 +91,7 @@ class BotInfo:
         res["python-telegram-bot"] = importlib.import_module("telegram").__version__
         res["aiogoogletrans"] = importlib.import_module("aiogoogletrans").__version__
         res["nest-asyncio"] = self._get_version_from_requirements_txt("nest-asyncio")
+        res["python-magic"] = self._get_version_from_requirements_txt("python-magic")
         return res
 
     @property
