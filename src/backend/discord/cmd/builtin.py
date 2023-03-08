@@ -561,7 +561,6 @@ class BuiltinCommands(BaseCmd):
                 else:
                     # Not recognized source
                     break
-                os.makedirs(Util.tmp_dir(), exist_ok=True)
                 temp_image_file = tempfile.NamedTemporaryFile(dir=Util.tmp_dir(), delete=False)
                 try:
                     with urllib.request.urlopen(rq) as response:

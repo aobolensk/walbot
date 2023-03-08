@@ -149,10 +149,9 @@ class Launcher:
         # Init bot info
         bc.info = BotInfo()
         # Create necessary dirs if they are not present
-        if not os.path.exists(const.IMAGES_DIRECTORY):
-            os.makedirs(const.IMAGES_DIRECTORY)
-        if not os.path.exists(const.BACKUP_DIRECTORY):
-            os.makedirs(const.BACKUP_DIRECTORY)
+        os.makedirs(const.IMAGES_DIRECTORY, exist_ok=True)
+        os.makedirs(const.BACKUP_DIRECTORY, exist_ok=True)
+        os.makedirs(Util.tmp_dir(), exist_ok=True)
 
     def _read_configs(self, main_bot: bool = True) -> None:
         # Read configuration files

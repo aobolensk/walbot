@@ -45,7 +45,6 @@ class _ImageInternals:
                         emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
                         emoji_match = re.findall(emoji_match.format(cmd_line[i]), emojis_page)
                         if emoji_match:
-                            os.makedirs(Util.tmp_dir(), exist_ok=True)
                             with tempfile.NamedTemporaryFile(dir=Util.tmp_dir()) as temp_image_file:
                                 with open(temp_image_file.name, 'wb') as f:
                                     f.write(base64.b64decode(emoji_match[4]))  # Twemoji is located under this index
