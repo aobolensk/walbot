@@ -115,6 +115,10 @@ class BuiltinCommands(BaseCmd):
             "builtin", "profile", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._profile,
             supported_platforms=(SupportedPlatforms.DISCORD | SupportedPlatforms.TELEGRAM))
+        bc.executor.commands["server"] = Command(
+            "builtin", "server", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=False, impl_func=self._server,
+            supported_platforms=(SupportedPlatforms.DISCORD))
         bc.executor.commands["message"] = Command(
             "builtin", "message", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._message)
@@ -314,6 +318,33 @@ class BuiltinCommands(BaseCmd):
                 return await Command.send_message(
                     execution_ctx, "Getting others profile is not supported on Telegram backend")
             await _BuiltinInternals.telegram_profile(cmd_line, execution_ctx, user)
+        else:
+            await Command.send_message(
+                execution_ctx,
+                f"'{cmd_line[0]}' command is not implemented on '{execution_ctx.platform}' platform")
+
+    async def _server(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+        """Print information about current server
+    Example: !server"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+            return
+        if execution_ctx.platform == const.BotBackend.DISCORD:
+            g = execution_ctx.message.guild
+            e = DiscordEmbed()
+            e.title(g.name)
+            if g.icon:
+                e.thumbnail(str(g.icon))
+            e.add_field("Members", str(g.member_count), True)
+            e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
+            if g.owner is not None:
+                e.add_field("Owner", str(g.owner).split('#', 1)[0], True)
+            e.add_field("Text channels",
+                        ', '.join([f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels]), True)
+            e.add_field("Voice channels", ', '.join([f"{ch.name}" for ch in g.voice_channels]), True)
+            e.add_field("Server emojis", ' '.join([str(emoji) for emoji in g.emojis]))
+            e.add_field("Verification level", str(g.verification_level), True)
+            e.add_field("Server Boost level", str(g.premium_tier), True)
+            await Command.send_message(execution_ctx, None, embed=e.get())
         else:
             await Command.send_message(
                 execution_ctx,

@@ -11,7 +11,6 @@ import discord
 from src import const
 from src.algorithms import levenshtein_distance
 from src.api.command import BaseCmd
-from src.backend.discord.embed import DiscordEmbed
 from src.backend.discord.message import Msg
 from src.config import Command, bc, log
 from src.utils import Util, null
@@ -36,7 +35,6 @@ class BuiltinCommands(BaseCmd):
             "delalias": dict(permission=const.Permission.MOD.value, subcommand=False),
             "listalias": dict(permission=const.Permission.USER.value, subcommand=True),
             "avatar": dict(permission=const.Permission.MOD.value, subcommand=False),
-            "server": dict(permission=const.Permission.USER.value, subcommand=False),
             "pin": dict(permission=const.Permission.MOD.value, subcommand=True),
             "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
@@ -587,29 +585,6 @@ class BuiltinCommands(BaseCmd):
                 suggestion = file
                 min_dist = dist
         await Msg.response(message, f"Image '{image}' is not found! Probably you meant '{suggestion}'", silent)
-
-    @staticmethod
-    async def _server(message, command, silent=False):
-        """Print information about current server
-    Example: !server"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-        g = message.guild
-        e = DiscordEmbed()
-        e.title(g.name)
-        if g.icon:
-            e.thumbnail(str(g.icon))
-        e.add_field("Members", str(g.member_count), True)
-        e.add_field("Created", str(g.created_at.replace(microsecond=0)), True)
-        if g.owner is not None:
-            e.add_field("Owner", str(g.owner).split('#', 1)[0], True)
-        e.add_field("Text channels",
-                    ', '.join([f"{ch.name}{' (nsfw)' if ch.nsfw else ''}" for ch in g.text_channels]), True)
-        e.add_field("Voice channels", ', '.join([f"{ch.name}" for ch in g.voice_channels]), True)
-        e.add_field("Server emojis", ' '.join([str(emoji) for emoji in g.emojis]))
-        e.add_field("Verification level", str(g.verification_level), True)
-        e.add_field("Server Boost level", str(g.premium_tier), True)
-        await Msg.response(message, None, silent, embed=e.get())
 
     @staticmethod
     async def _pin(message, command, silent=False):
