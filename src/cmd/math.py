@@ -142,8 +142,13 @@ class MathCommands(BaseCmd):
         result = ""
         silent_state = execution_ctx.silent
         execution_ctx.silent = True
-        for _ in range(loop_count):
-            result += await bc.executor.commands[subcommand[0]].run(subcommand, execution_ctx) + ' '
-        execution_ctx.silent = silent_state
+        try:
+            for _ in range(loop_count):
+                result += await bc.executor.commands[subcommand[0]].run(subcommand, execution_ctx) + ' '
+        except KeyError:
+            execution_ctx.silent = silent_state
+            await Command.send_message(execution_ctx, f"Unknown command '{subcommand[0]}'")
+        else:
+            execution_ctx.silent = silent_state
         await Command.send_message(execution_ctx, result)
         return result
