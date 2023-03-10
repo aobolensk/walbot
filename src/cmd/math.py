@@ -71,6 +71,9 @@ class MathCommands(BaseCmd):
         bc.executor.commands["if"] = Command(
             "math", "if", const.Permission.USER, Implementation.FUNCTION,
             subcommand=True, impl_func=self._if)
+        bc.executor.commands["loop"] = Command(
+            "math", "loop", const.Permission.USER, Implementation.FUNCTION,
+            subcommand=True, impl_func=self._loop)
 
     async def _calc(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Calculate mathematical expression
@@ -119,5 +122,28 @@ class MathCommands(BaseCmd):
                     execution_ctx, f"There should be only 2 branches ('then' and 'else') "
                                    f"separated by ';' in '{cmd_line[0]}' command"))
         result = expressions[0] if condition != 0 else expressions[1]
+        await Command.send_message(execution_ctx, result)
+        return result
+
+    async def _loop(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
+        """Repeat an action n times
+    Examples:
+        !loop 2 ping
+        !loop 5 echo Hello!"""
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
+            return
+        subcommand = cmd_line[2:]
+        loop_count = await Util.parse_int(
+            execution_ctx, cmd_line[1], "Loop iterations count should be an integer")
+        if loop_count is None:
+            return
+        if loop_count <= 0:
+            await Command.send_message(execution_ctx, "Loop iterations count should be greater than 0")
+        result = ""
+        silent_state = execution_ctx.silent
+        execution_ctx.silent = True
+        for _ in range(loop_count):
+            result += await bc.executor.commands[subcommand[0]].run(subcommand, execution_ctx) + ' '
+        execution_ctx.silent = silent_state
         await Command.send_message(execution_ctx, result)
         return result

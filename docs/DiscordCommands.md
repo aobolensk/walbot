@@ -318,6 +318,12 @@
         !if 0 It's true;It's false -&gt; It's false \
     *This command can be used as subcommand*
 
+**loop**: Repeat an action n times \
+    Examples: \
+        !loop 2 ping \
+        !loop 5 echo Hello! \
+    *This command can be used as subcommand*
+
 # Module: plugin
 
 **autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \

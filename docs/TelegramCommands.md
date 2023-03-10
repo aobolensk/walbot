@@ -263,6 +263,13 @@
     *This command can be used as subcommand* \
     *Default permission level: 0*
 
+**loop**: Repeat an action n times \
+    Examples: \
+        !loop 2 ping \
+        !loop 5 echo Hello! \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
 # Module: plugin
 
 **autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \
