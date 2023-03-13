@@ -7,6 +7,7 @@ from typing import Any, Coroutine, Optional, Tuple
 
 import requests
 import yaml
+from dateutil import tz
 
 from src.api.command import Command
 from src.api.execution_context import ExecutionContext
@@ -182,13 +183,13 @@ class Util:
 
 
 class Time:
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         if not hasattr(cls, '_instance'):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self) -> None:
-        self._tz = None
+    def __init__(self, tz: Optional[tz.tz.tzfile] = None) -> None:
+        self._tz = tz
 
     def now(self) -> datetime.datetime:
         return datetime.datetime.now(tz=self._tz)

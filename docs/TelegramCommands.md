@@ -17,6 +17,7 @@
 * [Module: reminder](#module-reminder)
 * [Module: services](#module-services)
 * [Module: string](#module-string)
+* [Module: time](#module-time)
 
 # Module: auth
 
@@ -95,19 +96,6 @@
 **shutdown**: Shutdown the bot \
     Example: !shutdown \
     *Default permission level: 2*
-
-**time**: Show current time \
-    Examples: \
-        !time \
-        !time Europe/Moscow \
-        !time America/New_York \
-    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
-    *This command can be used as subcommand* \
-    *Default permission level: 0*
-
-**tz**: Get current timezone \
-    Usage: !tz \
-    *Default permission level: 0*
 
 **uptime**: Show bot uptime \
     Example: !uptime \
@@ -645,4 +633,19 @@
 **urlencode**: Urlencode string \
     Example: !urlencode hello, world! \
     *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+# Module: time
+
+**time**: Show current time \
+    Examples: \
+        !time \
+        !time Europe/Moscow \
+        !time America/New_York \
+    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
+    *This command can be used as subcommand* \
+    *Default permission level: 0*
+
+**tz**: Get current timezone \
+    Usage: !tz \
     *Default permission level: 0*

@@ -17,6 +17,7 @@
 * [Module: role](#module-role)
 * [Module: services](#module-services)
 * [Module: string](#module-string)
+* [Module: time](#module-time)
 * [Module: timer](#module-timer)
 
 # Module: builtin
@@ -165,14 +166,6 @@
     Possible activities: [playing, streaming, watching, listening] \
     Possible bot statuses: [online, idle, dnd, invisible]
 
-**time**: Show current time \
-    Examples: \
-        !time \
-        !time Europe/Moscow \
-        !time America/New_York \
-    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
-    *This command can be used as subcommand*
-
 **timescmd**: Print how many times command was invoked \
     Examples: \
         !timescmd echo \
@@ -181,9 +174,6 @@
 
 **tts**: Send text-to-speech (TTS) message \
     Example: !tts Hello!
-
-**tz**: Get current timezone \
-    Usage: !tz
 
 **updcmd**: Update command (works only for commands that already exist) \
     Example: !updcmd hello Hello!
@@ -666,6 +656,19 @@
 **urlencode**: Urlencode string \
     Example: !urlencode hello, world! \
     *This command can be used as subcommand*
+
+# Module: time
+
+**time**: Show current time \
+    Examples: \
+        !time \
+        !time Europe/Moscow \
+        !time America/New_York \
+    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
+    *This command can be used as subcommand*
+
+**tz**: Get current timezone \
+    Usage: !tz
 
 # Module: timer
 
