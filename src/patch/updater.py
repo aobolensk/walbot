@@ -328,6 +328,14 @@ class Updater:
             config.executor["commands_data"]["poll"]["max_execution_time"] = -1
             self._bump_version(config, "0.0.58")
         if config.version == "0.0.58":
+            for key in config.discord.users.keys():
+                config.discord.users[key].__dict__["data"] = dict()
+                config.discord.users[key].__dict__["data"]["tz"] = None
+            for key in config.telegram.users.keys():
+                config.telegram.users[key].__dict__["data"] = dict()
+                config.telegram.users[key].__dict__["data"]["tz"] = None
+            self._bump_version(config, "0.0.59")
+        if config.version == "0.0.59":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

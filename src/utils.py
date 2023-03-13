@@ -194,6 +194,10 @@ class Time:
     def now(self) -> datetime.datetime:
         return datetime.datetime.now(tz=self._tz)
 
+    @staticmethod
+    def by_user(execution_ctx: ExecutionContext):
+        return Time(execution_ctx.user["data"]["tz"])
+
 
 def null(*args, **kwargs):
     """Drop return value"""

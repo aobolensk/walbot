@@ -198,6 +198,9 @@ class User:
     def __init__(self, id_):
         self.id = id_
         self.permission_level = const.Permission.USER.value
+        self.data = {
+            "tz": None,
+        }
 
 
 class Config:

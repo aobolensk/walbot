@@ -9,6 +9,7 @@ class ExecutionContext(ABC):
         self.platform = "<unknown>"
         self.permission_level = const.Permission.USER
         self.silent = False
+        self.user = None
 
     @abstractmethod
     async def send_message(self, message: str, *args, **kwargs) -> Any:

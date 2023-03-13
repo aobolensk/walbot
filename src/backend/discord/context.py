@@ -15,6 +15,7 @@ class DiscordExecutionContext(ExecutionContext):
         super().__init__()
         self.platform = const.BotBackend.DISCORD
         self.message = message
+        self.user = bc.config.discord.users[message.author.id]
         self.permission_level = bc.config.discord.users[message.author.id].permission_level
         self.silent = silent
 
