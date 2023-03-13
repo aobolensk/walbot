@@ -157,10 +157,10 @@ class _ReminderInternals:
             if reminder.limit_repetitions_time is not None:
                 props.append(f'repeating until {reminder.limit_repetitions_time}')
             reminder_list.append(
-                (reminder.time,
+                (reminder.get_local_time(execution_ctx.user.data['tz']),
                  Util.cut_string(reminder.message, 256),
                  f"{notes if reminder.notes else ''}"
-                 f"{index} at {reminder.time} "
+                 f"{index} at {reminder.get_local_time(execution_ctx.user.data['tz'])} "
                  f" in {channel}"
                  f"{' - ' if props else ''}{'; '.join(props)}"))
         reminder_list.sort()
@@ -277,7 +277,7 @@ class ReminderCommands(BaseCmd):
             e = DiscordEmbed()
             e.title("Reminder info")
             e.description(reminder.message)
-            e.footer(f"{reminder.author} • {datetime.datetime.strptime(reminder.time, const.REMINDER_DATETIME_FORMAT)}")
+            e.footer(f"{reminder.author} • {reminder.get_local_time(execution_ctx.user.data['tz'])}")
             e.add_field("Index", str(index), True)
             e.add_field("Channel", f'{reminder.backend}: <#{reminder.channel_id}>', True)
             if reminder.repeat_after:
@@ -291,7 +291,7 @@ class ReminderCommands(BaseCmd):
         else:
             result = f"Reminder {index}:\n"
             result += f"Message: {reminder.message}\n"
-            result += f"Time: {datetime.datetime.strptime(reminder.time, const.REMINDER_DATETIME_FORMAT)}\n"
+            result += f"Time: {reminder.get_local_time(execution_ctx.user.data['tz'])}\n"
             result += f"Author: {reminder.author}\n"
             result += f"Channel: {reminder.backend}: <#{reminder.channel_id}>\n"
             if reminder.repeat_after:
