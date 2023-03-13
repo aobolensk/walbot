@@ -196,7 +196,7 @@ class Time:
 
     @staticmethod
     def by_user(execution_ctx: ExecutionContext):
-        return Time(execution_ctx.user["data"]["tz"])
+        return Time(tz.gettz(execution_ctx.user.data["tz"]))
 
 
 def null(*args, **kwargs):
