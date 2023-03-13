@@ -659,6 +659,9 @@
 
 # Module: time
 
+**setusertz**: Set timezone for the user \
+    Usage: !setusertz Europe/Moscow
+
 **time**: Show current time \
     Examples: \
         !time \

@@ -15,6 +15,7 @@ class TelegramExecutionContext(ExecutionContext):
         self.platform = const.BotBackend.TELEGRAM
         self.update = update
         self.context = context
+        self.user = bc.config.telegram.users[update.message.from_user.id]
         self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
         self._replace_patterns = dict()
 

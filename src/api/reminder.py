@@ -1,7 +1,10 @@
 import datetime
+from typing import Optional
 
 import dateutil.relativedelta
+from dateutil import tz
 
+from src import const
 from src.log import log
 
 
@@ -43,3 +46,8 @@ class Reminder:
 
     def __gt__(self, time):
         return self.time > time
+
+    def get_local_time(self, tz_str: Optional[str]):
+        if tz_str:
+            return datetime.datetime.strptime(self.time, const.REMINDER_DATETIME_FORMAT).astimezone(tz.gettz(tz_str))
+        return self.time
