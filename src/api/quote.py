@@ -6,7 +6,7 @@ class Quote:
         self.message = message
         self.author = ""
         self.added_by = added_by
-        self.timestamp = Time().now().replace(microsecond=0)
+        self.timestamp = Time().now()
 
     def __str__(self):
         return self.quote()

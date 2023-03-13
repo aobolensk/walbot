@@ -192,7 +192,7 @@ class Time:
         self._tz = tz
 
     def now(self) -> datetime.datetime:
-        return datetime.datetime.now(tz=self._tz)
+        return datetime.datetime.now(tz=self._tz).replace(microsecond=0)
 
     @staticmethod
     def by_user(execution_ctx: ExecutionContext):

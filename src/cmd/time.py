@@ -40,9 +40,9 @@ class TimeCommands(BaseCmd):
                     execution_ctx,
                     "Incorrect timezone. "
                     "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>")
-            result = str(Time(timezone).now()).split('.', maxsplit=1)[0]
+            result = str(Time(timezone).now())
         else:
-            result = str(Time.by_user(execution_ctx).now()).split('.', maxsplit=1)[0]
+            result = str(Time.by_user(execution_ctx).now())
         await Command.send_message(execution_ctx, result)
         return result
 
