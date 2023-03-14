@@ -638,7 +638,10 @@
 # Module: time
 
 **setusertz**: Set timezone for the user \
-    Usage: !setusertz Europe/Moscow \
+    Usage: \
+        !setusertz \
+        !setusertz Europe/Moscow \
+        !setusertz America/New_York \
     *Default permission level: 0*
 
 **time**: Show current time \

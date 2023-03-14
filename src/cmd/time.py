@@ -56,7 +56,10 @@ class TimeCommands(BaseCmd):
 
     async def _setusertz(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Set timezone for the user
-    Usage: !setusertz Europe/Moscow"""
+    Usage:
+        !setusertz
+        !setusertz Europe/Moscow
+        !setusertz America/New_York"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
         timezone = None

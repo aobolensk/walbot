@@ -660,7 +660,10 @@
 # Module: time
 
 **setusertz**: Set timezone for the user \
-    Usage: !setusertz Europe/Moscow
+    Usage: \
+        !setusertz \
+        !setusertz Europe/Moscow \
+        !setusertz America/New_York
 
 **time**: Show current time \
     Examples: \

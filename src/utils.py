@@ -194,10 +194,6 @@ class Time:
     def now(self) -> datetime.datetime:
         return datetime.datetime.now(tz=self._tz).replace(microsecond=0)
 
-    @staticmethod
-    def by_user(execution_ctx: ExecutionContext):
-        return Time(tz.gettz(execution_ctx.user.data["tz"]))
-
 
 def null(*args, **kwargs):
     """Drop return value"""
