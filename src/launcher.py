@@ -223,6 +223,7 @@ class Launcher:
         self._read_configs(main_bot)
         bc.executor.load_commands()
         if not self.args.fast_start:
+            bc.executor.export_help(SupportedPlatforms.DISCORD)
             bc.executor.export_help(SupportedPlatforms.TELEGRAM)
         bc.executor.load_persistent_state(bc.config.executor)
         bc.config.commands.update()
