@@ -42,7 +42,7 @@ class TimeCommands(BaseCmd):
                     "Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>")
             result = str(Time(timezone).now())
         else:
-            result = str(Time.by_user(execution_ctx).now())
+            result = str(Time(tz.gettz(execution_ctx.user.data['tz'])).now())
         await Command.send_message(execution_ctx, result)
         return result
 
