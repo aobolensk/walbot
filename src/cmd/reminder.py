@@ -4,6 +4,7 @@ import random
 from typing import List, Optional
 
 import dateutil.relativedelta
+from dateutil import tz
 
 from src import const
 from src.api.command import (BaseCmd, Command, Implementation,
@@ -21,12 +22,14 @@ class _ReminderInternals:
     async def parse_reminder_args(execution_ctx: ExecutionContext, date: str, time: str):
         WEEK_DAYS_FULL = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
         WEEK_DAYS_ABBREV = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+        current_tz = tz.gettz(execution_ctx.user.data['tz'])
+        current_time = Time(current_tz).now()
 
         if date == "today":
-            date = datetime.datetime.strftime(Time().now(), const.REMINDER_DATE_FORMAT)
+            date = datetime.datetime.strftime(current_time, const.REMINDER_DATE_FORMAT)
         elif date == "tomorrow":
             date = datetime.datetime.strftime(
-                Time().now() + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
+                current_time + datetime.timedelta(days=1), const.REMINDER_DATE_FORMAT)
         elif date.lower() in WEEK_DAYS_FULL or date in WEEK_DAYS_ABBREV:
             if date.lower() in WEEK_DAYS_FULL:
                 weekday = WEEK_DAYS_FULL.index(date.lower())
@@ -38,7 +41,7 @@ class _ReminderInternals:
             if days_delta == 0:
                 days_delta = 7
             date = datetime.datetime.strftime(
-                Time().now() + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
+                current_time + datetime.timedelta(days=days_delta), const.REMINDER_DATE_FORMAT)
         elif date.endswith("d"):
             days_amount = date[:-1]
             days_amount = await Util.parse_int(
@@ -46,7 +49,7 @@ class _ReminderInternals:
             if days_amount is None:
                 return
             date = datetime.datetime.strftime(
-                Time().now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
+                current_time + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("d"):
             days_amount = date[:-1]
             days_amount = await Util.parse_int(
@@ -54,7 +57,7 @@ class _ReminderInternals:
             if days_amount is None:
                 return
             date = datetime.datetime.strftime(
-                Time().now() + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
+                current_time + datetime.timedelta(days=days_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("w"):
             weeks_amount = date[:-1]
             weeks_amount = await Util.parse_int(
@@ -62,7 +65,7 @@ class _ReminderInternals:
             if weeks_amount is None:
                 return
             date = datetime.datetime.strftime(
-                Time().now() + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
+                current_time + datetime.timedelta(days=weeks_amount * 7), const.REMINDER_DATE_FORMAT)
         elif date.endswith("m"):
             months_amount = date[:-1]
             months_amount = await Util.parse_int(
@@ -71,7 +74,7 @@ class _ReminderInternals:
             if months_amount is None:
                 return
             date = datetime.datetime.strftime(
-                Time().now() +
+                current_time +
                 dateutil.relativedelta.relativedelta(months=months_amount), const.REMINDER_DATE_FORMAT)
         elif date.endswith("y"):
             years_amount = date[:-1]
@@ -81,12 +84,15 @@ class _ReminderInternals:
             if years_amount is None:
                 return
             date = datetime.datetime.strftime(
-                Time().now() +
+                current_time +
                 dateutil.relativedelta.relativedelta(years=years_amount), const.REMINDER_DATE_FORMAT)
         time = date + ' ' + time
         try:
-            time = datetime.datetime.strptime(
-                time, const.REMINDER_DATETIME_FORMAT).strftime(const.REMINDER_DATETIME_FORMAT)
+            time = (datetime.datetime
+                    .strptime(time, const.REMINDER_DATETIME_FORMAT)
+                    .replace(tzinfo=current_tz)
+                    .astimezone(tz.gettz(None))
+                    .strftime(const.REMINDER_DATETIME_FORMAT))
         except ValueError:
             return await Command.send_message(
                 execution_ctx,
@@ -97,6 +103,8 @@ class _ReminderInternals:
     @staticmethod
     async def parse_reminder_args_in(execution_ctx: ExecutionContext, time: str):
         r = const.REMINDER_IN_REGEX.match(time)
+        current_tz = tz.gettz(execution_ctx.user.data['tz'])
+        current_time = Time(current_tz).now()
         if r is None:
             return await Command.send_message(
                 execution_ctx,
@@ -107,8 +115,10 @@ class _ReminderInternals:
         days = int(r.group(4)) if r.group(4) is not None else 0
         hours = int(r.group(6)) if r.group(6) is not None else 0
         minutes = int(r.group(8)) if r.group(8) is not None else 0
-        time = (Time().now() + datetime.timedelta(
-            weeks=weeks, days=days, hours=hours, minutes=minutes)).strftime(const.REMINDER_DATETIME_FORMAT)
+        time = ((current_time + datetime.timedelta(weeks=weeks, days=days, hours=hours, minutes=minutes))
+                .replace(tzinfo=current_tz)
+                .astimezone(tz.gettz(None))
+                .strftime(const.REMINDER_DATETIME_FORMAT))
         return time
 
     @staticmethod
@@ -329,12 +339,17 @@ class ReminderCommands(BaseCmd):
         if time is None:
             return
         id_ = bc.config.ids["reminder"]
-        if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < Time().now():
+        current_tz = tz.gettz(execution_ctx.user.data['tz'])
+        current_time = Time(current_tz).now()
+        reminder_time = datetime.datetime.strptime(
+            str(time), const.REMINDER_DATETIME_FORMAT).replace(tzinfo=current_tz)
+        if reminder_time < current_time:
             return await Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
         if execution_ctx.platform == const.BotBackend.DISCORD:
             bc.config.reminders[id_] = Reminder(
                 str(time), text, execution_ctx.message.channel.id, execution_ctx.message.author.name,
-                Time().now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.DISCORD)
+                current_time.astimezone(tz.gettz(None)).strftime(const.REMINDER_DATETIME_FORMAT),
+                const.BotBackend.DISCORD)
             bc.config.ids["reminder"] += 1
             await Command.send_message(execution_ctx, f"Reminder '{text}' with id {id_} added at {time}")
         elif execution_ctx.platform == const.BotBackend.TELEGRAM:
@@ -342,7 +357,8 @@ class ReminderCommands(BaseCmd):
                 execution_ctx.update.message.from_user.username or execution_ctx.update.message.from_user.full_name)
             bc.config.reminders[id_] = Reminder(
                 str(time), text, execution_ctx.update.message.chat.id, username,
-                Time().now().strftime(const.REMINDER_DATETIME_FORMAT), const.BotBackend.TELEGRAM)
+                current_time.astimezone(tz.gettz(None)).strftime(const.REMINDER_DATETIME_FORMAT),
+                const.BotBackend.TELEGRAM)
             bc.config.ids["reminder"] += 1
             await Command.send_message(execution_ctx, f"Reminder '{text}' with id {id_} added at {time}")
         else:
@@ -382,13 +398,18 @@ class ReminderCommands(BaseCmd):
             time = await _ReminderInternals.parse_reminder_args(execution_ctx, cmd_line[2], cmd_line[3])
         if time is None:
             return
-        if datetime.datetime.strptime(str(time), const.REMINDER_DATETIME_FORMAT) < Time().now():
+        current_tz = tz.gettz(execution_ctx.user.data['tz'])
+        current_time = Time(current_tz).now()
+        reminder_time = datetime.datetime.strptime(
+            str(time), const.REMINDER_DATETIME_FORMAT).replace(tzinfo=current_tz)
+        if reminder_time < current_time:
             return await Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
         if execution_ctx.platform in (const.BotBackend.DISCORD, const.BotBackend.TELEGRAM):
             bc.config.reminders[index].time = str(time)
             bc.config.reminders[index].message = text
             bc.config.reminders[index].channel_id = execution_ctx.channel_id()
-            bc.config.reminders[index].time_created = Time().now().strftime(const.REMINDER_DATETIME_FORMAT)
+            bc.config.reminders[index].time_created = (
+                current_time.astimezone(tz.gettz(None)).strftime(const.REMINDER_DATETIME_FORMAT))
             await Command.send_message(execution_ctx, f"Successfully updated reminder {index}: '{text}' at {time}")
         else:
             await Command.send_message(
