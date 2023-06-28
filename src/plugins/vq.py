@@ -51,6 +51,7 @@ class _VoiceInternals:
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': output_file_name,
+            'keepvideo': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
