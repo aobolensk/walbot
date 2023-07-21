@@ -5,7 +5,7 @@ numba==0.57.1 ; platform_python_implementation=="CPython"
 psutil==5.9.5
 python_dateutil==2.8.2
 GitPython==3.1.32
-PyYAML==6.0
+PyYAML==6.0.1
 yt-dlp==2023.7.6
 python-telegram-bot==20.3
 git+https://github.com/aobolensk/aiogoogletrans@master
