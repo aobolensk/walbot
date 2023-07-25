@@ -39,12 +39,12 @@
     Example: !avatar &lt;image&gt; \
     Hint: Use !listimg for list of available images
 
-**code**: `@args@` \
+**code**: \`@args@\` \
     *This command can be used as subcommand*
 
-**codeblock**: ``` \
+**codeblock**: \`\`\` \
 @args@ \
-``` \
+\`\`\` \
     *This command can be used as subcommand*
 
 **config**: Setup some channel specific configurations \
@@ -119,7 +119,7 @@
 
 **permlevel**: Get permission level for user \
     Usage: !permlevel \
-           !permlevel `@user`
+           !permlevel \`@user\`
 
 **permuser**: Set user permission \
     Example: !permuser @nickname 0
@@ -134,7 +134,7 @@
 **profile**: Print information about user \
     Examples: \
         !profile \
-        !profile `@user`
+        !profile \`@user\`
 
 **restart**: Restart the bot \
     Example: !restart

@@ -82,7 +82,7 @@ class Commands:
                     if command.subcommand:
                         s += " \\\n    *This command can be used as subcommand*"
                     s += '\n'
-                    s = s.replace('<', '&lt;').replace('>', '&gt;')
+                    s = s.replace('<', '&lt;').replace('>', '&gt;').replace('`', '\\`')
                     result[command.module_name.split('.')[-1]].append(s)
                 for name in to_remove:
                     del self.data[name]
