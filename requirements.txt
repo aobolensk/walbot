@@ -2,7 +2,7 @@ numpy==1.24.3
 py-cord[voice]==2.4.1
 requests==2.31.0
 numba==0.58.1 ; platform_python_implementation=="CPython"
-psutil==5.9.5
+psutil==5.9.6
 python_dateutil==2.8.2
 GitPython==3.1.40
 PyYAML==6.0.1
