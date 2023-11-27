@@ -20,6 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install -r requirements.txt
+        python -m pip install -r requirements-extra.txt
         python -m pip install -r tests/requirements.txt
     - name: Run tests
       run: python walbot.py test
