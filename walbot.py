@@ -11,8 +11,8 @@ import sys
 
 def main():
     """WalBot launcher entrypoint"""
-    if not ((3, 8) <= sys.version_info[:3] < (3, 12)):
-        print("Python {}.{}.{} is not supported. You need Python 3.8 - 3.11".format(
+    if not ((3, 8) <= sys.version_info[:3] < (3, 13)):
+        print("Python {}.{}.{} is not supported. You need Python 3.8 - 3.12".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
         sys.exit(1)
     walbot_dir = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
