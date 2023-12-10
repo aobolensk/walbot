@@ -40,6 +40,7 @@ class _BuiltinInternals:
         e.add_field(
             "Permission level",
             bc.config.discord.users[user.id].permission_level if user.id in bc.config.discord.users.keys() else 0, True)
+        e.add_field("User timezone", bc.config.discord.users[user.id].data["tz"], True)
         if flags:
             e.add_field("Flags", flags)
         await Command.send_message(execution_ctx, None, embed=e.get())
