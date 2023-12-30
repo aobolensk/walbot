@@ -1,7 +1,7 @@
-[![CI Status](https://github.com/aobolensk/walbot/workflows/Lint/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/lint.yml)
-[![CI Status](https://github.com/aobolensk/walbot/workflows/Test/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/test.yml)
-[![CI Status](https://github.com/aobolensk/walbot/workflows/Nightly/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml)
-[![CI Status](https://github.com/aobolensk/walbot/workflows/CodeQL/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
+[![Lint](https://github.com/aobolensk/walbot/actions/workflows/lint.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/lint.yml)
+[![Test](https://github.com/aobolensk/walbot/actions/workflows/test.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/test.yml)
+[![Nightly](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml)
+[![CodeQL](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
 
 # walbot
 Discord bot written in Python*
