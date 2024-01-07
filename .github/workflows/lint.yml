@@ -15,7 +15,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8
     - name: Run linter
-      run: python -m flake8 --max-line-length 120 --show-source
+      run: python -m flake8 --show-source
   formatting:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install autopep8
     - name: Run formatting tool
-      run: find . -type f -name '*.py' -exec autopep8 --max-line-length 120 -v -a -i {} \;
+      run: find . -type f -name '*.py' -exec autopep8 -a -i {} \;
     - name: Compare formatted version with unformatted
       run: git diff --exit-code
   docs_check:
