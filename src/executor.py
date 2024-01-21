@@ -5,8 +5,12 @@ from collections import defaultdict
 from typing import Any, Dict
 
 from src import const
-from src.api.command import (BaseCmd, Command, CommandBinding,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    CommandBinding,
+    SupportedPlatforms
+)
 from src.log import log
 
 

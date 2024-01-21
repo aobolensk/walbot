@@ -6,8 +6,12 @@ import discord
 import telegram
 
 from src import const
-from src.api.command import (BaseCmd, Command, Implementation,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    Implementation,
+    SupportedPlatforms
+)
 from src.api.execution_context import ExecutionContext
 from src.backend.discord.embed import DiscordEmbed
 from src.cmdarg_parser import CmdArgParser

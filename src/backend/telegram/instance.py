@@ -6,8 +6,10 @@ from telegram.ext import Application, CallbackContext, MessageHandler, filters
 
 from src import const
 from src.api.bot_instance import BotInstance
-from src.backend.telegram.command import (CommonCommandsHandlers,
-                                          TelegramCommandBinding)
+from src.backend.telegram.command import (
+    CommonCommandsHandlers,
+    TelegramCommandBinding
+)
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message
 from src.config import bc
