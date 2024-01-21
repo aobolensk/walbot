@@ -2,8 +2,12 @@ import uuid
 from typing import List
 
 from src import const
-from src.api.command import (BaseCmd, Command, Implementation,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    Implementation,
+    SupportedPlatforms
+)
 from src.api.execution_context import ExecutionContext
 from src.config import User, bc
 from src.log import log

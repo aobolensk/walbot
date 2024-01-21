@@ -2,8 +2,12 @@ import asyncio
 from typing import List
 
 from src import const, emoji
-from src.api.command import (BaseCmd, Command, Implementation,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    Implementation,
+    SupportedPlatforms
+)
 from src.api.execution_context import ExecutionContext
 from src.bc import DoNotUpdateFlag
 from src.config import bc

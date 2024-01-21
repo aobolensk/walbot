@@ -7,8 +7,12 @@ import dateutil.relativedelta
 from dateutil import tz
 
 from src import const
-from src.api.command import (BaseCmd, Command, Implementation,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    Implementation,
+    SupportedPlatforms
+)
 from src.api.execution_context import ExecutionContext
 from src.api.reminder import Reminder
 from src.backend.discord.embed import DiscordEmbed
