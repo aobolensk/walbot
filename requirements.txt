@@ -8,5 +8,5 @@ PyYAML==6.0.1
 yt-dlp==2023.12.30
 python-telegram-bot==20.3
 git+https://github.com/aobolensk/aiogoogletrans@master
-nest-asyncio==1.5.9
+nest-asyncio==1.6.0
 python-magic==0.4.27
