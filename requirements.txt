@@ -1,4 +1,4 @@
-numpy==1.24.3
+numpy==1.26.3
 py-cord[voice]==2.4.1
 requests==2.31.0
 psutil==5.9.8
