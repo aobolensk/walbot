@@ -48,6 +48,13 @@ $ python -m pip install -r requirements-extra.txt  # optional
 $ python walbot.py start
 ```
 
+or using [Poetry](https://python-poetry.org/)
+
+```shell
+$ poetry install
+$ python walbot.py start
+```
+
 ### Command line options overview:
 ```shell
 $ python walbot.py start          # Start the bot
