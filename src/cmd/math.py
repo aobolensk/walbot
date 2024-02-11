@@ -119,8 +119,9 @@ class MathCommands(BaseCmd):
         if len(expressions) != 2:
             return null(
                 await Command.send_message(
-                    execution_ctx, f"There should be only 2 branches ('then' and 'else') "
-                                   f"separated by ';' in '{cmd_line[0]}' command"))
+                    execution_ctx,
+                    f"There should be only 2 branches ('then' and 'else') "
+                    f"separated by ';' in '{cmd_line[0]}' command"))
         result = expressions[0] if condition != 0 else expressions[1]
         await Command.send_message(execution_ctx, result)
         return result

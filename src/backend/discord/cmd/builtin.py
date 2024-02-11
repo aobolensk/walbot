@@ -149,8 +149,9 @@ class BuiltinCommands(BaseCmd):
             bc.discord.commands.data[command_name].message = ' '.join(command[2:])
             return null(
                 await Msg.response(
-                    message, f"Command '{command_name}' -> "
-                             f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
+                    message,
+                    f"Command '{command_name}' -> "
+                    f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod

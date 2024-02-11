@@ -147,7 +147,7 @@ class MarkovCommands(BaseCmd):
             return
         if not 0 <= index < amount:
             return await Command.send_message(
-                execution_ctx, f"Wrong index in list '{cmd_line[2]}' (should be in range [0..{amount-1}])")
+                execution_ctx, f"Wrong index in list '{cmd_line[2]}' (should be in range [0..{amount - 1}])")
         result = found[index]
         await Command.send_message(execution_ctx, result)
         return result
