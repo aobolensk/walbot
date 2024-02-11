@@ -36,7 +36,7 @@ Discord bot written in Python*
   ```sh
   $ brew install libmagic
   ```
-- [Python](https://www.python.org/) 3.8-3.11
+- [Python](https://www.python.org/) 3.9-3.12
 
 ##### Optional
 - [ffmpeg](https://www.ffmpeg.org/) - for built-in DiscordVideoQueue plugin
