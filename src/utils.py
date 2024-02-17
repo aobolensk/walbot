@@ -95,7 +95,7 @@ class Util:
             return ''
         result = ''
         for c in path:
-            if c not in (os.sep, '.'):
+            if c not in (os.sep, '/', '.'):
                 result += c
             else:
                 if result and result[-1] != '.':
