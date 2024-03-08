@@ -1,7 +1,7 @@
-[![CI Status](https://github.com/aobolensk/walbot/workflows/Lint/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/lint.yml)
-[![CI Status](https://github.com/aobolensk/walbot/workflows/Test/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/test.yml)
-[![CI Status](https://github.com/aobolensk/walbot/workflows/Nightly/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml)
-[![CI Status](https://github.com/aobolensk/walbot/workflows/CodeQL/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
+[![Lint](https://github.com/aobolensk/walbot/actions/workflows/lint.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/lint.yml)
+[![Test](https://github.com/aobolensk/walbot/actions/workflows/test.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/test.yml)
+[![Nightly](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml)
+[![CodeQL](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
 
 # walbot
 Discord bot written in Python*
@@ -36,7 +36,7 @@ Discord bot written in Python*
   ```sh
   $ brew install libmagic
   ```
-- [Python](https://www.python.org/) 3.8-3.11
+- [Python](https://www.python.org/) 3.9-3.12
 
 ##### Optional
 - [ffmpeg](https://www.ffmpeg.org/) - for built-in DiscordVideoQueue plugin
@@ -45,6 +45,13 @@ Discord bot written in Python*
 ```shell
 $ python -m pip install -r requirements.txt
 $ python -m pip install -r requirements-extra.txt  # optional
+$ python walbot.py start
+```
+
+or using [Poetry](https://python-poetry.org/)
+
+```shell
+$ poetry install
 $ python walbot.py start
 ```
 

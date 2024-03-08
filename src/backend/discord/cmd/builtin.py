@@ -39,7 +39,6 @@ class BuiltinCommands(BaseCmd):
             "slowmode": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False, max_execution_time=-1),
-            "config2": dict(permission=const.Permission.MOD.value, subcommand=False),
         })
 
     @staticmethod
@@ -150,8 +149,9 @@ class BuiltinCommands(BaseCmd):
             bc.discord.commands.data[command_name].message = ' '.join(command[2:])
             return null(
                 await Msg.response(
-                    message, f"Command '{command_name}' -> "
-                             f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
+                    message,
+                    f"Command '{command_name}' -> "
+                    f"'{bc.discord.commands.data[command_name].message}' successfully updated", silent))
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
 
     @staticmethod
@@ -316,6 +316,157 @@ class BuiltinCommands(BaseCmd):
         else:
             await Msg.response(message, f"Unknown argument '{command[1]}'", silent)
 
+    async def __config_view(message, silent=False):
+        header = f"Config for channel {message.channel}:"
+
+        class ConfigView(discord.ui.View):
+            def __init__(self, timeout=60, disable_on_timeout=True):
+                super().__init__(timeout=timeout)
+                self.disable_on_timeout = disable_on_timeout
+
+            @discord.ui.button(
+                label="Bot reactions",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def bot_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if (bc.config.discord.users[interaction.user.id].permission_level <
+                        bc.config.commands.data["config2"].permission):
+                    await Msg.response(
+                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
+                    return
+                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist:
+                    bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist.remove(message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=header, view=self)
+                await Msg.response(
+                    message,
+                    f"{message.author.mention} Bot reactions are " + (
+                        "enabled"
+                        if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist
+                        else "disabled"), silent)
+
+            @discord.ui.button(
+                label="Markov logging",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def markov_logging_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if (bc.config.discord.users[interaction.user.id].permission_level <
+                        bc.config.commands.data["config2"].permission):
+                    await Msg.response(
+                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
+                    return
+                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist:
+                    bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist.remove(
+                        message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=header, view=self)
+                await Msg.response(
+                    message,
+                    f"{message.author.mention} Markov logging is " + (
+                        "enabled"
+                        if message.channel.id
+                        in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist
+                        else "disabled"), silent)
+
+            @discord.ui.button(
+                label="Bot responses",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def bot_responses_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if (bc.config.discord.users[interaction.user.id].permission_level <
+                        bc.config.commands.data["config2"].permission):
+                    await Msg.response(
+                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
+                    return
+                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist:
+                    bc.config.discord.guilds[message.channel.guild.id].responses_whitelist.remove(message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.discord.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=header, view=self)
+                await Msg.response(
+                    message,
+                    f"{message.author.mention} Bot responses are " + (
+                        "enabled"
+                        if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist
+                        else "disabled"), silent)
+
+            @discord.ui.button(
+                label="Markov responses",
+                style=(
+                    discord.ButtonStyle.green
+                    if message.channel.id
+                    in bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist
+                    else discord.ButtonStyle.red
+                ))
+            async def markov_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if (bc.config.discord.users[interaction.user.id].permission_level <
+                        bc.config.commands.data["config2"].permission):
+                    await Msg.response(
+                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
+                    return
+                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist:
+                    bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist.remove(
+                        message.channel.id)
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist.add(
+                        message.channel.id)
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=header, view=self)
+                await Msg.response(
+                    message,
+                    f"{message.author.mention} Markov responses are " + (
+                        "enabled"
+                        if message.channel.id
+                        in bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist
+                        else "disabled"), silent)
+
+            @discord.ui.button(
+                label="Markov pings",
+                style=(
+                    discord.ButtonStyle.green
+                    if bc.config.discord.guilds[message.channel.guild.id].markov_pings
+                    else discord.ButtonStyle.red
+                ))
+            async def markov_pings_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+                if (bc.config.discord.users[interaction.user.id].permission_level <
+                        bc.config.commands.data["config2"].permission):
+                    await Msg.response(
+                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
+                    return
+                if bc.config.discord.guilds[message.channel.guild.id].markov_pings:
+                    bc.config.discord.guilds[message.channel.guild.id].markov_pings = False
+                    button.style = discord.ButtonStyle.red
+                else:
+                    bc.config.discord.guilds[message.channel.guild.id].markov_pings = True
+                    button.style = discord.ButtonStyle.green
+                await interaction.response.edit_message(content=header, view=self)
+                await Msg.response(
+                    message,
+                    f"{message.author.mention} Markov pings are " + (
+                        "enabled" if bc.config.discord.guilds[message.channel.guild.id].markov_pings
+                        else "disabled"), silent)
+
+        view = ConfigView()
+        await Msg.response(message, header, silent=False, view=view)
+
     @staticmethod
     async def _config(message, command, silent=False):
         """Setup some channel specific configurations
@@ -328,28 +479,7 @@ class BuiltinCommands(BaseCmd):
         if not await Util.check_args_count(message, command, silent, min=1, max=3):
             return
         if len(command) == 1:
-            result = "Config:\n"
-            result += "Emoji reactions on messages (reactions): " + (
-                'enabled' if (
-                    message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist)
-                else 'disabled') + "\n"
-            result += "Logging the messages to Markov model (markovlog): " + (
-                'enabled' if (
-                    message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist)
-                else 'disabled') + "\n"
-            result += "Text message responses on messages (responses): " + (
-                'enabled' if (
-                    message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist)
-                else 'disabled') + "\n"
-            result += "Responses with random generated message using Markov model on mention (markovresponses): " + (
-                'enabled' if (
-                    message.channel.id in
-                    bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist)
-                else 'disabled') + "\n"
-            result += "Users pings in random generated messages using Markov model (markovpings): " + (
-                'enabled' if bc.config.discord.guilds[message.channel.guild.id].markov_pings
-                else 'disabled') + "\n"
-            await Msg.response(message, result, silent)
+            return await BuiltinCommands.__config_view(message, silent)
         elif len(command) == 3:
             if command[1] == "reactions":
                 if command[2] in ("enable", "true", "on"):
@@ -659,160 +789,3 @@ class BuiltinCommands(BaseCmd):
             cmd = bc.discord.commands.data[command[0]]
             message.content = message.content.split(' ', 1)[-1]
             await cmd.run(message, command, bc.config.discord.users[message.author.id])
-
-    @staticmethod
-    async def _config2(message, command, silent=False):
-        """Config setup view
-    Example: !config2"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
-            return
-
-        header = f"Config for channel {message.channel}:"
-
-        class ConfigView(discord.ui.View):
-            def __init__(self, timeout=60, disable_on_timeout=True):
-                super().__init__(timeout=timeout)
-                self.disable_on_timeout = disable_on_timeout
-
-            @discord.ui.button(
-                label="Bot reactions",
-                style=(
-                    discord.ButtonStyle.green
-                    if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist
-                    else discord.ButtonStyle.red
-                ))
-            async def bot_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.discord.users[interaction.user.id].permission_level <
-                        bc.config.commands.data["config2"].permission):
-                    await Msg.response(
-                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
-                    return
-                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist:
-                    bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist.remove(message.channel.id)
-                    button.style = discord.ButtonStyle.red
-                else:
-                    bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist.add(message.channel.id)
-                    button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=header, view=self)
-                await Msg.response(
-                    message,
-                    f"{message.author.mention} Bot reactions are " + (
-                        "enabled"
-                        if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].reactions_whitelist
-                        else "disabled"), silent)
-
-            @discord.ui.button(
-                label="Markov logging",
-                style=(
-                    discord.ButtonStyle.green
-                    if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist
-                    else discord.ButtonStyle.red
-                ))
-            async def markov_logging_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.discord.users[interaction.user.id].permission_level <
-                        bc.config.commands.data["config2"].permission):
-                    await Msg.response(
-                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
-                    return
-                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist:
-                    bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist.remove(
-                        message.channel.id)
-                    button.style = discord.ButtonStyle.red
-                else:
-                    bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist.add(message.channel.id)
-                    button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=header, view=self)
-                await Msg.response(
-                    message,
-                    f"{message.author.mention} Markov logging is " + (
-                        "enabled"
-                        if message.channel.id
-                        in bc.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist
-                        else "disabled"), silent)
-
-            @discord.ui.button(
-                label="Bot responses",
-                style=(
-                    discord.ButtonStyle.green
-                    if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist
-                    else discord.ButtonStyle.red
-                ))
-            async def bot_responses_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.discord.users[interaction.user.id].permission_level <
-                        bc.config.commands.data["config2"].permission):
-                    await Msg.response(
-                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
-                    return
-                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist:
-                    bc.config.discord.guilds[message.channel.guild.id].responses_whitelist.remove(message.channel.id)
-                    button.style = discord.ButtonStyle.red
-                else:
-                    bc.config.discord.guilds[message.channel.guild.id].responses_whitelist.add(message.channel.id)
-                    button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=header, view=self)
-                await Msg.response(
-                    message,
-                    f"{message.author.mention} Bot responses are " + (
-                        "enabled"
-                        if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].responses_whitelist
-                        else "disabled"), silent)
-
-            @discord.ui.button(
-                label="Markov responses",
-                style=(
-                    discord.ButtonStyle.green
-                    if message.channel.id
-                    in bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist
-                    else discord.ButtonStyle.red
-                ))
-            async def markov_reactions_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.discord.users[interaction.user.id].permission_level <
-                        bc.config.commands.data["config2"].permission):
-                    await Msg.response(
-                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
-                    return
-                if message.channel.id in bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist:
-                    bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist.remove(
-                        message.channel.id)
-                    button.style = discord.ButtonStyle.red
-                else:
-                    bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist.add(
-                        message.channel.id)
-                    button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=header, view=self)
-                await Msg.response(
-                    message,
-                    f"{message.author.mention} Markov responses are " + (
-                        "enabled"
-                        if message.channel.id
-                        in bc.config.discord.guilds[message.channel.guild.id].markov_responses_whitelist
-                        else "disabled"), silent)
-
-            @discord.ui.button(
-                label="Markov pings",
-                style=(
-                    discord.ButtonStyle.green
-                    if bc.config.discord.guilds[message.channel.guild.id].markov_pings
-                    else discord.ButtonStyle.red
-                ))
-            async def markov_pings_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-                if (bc.config.discord.users[interaction.user.id].permission_level <
-                        bc.config.commands.data["config2"].permission):
-                    await Msg.response(
-                        message, f"{interaction.user.mention} you don't have permission to use this command", silent)
-                    return
-                if bc.config.discord.guilds[message.channel.guild.id].markov_pings:
-                    bc.config.discord.guilds[message.channel.guild.id].markov_pings = False
-                    button.style = discord.ButtonStyle.red
-                else:
-                    bc.config.discord.guilds[message.channel.guild.id].markov_pings = True
-                    button.style = discord.ButtonStyle.green
-                await interaction.response.edit_message(content=header, view=self)
-                await Msg.response(
-                    message,
-                    f"{message.author.mention} Markov pings are " + (
-                        "enabled" if bc.config.discord.guilds[message.channel.guild.id].markov_pings
-                        else "disabled"), silent)
-
-        view = ConfigView()
-        await Msg.response(message, header, silent=False, view=view)

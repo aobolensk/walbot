@@ -5,8 +5,12 @@ import datetime
 from typing import List
 
 from src import const
-from src.api.command import (BaseCmd, Command, Implementation,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    Implementation,
+    SupportedPlatforms
+)
 from src.api.execution_context import ExecutionContext
 from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag

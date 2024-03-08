@@ -7,8 +7,12 @@ import dateutil.relativedelta
 from dateutil import tz
 
 from src import const
-from src.api.command import (BaseCmd, Command, Implementation,
-                             SupportedPlatforms)
+from src.api.command import (
+    BaseCmd,
+    Command,
+    Implementation,
+    SupportedPlatforms
+)
 from src.api.execution_context import ExecutionContext
 from src.api.reminder import Reminder
 from src.backend.discord.embed import DiscordEmbed
@@ -342,7 +346,7 @@ class ReminderCommands(BaseCmd):
         current_tz = tz.gettz(execution_ctx.user.data['tz'])
         current_time = Time(current_tz).now()
         reminder_time = datetime.datetime.strptime(
-            str(time), const.REMINDER_DATETIME_FORMAT).replace(tzinfo=current_tz)
+            str(time), const.REMINDER_DATETIME_FORMAT).replace(tzinfo=tz.gettz(None))
         if reminder_time < current_time:
             return await Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
         if execution_ctx.platform == const.BotBackend.DISCORD:
@@ -401,7 +405,7 @@ class ReminderCommands(BaseCmd):
         current_tz = tz.gettz(execution_ctx.user.data['tz'])
         current_time = Time(current_tz).now()
         reminder_time = datetime.datetime.strptime(
-            str(time), const.REMINDER_DATETIME_FORMAT).replace(tzinfo=current_tz)
+            str(time), const.REMINDER_DATETIME_FORMAT).replace(tzinfo=tz.gettz(None))
         if reminder_time < current_time:
             return await Command.send_message(execution_ctx, "Reminder timestamp is earlier than now")
         if execution_ctx.platform in (const.BotBackend.DISCORD, const.BotBackend.TELEGRAM):

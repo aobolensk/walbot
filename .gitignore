@@ -29,3 +29,6 @@ nohup.out
 
 # Do not ignore .gitkeep
 !/**/.gitkeep
+
+# Poetry
+/poetry.lock

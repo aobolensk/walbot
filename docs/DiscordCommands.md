@@ -55,9 +55,6 @@
         !config markovresponses &lt;enable/disable&gt; \
         !config markovpings &lt;enable/disable&gt;
 
-**config2**: Config setup view \
-    Example: !config2
-
 **curl**: Perform HTTP request \
     Usage: \
         !curl &lt;url&gt; \

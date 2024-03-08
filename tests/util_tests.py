@@ -1,5 +1,7 @@
 import asyncio
 
+import pytest
+
 from src.utils import Util
 from tests.fixtures.context import BufferTestExecutionContext
 
@@ -44,3 +46,15 @@ def test_parse_int(capsys):
         "Error 5\n"
         "Error 8\n"
     )
+
+
+class TestPathToModule:
+    @pytest.mark.parametrize("path,expected", [
+        ("folder/subfolder/module.py", "folder.subfolder.module"),
+        ("./folder/module.py", "folder.module"),
+        ("/folder/subfolder/module.py", "folder.subfolder.module"),
+        ("module.py", "module"),
+        ("", ""),
+    ])
+    def test_path_to_module(self, path, expected):
+        assert Util.path_to_module(path) == expected, f"Failed for path: {path}"

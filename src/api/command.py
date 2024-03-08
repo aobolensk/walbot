@@ -89,7 +89,7 @@ class Command:
         timeout_error, result = await Util.run_function_with_time_limit(
             self._run_impl(cmd_line, execution_ctx), self.max_execution_time)
         if timeout_error:
-            await Command.send_message(f"Command '{' '.join(cmd_line)}' took too long to execute")
+            await Command.send_message(execution_ctx, f"Command '{' '.join(cmd_line)}' took too long to execute")
         return result
 
     async def _run_impl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:

@@ -91,12 +91,19 @@ class Util:
     @staticmethod
     def path_to_module(path: str) -> str:
         """Convert OS path to Python module"""
+        if not path:
+            return ''
         result = ''
         for c in path:
-            if c not in (os.sep, '.'):
+            if c not in (os.sep, '/', '.'):
                 result += c
-            elif result[-1] != '.':
-                result += '.'
+            else:
+                if result and result[-1] != '.':
+                    result += '.'
+        if len(result) > 1 and result[-1] == '.' and path[-3:] != '.py':
+            result = result[:-1]
+        if result[-3:] == '.py':
+            result = result[:-3]
         return result
 
     @staticmethod

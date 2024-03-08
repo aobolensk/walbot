@@ -31,7 +31,11 @@ class CmdArgParser(argparse.ArgumentParser):
         Return parsed args in Namespace class.
         If error happened return None"""
         self._error = False
-        result = super().parse_args(cmd_line[1:])
+        try:
+            result = super().parse_args(cmd_line[1:])
+        except argparse.ArgumentError as e:
+            self.error(str(e))
+            return None
         if self._error:
             return None
         return result
