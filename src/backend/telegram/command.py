@@ -6,7 +6,7 @@ from telegram.ext import Application, CallbackContext, CommandHandler
 from src.api.command import Command, CommandBinding, SupportedPlatforms
 from src.backend.telegram.context import TelegramExecutionContext
 from src.backend.telegram.util import check_auth, log_message
-from src.config import bc
+from src.config import User, bc
 from src.mail import Mail
 from src.message_cache import CachedMsg
 
@@ -20,6 +20,8 @@ async def _command_handler(command_name: str, update: Update, context: CallbackC
 async def command_handler(command_name: str, update: Update, context: CallbackContext) -> None:
     text = update.message.text
     log_message(update)
+    if update.message.from_user.id not in bc.config.telegram.users.keys():
+        bc.config.telegram.users[update.message.from_user.id] = User(update.message.from_user.id)
     # 'authorize' and 'resetpass' commands should be available for all channels to authorize bot there
     if command_name not in ("authorize", "resetpass") and not check_auth(update):
         return

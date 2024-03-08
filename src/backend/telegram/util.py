@@ -2,7 +2,7 @@ from urllib.parse import quote_plus
 
 from telegram import Update
 
-from src.config import User, bc
+from src.config import bc
 from src.log import log
 from src.utils import Util
 
@@ -15,8 +15,6 @@ def log_message(update: Update) -> None:
 def check_auth(update: Update) -> bool:
     if update.message.chat.id not in bc.config.telegram.channel_whitelist:
         return False
-    if update.message.from_user.id not in bc.config.telegram.users.keys():
-        bc.config.telegram.users[update.message.from_user.id] = User(update.message.from_user.id)
     return True
 
 
