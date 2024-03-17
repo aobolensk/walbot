@@ -78,6 +78,13 @@
 **echo**: @args@ \
     *This command can be used as subcommand*
 
+**enableallcmd**: Enable all available commands in specified scope \
+    Examples: \
+        !enableallcmd \
+        !enableallcmd channel \
+        !enableallcmd guild \
+        !enableallcmd global
+
 **enablecmd**: Enable command in specified scope \
     Examples: \
         !enablecmd ping \

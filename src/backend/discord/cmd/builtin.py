@@ -23,6 +23,7 @@ class BuiltinCommands(BaseCmd):
             "addcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "enablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
+            "enableallcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "disablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "permcmd": dict(permission=const.Permission.ADMIN.value, subcommand=False),
             "timescmd": dict(permission=const.Permission.USER.value, subcommand=True),
@@ -182,6 +183,34 @@ class BuiltinCommands(BaseCmd):
                 await Msg.response(message, f"Unknown scope '{command[2]}'", silent)
             return
         await Msg.response(message, f"Command '{command_name}' does not exist", silent)
+
+    @staticmethod
+    async def _enableallcmd(message, command, silent=False):
+        """Enable all available commands in specified scope
+    Examples:
+        !enableallcmd
+        !enableallcmd channel
+        !enableallcmd guild
+        !enableallcmd global"""
+        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+            return
+        scope = command[1]
+        if scope not in ("channel", "guild", "global"):
+            await Msg.response(message, f"Unknown scope '{scope}'", silent)
+        for command_name in bc.discord.commands.data.keys():
+            if scope == "channel":
+                if message.channel.id not in bc.discord.commands.data[command_name].channels:
+                    bc.discord.commands.data[command_name].channels.append(message.channel.id)
+            elif scope == "guild":
+                for channel in message.channel.guild.text_channels:
+                    if channel.id not in bc.discord.commands.data[command_name].channels:
+                        bc.discord.commands.data[command_name].channels.append(channel.id)
+            elif scope == "global":
+                bc.discord.commands.data[command_name].is_global = True
+            else:
+                await Msg.response(message, f"Unknown scope '{scope}'", silent)
+                return
+        await Msg.response(message, f"All commands are enabled in the {scope} scope", silent)
 
     @staticmethod
     async def _disablecmd(message, command, silent=False):
