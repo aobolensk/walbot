@@ -148,10 +148,36 @@ class BuiltinCommands(BaseCmd):
         !help
         !help -p
         !help <command_name>"""
-        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
             return
-        version = bc.info.version
-        result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
+        parser = CmdArgParser(execution_ctx)
+        parser.add_argument("command_name", action="store", default=None, nargs='?')
+        args = parser.parse_args(cmd_line)
+        if args is None:
+            return
+        # !help
+        if args.command_name is None:
+            version = bc.info.version
+            result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
+            await Command.send_message(execution_ctx, result, suppress_emdebs=True)
+            return
+        # !help <command_name>
+        cmd_name = args.command_name
+        if cmd_name not in bc.executor.commands.keys():
+            result = f"Unknown command '{cmd_name}'"
+            await Command.send_message(execution_ctx, result)
+            return
+        cmd = bc.executor.commands[cmd_name]
+        result = cmd_name + ": "
+        if cmd.impl_type == Implementation.FUNCTION:
+            result += cmd.description
+        elif cmd.impl_type == Implementation.MESSAGE:
+            result += cmd.impl_message
+        elif cmd.impl_type == Implementation.EXTERNAL_CMDLINE:
+            result += "calls external command `" + cmd.impl_message + "`"
+        else:
+            await Command.send_message(
+                execution_ctx, "Command processing error: implementation type is unknown!")
         await Command.send_message(execution_ctx, result)
 
     async def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:

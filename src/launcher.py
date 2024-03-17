@@ -118,7 +118,7 @@ class Launcher:
         """Launch Discord bot instance"""
         if self.args.action is None:
             self._parser.print_help()
-            return const.ExitStatus.NO_ERROR
+            return const.ExitStatus.GENERAL_ERROR
         self._list_env_var_flags()
         self._prepare_args()
         self._init_bc_vars()
