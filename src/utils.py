@@ -188,6 +188,12 @@ class Util:
                 log.error(f"Request failed with status code {response.status_code}")
                 raise HTTPRequestException(response)
 
+    @staticmethod
+    def split_by_chunks(message, count):
+        """Split message content by chunks with particular size"""
+        for i in range(0, len(message), count):
+            yield message[i:i + count]
+
 
 class Time:
     def __new__(cls, *args, **kwargs):
