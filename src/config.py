@@ -13,12 +13,11 @@ from src import const
 from src.api.quote import Quote
 from src.api.reminder import Reminder
 from src.backend.discord.config import DiscordConfig
-from src.backend.discord.message import Msg
 from src.backend.telegram.config import TelegramConfig
 from src.bc import BotController, DoNotUpdateFlag
 from src.log import log
 from src.shell import Shell
-from src.utils import Time, null
+from src.utils import Time, Util, null
 
 if TYPE_CHECKING:
     from src.backend.discord.commands import Commands
@@ -153,7 +152,7 @@ class Command:
                             "ERROR: Max amount of Unicode emojis for one message exceeded "
                             f"({len(const.UNICODE_EMOJI_REGEX.findall(response))} > {50})")
                     else:
-                        for chunk in Msg.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
+                        for chunk in Util.split_by_chunks(response, const.DISCORD_MAX_MESSAGE_LENGTH):
                             await message.channel.send(chunk)
                 return response
         elif self.cmd_line is not None:

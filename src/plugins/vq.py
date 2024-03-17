@@ -14,7 +14,6 @@ from src.api.command import BaseCmd, Command, SupportedPlatforms
 from src.api.execution_context import ExecutionContext
 from src.api.plugin import BasePlugin
 from src.backend.discord.embed import DiscordEmbed
-from src.backend.discord.message import Msg
 from src.bc import DoNotUpdateFlag
 from src.config import bc
 from src.log import log
@@ -288,7 +287,7 @@ class DiscordVideoQueuePluginCommands(BaseCmd):
             return await Command.send_message(execution_ctx, None, embed=e.get())
         voice_client_queue = list(self._voice_ctx.queue)
         pos = 0
-        for voice_queue_chunk in Msg.split_by_chunks(voice_client_queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+        for voice_queue_chunk in Util.split_by_chunks(voice_client_queue, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
             e = DiscordEmbed()
             e.title("🔊 Voice queue 🔊")
             e.color(0xcc1818)

@@ -4,15 +4,10 @@ import discord
 
 from src import const
 from src.log import log
+from src.utils import Util
 
 
 class Msg:
-    @staticmethod
-    def split_by_chunks(message, count):
-        """Split message content by chunks with particular size"""
-        for i in range(0, len(message), count):
-            yield message[i:i + count]
-
     @staticmethod
     async def reply(message, content, silent, **kwargs):
         """Reply on particular message"""
@@ -20,7 +15,7 @@ class Msg:
             return log.debug("[SILENT] -> " + content)
         msg = None
         if content:
-            for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+            for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                 if not chunk.strip():
                     continue
                 msg = await message.reply(
@@ -45,7 +40,7 @@ class Msg:
             return log.debug("[SILENT] -> " + content)
         msg = None
         if content:
-            for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+            for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                 if not chunk.strip():
                     continue
                 msg = await message.channel.send(
@@ -73,7 +68,7 @@ class Msg:
             await author.create_dm()
         msg = None
         if content:
-            for chunk in Msg.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
+            for chunk in Util.split_by_chunks(content, const.DISCORD_MAX_MESSAGE_LENGTH):
                 if not chunk.strip():
                     continue
                 msg = await author.dm_channel.send(
