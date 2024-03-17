@@ -143,15 +143,17 @@ class BuiltinCommands(BaseCmd):
 
     async def _help(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Print list of commands and get examples
-    Examples:
+    Usage:
         !help
-        !help -p
+        !help -p (alternative: !help --plain)
+        !help -a (alternative: !help --all)
         !help <command_name>"""
-        if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
+        if not await Command.check_args_count(execution_ctx, cmd_line, min=1):
             return
         parser = CmdArgParser(execution_ctx)
         parser.add_argument("command_name", action="store", default=None, nargs='?')
         parser.add_argument("-p", "--plain", action="store_true", default=False)
+        parser.add_argument("-a", "--all", action="store_true", default=False)
         args = parser.parse_args(cmd_line)
         if args is None:
             return
@@ -181,7 +183,7 @@ class BuiltinCommands(BaseCmd):
         commands = sorted([
             (cmd_name, get_help_for_command(cmd_name))
             for cmd_name, cmd in bc.executor.commands.items()
-            if cmd.impl_type != Implementation.FUNCTION])
+            if args.all or cmd.impl_type != Implementation.FUNCTION])
         if execution_ctx.platform == const.BotBackend.DISCORD:
             commands.insert(
                 0, ("Built-in commands", (

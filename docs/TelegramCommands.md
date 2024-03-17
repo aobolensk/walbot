@@ -62,9 +62,10 @@
     *Default permission level: 1*
 
 **help**: Print list of commands and get examples \
-    Examples: \
+    Usage: \
         !help \
-        !help -p \
+        !help -p (alternative: !help --plain) \
+        !help -a (alternative: !help --all) \
         !help &lt;command_name&gt; \
     *Default permission level: 0*
 
