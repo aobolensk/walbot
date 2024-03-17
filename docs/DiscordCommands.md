@@ -105,7 +105,7 @@
     Examples: \
         !help \
         !help -p \
-        !help help
+        !help &lt;command_name&gt;
 
 **listalias**: Print list of aliases \
     Example: !listalias \

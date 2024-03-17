@@ -1,3 +1,4 @@
+import math
 import subprocess
 import sys
 from typing import List, Optional
@@ -79,8 +80,7 @@ class BuiltinCommands(BaseCmd):
             subcommand=True, impl_func=self._uptime)
         bc.executor.commands["help"] = Command(
             "builtin", "help", const.Permission.USER, Implementation.FUNCTION,
-            subcommand=False, impl_func=self._help,
-            supported_platforms=(SupportedPlatforms.ALL & ~SupportedPlatforms.DISCORD))
+            subcommand=False, impl_func=self._help)
         # Help command for Discord is executed using legacy way for now
         bc.executor.commands["about"] = Command(
             "builtin", "about", const.Permission.USER, Implementation.FUNCTION,
@@ -155,30 +155,63 @@ class BuiltinCommands(BaseCmd):
         args = parser.parse_args(cmd_line)
         if args is None:
             return
-        # !help
-        if args.command_name is None:
-            version = bc.info.version
-            result = f"Built-in commands help: {const.GIT_REPO_LINK}/blob/{version}/{const.TELEGRAM_COMMANDS_DOC_PATH}"
-            await Command.send_message(execution_ctx, result, suppress_emdebs=True)
-            return
-        # !help <command_name>
-        cmd_name = args.command_name
-        if cmd_name not in bc.executor.commands.keys():
-            result = f"Unknown command '{cmd_name}'"
+
+        def get_help_for_command(cmd_name: str) -> str:
+            if cmd_name not in bc.executor.commands.keys():
+                result = f"Unknown command '{cmd_name}'"
+                return
+            cmd = bc.executor.commands[cmd_name]
+            result = ""
+            if cmd.impl_type == Implementation.FUNCTION:
+                result += cmd.description
+            elif cmd.impl_type == Implementation.MESSAGE:
+                result += cmd.impl_message
+            elif cmd.impl_type == Implementation.EXTERNAL_CMDLINE:
+                result += "calls external command `" + cmd.impl_message + "`"
+            return result
+
+        if args.command_name is not None:
+            # !help <command_name>
+            result = get_help_for_command(args.command_name)
             await Command.send_message(execution_ctx, result)
             return
-        cmd = bc.executor.commands[cmd_name]
-        result = cmd_name + ": "
-        if cmd.impl_type == Implementation.FUNCTION:
-            result += cmd.description
-        elif cmd.impl_type == Implementation.MESSAGE:
-            result += cmd.impl_message
-        elif cmd.impl_type == Implementation.EXTERNAL_CMDLINE:
-            result += "calls external command `" + cmd.impl_message + "`"
+        # !help
+        version = bc.info.version
+        result = "Help:"
+        commands = sorted([
+            (cmd_name, get_help_for_command(cmd_name))
+            for cmd_name, cmd in bc.executor.commands.items()
+            if cmd.impl_type != Implementation.FUNCTION])
+        if execution_ctx.platform == const.BotBackend.DISCORD:
+            commands.insert(
+                0, ("Built-in commands", (
+                    f"<{const.GIT_REPO_LINK}/blob/" +
+                    (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">")))
+        elif execution_ctx.platform == const.BotBackend.DISCORD:
+            commands.insert(
+                0, ("Built-in commands", (
+                    f"<{const.GIT_REPO_LINK}/blob/" +
+                    (version if version != ' ' else "master") + "/" + const.TELEGRAM_COMMANDS_DOC_PATH + ">")))
+
+        if execution_ctx.platform == const.BotBackend.DISCORD:
+            cur_list = 1
+            total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
+            for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+                title = "Help"
+                if total_list > 1:
+                    title += f" ({cur_list}/{total_list})"
+                cur_list += 1
+                embed = discord.Embed(title=title, color=0x717171)
+                for cmd_name, cmd_desc in chunk:
+                    cmd_desc = Util.cut_string(cmd_desc, 1024)
+                    embed.add_field(name=cmd_name, value=cmd_desc, inline=False)
+                await Command.send_message(execution_ctx, None, embed=embed)
+            return
         else:
-            await Command.send_message(
-                execution_ctx, "Command processing error: implementation type is unknown!")
-        await Command.send_message(execution_ctx, result)
+            for cmd_name, cmd_desc in commands:
+                result += f"{cmd_name}: {cmd_desc}\n"
+
+        await Command.send_message(execution_ctx, result, suppress_emdebs=True)
 
     async def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get information about the bot
