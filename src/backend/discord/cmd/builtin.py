@@ -1,6 +1,5 @@
 """Built-in WalBot commands"""
 
-import math
 import os
 import tempfile
 import urllib.parse
@@ -19,7 +18,6 @@ from src.utils import Util, null
 class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.discord.commands.register_commands(__name__, self.get_classname(), {
-            "help": dict(permission=const.Permission.USER.value, subcommand=False),
             "addcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "enablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -41,85 +39,6 @@ class BuiltinCommands(BaseCmd):
             "permlevel": dict(permission=const.Permission.USER.value, subcommand=False),
             "disabletl": dict(permission=const.Permission.MOD.value, subcommand=False, max_execution_time=-1),
         })
-
-    @staticmethod
-    async def _help(message, command, silent=False):
-        """Print list of commands and get examples
-    Examples:
-        !help
-        !help -p
-        !help help"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if len(command) == 1 or (len(command) == 2 and command[1] == '-p'):
-            commands = []
-            for name, cmd in bc.discord.commands.data.items():
-                if cmd.message is not None:
-                    s = (name, cmd.message)
-                    commands.append(s)
-                elif cmd.cmd_line is not None:
-                    s = (name, f"calls external command `{cmd.cmd_line}`")
-                    commands.append(s)
-                elif cmd.is_private:
-                    s = (name, "*Private command*\n" + (cmd.get_actor().__doc__ or "*<No docs provided>*"))
-                    commands.append(s)
-            commands.sort()
-            version = bc.info.version
-            if len(command) == 2 and command[1] == '-p':
-                # Plain text help
-                result = (f"Built-in commands <{const.GIT_REPO_LINK}/blob/" +
-                          (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">\n")
-                for cmd in commands:
-                    result += f"**{cmd[0]}**: {cmd[1]}\n"
-                await Msg.response(message, result, silent, suppress_embeds=True)
-            else:
-                # Embed help
-                commands.insert(
-                    0, ("Built-in commands", (
-                        f"<{const.GIT_REPO_LINK}/blob/" +
-                        (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">")))
-                cur_list = 1
-                total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
-                for chunk in Msg.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
-                    title = "Help"
-                    if total_list > 1:
-                        title += f" ({cur_list}/{total_list})"
-                    cur_list += 1
-                    embed = discord.Embed(title=title, color=0x717171)
-                    for cmd in chunk:
-                        cmd_name = cmd[0]
-                        description = cmd[1]
-                        description = Util.cut_string(description, 1024)
-                        embed.add_field(name=cmd_name, value=description, inline=False)
-                    await Msg.response(message, None, silent, embed=embed)
-        elif len(command) == 2:
-            name = command[1]
-            if command[1] in bc.discord.commands.data:
-                command = bc.discord.commands.data[command[1]]
-            elif command[1] in bc.discord.commands.aliases.keys():
-                command = bc.discord.commands.data[bc.discord.commands.aliases[command[1]]]
-            else:
-                return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
-            result = name + ": "
-            if command.perform is not None:
-                if (command.get_actor().__doc__ is not None and
-                        "new function with partial application" not in command.get_actor().__doc__):
-                    result += command.get_actor().__doc__.strip()
-                elif name in bc.executor.commands.keys():
-                    result += bc.executor.commands[name].description.strip()
-                else:
-                    result += "*<No docs provided>*"
-            elif command.message is not None:
-                result += "`" + command.message + "`"
-            elif command.cmd_line is not None:
-                result += f"calls external command `{command.cmd_line}`"
-            else:
-                result += "<error>"
-            result += '\n'
-            result += f"    Required permission level: {command.permission}\n"
-            if command.subcommand:
-                result += "    This command can be used as subcommand\n"
-            await Msg.response(message, result, silent)
 
     @staticmethod
     async def _addcmd(message, command, silent=False):
