@@ -81,7 +81,6 @@ class BuiltinCommands(BaseCmd):
         bc.executor.commands["help"] = Command(
             "builtin", "help", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._help)
-        # Help command for Discord is executed using legacy way for now
         bc.executor.commands["about"] = Command(
             "builtin", "about", const.Permission.USER, Implementation.FUNCTION,
             subcommand=False, impl_func=self._about)
@@ -152,6 +151,7 @@ class BuiltinCommands(BaseCmd):
             return
         parser = CmdArgParser(execution_ctx)
         parser.add_argument("command_name", action="store", default=None, nargs='?')
+        parser.add_argument("-p", "--plain", action="store_true", default=False)
         args = parser.parse_args(cmd_line)
         if args is None:
             return
@@ -177,7 +177,7 @@ class BuiltinCommands(BaseCmd):
             return
         # !help
         version = bc.info.version
-        result = "Help:"
+        result = "Help:\n"
         commands = sorted([
             (cmd_name, get_help_for_command(cmd_name))
             for cmd_name, cmd in bc.executor.commands.items()
@@ -193,7 +193,7 @@ class BuiltinCommands(BaseCmd):
                     f"<{const.GIT_REPO_LINK}/blob/" +
                     (version if version != ' ' else "master") + "/" + const.TELEGRAM_COMMANDS_DOC_PATH + ">")))
 
-        if execution_ctx.platform == const.BotBackend.DISCORD:
+        if execution_ctx.platform == const.BotBackend.DISCORD and not args.plain:
             cur_list = 1
             total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
             for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
