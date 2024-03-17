@@ -183,7 +183,7 @@ class BuiltinCommands(BaseCmd):
         commands = sorted([
             (cmd_name, get_help_for_command(cmd_name))
             for cmd_name, cmd in bc.executor.commands.items()
-            if args.all or cmd.impl_type != Implementation.FUNCTION])
+            if args.all or cmd.impl_type != Implementation.FUNCTION or cmd.module_name.startswith("plugin_")])
         if execution_ctx.platform == const.BotBackend.DISCORD:
             commands.insert(
                 0, ("Built-in commands", (
