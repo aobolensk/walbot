@@ -7,6 +7,7 @@ from src import const
 from src.api.execution_context import ExecutionContext
 from src.backend.telegram.util import escape_markdown_text, reply, send_message
 from src.config import bc
+from src.utils import Util
 
 
 class TelegramExecutionContext(ExecutionContext):
@@ -26,14 +27,16 @@ class TelegramExecutionContext(ExecutionContext):
         message = self._unescape_ping1(message)
         message = escape_markdown_text(message)
         message = self._unescape_ping2(message)
-        await reply(
-            self.update, message,
-            disable_web_page_preview=kwargs.get("suppress_embeds", False),
-            reply_on_msg=kwargs.get("reply_on_msg", False),
-        )
-        if "files" in kwargs:
-            for file in kwargs["files"]:
-                await self._send_file(file)
+        for idx, chunk in enumerate(Util.split_by_chunks(message, const.TELEGRAM_MAX_MESSAGE_LENGTH)):
+            await reply(
+                self.update, chunk,
+                disable_web_page_preview=kwargs.get("suppress_embeds", False),
+                reply_on_msg=kwargs.get("reply_on_msg", False),
+            )
+            if idx == 0:
+                if "files" in kwargs:
+                    for file in kwargs["files"]:
+                        await self._send_file(file)
 
     async def _send_file(self, file_path: str) -> None:
         await self.update.message.reply_document(open(file_path, 'rb'), os.path.basename(file_path))

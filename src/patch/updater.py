@@ -336,6 +336,9 @@ class Updater:
                 config.telegram.users[key].__dict__["data"]["tz"] = None
             self._bump_version(config, "0.0.59")
         if config.version == "0.0.59":
+            del config.commands.__dict__["module_help"]
+            self._bump_version(config, "0.0.60")
+        if config.version == "0.0.60":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")

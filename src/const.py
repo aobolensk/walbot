@@ -63,6 +63,7 @@ DISCORD_ROLE_ID_REGEX = re.compile(r'<@&(\d*)>')
 DISCORD_EMOJI_REGEX = re.compile(r'<:(\w*):(\d*)>')
 
 # Telegram
+TELEGRAM_MAX_MESSAGE_LENGTH = 4096
 TELEGRAM_MARKDOWN_V2_MENTION_REGEX = re.compile(r"\[(.*)\]\(tg:\/\/user\?id=(.*)\)")
 
 

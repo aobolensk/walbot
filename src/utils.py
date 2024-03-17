@@ -11,7 +11,6 @@ from dateutil import tz
 
 from src.api.command import Command
 from src.api.execution_context import ExecutionContext
-from src.backend.discord.message import Msg
 from src.exception import HTTPRequestException
 from src.log import log
 
@@ -23,29 +22,11 @@ class TimeoutStatus(IntEnum):
 
 class Util:
     @staticmethod
-    async def check_args_count(message, command, silent, min=None, max=None):
-        if min and len(command) < min:
-            await Msg.response(message, f"Too few arguments for command '{command[0]}'", silent)
-            return False
-        if max and len(command) > max:
-            await Msg.response(message, f"Too many arguments for command '{command[0]}'", silent)
-            return False
-        return True
-
-    @staticmethod
     async def run_function_with_time_limit(coro: Coroutine, timeout: float) -> Tuple[TimeoutStatus, Optional[Any]]:
         try:
             return TimeoutStatus.OK, await asyncio.wait_for(coro, timeout)
         except asyncio.TimeoutError:
             return TimeoutStatus.TIMEOUT, None
-
-    @staticmethod
-    async def parse_int_for_discord(message, string, error_message, silent):
-        try:
-            return int(string)
-        except ValueError:
-            await Msg.response(message, error_message, silent)
-            return
 
     @staticmethod
     async def parse_int(execution_ctx: ExecutionContext, string: str, error_message: str):
@@ -187,6 +168,12 @@ class Util:
             else:
                 log.error(f"Request failed with status code {response.status_code}")
                 raise HTTPRequestException(response)
+
+    @staticmethod
+    def split_by_chunks(message, count):
+        """Split message content by chunks with particular size"""
+        for i in range(0, len(message), count):
+            yield message[i:i + count]
 
 
 class Time:

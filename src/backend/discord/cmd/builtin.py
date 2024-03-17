@@ -1,6 +1,5 @@
 """Built-in WalBot commands"""
 
-import math
 import os
 import tempfile
 import urllib.parse
@@ -12,6 +11,7 @@ from src import const
 from src.algorithms import levenshtein_distance
 from src.api.command import BaseCmd
 from src.backend.discord.message import Msg
+from src.backend.discord.utils import DiscordUtil
 from src.config import Command, bc, log
 from src.utils import Util, null
 
@@ -19,7 +19,6 @@ from src.utils import Util, null
 class BuiltinCommands(BaseCmd):
     def bind(self):
         bc.discord.commands.register_commands(__name__, self.get_classname(), {
-            "help": dict(permission=const.Permission.USER.value, subcommand=False),
             "addcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "updcmd": dict(permission=const.Permission.MOD.value, subcommand=False),
             "enablecmd": dict(permission=const.Permission.MOD.value, subcommand=False),
@@ -43,89 +42,10 @@ class BuiltinCommands(BaseCmd):
         })
 
     @staticmethod
-    async def _help(message, command, silent=False):
-        """Print list of commands and get examples
-    Examples:
-        !help
-        !help -p
-        !help help"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
-            return
-        if len(command) == 1 or (len(command) == 2 and command[1] == '-p'):
-            commands = []
-            for name, cmd in bc.discord.commands.data.items():
-                if cmd.message is not None:
-                    s = (name, cmd.message)
-                    commands.append(s)
-                elif cmd.cmd_line is not None:
-                    s = (name, f"calls external command `{cmd.cmd_line}`")
-                    commands.append(s)
-                elif cmd.is_private:
-                    s = (name, "*Private command*\n" + (cmd.get_actor().__doc__ or "*<No docs provided>*"))
-                    commands.append(s)
-            commands.sort()
-            version = bc.info.version
-            if len(command) == 2 and command[1] == '-p':
-                # Plain text help
-                result = (f"Built-in commands <{const.GIT_REPO_LINK}/blob/" +
-                          (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">\n")
-                for cmd in commands:
-                    result += f"**{cmd[0]}**: {cmd[1]}\n"
-                await Msg.response(message, result, silent, suppress_embeds=True)
-            else:
-                # Embed help
-                commands.insert(
-                    0, ("Built-in commands", (
-                        f"<{const.GIT_REPO_LINK}/blob/" +
-                        (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">")))
-                cur_list = 1
-                total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
-                for chunk in Msg.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
-                    title = "Help"
-                    if total_list > 1:
-                        title += f" ({cur_list}/{total_list})"
-                    cur_list += 1
-                    embed = discord.Embed(title=title, color=0x717171)
-                    for cmd in chunk:
-                        cmd_name = cmd[0]
-                        description = cmd[1]
-                        description = Util.cut_string(description, 1024)
-                        embed.add_field(name=cmd_name, value=description, inline=False)
-                    await Msg.response(message, None, silent, embed=embed)
-        elif len(command) == 2:
-            name = command[1]
-            if command[1] in bc.discord.commands.data:
-                command = bc.discord.commands.data[command[1]]
-            elif command[1] in bc.discord.commands.aliases.keys():
-                command = bc.discord.commands.data[bc.discord.commands.aliases[command[1]]]
-            else:
-                return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
-            result = name + ": "
-            if command.perform is not None:
-                if (command.get_actor().__doc__ is not None and
-                        "new function with partial application" not in command.get_actor().__doc__):
-                    result += command.get_actor().__doc__.strip()
-                elif name in bc.executor.commands.keys():
-                    result += bc.executor.commands[name].description.strip()
-                else:
-                    result += "*<No docs provided>*"
-            elif command.message is not None:
-                result += "`" + command.message + "`"
-            elif command.cmd_line is not None:
-                result += f"calls external command `{command.cmd_line}`"
-            else:
-                result += "<error>"
-            result += '\n'
-            result += f"    Required permission level: {command.permission}\n"
-            if command.subcommand:
-                result += "    This command can be used as subcommand\n"
-            await Msg.response(message, result, silent)
-
-    @staticmethod
     async def _addcmd(message, command, silent=False):
         """Add command
     Example: !addcmd hello Hello!"""
-        if not await Util.check_args_count(message, command, silent, min=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
         if command_name in bc.discord.commands.data.keys():
@@ -141,7 +61,7 @@ class BuiltinCommands(BaseCmd):
     async def _updcmd(message, command, silent=False):
         """Update command (works only for commands that already exist)
     Example: !updcmd hello Hello!"""
-        if not await Util.check_args_count(message, command, silent, min=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=3):
             return
         command_name = command[1]
         if command_name in bc.discord.commands.data.keys():
@@ -163,7 +83,7 @@ class BuiltinCommands(BaseCmd):
         !enablecmd ping channel
         !enablecmd ping guild
         !enablecmd ping global"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=3):
             return
         command_name = command[1]
         if command_name in bc.discord.commands.data.keys():
@@ -192,7 +112,7 @@ class BuiltinCommands(BaseCmd):
         !enableallcmd channel
         !enableallcmd guild
         !enableallcmd global"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=2):
             return
         scope = command[1]
         if scope not in ("channel", "guild", "global"):
@@ -220,7 +140,7 @@ class BuiltinCommands(BaseCmd):
         !disablecmd ping channel
         !disablecmd ping guild
         !disablecmd ping global"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=3):
             return
         command_name = command[1]
         if command_name in bc.discord.commands.data.keys():
@@ -245,10 +165,10 @@ class BuiltinCommands(BaseCmd):
     async def _permcmd(message, command, silent=False):
         """Set commands permission
     Example: !permcmd ping 0"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=3, max=3):
             return
         command_name = command[1]
-        perm = await Util.parse_int_for_discord(
+        perm = await DiscordUtil.parse_int_for_discord(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         if perm is None:
             return
@@ -265,7 +185,7 @@ class BuiltinCommands(BaseCmd):
     Examples:
         !timescmd echo
         !timescmd echo -s"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=3):
             return
         if command[1] in bc.config.commands.aliases.keys():
             command[1] = bc.config.commands.aliases[command[1]]
@@ -284,14 +204,14 @@ class BuiltinCommands(BaseCmd):
     async def _setmaxexeccmdtime(message, command, silent=False):
         """Print how many times command was invoked
     Example: !setmaxexeccmdtime echo 3"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=3, max=3):
             return
         if command[1] in bc.config.commands.aliases.keys():
             command[1] = bc.config.commands.aliases[command[1]]
         if command[1] not in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
         com = bc.discord.commands.data[command[1]]
-        max_exec_time = await Util.parse_int_for_discord(
+        max_exec_time = await DiscordUtil.parse_int_for_discord(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         com.max_execution_time = max_exec_time
         await Msg.response(
@@ -301,9 +221,9 @@ class BuiltinCommands(BaseCmd):
     async def _permuser(message, command, silent=False):
         """Set user permission
     Example: !permuser @nickname 0"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=3, max=3):
             return
-        perm = await Util.parse_int_for_discord(
+        perm = await DiscordUtil.parse_int_for_discord(
             message, command[2], f"Third argument of command '{command[0]}' should be an integer", silent)
         if perm is None:
             return
@@ -328,7 +248,7 @@ class BuiltinCommands(BaseCmd):
         !whitelist enable/disable
         !whitelist add
         !whitelist remove"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] == "enable":
             bc.config.discord.guilds[message.channel.guild.id].is_whitelisted = True
@@ -505,7 +425,7 @@ class BuiltinCommands(BaseCmd):
         !config responses <enable/disable>
         !config markovresponses <enable/disable>
         !config markovpings <enable/disable>"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=1, max=3):
             return
         if len(command) == 1:
             return await BuiltinCommands.__config_view(message, silent)
@@ -625,7 +545,7 @@ class BuiltinCommands(BaseCmd):
     async def _silent(message, command, silent=False):
         """Make the following command silent (without any output to the chat)
     Example: !silent ping"""
-        if not await Util.check_args_count(message, command, silent, min=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2):
             return
         command = command[1:]
         if command[0] not in bc.discord.commands.data.keys():
@@ -640,7 +560,7 @@ class BuiltinCommands(BaseCmd):
         """Add alias for commands
     Usage: !addalias <command> <alias>
     Example: !addalias ping pong"""
-        if not await Util.check_args_count(message, command, silent, min=3, max=3):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=3, max=3):
             return
         if command[1] not in bc.discord.commands.data.keys():
             return null(await Msg.response(message, f"Unknown command '{command[1]}'", silent))
@@ -656,7 +576,7 @@ class BuiltinCommands(BaseCmd):
         """Delete command alias
     Usage: !delalias <alias>
     Example: !delalias pong"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=2):
             return
         if command[1] not in bc.discord.commands.aliases.keys():
             return null(await Msg.response(message, f"Alias '{command[1]}' does not exist", silent))
@@ -667,7 +587,7 @@ class BuiltinCommands(BaseCmd):
     async def _listalias(message, command, silent=False):
         """Print list of aliases
     Example: !listalias"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=1):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=1, max=1):
             return
         result = ""
         alias_mapping = {}
@@ -685,7 +605,7 @@ class BuiltinCommands(BaseCmd):
         """Change bot avatar
     Example: !avatar <image>
     Hint: Use !listimg for list of available images"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=2):
             return
         image = command[1]
         for root, _, files in os.walk(const.IMAGES_DIRECTORY):
@@ -749,9 +669,9 @@ class BuiltinCommands(BaseCmd):
     async def _pin(message, command, silent=False):
         """Print pinned message by its index
     Example: !pin 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=2):
             return
-        index = await Util.parse_int_for_discord(
+        index = await DiscordUtil.parse_int_for_discord(
             message, command[1], "Message index should be an integer", silent)
         if index is None:
             return
@@ -768,9 +688,9 @@ class BuiltinCommands(BaseCmd):
     async def _slowmode(message, command, silent=False):
         """Edit slowmode
     Example: !slowmode 0"""
-        if not await Util.check_args_count(message, command, silent, min=2, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2, max=2):
             return
-        duration = await Util.parse_int_for_discord(
+        duration = await DiscordUtil.parse_int_for_discord(
             message, command[1], f"Second parameter for '{command[0]}' should be duration in seconds", silent)
         if duration is None:
             return
@@ -785,7 +705,7 @@ class BuiltinCommands(BaseCmd):
         """Get permission level for user
     Usage: !permlevel
            !permlevel `@user`"""
-        if not await Util.check_args_count(message, command, silent, min=1, max=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=1, max=2):
             return
         info = ""
         user_id = 0
@@ -809,7 +729,7 @@ class BuiltinCommands(BaseCmd):
     async def _disabletl(message, command, silent=False):
         """Disable time limit for command
     Example: !disabletl ping"""
-        if not await Util.check_args_count(message, command, silent, min=2):
+        if not await DiscordUtil.check_args_count(message, command, silent, min=2):
             return
         command = command[1:]
         if command[0] not in bc.discord.commands.data.keys():

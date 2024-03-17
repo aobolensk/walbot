@@ -34,7 +34,6 @@ class Commands:
             self.data = dict()
         if not hasattr(self, "aliases"):
             self.aliases = dict()
-        self.module_help = dict()
 
     def update(self, reload: bool = False) -> None:
         bc.discord.commands = self
