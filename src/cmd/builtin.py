@@ -160,7 +160,6 @@ class BuiltinCommands(BaseCmd):
 
         def get_help_for_command(cmd_name: str) -> str:
             if cmd_name not in bc.executor.commands.keys():
-                result = f"Unknown command '{cmd_name}'"
                 return
             cmd = bc.executor.commands[cmd_name]
             result = ""
@@ -175,6 +174,8 @@ class BuiltinCommands(BaseCmd):
         if args.command_name is not None:
             # !help <command_name>
             result = get_help_for_command(args.command_name)
+            if result is None:
+                result = f"Unknown command '{args.command_name}'"
             await Command.send_message(execution_ctx, result)
             return
         # !help
