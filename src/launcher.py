@@ -82,6 +82,8 @@ class Launcher:
             "-v", "--verbose", action="store_true", help="Verbose", default=False)
         subparsers["test"].add_argument(
             "-vv", "--verbose2", action="store_true", help="Verbose (level2)", default=False)
+        subparsers["test"].add_argument(
+            "--cov", action="store_true", help="Collect coverage report", default=False)
         # Autocomplete
         subparsers["autocomplete"].add_argument("type", nargs=1, help="Shell type", choices=["bash"])
         return parser

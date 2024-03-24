@@ -4,6 +4,9 @@
 # Python cache
 __pycache__
 
+# Pytest code coverage artifacts
+.coverage
+
 # venv
 venv
 
