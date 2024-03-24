@@ -3,6 +3,8 @@
 [![Nightly](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/nightly.yml)
 [![CodeQL](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/aobolensk/walbot/actions/workflows/codeql-analysis.yml)
 
+[![codecov](https://codecov.io/gh/aobolensk/walbot/graph/badge.svg?token=1M1ZGOGSP9)](https://codecov.io/gh/aobolensk/walbot)
+
 # walbot
 Discord bot written in Python*
 
