@@ -16,7 +16,7 @@ from src.log import log
 
 class Executor:
     def __init__(self) -> None:
-        self.commands = {}
+        self.commands: Dict[str, Any] = {}
         self.binders: Dict[const.BotBackend, CommandBinding] = {}
 
     def register_command(self, cmd_name: str, command: Command) -> None:
@@ -39,10 +39,10 @@ class Executor:
                 obj[1] for obj in inspect.getmembers(commands_file, inspect.isclass)
                 if (obj[1].__module__ == module) and issubclass(obj[1], BaseCmd)]
             if len(commands) == 1:
-                commands = commands[0]
-                if "bind" in [func[0] for func in inspect.getmembers(commands, inspect.isfunction)
+                commands_class = commands[0]
+                if "bind" in [func[0] for func in inspect.getmembers(commands_class, inspect.isfunction)
                               if not func[0].startswith('_')]:
-                    self.add_module(commands())
+                    self.add_module(commands_class())
                 else:
                     log.error(f"Class '{commands.__name__}' does not have bind() function")
             elif len(commands) > 1:
@@ -73,7 +73,7 @@ class Executor:
             executor_config["custom_commands"][command.command_name] = command
 
     def export_help(self, platform: SupportedPlatforms):
-        modules = defaultdict(dict)
+        modules: Dict[str, Dict[str, Any]] = defaultdict(dict)
         for cmd_name, command in self.commands.items():
             if command.supported_platforms & platform:
                 modules[command.module_name][cmd_name] = (command.description or "").strip()

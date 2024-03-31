@@ -1,9 +1,9 @@
 import random
 import re
 from enum import IntEnum
-from typing import List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
-import yaml
+import yaml  # type:ignore
 
 from src import const
 from src.ff import FF
@@ -13,6 +13,7 @@ class MarkovNode:
     def __init__(self, node_type, word: str = None):
         self.type = node_type
         self.word = word
+        self.next: Dict[Any, int]
         if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
             self.next = {None: 0}
         else:
@@ -94,7 +95,8 @@ class Markov:
     def get_next_words_list(self, word: str) -> List[str]:
         if word not in self.model.keys():
             return []
-        return sorted(self.model[word].next.items(), key=lambda x: -x[1])
+        # TODO: investigate typing issue
+        return sorted(self.model[word].next.items(), key=lambda x: -x[1])  # type:ignore
 
     def generate(self, word: str = "") -> str:
         if word not in self.model.keys():
@@ -123,7 +125,7 @@ class Markov:
         self.chains_generated += 1
         return result
 
-    def collect_garbage(self, node: Optional[MarkovNode] = None) -> Set[str]:
+    def collect_garbage(self, node: Optional[MarkovNode] = None) -> Set[Any]:
         if not node:
             node = self.model[""]
         was = {node}
@@ -137,7 +139,7 @@ class Markov:
                 if hasattr(node, "word"):
                     result.append(node.word)
                     del self.model[node.word]
-            return result
+            return set(result)
         return was
 
     def serialize(self, filename: str, dumper: type = yaml.Dumper) -> None:
@@ -269,7 +271,7 @@ class MarkovV2:
         return result
 
     def collect_garbage(self, node: Optional[MarkovNode] = None) -> Set[str]:
-        pass
+        return set()
 
     def serialize(self, filename: str, dumper: type = yaml.Dumper) -> None:
         pass

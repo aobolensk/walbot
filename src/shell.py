@@ -76,9 +76,9 @@ class Shell:
         result = await Shell.run_async(cmd_line, cwd=cwd, shell=True)
         if result.exit_code == -1:
             await execution_ctx.send_message("<Command timed out>")
-            return
+            return None
         if result.exit_code != 0:
             await execution_ctx.send_message(f"<Command failed with error code {result.exit_code}>")
-            return
+            return None
         await execution_ctx.send_message(result.stdout)
         return result.stdout

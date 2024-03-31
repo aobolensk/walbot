@@ -1,6 +1,6 @@
 import asyncio
 
-import pytest
+import pytest  # type:ignore
 
 from src.utils import Util
 from tests.fixtures.context import BufferTestExecutionContext

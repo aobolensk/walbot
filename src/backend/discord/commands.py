@@ -12,7 +12,7 @@ from src.config import Command, bc, log
 
 
 class DiscordCommandBinding(CommandBinding):
-    def bind(self, cmd_name: str, command: Command):
+    def bind(self, cmd_name: str, command: Command):  # type:ignore
         if command.module_name is None:
             return
         bc.discord.commands.register_command(
@@ -31,9 +31,9 @@ class DiscordCommandBinding(CommandBinding):
 class Commands:
     def __init__(self) -> None:
         if not hasattr(self, "data"):
-            self.data = dict()
+            self.data: Dict[str, Any] = dict()
         if not hasattr(self, "aliases"):
-            self.aliases = dict()
+            self.aliases: Dict[str, Any] = dict()
 
     def update(self, reload: bool = False) -> None:
         bc.discord.commands = self

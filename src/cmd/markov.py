@@ -7,7 +7,7 @@ from src import const
 from src.api.command import BaseCmd, Command, Implementation
 from src.api.execution_context import ExecutionContext
 from src.config import bc
-from src.utils import Util
+from src.utils import Util, null
 
 
 class MarkovCommands(BaseCmd):
@@ -62,7 +62,7 @@ class MarkovCommands(BaseCmd):
         """Generate message using Markov chain
     Example: !markov"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1):
-            return
+            return None
         if len(cmd_line) > 1:
             result = ""
             for _ in range(const.MAX_MARKOV_ATTEMPTS):
@@ -83,7 +83,7 @@ class MarkovCommands(BaseCmd):
         """Garbage collect Markov model nodes
     Example: !markovgc"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = bc.markov.collect_garbage()
         result = f"Garbage collected {len(result)} items: {', '.join(result)}"
         await Command.send_message(execution_ctx, result)
@@ -93,12 +93,12 @@ class MarkovCommands(BaseCmd):
         """Delete all words in Markov model by regex
     Example: !delmarkov hello"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         regex = ' '.join(cmd_line[1:])
         try:
             removed = bc.markov.del_words(regex)
         except re.error as e:
-            return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+            return null(await Command.send_message(execution_ctx, f"Invalid regular expression: {e}"))
         await execution_ctx.send_message(f"Deleted {len(removed)} words from model: {removed}", suppress_embeds=True)
 
     async def _findmarkov(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
@@ -108,12 +108,12 @@ class MarkovCommands(BaseCmd):
         !findmarkov hello
         !findmarkov hello -f"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
-            return
+            return None
         regex = cmd_line[1]
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+            return null(await Command.send_message(execution_ctx, f"Invalid regular expression: {e}"))
         amount = len(found)
         if not (len(cmd_line) > 2 and cmd_line[2] == '-f' and
                 execution_ctx.permission_level >= const.Permission.MOD.value):
@@ -129,12 +129,12 @@ class MarkovCommands(BaseCmd):
         !getmarkovword hello -a <- get amount of found words
         !getmarkovword hello 0 <- get word by index"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
-            return
+            return None
         regex = cmd_line[1]
         try:
             found = bc.markov.find_words(regex)
         except re.error as e:
-            return await Command.send_message(execution_ctx, f"Invalid regular expression: {e}")
+            return null(await Command.send_message(execution_ctx, f"Invalid regular expression: {e}"))
         amount = len(found)
         if cmd_line[2] == '-a':
             result = str(amount)
@@ -144,10 +144,10 @@ class MarkovCommands(BaseCmd):
             execution_ctx, cmd_line[2],
             f"Third parameter '{cmd_line[2]}' should be a valid index")
         if index is None:
-            return
+            return None
         if not 0 <= index < amount:
-            return await Command.send_message(
-                execution_ctx, f"Wrong index in list '{cmd_line[2]}' (should be in range [0..{amount - 1}])")
+            return null(await Command.send_message(
+                execution_ctx, f"Wrong index in list '{cmd_line[2]}' (should be in range [0..{amount - 1}])"))
         result = found[index]
         await Command.send_message(execution_ctx, result)
         return result
@@ -156,7 +156,7 @@ class MarkovCommands(BaseCmd):
         """Drop Markov database
     Example: !dropmarkov"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         bc.markov.__init__()
         await Command.send_message(execution_ctx, "Markov database has been dropped!")
 
@@ -164,7 +164,7 @@ class MarkovCommands(BaseCmd):
         """Show stats for Markov module
     Example: !statmarkov"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         pairs_count = sum(word.total_next for word in bc.markov.model.values())
         markov_db_size = os.path.getsize(const.MARKOV_PATH)
         while markov_db_size == 0:
@@ -185,7 +185,7 @@ class MarkovCommands(BaseCmd):
         """Inspect next words in Markov model for current one
     Example: !inspectmarkov hello"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=3):
-            return
+            return None
         word = cmd_line[1] if len(cmd_line) > 1 else ''
         words = bc.markov.get_next_words_list(word)
         result = f"Next for '{word}':\n"
@@ -203,7 +203,7 @@ class MarkovCommands(BaseCmd):
         """Add regular expression filter for Markov model
     Example: !addmarkovfilter regex"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         bc.markov.filters.append(re.compile(cmd_line[1], re.DOTALL))
         await Command.send_message(execution_ctx, f"Filter '{cmd_line[1]}' was successfully added for Markov model")
 
@@ -211,7 +211,7 @@ class MarkovCommands(BaseCmd):
         """Print list of regular expression filters for Markov model
     Example: !listmarkovfilter"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = ""
         for index, regex in enumerate(bc.markov.filters):
             result += f"{index} -> `{regex.pattern}`\n"
@@ -222,7 +222,7 @@ class MarkovCommands(BaseCmd):
         """Delete regular expression filter for Markov model by index
     Example: !delmarkovfilter 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1],
             f"Second parameter for '{cmd_line[0]}' should be an index of filter")
@@ -238,7 +238,7 @@ class MarkovCommands(BaseCmd):
         """Add message prefix that should be ignored by Markov model
     Example: !addmarkovignoredprefix $"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         prefix = ' '.join(cmd_line[1:])
         index = bc.config.ids["markov_ignored_prefix"]
         bc.markov.ignored_prefixes[index] = ' '.join(cmd_line[1:])
@@ -249,7 +249,7 @@ class MarkovCommands(BaseCmd):
         """List all prefixes that should be ignored by Markov model
     Example: !listmarkovignoredprefix"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = ""
         for index, prefix in bc.markov.ignored_prefixes.items():
             result += f"{index} -> `{prefix}`\n"
@@ -259,7 +259,7 @@ class MarkovCommands(BaseCmd):
         """Delete message prefix that should be ignored by Markov model by its index
     Example: !delmarkovignoredprefix 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of ignored prefix")
         if index is None:

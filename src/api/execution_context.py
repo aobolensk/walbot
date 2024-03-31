@@ -32,7 +32,7 @@ class ExecutionContext(ABC):
         pass
 
     @abstractmethod
-    def message_author_id(self) -> int:
+    def message_author_id(self) -> str:
         pass
 
     @abstractmethod

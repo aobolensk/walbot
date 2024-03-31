@@ -40,11 +40,11 @@ class DebugCommands(BaseCmd):
             "debug", "eval", const.Permission.ADMIN, Implementation.FUNCTION,
             subcommand=False, impl_func=self._eval)
 
-    async def _dbg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _dbg(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Debug command
     Example: !dbg <diagnostic-name>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         debug_info = _DebugCommand(cmd_line[1], cmd_line[2:])
         result = debug_info.run()
         await Command.send_message(execution_ctx, result)
@@ -55,7 +55,7 @@ class DebugCommands(BaseCmd):
     Note: Dangerous, use it only if you know what you are doing
     Example: !eval <code>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         old_stdout = sys.stdout
         sys.stdout = tmp_stdout = StringIO()
         try:

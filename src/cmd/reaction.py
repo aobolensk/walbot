@@ -54,7 +54,7 @@ class ReactionCommands(BaseCmd):
         """Add reaction
     Example: !addreaction emoji regex"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         bc.config.reactions[bc.config.ids["reaction"]] = Reaction(' '.join(cmd_line[2:]), cmd_line[1])
         bc.config.ids["reaction"] += 1
         await Command.send_message(
@@ -64,7 +64,7 @@ class ReactionCommands(BaseCmd):
         """Update reaction
     Example: !updreaction index emoji regex"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=4):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should an index (integer)")
         if index is None:
@@ -81,7 +81,7 @@ class ReactionCommands(BaseCmd):
     Examples:
         !delreaction index"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of reaction")
         if index is None:
@@ -92,11 +92,11 @@ class ReactionCommands(BaseCmd):
         else:
             await Command.send_message(execution_ctx, "Invalid index of reaction!")
 
-    async def _listreaction(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
+    async def _listreaction(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Print list of reactions
     Example: !listreaction"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = ""
         for index, reaction in bc.config.reactions.items():
             result += f"{index} - {reaction.emoji}: `{reaction.regex}`\n"
@@ -107,7 +107,7 @@ class ReactionCommands(BaseCmd):
         """Add bot response on message that contains particular regex
     Example: !addresponse regex;text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         parts = ' '.join(cmd_line[1:]).split(';', 1)
         if len(parts) < 2:
             return await Command.send_message(
@@ -121,7 +121,7 @@ class ReactionCommands(BaseCmd):
         """Update bot response
     Example: !updresponse index regex;text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should an index (integer)")
         if index is None:
@@ -141,7 +141,7 @@ class ReactionCommands(BaseCmd):
     Examples:
         !delresponse index"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of response")
         if index is None:
@@ -155,7 +155,7 @@ class ReactionCommands(BaseCmd):
         """Print list of responses
     Example: !listresponse"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = ""
         for index, response in bc.config.responses.items():
             result += f"{index} - `{response.regex}`: {response.text}\n"

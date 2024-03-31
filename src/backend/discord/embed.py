@@ -1,5 +1,5 @@
 import datetime
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import discord
 
@@ -10,7 +10,7 @@ class DiscordEmbed:
     """Discord embed constructor"""
 
     def __init__(self) -> None:
-        self._data = dict()
+        self._data: Dict[str, Any] = dict()
 
     def get(self) -> discord.Embed:
         """Get embed result"""

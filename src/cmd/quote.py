@@ -2,7 +2,7 @@
 
 import datetime
 import random
-from typing import List
+from typing import List, Optional
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -40,7 +40,7 @@ class RandomCommands(BaseCmd):
         !quote
         !quote 1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         if not bc.config.quotes:
             return await Command.send_message(execution_ctx, "<Quotes database is empty>")
         if len(cmd_line) == 2:
@@ -70,7 +70,7 @@ class RandomCommands(BaseCmd):
         """Add quote to quotes database
     Example: !addquote Hello, world!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         quote = ' '.join(cmd_line[1:])
         index = bc.config.ids["quote"]
         bc.config.quotes[index] = Quote(quote, execution_ctx.message_author())
@@ -78,11 +78,11 @@ class RandomCommands(BaseCmd):
         await Command.send_message(
             execution_ctx, f"Quote '{quote}' was successfully added to quotes database with index {index}")
 
-    async def _listquote(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _listquote(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Print list of all quotes
     Example: !listquote"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = ""
         for index, quote in bc.config.quotes.items():
             result += f"{index} -> {quote.quote()}\n"
@@ -93,7 +93,7 @@ class RandomCommands(BaseCmd):
         """Delete quote from quotes database by index
     Example: !delquote 0"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of quote")
         if index is None:
@@ -108,7 +108,7 @@ class RandomCommands(BaseCmd):
         """Set author of quote by its index
     Example: !setquoteauthor 0 WalBot"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         index = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second parameter for '{cmd_line[0]}' should be an index of quote")
         if index is None:

@@ -48,6 +48,7 @@ class BasePlugin:
         """
         raise NotImplementedError
 
+    @staticmethod
     def plugin_api_version() -> PluginAPIVersion:
         """Plugin API version"""
         return PluginAPIVersion.LATEST

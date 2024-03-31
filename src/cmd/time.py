@@ -31,7 +31,7 @@ class TimeCommands(BaseCmd):
         !time America/New_York
     Full timezone database list: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         timezone = None
         if len(cmd_line) == 2:
             timezone = tz.gettz(cmd_line[1])
@@ -50,7 +50,7 @@ class TimeCommands(BaseCmd):
         """Get current timezone
     Usage: !tz"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         local_tz = Time().now().astimezone().tzinfo
         await Command.send_message(execution_ctx, f"{local_tz}")
 
@@ -61,7 +61,7 @@ class TimeCommands(BaseCmd):
         !setusertz Europe/Moscow
         !setusertz America/New_York"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         timezone = None
         if len(cmd_line) == 2:
             timezone = tz.gettz(cmd_line[1])

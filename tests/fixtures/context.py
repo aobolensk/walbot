@@ -25,8 +25,8 @@ class BufferTestExecutionContext(ExecutionContext):
     def message_author(self) -> str:
         return ""
 
-    def message_author_id(self) -> int:
-        return 0
+    def message_author_id(self) -> str:
+        return "0"
 
     def channel_name(self) -> str:
         return "console"

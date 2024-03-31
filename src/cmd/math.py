@@ -81,7 +81,7 @@ class MathCommands(BaseCmd):
         !calc 2+2*2
         !calc 4/2-1"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         expr = ' '.join(cmd_line[1:])
         try:
             result = str(MathExprEvaluator().evaluate(expr))
@@ -97,7 +97,7 @@ class MathCommands(BaseCmd):
         !if 0 It's true;It's false -> It's false
 """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         condition = cmd_line[1]
 
         true = ["true"]
@@ -132,12 +132,12 @@ class MathCommands(BaseCmd):
         !loop 2 ping
         !loop 5 echo Hello!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         subcommand = cmd_line[2:]
         loop_count = await Util.parse_int(
             execution_ctx, cmd_line[1], "Loop iterations count should be an integer")
         if loop_count is None:
-            return
+            return None
         if loop_count <= 0:
             await Command.send_message(execution_ctx, "Loop iterations count should be greater than 0")
         result = ""

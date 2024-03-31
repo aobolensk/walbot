@@ -70,7 +70,8 @@ def check_updates(context: AutoUpdateContext) -> bool:
     """Function that performs updates check. It is called periodically"""
     secret_config = Util.read_config_file(const.SECRET_CONFIG_PATH)
     if secret_config is None:
-        return log.error("Failed to read secret config file")
+        log.error("Failed to read secret config file")
+        return False
     mail = Mail(secret_config)
     old_sha = context.repo.head.object.hexsha
     try:
@@ -80,20 +81,25 @@ def check_updates(context: AutoUpdateContext) -> bool:
             secret_config.admin_email_list,
             "Autoupdate error",
             get_autoupdate_error_message(f"Failed to fetch updates from remote: {e}"))
-        return log.error(f"Fetch failed: {e}. Skipping this cycle, will try to update on the next one")
+        log.error(f"Fetch failed: {e}. Skipping this cycle, will try to update on the next one")
+        return False
     new_sha = context.repo.remotes.origin.refs['master'].object.name_rev.split()[0]
     log.debug(f"{old_sha} {new_sha}")
     if not FF.is_enabled("WALBOT_TEST_AUTO_UPDATE") and old_sha == new_sha:
-        return log.debug("No new updates")
+        log.debug("No new updates")
+        return False
     bot_cache = importlib.import_module("src.bot_cache").BotCache(True).parse()
     if bot_cache is None:
-        return log.warning("Could not read bot cache. Skipping this cycle, will try to update on the next one")
+        log.warning("Could not read bot cache. Skipping this cycle, will try to update on the next one")
+        return False
     if "do_not_update" not in bot_cache.keys():
-        return log.warning(
+        log.warning(
             "Could not find 'do_not_update' field in bot cache. "
             "Skipping this cycle, will try to update on the next one")
+        return False
     if bot_cache["do_not_update"]:
-        return log.debug("Automatic update is not permitted. Skipping this cycle, will try to update on the next one")
+        log.debug("Automatic update is not permitted. Skipping this cycle, will try to update on the next one")
+        return False
     context.repo.git.reset("--hard")
     try:
         g = git.cmd.Git(const.WALBOT_DIR)

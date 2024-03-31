@@ -1,6 +1,7 @@
 import asyncio
 import inspect
 import socket
+from typing import Optional
 
 from src import const
 from src.api.bot_instance import BotInstance
@@ -14,7 +15,7 @@ REPL_HOST = ''
 class ReplBotInstance(BotInstance):
     def __init__(self) -> None:
         self.channel = None
-        self.sock = None
+        self.sock: Optional[socket.socket] = None
 
     async def parse_command(self, commands, message) -> str:
         args = message.split(' ')

@@ -83,7 +83,7 @@ class TelegramBotInstance(BotInstance):
             counter += 1
             if self._is_stopping:
                 log.info("Stopping Telegram instance...")
-                app.stop()
+                loop.run_until_complete(app.stop())
                 log.info("Telegram instance is stopped!")
                 break
             if counter % const.REMINDER_POLLING_INTERVAL == 0:

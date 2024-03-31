@@ -4,7 +4,7 @@ import subprocess
 import sys
 from typing import List, Optional
 
-from aiogoogletrans import Translator
+from aiogoogletrans import Translator  # type:ignore
 
 from src import const
 from src.api.command import BaseCmd, Command, Implementation
@@ -33,7 +33,7 @@ class TimerCommands(BaseCmd):
         """Check network and proxy settings
     Usage: !netcheck"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = ""
         try:
             r = Util.request(
@@ -50,12 +50,13 @@ class TimerCommands(BaseCmd):
         except Exception as e:
             result += "Speedtest: failed with error: " + str(e) + "\n"
         await Command.send_message(execution_ctx, result)
+        return result
 
     async def _translate(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Translate text to specified language
     Usage: !translate <lang> <text>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         translator = Translator(proxy=Util.proxy.http() or None)
         dst_language = cmd_line[1]
         text = " ".join(cmd_line[2:])
@@ -66,12 +67,13 @@ class TimerCommands(BaseCmd):
             return result
         except ValueError as e:
             await Command.send_message(execution_ctx, f"ERROR! Could not translate text: {e}")
+        return None
 
     async def _weather(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Get current weather using wttr.in
     Usage: !weather <city>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         city = ' '.join(cmd_line[1:])
         try:
             r = Util.request(f"https://wttr.in/{city}?format=4")
@@ -89,12 +91,13 @@ class TimerCommands(BaseCmd):
             result = f"Error while getting weather: {e}"
             await Command.send_message(execution_ctx, result)
             return result
+        return None
 
-    async def _weatherforecast(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _weatherforecast(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         """Get weather forecast using wttr.in
     Usage: !weatherforecast <city>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         city = ' '.join(cmd_line[1:])
         try:
             r = Util.request(f"https://wttr.in/{city}.png?m")
@@ -112,3 +115,4 @@ class TimerCommands(BaseCmd):
             result = f"Error while getting weather: {e}"
             await Command.send_message(execution_ctx, result)
             return result
+        return None

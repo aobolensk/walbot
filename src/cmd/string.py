@@ -72,7 +72,7 @@ class StringCommands(BaseCmd):
         """Emojify text
     Example: !emojify Hello!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         text = ' '.join(cmd_line[1:]).lower()
         result = ""
         is_emoji = False
@@ -93,7 +93,7 @@ class StringCommands(BaseCmd):
         """Demojify text
     Example: !demojify 🇭 🇪 🇱 🇱 🇴"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         text = ' '.join(cmd_line[1:])
         result = ""
         i = 0
@@ -115,7 +115,7 @@ class StringCommands(BaseCmd):
         !range <start> <stop>
         !range <start> <stop> <step>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=4):
-            return
+            return None
         start, stop, step = 0, 0, 1
         if len(cmd_line) == 2:
             stop = await Util.parse_int(
@@ -145,7 +145,7 @@ class StringCommands(BaseCmd):
         """Urlencode string
     Example: !urlencode hello, world!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = ' '.join(cmd_line[1:])
         result = urllib.request.quote(result.encode("cp1251"))
         await Command.send_message(execution_ctx, result)
@@ -159,12 +159,12 @@ class StringCommands(BaseCmd):
         !takechars -2 hello
         Result: lo"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = ' '.join(cmd_line[2:])
         num = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
         if num is None:
-            return
+            return None
         if num < 0:
             result = result[len(result) + num:]
         else:
@@ -180,12 +180,12 @@ class StringCommands(BaseCmd):
         !dropchars -2 hello
         Result: hel"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = ' '.join(cmd_line[2:])
         num = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
         if num is None:
-            return
+            return None
         if num < 0:
             result = result[:len(result) + num]
         else:
@@ -197,7 +197,7 @@ class StringCommands(BaseCmd):
         """Calculate length of the message
     Example: !countchars some text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = str(len(' '.join(cmd_line[1:])))
         await Command.send_message(execution_ctx, result)
         return result
@@ -210,16 +210,16 @@ class StringCommands(BaseCmd):
         !takewords -2 a b c
         Result: b c"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
-        result = ' '.join(cmd_line[2:]).split()
+            return None
+        result_list = ' '.join(cmd_line[2:]).split()
         num = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
         if num is None:
-            return
+            return None
         if num < 0:
-            result = ' '.join(result[len(result) + num:])
+            result = ' '.join(result_list[len(result_list) + num:])
         else:
-            result = ' '.join(result[:num])
+            result = ' '.join(result_list[:num])
         await Command.send_message(execution_ctx, result)
         return result
 
@@ -231,16 +231,16 @@ class StringCommands(BaseCmd):
         !dropwords -2 a b c
         Result: a"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
-        result = ' '.join(cmd_line[2:]).split()
+            return None
+        result_list = ' '.join(cmd_line[2:]).split()
         num = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
         if num is None:
-            return
+            return None
         if num < 0:
-            result = ' '.join(result[:len(result) + num])
+            result = ' '.join(result_list[:len(result_list) + num])
         else:
-            result = ' '.join(result[num:])
+            result = ' '.join(result_list[num:])
         await Command.send_message(execution_ctx, result)
         return result
 
@@ -248,7 +248,7 @@ class StringCommands(BaseCmd):
         """Count amount of words
     Example: !countwords some text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = str(len(' '.join(cmd_line).split()) - 1)
         await Command.send_message(execution_ctx, result)
         return result
@@ -267,16 +267,16 @@ class StringCommands(BaseCmd):
         Result: b
         c"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
-        result = ' '.join(cmd_line[2:]).split('\n')
+            return None
+        result_list = ' '.join(cmd_line[2:]).split('\n')
         num = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
         if num is None:
-            return
+            return None
         if num < 0:
-            result = '\n'.join(result[len(result) + num:])
+            result = '\n'.join(result_list[len(result_list) + num:])
         else:
-            result = '\n'.join(result[:num])
+            result = '\n'.join(result_list[:num])
         await Command.send_message(execution_ctx, result)
         return result
 
@@ -292,16 +292,16 @@ class StringCommands(BaseCmd):
         c
         Result: a"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
-        result = ' '.join(cmd_line[2:]).split('\n')
+            return None
+        result_list = ' '.join(cmd_line[2:]).split('\n')
         num = await Util.parse_int(
             execution_ctx, cmd_line[1], f"Second argument of command '{cmd_line[0]}' should be an integer")
         if num is None:
-            return
+            return None
         if num < 0:
-            result = '\n'.join(result[:len(result) + num])
+            result = '\n'.join(result_list[:len(result_list) + num])
         else:
-            result = '\n'.join(result[num:])
+            result = '\n'.join(result_list[num:])
         await Command.send_message(execution_ctx, result)
         return result
 
@@ -309,7 +309,7 @@ class StringCommands(BaseCmd):
         """Count amount of lines
     Example: !countlines some text"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = str(len(' '.join(cmd_line).split('\n')))
         await Command.send_message(execution_ctx, result)
         return result
@@ -318,7 +318,7 @@ class StringCommands(BaseCmd):
         """Convert text to lower case
     Example: !tolower SoMe TeXt"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = ' '.join(cmd_line[1:]).lower()
         await Command.send_message(execution_ctx, result)
         return result
@@ -327,7 +327,7 @@ class StringCommands(BaseCmd):
         """Convert text to upper case
     Example: !toupper SoMe TeXt"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = ' '.join(cmd_line[1:]).upper()
         await Command.send_message(execution_ctx, result)
         return result
@@ -336,7 +336,7 @@ class StringCommands(BaseCmd):
         """Join words with string as separator
     Example: !join + 1 2 3 -> 1+2+3"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3):
-            return
+            return None
         separator = cmd_line[1]
         result = separator.join(cmd_line[2:])
         await Command.send_message(execution_ctx, result)
@@ -346,7 +346,7 @@ class StringCommands(BaseCmd):
         """Check if two words are equal or not
     Example: !eqwords a b"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
-            return
+            return None
         result = "true" if cmd_line[1] == cmd_line[2] else "false"
         await Command.send_message(execution_ctx, result)
         return result
@@ -355,7 +355,7 @@ class StringCommands(BaseCmd):
         """Check if two strings separated by ';' are equal or not
     Example: !eqstrs a;b"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         options = ' '.join(cmd_line[1:]).split(';')
         if len(options) < 2:
             return await Command.send_message(execution_ctx, "Too few options to compare")

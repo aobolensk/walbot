@@ -155,7 +155,7 @@ _clock_emoji_mapping = {
 def get_clock_emoji(time: str) -> Optional[str]:
     r = const.TIME_24H_REGEX.match(time)
     if r is None:
-        return
+        return None
     hours, minutes = (int(x) for x in r.groups())
     if minutes < 15:
         minutes = 0

@@ -14,8 +14,9 @@ import threading
 import time
 import zipfile
 from types import FrameType
+from typing import List
 
-import nest_asyncio
+import nest_asyncio  # type:ignore
 import psutil
 
 from src import const
@@ -36,9 +37,9 @@ class Launcher:
 
     def _get_argparser(self) -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser(description='WalBot', formatter_class=argparse.RawTextHelpFormatter)
-        subparsers = parser.add_subparsers(dest="action")
+        subparsers_obj = parser.add_subparsers(dest="action")
         subparsers = {
-            cmd: subparsers.add_parser(
+            cmd: subparsers_obj.add_parser(
                 cmd, help=getattr(self, cmd).__doc__, formatter_class=argparse.RawTextHelpFormatter)
             for cmd in list(filter(lambda _: not _.startswith('_') and not _.startswith('launch_'), dir(self)))
         }
@@ -221,7 +222,7 @@ class Launcher:
         """Start the bot"""
         if main_bot and self.args.autoupdate:
             return self.autoupdate()
-        self.backends = []
+        self.backends: List[BotInstance] = []
         self._read_configs(main_bot)
         bc.executor.load_commands()
         if not self.args.fast_start:
@@ -274,6 +275,7 @@ class Launcher:
             log.error("Could not stop the bot (cache file does not exist)")
             return const.ExitStatus.GENERAL_ERROR
         bot_cache = BotCache(main_bot).parse()
+        assert bot_cache is not None, "bot_cache is None"
         pid = bot_cache["pid"]
         if pid is None:
             log.error("Could not stop the bot (cache file does not contain pid)")

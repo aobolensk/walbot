@@ -136,7 +136,7 @@ class BuiltinCommands(BaseCmd):
         """Show bot uptime
     Example: !uptime"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         result = bc.info.uptime
         await Command.send_message(execution_ctx, result)
         return result
@@ -149,7 +149,7 @@ class BuiltinCommands(BaseCmd):
         !help -a (alternative: !help --all)
         !help <command_name>"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1):
-            return
+            return None
         parser = CmdArgParser(execution_ctx)
         parser.add_argument("command_name", action="store", default=None, nargs='?')
         parser.add_argument("-p", "--plain", action="store_true", default=False)
@@ -160,7 +160,7 @@ class BuiltinCommands(BaseCmd):
 
         def get_help_for_command(cmd_name: str) -> str:
             if cmd_name not in bc.executor.commands.keys():
-                return
+                return ""
             cmd = bc.executor.commands[cmd_name]
             result = ""
             if cmd.impl_type == Implementation.FUNCTION:
@@ -227,7 +227,7 @@ class BuiltinCommands(BaseCmd):
         !about -vv  <- even more verbose
 """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         parser = CmdArgParser(execution_ctx)
         parser.add_argument("-v", "--verbose", action="store_const", dest="verbosity", const=1, default=0)
         parser.add_argument(
@@ -242,7 +242,7 @@ class BuiltinCommands(BaseCmd):
         """Shutdown the bot
     Example: !shutdown"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         await Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked bot shutdown!")
         subprocess.call([sys.executable, "walbot.py", "stop"])
 
@@ -250,7 +250,7 @@ class BuiltinCommands(BaseCmd):
         """Restart the bot
     Example: !restart"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         await Command.send_message(execution_ctx, f"{execution_ctx.message_author()} invoked restarting the bot!")
         subprocess.call([sys.executable, "walbot.py", "restart"])
 
@@ -260,7 +260,7 @@ class BuiltinCommands(BaseCmd):
         !version
         !version short"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         result = bc.info.version
         if len(cmd_line) == 2 and (cmd_line[1] == 's' or cmd_line[1] == 'short'):
             result = result[:7]
@@ -272,7 +272,7 @@ class BuiltinCommands(BaseCmd):
     Note: Be careful when you are executing external commands!
     Example: !extexec uname -a"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         return await Shell.run_and_send_stdout(execution_ctx, ' '.join(cmd_line[1:]))
 
     async def _curl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
@@ -282,13 +282,13 @@ class BuiltinCommands(BaseCmd):
         !curl <url> --no-proxy
     """
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=3):
-            return
+            return None
         parser = CmdArgParser(execution_ctx)
         parser.add_argument("url")
         parser.add_argument("--no-proxy", action="store_false", dest="use_proxy")
         args = parser.parse_args(cmd_line)
         if args is None:
-            return
+            return None
         try:
             r = Util.request(args.url, use_proxy=args.use_proxy)
             result = r.get_text()
@@ -296,12 +296,13 @@ class BuiltinCommands(BaseCmd):
             return result
         except Exception as e:
             await Command.send_message(execution_ctx, f"Request failed: {e}")
+        return None
 
     async def _wme(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Send direct message to author with something
     Example: !wme Hello!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         result = ' '.join(cmd_line[1:])
         if not result:
             return
@@ -312,7 +313,7 @@ class BuiltinCommands(BaseCmd):
         """Get current command which is executed on bot ping
     Example: !getmentioncmd"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=1):
-            return
+            return None
         await Command.send_message(execution_ctx, bc.config.on_mention_command)
 
     async def _setmentioncmd(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
@@ -321,7 +322,7 @@ class BuiltinCommands(BaseCmd):
         !setmentioncmd ping
         !setmentioncmd markov"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         command = ' '.join(cmd_line[1:])
         bc.config.on_mention_command = command
         await Command.send_message(execution_ctx, f"Command '{command}' was set on bot mention")
@@ -332,7 +333,7 @@ class BuiltinCommands(BaseCmd):
         !profile
         !profile `@user`"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         user = ""
         if execution_ctx.platform == const.BotBackend.DISCORD:
             if len(cmd_line) == 1:
@@ -361,7 +362,7 @@ class BuiltinCommands(BaseCmd):
         """Print information about current server
     Example: !server"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1, max=2):
-            return
+            return None
         if execution_ctx.platform == const.BotBackend.DISCORD:
             g = execution_ctx.message.guild
             e = DiscordEmbed()
@@ -388,7 +389,7 @@ class BuiltinCommands(BaseCmd):
         """Get message by its order number counting from the newest message
     Example: !message"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2, max=2):
-            return
+            return None
         number = await Util.parse_int(
             execution_ctx, cmd_line[1], "Message number should be an integer")
         if number is None:
@@ -416,7 +417,7 @@ class BuiltinCommands(BaseCmd):
         """Send text-to-speech (TTS) message
     Example: !tts Hello!"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         text = ' '.join(cmd_line[1:])
         await Command.send_message(execution_ctx, text, tts=True)
 
@@ -452,7 +453,7 @@ class BuiltinCommands(BaseCmd):
         """Change nickname
     Usage: !nick walbot"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         new_nick = ' '.join(cmd_line[1:])
         try:
             await execution_ctx.message.guild.me.edit(nick=new_nick)
