@@ -25,7 +25,7 @@ class CmdArgParser(argparse.ArgumentParser):
         self._execution_ctx = execution_ctx
         self._error = False
 
-    def parse_args(self, cmd_line: List[str]) -> Optional[argparse.Namespace]:
+    def parse_args(self, cmd_line: List[str]) -> Optional[argparse.Namespace]:  # type:ignore
         """Use cmd_line (required argument) as an input.
         Original argparse method is hidden.
         Return parsed args in Namespace class.
@@ -40,13 +40,15 @@ class CmdArgParser(argparse.ArgumentParser):
             return None
         return result
 
-    def error(self, message) -> None:
+    def error(self, message) -> None:  # type:ignore
+        # This function should not perform sys.exit
         """Original argparse method is hidden.
         Send error to text channel"""
         bc.discord.background_loop.run_until_complete(self._execution_ctx.send_message(message))
         self._error = True
 
-    def exit(self, status=0, message=None) -> None:
+    def exit(self, status=0, message=None) -> None:  # type:ignore
+        # This function should not perform sys.exit
         """Original argparse method is hidden.
         Ignore argparse exit calls"""
         pass

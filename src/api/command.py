@@ -1,7 +1,7 @@
 import enum
 from abc import ABC, abstractmethod
 from types import FunctionType
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from src import const
 from src.api.execution_context import ExecutionContext
@@ -79,7 +79,7 @@ class Command:
         commands_data[self.command_name]["times_called"] = self.times_called
         commands_data[self.command_name]["max_execution_time"] = self.max_execution_time
 
-    async def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def run(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         if execution_ctx.platform == const.BotBackend.DISCORD:
             # On Discord platform we are using legacy separate time limit handling for now
             return await self._run_impl(cmd_line, execution_ctx)
@@ -92,12 +92,12 @@ class Command:
             await Command.send_message(execution_ctx, f"Command '{' '.join(cmd_line)}' took too long to execute")
         return result
 
-    async def _run_impl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
+    async def _run_impl(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> Optional[str]:
         if execution_ctx.platform != const.BotBackend.DISCORD:
             # On Discord platform we are using legacy separate permission handling for now
             if execution_ctx.permission_level < self.permission_level:
                 await self.send_message(execution_ctx, f"You don't have permission to call command '{cmd_line[0]}'")
-                return
+                return None
         self.times_called += 1
         if not self.postpone_execution:
             cmd_line = (await self.process_variables(execution_ctx, ' '.join(cmd_line), cmd_line)).split(' ')
@@ -122,9 +122,8 @@ class Command:
         else:
             raise RuntimeError("invalid implementation type")
 
-    @abstractmethod
     async def _exec(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> str:
-        pass
+        raise NotImplementedError("Command executor is not implemented")
 
     @staticmethod
     async def check_args_count(execution_ctx, cmd_line, min=None, max=None):

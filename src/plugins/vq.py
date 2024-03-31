@@ -4,10 +4,10 @@ import os
 import urllib.parse
 from collections import deque
 from dataclasses import dataclass
-from typing import List
+from typing import Any, Dict, List
 
 import discord
-import yt_dlp
+import yt_dlp  # type:ignore
 
 from src import const
 from src.api.command import BaseCmd, Command, SupportedPlatforms
@@ -92,7 +92,7 @@ class _VoiceInternals:
         r = const.YT_VIDEO_REGEX.match(video_url)
         if r is None:
             return await Command.send_message(execution_ctx, "Please, provide valid YT link")
-        ydl_opts = {
+        ydl_opts: Dict[Any, Any] = {
         }
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:

@@ -11,7 +11,6 @@ from src.log import log
 
 class Mail:
     def __init__(self, secret_config: SecretConfig) -> None:
-        self.secrets = None
         if not all(secret_config.mail.values()):
             log.error("Email service cannot be initialized. Fill all mail fields in secret.yaml")
             return

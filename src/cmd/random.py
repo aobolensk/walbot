@@ -27,17 +27,17 @@ class RandomCommands(BaseCmd):
         """Get random number in range [left, right]
     Example: !random 5 10"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=3, max=3):
-            return
+            return None
         left = await Util.parse_float(
             execution_ctx, cmd_line[1], "Left border should be a number")
         if left is None:
-            return
+            return None
         right = await Util.parse_float(
             execution_ctx, cmd_line[2], "Right border should be a number")
         if right is None:
-            return
+            return None
         if left > right:
-            return Command.send_message(execution_ctx, "Left border should be less or equal than right")
+            return await Command.send_message(execution_ctx, "Left border should be less or equal than right")
         if const.INTEGER_NUMBER.fullmatch(cmd_line[1]) and const.INTEGER_NUMBER.fullmatch(cmd_line[2]):
             result = str(random.randint(int(left), int(right)))  # integer random
         else:
@@ -49,7 +49,7 @@ class RandomCommands(BaseCmd):
         """Get random option among provided strings (split by space)
     Example: !randselect a b c"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         index = random.randint(1, len(cmd_line) - 1)
         result = cmd_line[index]
         await Command.send_message(execution_ctx, result)
@@ -59,7 +59,7 @@ class RandomCommands(BaseCmd):
         """Get random option among provided strings (split by semicolon)
     Example: !randselects a;b;c"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=2):
-            return
+            return None
         options = ' '.join(cmd_line[1:]).split(';')
         index = random.randint(0, len(options) - 1)
         result = options[index]

@@ -68,8 +68,7 @@ class PluginManager:
                     self._handle_register_error(
                         module, f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
             else:
-                self._handle_register_error(
-                    module, f"Class '{p.get_classname()}' does comply with BasePlugin interface")
+                self._handle_register_error(module, "Class does comply with BasePlugin interface")
         elif len(plugins) > 1:
             self._handle_register_error(
                 module, f"Module '{module}' have more than 1 class in it")

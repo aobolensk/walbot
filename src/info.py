@@ -19,7 +19,7 @@ class BotInfo:
         try:
             return git.Repo(search_parent_directories=True)
         except git.exc.InvalidGitRepositoryError:
-            return
+            return None
 
     @property
     def version(self) -> str:
@@ -37,7 +37,7 @@ class BotInfo:
         if repo is None:
             return "<unknown>"
         commit = repo.head.commit.message.splitlines()[0].strip()
-        return commit
+        return str(commit)
 
     @property
     def branch_name(self) -> str:

@@ -16,8 +16,9 @@ class Repl:
                 self._process(command.split())
             except (EOFError, KeyboardInterrupt):
                 self._quit(None)
+        return 0
 
-    def _process(self, cmd: str):
+    def _process(self, cmd: str) -> None:
         if len(cmd) == 0:
             pass
         elif cmd[0] in ("?", "help"):
@@ -31,7 +32,7 @@ class Repl:
         else:
             print(f"Unknown command {cmd[0]}")
 
-    def _help(self, _):
+    def _help(self, _) -> None:
         print("- help : print this message")
         print("- next <word> : print list of next words")
         print("- words : list of words in Markov model")

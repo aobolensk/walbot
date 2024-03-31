@@ -1,6 +1,6 @@
 import asyncio
 import re
-from typing import Optional
+from typing import Any, Optional
 
 import discord
 
@@ -40,7 +40,7 @@ class DiscordExecutionContext(ExecutionContext):
             if r is None:
                 break
             t = asyncio.create_task(self.message.guild.fetch_member(int(r.group(1))))
-            member = asyncio.run(t)
+            member: Any = asyncio.run(t)
             message = const.DISCORD_USER_ID_REGEX.sub(str(member), message, count=1)
         while True:
             r = const.DISCORD_ROLE_ID_REGEX.search(message)
@@ -57,8 +57,8 @@ class DiscordExecutionContext(ExecutionContext):
     def message_author(self) -> str:
         return self.message.author.mention
 
-    def message_author_id(self) -> int:
-        return self.message.author.id
+    def message_author_id(self) -> str:
+        return str(self.message.author.id)
 
     def channel_name(self) -> str:
         return self.message.channel.mention

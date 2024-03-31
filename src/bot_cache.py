@@ -28,7 +28,7 @@ class BotCache:
 
     def parse(self) -> Optional[Dict]:
         if not os.path.exists(self.path):
-            return
+            return None
         cache = None
         for _ in range(10):
             try:
@@ -38,10 +38,11 @@ class BotCache:
                     if "pid" not in cache or not psutil.pid_exists(int(cache["pid"])):
                         log.warning("Could validate pid from .bot_cache")
                         os.remove(self.path)
-                        return
+                        return None
                     return cache
             except json.decoder.JSONDecodeError:
                 time.sleep(0.5)
+        return None
 
     def dump_to_file(self) -> None:
         with open(self.path, 'w') as f:

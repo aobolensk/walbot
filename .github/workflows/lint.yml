@@ -94,3 +94,28 @@ jobs:
     - name: List files with error (open this section to see the list of files that failed this check)
       run: git diff | grep "diff --git"; exit 1
       if: failure()
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: |
+          requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+    - name: Install mypy
+      run: python -m pip install mypy
+    - name: Install types
+      run: |
+        python -m pip install \
+          types-requests \
+          types-psutil \
+          types-python-dateutil \
+          types-PyYAML
+    - name: Run mypy
+      run: python -m mypy .

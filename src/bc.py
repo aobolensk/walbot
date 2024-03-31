@@ -58,7 +58,7 @@ class BotController:
         def __init__(self) -> None:
             self.bot_username: 'Optional[str]' = None
             self.app: 'Optional[telegram.ext.Application]' = None
-            self.handlers: 'Dict[CommandHandler]' = dict()
+            self.handlers: 'Dict[str, CommandHandler]' = dict()
 
     class Repl:
         def __init__(self) -> None:
@@ -66,7 +66,7 @@ class BotController:
 
     class Backend:
         def __init__(self) -> None:
-            self._backends: Dict[str, bool] = dict(zip(
+            self._backends: Dict[const.BotBackend, bool] = dict(zip(
                 [backend for backend in const.BotBackend][1:], itertools.repeat(False)))
 
         def set_running(self, backend: const.BotBackend, new_state: bool, user_data_msg: str = "") -> None:
@@ -78,7 +78,7 @@ class BotController:
                 log.info(f"Backend controller: {str(backend).title()} instance has stopped!")
             self._backends[backend] = new_state
 
-        def is_running(self, backend: const.BotBackend) -> None:
+        def is_running(self, backend: const.BotBackend) -> bool:
             return self._backends[backend]
 
     def __init__(self):
@@ -98,3 +98,4 @@ class BotController:
         self.plugin_manager = PluginManager(self.executor)
         self.message_cache = MessageCache()
         self.be = self.Backend()
+        self.guilds = None  # TODO: move to Discord

@@ -13,7 +13,7 @@ from src.message_cache import CachedMsg
 
 async def _command_handler(command_name: str, update: Update, context: CallbackContext) -> None:
     await bc.executor.commands[command_name].run(
-        [command_name] + context.args, TelegramExecutionContext(update, context))
+        [command_name] + (context.args or list()), TelegramExecutionContext(update, context))
 
 
 @Mail.send_exception_info_to_admin_emails

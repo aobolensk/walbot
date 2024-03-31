@@ -118,18 +118,18 @@ class Util:
         return string
 
     class proxy:
-        def http() -> Optional[str]:
+        def http() -> str:
             """Get HTTP proxy from environment"""
             return (
                 os.environ.get("http_proxy") or
-                os.environ.get("HTTP_PROXY")
+                os.environ.get("HTTP_PROXY") or ""
             )
 
-        def https() -> Optional[str]:
+        def https() -> str:
             """Get HTTPS proxy from environment"""
             return (
                 os.environ.get("https_proxy") or
-                os.environ.get("HTTPS_PROXY")
+                os.environ.get("HTTPS_PROXY") or ""
             )
 
     class request:
@@ -189,6 +189,6 @@ class Time:
         return datetime.datetime.now(tz=self._tz).replace(microsecond=0)
 
 
-def null(*args, **kwargs):
+def null(*args, **kwargs) -> None:
     """Drop return value"""
-    return
+    return None

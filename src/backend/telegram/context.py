@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -13,12 +14,12 @@ from src.utils import Util
 class TelegramExecutionContext(ExecutionContext):
     def __init__(self, update: Update, context: CallbackContext) -> None:
         super().__init__()
-        self.platform = const.BotBackend.TELEGRAM
+        self.platform = str(const.BotBackend.TELEGRAM)
         self.update = update
         self.context = context
         self.user = bc.config.telegram.users[update.message.from_user.id]
         self.permission_level = bc.config.telegram.users[update.message.from_user.id].permission_level
-        self._replace_patterns = dict()
+        self._replace_patterns: Dict[str, str] = dict()
 
     async def send_message(self, message: str, *args, **kwargs) -> None:
         if self.silent:
@@ -45,7 +46,7 @@ class TelegramExecutionContext(ExecutionContext):
         await self.send_message(message, *args, **kwargs, reply_on_msg=True)
 
     async def send_direct_message(self, user_id: int, message: str, *args, **kwargs) -> None:
-        await send_message(user_id, message)
+        send_message(user_id, message)
 
     def _unescape_ping1(self, message: str) -> str:
         idx = 0
@@ -75,7 +76,7 @@ class TelegramExecutionContext(ExecutionContext):
         return self.update.message.from_user.mention_markdown_v2()
 
     def message_author_id(self) -> str:
-        return self.update.message.from_user.id
+        return str(self.update.message.from_user.id)
 
     def channel_name(self) -> str:
         return self.update.message.chat.title or "<DM>"

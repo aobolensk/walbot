@@ -2,9 +2,9 @@ import hashlib
 import os
 from typing import Optional
 
-import pymongo
-from pymongo.collection import Collection
-from pymongo.errors import ServerSelectionTimeoutError
+import pymongo  # type:ignore
+from pymongo.collection import Collection  # type:ignore
+from pymongo.errors import ServerSelectionTimeoutError  # type:ignore
 
 from src.log import log
 

@@ -1,4 +1,7 @@
+from typing import Any, Dict
+
+
 class DiscordConfig:
     def __init__(self) -> None:
-        self.guilds = dict()
-        self.users = dict()
+        self.guilds: Dict[str, Any] = dict()
+        self.users: Dict[str, Any] = dict()

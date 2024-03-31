@@ -4,6 +4,7 @@ import importlib
 import itertools
 import re
 import sys
+from typing import Optional
 
 import discord
 
@@ -203,8 +204,9 @@ class WalBot(discord.Client):
                 message.content = cmd
                 result = await self._process_command(message, cmd_split, silent=True)
                 message.content = msg_content
+                result = result or ""
                 if not self.config.discord.guilds[message.channel.guild.id].markov_pings:
-                    result = (DiscordExecutionContext(message).disable_pings(result)) or ""
+                    result = (DiscordExecutionContext(message).disable_pings(result))
                 await message.channel.send(message.author.mention + ' ' + result)
         elif channel_id in self.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist:
             # If the message is in a channel that is supposed to log markov chains, doesn't mention the bot then
@@ -232,7 +234,7 @@ class WalBot(discord.Client):
                     except discord.HTTPException:
                         pass
 
-    async def _process_command(self, message: discord.Message, command=None, silent=False) -> None:
+    async def _process_command(self, message: discord.Message, command=None, silent=False) -> Optional[str]:
         if command is None:
             command = message.content.split(' ')
         command = list(filter(None, command))
@@ -246,7 +248,7 @@ class WalBot(discord.Client):
                 await message.channel.send(
                     f"Unknown command '{command[0]}', "
                     f"probably you meant '{self._suggest_similar_command(command[0])}'")
-                return
+                return None
         max_exec_time = self.config.commands.data[command[0]].max_execution_time
         if command[0] in self.config.executor["commands_data"].keys():
             max_exec_time = bc.executor.commands[command[0]].max_execution_time
