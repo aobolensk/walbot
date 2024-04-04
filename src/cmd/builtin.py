@@ -177,7 +177,8 @@ class BuiltinCommands(BaseCmd):
             if result is None and execution_ctx.platform == const.BotBackend.DISCORD:
                 if args.command_name in bc.discord.commands.data.keys():
                     result = bc.discord.commands.data[args.command_name].get_actor().__doc__
-            if result is None:
+            print(f"res: '{result}'")
+            if not result:
                 result = f"Unknown command '{args.command_name}'"
             await Command.send_message(execution_ctx, result)
             return
