@@ -174,10 +174,13 @@ class BuiltinCommands(BaseCmd):
         if args.command_name is not None:
             # !help <command_name>
             result = get_help_for_command(args.command_name)
-            if result is None and execution_ctx.platform == const.BotBackend.DISCORD:
+            if not result and execution_ctx.platform == const.BotBackend.DISCORD:
                 if args.command_name in bc.discord.commands.data.keys():
-                    result = bc.discord.commands.data[args.command_name].get_actor().__doc__
-            print(f"res: '{result}'")
+                    cmd = bc.discord.commands.data[args.command_name]
+                    if cmd.message:
+                        result += cmd.message
+                    else:
+                        result += bc.discord.commands.data[args.command_name].get_actor().__doc__ or ""
             if not result:
                 result = f"Unknown command '{args.command_name}'"
             await Command.send_message(execution_ctx, result)
