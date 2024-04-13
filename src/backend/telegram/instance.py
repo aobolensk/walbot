@@ -3,6 +3,7 @@ import time
 
 from telegram import Update, constants
 from telegram.ext import Application, CallbackContext, MessageHandler, filters
+from telegram.error import NetworkError
 
 from src import const
 from src.api.bot_instance import BotInstance
@@ -51,6 +52,15 @@ class TelegramBotInstance(BotInstance):
         await bc.executor.commands[cmd_line[0]].run(cmd_line, TelegramExecutionContext(update, context))
         await bc.plugin_manager.broadcast_command("on_message", TelegramExecutionContext(update, context))
 
+    @staticmethod
+    async def _error_handler(update: Update, context: CallbackContext) -> None:
+        # You can also log the error or do other error handling here
+        error = context.error
+        if isinstance(error, NetworkError):
+            log.error(f"Network error occurred: {error}")
+            return
+        raise error
+
     @Mail.send_exception_info_to_admin_emails
     def _run(self, args) -> None:
         log.info("Starting Telegram instance...")
@@ -75,6 +85,7 @@ class TelegramBotInstance(BotInstance):
         bc.be.set_running(const.BotBackend.TELEGRAM, True, f"{bc.telegram.bot_username} ({self.__class__.__name__})")
         bc.executor.binders[const.BotBackend.TELEGRAM] = TelegramCommandBinding(app)
         bc.telegram.app = app
+        app.add_error_handler(self._error_handler)
         app.run_polling(timeout=600, stop_signals=())
         counter = 0
         reminder_proc = ReminderProcessing()
