@@ -2,8 +2,8 @@ import asyncio
 import time
 
 from telegram import Update, constants
-from telegram.ext import Application, CallbackContext, MessageHandler, filters
 from telegram.error import NetworkError
+from telegram.ext import Application, CallbackContext, MessageHandler, filters
 
 from src import const
 from src.api.bot_instance import BotInstance
