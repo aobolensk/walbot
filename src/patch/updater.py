@@ -438,6 +438,9 @@ class Updater:
             del config.__dict__["token"]
             self._bump_version(config, "0.0.4")
         if config.version == "0.0.4":
+            config.__dict__["plugins"] = dict()
+            self._bump_version(config, "0.0.5")
+        if config.version == "0.0.5":
             log.info(f"Version of {self.config_name} is up to date!")
         else:
             log.error(f"Unknown version {config.version} for {self.config_name}!")
