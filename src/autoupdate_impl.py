@@ -120,8 +120,8 @@ def check_updates(context: AutoUpdateContext) -> bool:
             "Autoupdate error",
             get_autoupdate_error_message(
                 f"Failed to fetch requirements.txt. Return code: {p.returncode}\n"
-                f"stdout:\n{p.stdout}\n"
-                f"stderr:\n{p.stderr}\n"))
+                f"stdout:\n{p.stdout.decode('utf-8')}\n"
+                f"stderr:\n{p.stderr.decode('utf-8')}\n"))
     minibot_response = "WalBot automatic update is in progress. Please, wait..."
     subprocess.call(f"{sys.executable} walbot.py startmini --message '{minibot_response}' --nohup &", shell=True)
     p = subprocess.run(f"{sys.executable} walbot.py stop", shell=True)
