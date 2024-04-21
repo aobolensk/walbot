@@ -5,6 +5,7 @@ from typing import List, Optional
 from src import const
 from src.api.command import Command
 from src.api.execution_context import ExecutionContext
+from src.cmdarg_parser import CmdArgParser
 from src.config import bc
 from src.log import log
 from src.plugin import BasePlugin
@@ -31,9 +32,13 @@ class ChatGPTPlugin(BasePlugin):
     Example: !chatgpt"""
         if not await Command.check_args_count(execution_ctx, cmd_line, min=1):
             return None
+        parser = CmdArgParser(execution_ctx)
+        parser.add_argument("-ctx", "--ctx", action="store", type=int, default=16)
+        args, _ = parser.parse_known_args(cmd_line)
+        if args is None:
+            return None
         messages_history = []
-        CONTEXT_DEPTH = 50
-        for i in range(CONTEXT_DEPTH):
+        for i in range(args.ctx):
             cached_msg = bc.message_cache.get(execution_ctx.channel_id(), i)
             if cached_msg is None:
                 break
@@ -55,6 +60,7 @@ class ChatGPTPlugin(BasePlugin):
                 "content": prompt,
             }
         ]
+        log.debug(f"Prompt: '{prompt}', context length: {args.ctx}")
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
