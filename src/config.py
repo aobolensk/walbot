@@ -318,4 +318,6 @@ class SecretConfig:
         self.discord = {
             "token": None,
         }
+        self.plugins = {
+        }
         self.admin_email_list = list()
