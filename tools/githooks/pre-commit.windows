@@ -9,4 +9,6 @@ echo "-- flake8"
 python -m flake8 --max-line-length 120 --show-source --exclude venv
 echo "-- isort"
 python -m isort . --check-only --diff
+echo "-- mypy"
+python3 -m mypy .
 echo "-- Lint check is done"
