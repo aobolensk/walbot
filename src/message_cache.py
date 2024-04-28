@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -12,11 +13,9 @@ class MessageCache:
     BUFFER_CAPACITY = 1001
 
     def __init__(self) -> None:
-        self._data: Dict[str, List[str]] = dict()
+        self._data: Dict[str, List[str]] = defaultdict(list)
 
     def push(self, channel_id: str, message: CachedMsg):
-        if channel_id not in self._data.keys():
-            self._data[channel_id] = []
         self._data[channel_id].insert(0, message)
         self._data[channel_id] = self._data[channel_id][:self.BUFFER_CAPACITY]
 
