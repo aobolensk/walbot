@@ -85,8 +85,9 @@ class Launcher:
             "-vv", "--verbose2", action="store_true", help="Verbose (level2)", default=False)
         subparsers["test"].add_argument(
             "--cov", action="store_true", help="Collect coverage report", default=False)
+        subparsers["hooks"].add_argument("command", type=str, choices=["setup", "remove"])
         # Autocomplete
-        subparsers["autocomplete"].add_argument("type", nargs=1, help="Shell type", choices=["bash"])
+        subparsers["autocomplete"].add_argument("type", type=str, help="Shell type", choices=["bash"])
         return parser
 
     def _list_env_var_flags(self) -> None:
@@ -355,8 +356,7 @@ class Launcher:
 
     def autocomplete(self) -> const.ExitStatus:
         """Update shell autocompletion scripts (requires `shtab` dependency)"""
-        shell = next(iter(self.args.type), None)
-        if shell == "bash":
+        if self.args.type == "bash":
             try:
                 shtab = importlib.import_module("shtab")
             except ImportError:
@@ -373,22 +373,23 @@ class Launcher:
             log.error("Unsupported shell type")
             return const.ExitStatus.GENERAL_ERROR
 
-    def setuphooks(self) -> const.ExitStatus:
-        """Install git hooks for walbot repo"""
-        if sys.platform != "win32":
-            shutil.copy(
-                os.path.join("tools", "githooks", "pre-commit.linux"),
-                os.path.join(".git", "hooks", "pre-commit"))
+    def hooks(self) -> const.ExitStatus:
+        """Install git hooks management for walbot repo"""
+        if self.args.command == "setup":
+            if sys.platform != "win32":
+                shutil.copy(
+                    os.path.join("tools", "githooks", "pre-commit.linux"),
+                    os.path.join(".git", "hooks", "pre-commit"))
+            else:
+                shutil.copy(
+                    os.path.join("tools", "githooks", "pre-commit.windows"),
+                    os.path.join(".git", "hooks", "pre-commit"))
+            log.info("Git hooks are successfully set up!")
+        elif self.args.command == "remove":
+            if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
+                os.unlink(os.path.join(".git", "hooks", "pre-commit"))
+            log.info("Git hooks are successfully removed!")
         else:
-            shutil.copy(
-                os.path.join("tools", "githooks", "pre-commit.windows"),
-                os.path.join(".git", "hooks", "pre-commit"))
-        log.info("Git hooks are successfully set up!")
-        return const.ExitStatus.NO_ERROR
-
-    def removehooks(self) -> const.ExitStatus:
-        """Remove git hooks for walbot repo"""
-        if os.path.exists(os.path.join(".git", "hooks", "pre-commit")):
-            os.unlink(os.path.join(".git", "hooks", "pre-commit"))
-        log.info("Git hooks are successfully removed!")
+            log.error("Unknown subcommand for 'hooks'")
+            return const.ExitStatus.GENERAL_ERROR
         return const.ExitStatus.NO_ERROR
