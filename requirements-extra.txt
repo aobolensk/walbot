@@ -1,2 +1,2 @@
 numba==0.59.1 ; platform_python_implementation=="CPython"
-openai==1.25.1
+openai==1.28.0
