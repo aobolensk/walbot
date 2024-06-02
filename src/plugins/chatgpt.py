@@ -61,10 +61,17 @@ class ChatGPTPlugin(BasePlugin):
             }
         ]
         log.debug(f"Prompt: '{prompt}', context length: {args.ctx}")
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-        )
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=messages,
+            )
+        except self._openai.RateLimitError as e:
+            await Command.send_message(execution_ctx, f"Rate limit error: {e.body['message']}")
+            return None
+        except Exception as e:
+            await Command.send_message(execution_ctx, f"Request error: {e}")
+            return None
         log.debug(f"ChatGPT response: {response}")
         log.debug(f"ChatGPT response content: {response.choices[0].message.content}")
         result = response.choices[0].message.content
