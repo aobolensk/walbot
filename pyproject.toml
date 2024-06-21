@@ -11,7 +11,7 @@ python = ">=3.9 <3.13"
 numpy = "1.26.4"
 py-cord = {git = "https://github.com/Pycord-Development/pycord", rev = "8a7ea47", extras = ["voice"]}
 requests = "2.32.3"
-psutil = "5.9.8"
+psutil = "6.0.0"
 python-dateutil = "2.9.0.post0"
 gitpython = "3.1.43"
 pyyaml = "6.0.1"
