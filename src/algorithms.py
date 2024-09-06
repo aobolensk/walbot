@@ -9,10 +9,13 @@ from src.log import log
 def optional_numba_jit(func) -> Any:
     try:
         numba = importlib.import_module("numba")
-        return numba.njit(fastmath=True)(func)
-    except ImportError:
-        log.warning(f"Function {func.__name__} is missing numba package for better performance!")
+    except Exception as e:
+        log.warning(
+            f"Function {func.__name__} is missing numba package for better performance! "
+            "Error details:")
+        log.warning(f" - numba import error: {e}")
         return func
+    return numba.njit(fastmath=True)(func)
 
 
 @optional_numba_jit
