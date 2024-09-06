@@ -1,7 +1,7 @@
 numpy==1.26.4
 py-cord[voice] @ git+https://github.com/Pycord-Development/pycord@8a7ea47
 requests==2.32.3
-psutil==5.9.8
+psutil==6.0.0
 python_dateutil==2.9.0.post0
 GitPython==3.1.43
 PyYAML==6.0.1
