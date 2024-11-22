@@ -15,7 +15,7 @@ psutil = "6.1.0"
 python-dateutil = "2.9.0.post0"
 gitpython = "3.1.43"
 pyyaml = "6.0.2"
-yt-dlp = "2024.10.22"
+yt-dlp = "2024.11.18"
 python-telegram-bot = "20.7"
 aiogoogletrans = {git = "https://github.com/aobolensk/aiogoogletrans", rev = "master"}
 nest-asyncio = "1.6.0"
