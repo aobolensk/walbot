@@ -9,7 +9,7 @@ import git
 from src import const
 from src.config import bc
 from src.shell import Shell
-from src.utils import Time
+from src.utils import Time, Util
 
 
 class BotInfo:
@@ -150,4 +150,7 @@ class BotInfo:
                 result += "(" + Shell.run('sw_vers -buildVersion').stdout.strip() + ")\n"
             elif sys.platform == "win32":
                 result += "Windows version: " + platform.platform()
+            result += "Proxy:\n"
+            result += f"    HTTP proxy: {Util.proxy.http() or '<no proxy>'}\n"
+            result += f"    HTTPS proxy: {Util.proxy.https() or '<no proxy>'}\n"
         return result
