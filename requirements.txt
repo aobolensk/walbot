@@ -1,5 +1,5 @@
 numpy==2.0.2
-py-cord[voice] @ git+https://github.com/Pycord-Development/pycord@8a7ea47
+py-cord[voice] @ git+https://github.com/Pycord-Development/pycord@24c1a8e
 requests==2.32.3
 psutil==6.1.1
 python_dateutil==2.9.0.post0
