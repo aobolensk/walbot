@@ -7,9 +7,9 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9 <3.13"
+python = ">=3.9 <3.14"
 numpy = "2.0.2"
-py-cord = {git = "https://github.com/Pycord-Development/pycord", rev = "8a7ea47", extras = ["voice"]}
+py-cord = {git = "https://github.com/Pycord-Development/pycord", rev = "24c1a8e", extras = ["voice"]}
 requests = "2.32.3"
 psutil = "6.1.1"
 python-dateutil = "2.9.0.post0"
