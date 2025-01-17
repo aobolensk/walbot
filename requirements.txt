@@ -3,7 +3,7 @@ py-cord[voice] @ git+https://github.com/Pycord-Development/pycord@24c1a8e
 requests==2.32.3
 psutil==6.1.1
 python_dateutil==2.9.0.post0
-GitPython==3.1.43
+GitPython==3.1.44
 PyYAML==6.0.2
 yt-dlp==2024.12.23
 python-telegram-bot==20.7
