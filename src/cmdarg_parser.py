@@ -1,5 +1,4 @@
 import argparse
-import sys
 from typing import List, Optional
 
 from src.api.execution_context import ExecutionContext
