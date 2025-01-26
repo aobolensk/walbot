@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Install linter
       run: |
         python -m pip install --upgrade pip
@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
     - name: Install linter
       run: |
         python -m pip install --upgrade pip
@@ -37,7 +37,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
         cache: pip
         cache-dependency-path: |
           requirements.txt
@@ -55,7 +55,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
         cache: pip
         cache-dependency-path: |
           requirements.txt
@@ -75,7 +75,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
         cache: pip
         cache-dependency-path: |
           requirements.txt
@@ -100,7 +100,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
         cache: pip
         cache-dependency-path: |
           requirements.txt

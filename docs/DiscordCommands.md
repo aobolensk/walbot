@@ -23,21 +23,21 @@
 # Module: builtin
 
 **about**: Get information about the bot \
-    Examples: \
-        !about \
-        !about -v   &lt;- verbose \
-        !about -vv  &lt;- even more verbose
+Examples: \
+    !about \
+    !about -v   &lt;- verbose \
+    !about -vv  &lt;- even more verbose
 
 **addalias**: Add alias for commands \
-    Usage: !addalias &lt;command&gt; &lt;alias&gt; \
-    Example: !addalias ping pong
+Usage: !addalias &lt;command&gt; &lt;alias&gt; \
+Example: !addalias ping pong
 
 **addcmd**: Add command \
-    Example: !addcmd hello Hello!
+Example: !addcmd hello Hello!
 
 **avatar**: Change bot avatar \
-    Example: !avatar &lt;image&gt; \
-    Hint: Use !listimg for list of available images
+Example: !avatar &lt;image&gt; \
+Hint: Use !listimg for list of available images
 
 **code**: \`@args@\` \
     *This command can be used as subcommand*
@@ -48,649 +48,649 @@
     *This command can be used as subcommand*
 
 **config**: Setup some channel specific configurations \
-    Examples: \
-        !config reactions &lt;enable/disable&gt; \
-        !config markovlog &lt;enable/disable&gt; \
-        !config responses &lt;enable/disable&gt; \
-        !config markovresponses &lt;enable/disable&gt; \
-        !config markovpings &lt;enable/disable&gt;
+Examples: \
+    !config reactions &lt;enable/disable&gt; \
+    !config markovlog &lt;enable/disable&gt; \
+    !config responses &lt;enable/disable&gt; \
+    !config markovresponses &lt;enable/disable&gt; \
+    !config markovpings &lt;enable/disable&gt;
 
 **curl**: Perform HTTP request \
-    Usage: \
-        !curl &lt;url&gt; \
-        !curl &lt;url&gt; --no-proxy \
+Usage: \
+    !curl &lt;url&gt; \
+    !curl &lt;url&gt; --no-proxy \
     *This command can be used as subcommand*
 
 **delalias**: Delete command alias \
-    Usage: !delalias &lt;alias&gt; \
-    Example: !delalias pong
+Usage: !delalias &lt;alias&gt; \
+Example: !delalias pong
 
 **disablecmd**: Disable command in specified scope \
-    Examples: \
-        !disablecmd ping \
-        !disablecmd ping channel \
-        !disablecmd ping guild \
-        !disablecmd ping global
+Examples: \
+    !disablecmd ping \
+    !disablecmd ping channel \
+    !disablecmd ping guild \
+    !disablecmd ping global
 
 **disabletl**: Disable time limit for command \
-    Example: !disabletl ping
+Example: !disabletl ping
 
 **echo**: @args@ \
     *This command can be used as subcommand*
 
 **enableallcmd**: Enable all available commands in specified scope \
-    Examples: \
-        !enableallcmd \
-        !enableallcmd channel \
-        !enableallcmd guild \
-        !enableallcmd global
+Examples: \
+    !enableallcmd \
+    !enableallcmd channel \
+    !enableallcmd guild \
+    !enableallcmd global
 
 **enablecmd**: Enable command in specified scope \
-    Examples: \
-        !enablecmd ping \
-        !enablecmd ping channel \
-        !enablecmd ping guild \
-        !enablecmd ping global
+Examples: \
+    !enablecmd ping \
+    !enablecmd ping channel \
+    !enablecmd ping guild \
+    !enablecmd ping global
 
 **extexec**: Execute external shell command \
-    Note: Be careful when you are executing external commands! \
-    Example: !extexec uname -a \
+Note: Be careful when you are executing external commands! \
+Example: !extexec uname -a \
     *This command can be used as subcommand*
 
 **getmentioncmd**: Get current command which is executed on bot ping \
-    Example: !getmentioncmd \
+Example: !getmentioncmd \
     *This command can be used as subcommand*
 
 **help**: Print list of commands and get examples \
-    Usage: \
-        !help \
-        !help -p (alternative: !help --plain) \
-        !help -a (alternative: !help --all) \
-        !help &lt;command_name&gt;
+Usage: \
+    !help \
+    !help -p (alternative: !help --plain) \
+    !help -a (alternative: !help --all) \
+    !help &lt;command_name&gt;
 
 **listalias**: Print list of aliases \
-    Example: !listalias \
+Example: !listalias \
     *This command can be used as subcommand*
 
 **message**: Get message by its order number counting from the newest message \
-    Example: !message \
+Example: !message \
     *This command can be used as subcommand*
 
 **nick**: Change nickname \
-    Usage: !nick walbot
+Usage: !nick walbot
 
 **permcmd**: Set commands permission \
-    Example: !permcmd ping 0
+Example: !permcmd ping 0
 
 **permlevel**: Get permission level for user \
-    Usage: !permlevel \
-           !permlevel \`@user\`
+Usage: !permlevel \
+       !permlevel \`@user\`
 
 **permuser**: Set user permission \
-    Example: !permuser @nickname 0
+Example: !permuser @nickname 0
 
 **pin**: Print pinned message by its index \
-    Example: !pin 0 \
+Example: !pin 0 \
     *This command can be used as subcommand*
 
 **ping**: 🏓 Pong! @author@ 🏓 \
     *This command can be used as subcommand*
 
 **profile**: Print information about user \
-    Examples: \
-        !profile \
-        !profile \`@user\`
+Examples: \
+    !profile \
+    !profile \`@user\`
 
 **restart**: Restart the bot \
-    Example: !restart
+Example: !restart
 
 **server**: Print information about current server \
-    Example: !server
+Example: !server
 
 **setmaxexeccmdtime**: Print how many times command was invoked \
-    Example: !setmaxexeccmdtime echo 3
+Example: !setmaxexeccmdtime echo 3
 
 **setmentioncmd**: Set current command which is executed on bot ping \
-    Examples: \
-        !setmentioncmd ping \
-        !setmentioncmd markov
+Examples: \
+    !setmentioncmd ping \
+    !setmentioncmd markov
 
 **shutdown**: Shutdown the bot \
-    Example: !shutdown
+Example: !shutdown
 
 **silent**: Make the following command silent (without any output to the chat) \
-    Example: !silent ping
+Example: !silent ping
 
 **slowmode**: Edit slowmode \
-    Example: !slowmode 0
+Example: !slowmode 0
 
 **status**: Change bot status \
-    Examples: \
-        !status idle \
-        !status playing Dota 2 \
-    Possible activities: [playing, streaming, watching, listening] \
-    Possible bot statuses: [online, idle, dnd, invisible]
+Examples: \
+    !status idle \
+    !status playing Dota 2 \
+Possible activities: [playing, streaming, watching, listening] \
+Possible bot statuses: [online, idle, dnd, invisible]
 
 **timescmd**: Print how many times command was invoked \
-    Examples: \
-        !timescmd echo \
-        !timescmd echo -s \
+Examples: \
+    !timescmd echo \
+    !timescmd echo -s \
     *This command can be used as subcommand*
 
 **tts**: Send text-to-speech (TTS) message \
-    Example: !tts Hello!
+Example: !tts Hello!
 
 **updcmd**: Update command (works only for commands that already exist) \
-    Example: !updcmd hello Hello!
+Example: !updcmd hello Hello!
 
 **uptime**: Show bot uptime \
-    Example: !uptime \
+Example: !uptime \
     *This command can be used as subcommand*
 
 **version**: Get version of the bot \
-    Examples: \
-        !version \
-        !version short
+Examples: \
+    !version \
+    !version short
 
 **whitelist**: Bot's whitelist \
-    Examples: \
-        !whitelist enable/disable \
-        !whitelist add \
-        !whitelist remove
+Examples: \
+    !whitelist enable/disable \
+    !whitelist add \
+    !whitelist remove
 
 **wme**: Send direct message to author with something \
-    Example: !wme Hello!
+Example: !wme Hello!
 
 # Module: custom-commands
 
 **addextcmd**: Add command that executes external process \
-    Note: Be careful when you are executing external commands! \
-    Example: !addextcmd uname uname -a
+Note: Be careful when you are executing external commands! \
+Example: !addextcmd uname uname -a
 
 **delcmd**: Delete command \
-    Example: !delcmd hello
+Example: !delcmd hello
 
 **updextcmd**: Update command that executes external process (works only for commands that already exist) \
-    Note: Be careful when you are executing external commands! \
-    Example: !updextcmd uname uname -a
+Note: Be careful when you are executing external commands! \
+Example: !updextcmd uname uname -a
 
 # Module: debug
 
 **dbg**: Debug command \
-    Example: !dbg &lt;diagnostic-name&gt; \
+Example: !dbg &lt;diagnostic-name&gt; \
     *This command can be used as subcommand*
 
 **eval**: Evaluate Python code in bot context. \
-    Note: Dangerous, use it only if you know what you are doing \
-    Example: !eval &lt;code&gt;
+Note: Dangerous, use it only if you know what you are doing \
+Example: !eval &lt;code&gt;
 
 # Module: image
 
 **addimg**: Add image for !img command \
-    Example: !addimg name url
+Example: !addimg name url
 
 **delimg**: Delete image for !img command \
-    Example: !delimg name
+Example: !delimg name
 
 **img**: Send image (use !listimg for list of available images) \
-    Example: !img &lt;image_name&gt;
+Example: !img &lt;image_name&gt;
 
 **listimg**: Print list of available images for !img command \
-    Example: !listimg
+Example: !listimg
 
 **updimg**: Update image for !img command \
-    Example: !updimg name url
+Example: !updimg name url
 
 # Module: interactive
 
 **poll**: Create poll and collect result after selected time \
-    Example: !poll 60 option 1;option 2;option 3
+Example: !poll 60 option 1;option 2;option 3
 
 # Module: markov
 
 **addmarkovfilter**: Add regular expression filter for Markov model \
-    Example: !addmarkovfilter regex
+Example: !addmarkovfilter regex
 
 **addmarkovignoredprefix**: Add message prefix that should be ignored by Markov model \
-    Example: !addmarkovignoredprefix $
+Example: !addmarkovignoredprefix $
 
 **delmarkov**: Delete all words in Markov model by regex \
-    Example: !delmarkov hello
+Example: !delmarkov hello
 
 **delmarkovfilter**: Delete regular expression filter for Markov model by index \
-    Example: !delmarkovfilter 0
+Example: !delmarkovfilter 0
 
 **delmarkovignoredprefix**: Delete message prefix that should be ignored by Markov model by its index \
-    Example: !delmarkovignoredprefix 0
+Example: !delmarkovignoredprefix 0
 
 **dropmarkov**: Drop Markov database \
-    Example: !dropmarkov
+Example: !dropmarkov
 
 **findmarkov**: Match words in Markov model using regex. If you have permission level &gt;= 1, \
-        you can add -f flag to show full list of found words \
-    Examples: \
-        !findmarkov hello \
-        !findmarkov hello -f
+    you can add -f flag to show full list of found words \
+Examples: \
+    !findmarkov hello \
+    !findmarkov hello -f
 
 **getmarkovword**: Get particular word from Markov model by regex \
-    Examples: \
-        !getmarkovword hello -a &lt;- get amount of found words \
-        !getmarkovword hello 0 &lt;- get word by index \
+Examples: \
+    !getmarkovword hello -a &lt;- get amount of found words \
+    !getmarkovword hello 0 &lt;- get word by index \
     *This command can be used as subcommand*
 
 **inspectmarkov**: Inspect next words in Markov model for current one \
-    Example: !inspectmarkov hello
+Example: !inspectmarkov hello
 
 **listmarkovfilter**: Print list of regular expression filters for Markov model \
-    Example: !listmarkovfilter \
+Example: !listmarkovfilter \
     *This command can be used as subcommand*
 
 **listmarkovignoredprefix**: List all prefixes that should be ignored by Markov model \
-    Example: !listmarkovignoredprefix \
+Example: !listmarkovignoredprefix \
     *This command can be used as subcommand*
 
 **markov**: Generate message using Markov chain \
-    Example: !markov \
+Example: !markov \
     *This command can be used as subcommand*
 
 **markovgc**: Garbage collect Markov model nodes \
-    Example: !markovgc
+Example: !markovgc
 
 **statmarkov**: Show stats for Markov module \
-    Example: !statmarkov
+Example: !statmarkov
 
 # Module: math
 
 **calc**: Calculate mathematical expression \
-    Examples: \
-        !calc 2+2*2 \
-        !calc 4/2-1 \
+Examples: \
+    !calc 2+2*2 \
+    !calc 4/2-1 \
     *This command can be used as subcommand*
 
 **if**: If expression is true (!= 0) then return first expression otherwise return the second one \
-    Examples: \
-        !if 1 It's true;It's false -&gt; It's true \
-        !if 0 It's true;It's false -&gt; It's false \
+Examples: \
+    !if 1 It's true;It's false -&gt; It's true \
+    !if 0 It's true;It's false -&gt; It's false \
     *This command can be used as subcommand*
 
 **loop**: Repeat an action n times \
-    Examples: \
-        !loop 2 ping \
-        !loop 5 echo Hello! \
+Examples: \
+    !loop 2 ping \
+    !loop 5 echo Hello! \
     *This command can be used as subcommand*
 
 # Module: plugin
 
 **autostartplugin**: Check if plugin automatically starts when bot loads up and set autostart flag for plugin \
-    Usage: \
-        !autostartplugin &lt;plugin_name&gt;          &lt;- check if autostart is enabled \
-        !autostartplugin &lt;plugin_name&gt; enable   &lt;- enable autostart for plugin \
-        !autostartplugin &lt;plugin_name&gt; disable  &lt;- disable autostart for plugin
+Usage: \
+    !autostartplugin &lt;plugin_name&gt;          &lt;- check if autostart is enabled \
+    !autostartplugin &lt;plugin_name&gt; enable   &lt;- enable autostart for plugin \
+    !autostartplugin &lt;plugin_name&gt; disable  &lt;- disable autostart for plugin
 
 **listplugin**: Print list of plugins \
-    Usage: \
-        !listplugin
+Usage: \
+    !listplugin
 
 **loadplugin**: Load plugin by its name \
-    Usage: \
-        !loadplugin &lt;plugin_name&gt;
+Usage: \
+    !loadplugin &lt;plugin_name&gt;
 
 **reloadplugin**: Reload plugin by its name \
-    Usage: \
-        !reloadplugin &lt;plugin_name&gt;
+Usage: \
+    !reloadplugin &lt;plugin_name&gt;
 
 **reloadpluginmanager**: Reload plugin manager \
-    Usage: !reloadpluginmanager
+Usage: !reloadpluginmanager
 
 **unloadplugin**: Unload plugin by its name \
-    Usage: \
-        !unloadplugin &lt;plugin_name&gt;
+Usage: \
+    !unloadplugin &lt;plugin_name&gt;
 
 **updateplugin**: Update plugin by its name (if updater is implemented for this plugin). \
-    Note: This command only updates implementation files! \
-        To enable updated plugin you need to execute the following commands: \
-        !reloadpluginmanager \
-        !reloadplugin &lt;plugin_name&gt; \
-    Usage: \
-        !updateplugin &lt;plugin_name&gt;
+Note: This command only updates implementation files! \
+    To enable updated plugin you need to execute the following commands: \
+    !reloadpluginmanager \
+    !reloadplugin &lt;plugin_name&gt; \
+Usage: \
+    !updateplugin &lt;plugin_name&gt;
 
 # Module: quote
 
 **addquote**: Add quote to quotes database \
-    Example: !addquote Hello, world!
+Example: !addquote Hello, world!
 
 **delquote**: Delete quote from quotes database by index \
-    Example: !delquote 0
+Example: !delquote 0
 
 **listquote**: Print list of all quotes \
-    Example: !listquote
+Example: !listquote
 
 **quote**: Print some quote from quotes database \
-    Examples: \
-        !quote \
-        !quote 1
+Examples: \
+    !quote \
+    !quote 1
 
 **setquoteauthor**: Set author of quote by its index \
-    Example: !setquoteauthor 0 WalBot
+Example: !setquoteauthor 0 WalBot
 
 # Module: random
 
 **random**: Get random number in range [left, right] \
-    Example: !random 5 10 \
+Example: !random 5 10 \
     *This command can be used as subcommand*
 
 **randselect**: Get random option among provided strings (split by space) \
-    Example: !randselect a b c \
+Example: !randselect a b c \
     *This command can be used as subcommand*
 
 **randselects**: Get random option among provided strings (split by semicolon) \
-    Example: !randselects a;b;c \
+Example: !randselects a;b;c \
     *This command can be used as subcommand*
 
 # Module: reaction
 
 **addreaction**: Add reaction \
-    Example: !addreaction emoji regex
+Example: !addreaction emoji regex
 
 **addresponse**: Add bot response on message that contains particular regex \
-    Example: !addresponse regex;text
+Example: !addresponse regex;text
 
 **delreaction**: Delete reaction \
-    Examples: \
-        !delreaction index
+Examples: \
+    !delreaction index
 
 **delresponse**: Delete response \
-    Examples: \
-        !delresponse index
+Examples: \
+    !delresponse index
 
 **listreaction**: Print list of reactions \
-    Example: !listreaction \
+Example: !listreaction \
     *This command can be used as subcommand*
 
 **listresponse**: Print list of responses \
-    Example: !listresponse
+Example: !listresponse
 
 **updreaction**: Update reaction \
-    Example: !updreaction index emoji regex
+Example: !updreaction index emoji regex
 
 **updresponse**: Update bot response \
-    Example: !updresponse index regex;text
+Example: !updresponse index regex;text
 
 # Module: reminder
 
 **addreminder**: Print message at particular time \
-    Examples: \
-        !addreminder 2020-01-01 00:00 Happy new year! \
-        !addreminder today 08:00 Wake up \
-        !addreminder tomorrow 08:00 Wake up \
-        !addreminder monday 09:00 Time to work \
-        !addreminder sat 11:00 Time to chill \
-        !addreminder 2d 08:00 Wake up &lt;- 2 days \
-        !addreminder 1w 08:00 Wake up &lt;- 1 week \
-        !addreminder 1m Monthly event \
-        !addreminder 1y Annual event \
-        !addreminder in 1w5d10h5m Test reminder \
-        !addreminder in 1w Test reminder 2 \
-        !addreminder in 5h10m Test reminder 3
+Examples: \
+    !addreminder 2020-01-01 00:00 Happy new year! \
+    !addreminder today 08:00 Wake up \
+    !addreminder tomorrow 08:00 Wake up \
+    !addreminder monday 09:00 Time to work \
+    !addreminder sat 11:00 Time to chill \
+    !addreminder 2d 08:00 Wake up &lt;- 2 days \
+    !addreminder 1w 08:00 Wake up &lt;- 1 week \
+    !addreminder 1m Monthly event \
+    !addreminder 1y Annual event \
+    !addreminder in 1w5d10h5m Test reminder \
+    !addreminder in 1w Test reminder 2 \
+    !addreminder in 5h10m Test reminder 3
 
 **addremindernotes**: Add reminder notes for specific reminder \
-    Example: !addremindernotes 1 Some text
+Example: !addremindernotes 1 Some text
 
 **delreminder**: Delete reminders by index \
-    Example: !delreminder 0 1 2
+Example: !delreminder 0 1 2
 
 **delremindernotes**: Delete reminder notes for specific reminder \
-    Example: !delremindernotes 1
+Example: !delremindernotes 1
 
 **listreminder**: Print list of reminders \
-    Examples: \
-        !listreminder \
-        !listreminder 5 &lt;- prints only first 5 reminders
+Examples: \
+    !listreminder \
+    !listreminder 5 &lt;- prints only first 5 reminders
 
 **listreminderlocal**: Print list of reminders for current channel \
-    Examples: \
-        !listreminderlocal \
-        !listreminderlocal 5 &lt;- prints only first 5 reminders
+Examples: \
+    !listreminderlocal \
+    !listreminderlocal 5 &lt;- prints only first 5 reminders
 
 **remindeme**: Ask bot to send you an e-mail when it sends reminder \
-    Example: !remindeme 1 &lt;your-email-address&gt;
+Example: !remindeme 1 &lt;your-email-address&gt;
 
 **reminder**: Print information about reminder \
-    Example: \
-        !reminder 1
+Example: \
+    !reminder 1
 
 **remindme**: Ask bot to ping you when it sends reminder \
-    Example: !remindme 1
+Example: !remindme 1
 
 **remindwme**: Ask bot to send direct message you when it sends reminder \
-    Example: !remindwme 1
+Example: !remindwme 1
 
 **repeatreminder**: Make reminder repeating with particular period \
-    Examples: \
-        !repeatreminder 1 1 \
-        !repeatreminder 1 hourly \
-        !repeatreminder 1 daily \
-        !repeatreminder 1 weekly \
-        !repeatreminder 1 monthly \
-        !repeatreminder 1 annually \
-        !repeatreminder 1 2h \
-        !repeatreminder 1 2d \
-        !repeatreminder 1 2w \
-        !repeatreminder 1 2m \
-        !repeatreminder 1 2y \
-        !repeatreminder 1 0 \
-    Note: number without postfix is translated to minutes. 0 means disabling repetition
+Examples: \
+    !repeatreminder 1 1 \
+    !repeatreminder 1 hourly \
+    !repeatreminder 1 daily \
+    !repeatreminder 1 weekly \
+    !repeatreminder 1 monthly \
+    !repeatreminder 1 annually \
+    !repeatreminder 1 2h \
+    !repeatreminder 1 2d \
+    !repeatreminder 1 2w \
+    !repeatreminder 1 2m \
+    !repeatreminder 1 2y \
+    !repeatreminder 1 0 \
+Note: number without postfix is translated to minutes. 0 means disabling repetition
 
 **repeatreminderfor**: Limit amount of repetitions for reminder \
-    Example: !repeatreminderfor 1 5 &lt;- repeat reminder 1 only 5 times
+Example: !repeatreminderfor 1 5 &lt;- repeat reminder 1 only 5 times
 
 **repeatreminderuntil**: Limit amount of repetitions with particular date \
-    Example: \
-        !repeatreminderuntil 1 2022-12-01 &lt;- repeat reminder 1 until Dec 1, 2022 00:00 \
-        !repeatreminderuntil 1 2022-12-31 23:59 &lt;- repeat reminder 1 until Dec 31, 2022 23:59
+Example: \
+    !repeatreminderuntil 1 2022-12-01 &lt;- repeat reminder 1 until Dec 1, 2022 00:00 \
+    !repeatreminderuntil 1 2022-12-31 23:59 &lt;- repeat reminder 1 until Dec 31, 2022 23:59
 
 **setprereminders**: Set pre reminders notifying that reminder will be sent in particular time. \
-        For example, send pre reminder 10 minutes before actual event (to prepare or something) \
-    Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \
-    Examples: \
-        !setprereminders 1 10 \
-        !setprereminders 2 5 10 15
+    For example, send pre reminder 10 minutes before actual event (to prepare or something) \
+Usage: !setprereminders &lt;reminder_id&gt; [&lt;time_before_reminder_in_minutes&gt; ...] \
+Examples: \
+    !setprereminders 1 10 \
+    !setprereminders 2 5 10 15
 
 **setreminderchannel**: Set channel where reminder will be sent \
-    Example: !setreminderchannel 1 &lt;channel_id&gt;
+Example: !setreminderchannel 1 &lt;channel_id&gt;
 
 **skipreminder**: Skip next instance of recurring (repeating) reminder \
-    Example: !skipreminder 1 \
-    Note: only recurring (repeating) reminders are affected by this command
+Example: !skipreminder 1 \
+Note: only recurring (repeating) reminders are affected by this command
 
 **timeuntilreminder**: Show time until particular reminder \
-    Example: !timeuntilreminder 1 \
+Example: !timeuntilreminder 1 \
     *This command can be used as subcommand*
 
 **updreminder**: Update reminder by index \
-    Examples: \
-        !updreminder 0 2020-01-01 00:00 Happy new year! \
-        !updreminder 0 2020-01-01 00:00 Happy new year! \
-        !updreminder 0 today 08:00 Wake up \
-        !updreminder 0 tomorrow 08:00 Wake up \
-        !updreminder 0 monday 09:00 Time to work \
-        !updreminder 0 sat 11:00 Time to chill \
-        !updreminder 0 2d 08:00 Wake up &lt;- 2 days \
-        !updreminder 0 1w 08:00 Wake up &lt;- 1 week \
-        !addreminder 0 1m Monthly event \
-        !addreminder 0 1y Annual event \
-        !updreminder 0 in 1w5d10h5m Test reminder \
-        !updreminder 0 in 1w Test reminder 2 \
-        !updreminder 0 in 5h10m Test reminder 3
+Examples: \
+    !updreminder 0 2020-01-01 00:00 Happy new year! \
+    !updreminder 0 2020-01-01 00:00 Happy new year! \
+    !updreminder 0 today 08:00 Wake up \
+    !updreminder 0 tomorrow 08:00 Wake up \
+    !updreminder 0 monday 09:00 Time to work \
+    !updreminder 0 sat 11:00 Time to chill \
+    !updreminder 0 2d 08:00 Wake up &lt;- 2 days \
+    !updreminder 0 1w 08:00 Wake up &lt;- 1 week \
+    !addreminder 0 1m Monthly event \
+    !addreminder 0 1y Annual event \
+    !updreminder 0 in 1w5d10h5m Test reminder \
+    !updreminder 0 in 1w Test reminder 2 \
+    !updreminder 0 in 5h10m Test reminder 3
 
 # Module: role
 
 **addrole**: Assign a role to the user \
-    Usage: !addrole @user role_name
+Usage: !addrole @user role_name
 
 **delrole**: Unassign a role from the user \
-    Usage: !delrole @user role_name
+Usage: !delrole @user role_name
 
 **listrole**: Print list of all roles available on this server \
-    Usage: !listrole
+Usage: !listrole
 
 # Module: services
 
 **netcheck**: Check network and proxy settings \
-    Usage: !netcheck \
+Usage: !netcheck \
     *This command can be used as subcommand*
 
 **translate**: Translate text to specified language \
-    Usage: !translate &lt;lang&gt; &lt;text&gt; \
+Usage: !translate &lt;lang&gt; &lt;text&gt; \
     *This command can be used as subcommand*
 
 **weather**: Get current weather using wttr.in \
-    Usage: !weather &lt;city&gt; \
+Usage: !weather &lt;city&gt; \
     *This command can be used as subcommand*
 
 **weatherforecast**: Get weather forecast using wttr.in \
-    Usage: !weatherforecast &lt;city&gt;
+Usage: !weatherforecast &lt;city&gt;
 
 # Module: string
 
 **countchars**: Calculate length of the message \
-    Example: !countchars some text \
+Example: !countchars some text \
     *This command can be used as subcommand*
 
 **countlines**: Count amount of lines \
-    Example: !countlines some text \
+Example: !countlines some text \
     *This command can be used as subcommand*
 
 **countwords**: Count amount of words \
-    Example: !countwords some text \
+Example: !countwords some text \
     *This command can be used as subcommand*
 
 **demojify**: Demojify text \
-    Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
+Example: !demojify 🇭 🇪 🇱 🇱 🇴 \
     *This command can be used as subcommand*
 
 **dropchars**: Drop n characters of the string \
-    Examples: \
-        !dropchars 2 hello \
-        Result: llo \
-        !dropchars -2 hello \
-        Result: hel \
+Examples: \
+    !dropchars 2 hello \
+    Result: llo \
+    !dropchars -2 hello \
+    Result: hel \
     *This command can be used as subcommand*
 
 **droplines**: Drop n lines of the string \
-    Examples: \
-        !droplines 2 a \
-        b \
-        c \
-        Result: c \
-        !droplines -2 a \
-        b \
-        c \
-        Result: a \
+Examples: \
+    !droplines 2 a \
+    b \
+    c \
+    Result: c \
+    !droplines -2 a \
+    b \
+    c \
+    Result: a \
     *This command can be used as subcommand*
 
 **dropwords**: Drop n words of the string \
-    Examples: \
-        !dropwords 2 a b c \
-        Result: c \
-        !dropwords -2 a b c \
-        Result: a \
+Examples: \
+    !dropwords 2 a b c \
+    Result: c \
+    !dropwords -2 a b c \
+    Result: a \
     *This command can be used as subcommand*
 
 **emojify**: Emojify text \
-    Example: !emojify Hello! \
+Example: !emojify Hello! \
     *This command can be used as subcommand*
 
 **eqstrs**: Check if two strings separated by ';' are equal or not \
-    Example: !eqstrs a;b \
+Example: !eqstrs a;b \
     *This command can be used as subcommand*
 
 **eqwords**: Check if two words are equal or not \
-    Example: !eqwords a b \
+Example: !eqwords a b \
     *This command can be used as subcommand*
 
 **join**: Join words with string as separator \
-    Example: !join + 1 2 3 -&gt; 1+2+3 \
+Example: !join + 1 2 3 -&gt; 1+2+3 \
     *This command can be used as subcommand*
 
 **range**: Generate range of numbers \
-    Examples: \
-        !range &lt;stop&gt; \
-        !range &lt;start&gt; &lt;stop&gt; \
-        !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
+Examples: \
+    !range &lt;stop&gt; \
+    !range &lt;start&gt; &lt;stop&gt; \
+    !range &lt;start&gt; &lt;stop&gt; &lt;step&gt; \
     *This command can be used as subcommand*
 
 **takechars**: Take n characters of the string \
-    Examples: \
-        !takechars 2 hello \
-        Result: he \
-        !takechars -2 hello \
-        Result: lo \
+Examples: \
+    !takechars 2 hello \
+    Result: he \
+    !takechars -2 hello \
+    Result: lo \
     *This command can be used as subcommand*
 
 **takelines**: Take n lines of the string \
-    Examples: \
-        !takelines 2 a \
-        b \
-        c \
-        Result: a \
-        b \
-        !takelines -2 a \
-        b \
-        c \
-        Result: b \
-        c \
+Examples: \
+    !takelines 2 a \
+    b \
+    c \
+    Result: a \
+    b \
+    !takelines -2 a \
+    b \
+    c \
+    Result: b \
+    c \
     *This command can be used as subcommand*
 
 **takewords**: Take n words of the string \
-    Examples: \
-        !takewords 2 a b c \
-        Result: a b \
-        !takewords -2 a b c \
-        Result: b c \
+Examples: \
+    !takewords 2 a b c \
+    Result: a b \
+    !takewords -2 a b c \
+    Result: b c \
     *This command can be used as subcommand*
 
 **tolower**: Convert text to lower case \
-    Example: !tolower SoMe TeXt \
+Example: !tolower SoMe TeXt \
     *This command can be used as subcommand*
 
 **toupper**: Convert text to upper case \
-    Example: !toupper SoMe TeXt \
+Example: !toupper SoMe TeXt \
     *This command can be used as subcommand*
 
 **urlencode**: Urlencode string \
-    Example: !urlencode hello, world! \
+Example: !urlencode hello, world! \
     *This command can be used as subcommand*
 
 # Module: time
 
 **setusertz**: Set timezone for the user \
-    Usage: \
-        !setusertz \
-        !setusertz Europe/Moscow \
-        !setusertz America/New_York
+Usage: \
+    !setusertz \
+    !setusertz Europe/Moscow \
+    !setusertz America/New_York
 
 **time**: Show current time \
-    Examples: \
-        !time \
-        !time Europe/Moscow \
-        !time America/New_York \
-    Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
+Examples: \
+    !time \
+    !time Europe/Moscow \
+    !time America/New_York \
+Full timezone database list: &lt;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones&gt; \
     *This command can be used as subcommand*
 
 **tz**: Get current timezone \
-    Usage: !tz
+Usage: !tz
 
 # Module: timer
 
 **stopstopwatch**: Stop stopwatch \
-    Usage: !stopstopwatch 1
+Usage: !stopstopwatch 1
 
 **stoptimer**: Stop timer \
-    Usage: !stoptimer 1
+Usage: !stoptimer 1
 
 **stopwatch**: Start stopwatch \
-    Usage: !stopwatch
+Usage: !stopwatch
 
 **timer**: Set timer \
-    Usage: !timer 10
+Usage: !timer 10
