@@ -1,4 +1,5 @@
-numpy==2.0.2
+numpy==2.0.2; python_version < '3.10'
+numpy==2.2.2; python_version >= '3.10'
 py-cord[voice] @ git+https://github.com/Pycord-Development/pycord@24c1a8e
 requests==2.32.3
 psutil==6.1.1
