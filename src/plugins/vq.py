@@ -6,6 +6,7 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+import browser_cookie3  # type:ignore
 import discord
 import yt_dlp  # type:ignore
 
@@ -27,6 +28,7 @@ class VoiceCtx:
         self.queue = deque()
         self.auto_rejoin_channel = None
         self.current_video = None
+        self.cookies = browser_cookie3.firefox(domain_name="youtube.com")
 
 
 @dataclass
@@ -48,6 +50,7 @@ class _VoiceInternals:
         yt_video_id = r.groups()[0]
         output_file_name = f'{Util.tmp_dir()}/yt_{yt_video_id}.mp3'
         ydl_opts = {
+            'cookiejar': voice_ctx.cookies,
             'format': 'bestaudio/best',
             'outtmpl': output_file_name,
             'keepvideo': True,
@@ -216,6 +219,7 @@ class DiscordVideoQueuePluginCommands(BaseCmd):
             if parse_url.path == '/playlist' and 'list' in params.keys() and params['list']:
                 # Process YT playlist
                 ydl_opts = {
+                    'cookiejar': self._voice_ctx.cookies,
                     'dump_single_json': True,
                     'extract_flat': True,
                 }
@@ -242,6 +246,7 @@ class DiscordVideoQueuePluginCommands(BaseCmd):
             return
         query = ' '.join(cmd_line[2:])
         ydl_opts = {
+            'cookiejar': self._voice_ctx.cookies,
             'format': 'bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
