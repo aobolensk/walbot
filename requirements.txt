@@ -6,7 +6,7 @@ psutil==7.0.0
 python_dateutil==2.9.0.post0
 GitPython==3.1.44
 PyYAML==6.0.2
-yt-dlp==2025.1.15
+yt-dlp==2025.3.31
 python-telegram-bot==20.7
 git+https://github.com/aobolensk/aiogoogletrans@master
 nest-asyncio==1.6.0
