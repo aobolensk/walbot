@@ -1,2 +1,2 @@
 numba==0.61.0 ; platform_python_implementation=="CPython" and "3.10" <= python_version and python_version < "3.13"
-openai==1.70.0
+openai==1.75.0
