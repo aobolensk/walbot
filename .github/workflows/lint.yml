@@ -31,7 +31,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install autopep8
       - name: Run formatting tool
-        run: find . -type f -name '*.py' -exec autopep8 -a -i {} \;
+        run: autopep8 -a -i -r .
       - name: Compare formatted version with unformatted
         run: git diff --exit-code
   docs_check:
