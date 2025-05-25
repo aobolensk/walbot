@@ -39,16 +39,35 @@ class TimerCommands(BaseCmd):
             r = Util.request(
                 "https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py", use_proxy=True)
             p = subprocess.Popen(
-                f"{sys.executable} - --json", stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
-            j = json.loads(p.communicate(input=r.get_text().encode("utf-8"))[0])
+                f"{sys.executable} - --json",
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True)
+            try:
+                output, err = p.communicate(input=r.get_text().encode("utf-8"), timeout=45)
+            except subprocess.TimeoutExpired:
+                p.kill()
+                result += "Speedtest: operation timed out\n"
+        except Exception as e:
+            result += f"Speedtest: failed with error: {e}"
+            if err:
+                result += f" ({err})"
+            result += "\n"
+
+        if output:
+            try:
+                j = json.loads(output)
+            except json.JSONDecodeError as e:
+                result += f"Speedtest: failed to parse output: {e}\n"
             result += f"IP: {j['client']['ip']}, country: {j['server']['cc']}\n"
             MBIT = 1024 * 1024
             result += (
                 f"Speedtest: DL - {j['download'] / MBIT:.2f} Mbit/s, "
                 f"UP - {j['upload'] / MBIT:.2f} Mbit/s\n"
             )
-        except Exception as e:
-            result += "Speedtest: failed with error: " + str(e) + "\n"
+        else:
+            result += "Speedtest did not respond\n"
         await Command.send_message(execution_ctx, result)
         return result
 
