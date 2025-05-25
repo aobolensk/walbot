@@ -52,7 +52,7 @@ class TimerCommands(BaseCmd):
         except Exception as e:
             result += f"Speedtest: failed with error: {e}"
             if err:
-                result += f" ({err})"
+                result += f" ({err.decode('utf-8')})"
             result += "\n"
 
         if output:
