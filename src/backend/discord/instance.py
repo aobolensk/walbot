@@ -126,7 +126,7 @@ class WalBot(discord.Client):
             "ready": True,
         })
         self.bot_cache.dump_to_file()
-        bc.guilds = self.guilds
+        bc.discord.guilds = self.guilds
         for guild in self.guilds:
             if guild.id not in self.config.discord.guilds.keys():
                 self.config.discord.guilds[guild.id] = GuildSettings(guild.id)

@@ -53,6 +53,7 @@ class BotController:
             self.change_presence: Optional[Callable] = None
             self.latency: Optional[Callable] = None
             self.bot_user_id: Optional[int] = None
+            self.guilds = None
 
     class Telegram:
         def __init__(self) -> None:
@@ -98,4 +99,3 @@ class BotController:
         self.plugin_manager = PluginManager(self.executor)
         self.message_cache = MessageCache()
         self.be = self.Backend()
-        self.guilds = None  # TODO: move to Discord
