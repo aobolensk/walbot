@@ -22,22 +22,21 @@ def test_cut_string():
 
 
 def test_parse_int(capsys):
-    loop = asyncio.new_event_loop()
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "123", "Error 1"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "123", "Error 1"))
     assert value == 123
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "b123", "Error 2"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "b123", "Error 2"))
     assert value is None
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "0123", "Error 3"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "0123", "Error 3"))
     assert value == 123
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "0xf", "Error 4"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "0xf", "Error 4"))
     assert value is None
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "123b", "Error 5"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "123b", "Error 5"))
     assert value is None
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "\n123", "Error 6"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "\n123", "Error 6"))
     assert value == 123
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "\n123\n", "Error 7"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "\n123\n", "Error 7"))
     assert value == 123
-    value = loop.run_until_complete(Util.parse_int(BufferTestExecutionContext(), "\n1\n2\n", "Error 8"))
+    value = asyncio.run(Util.parse_int(BufferTestExecutionContext(), "\n1\n2\n", "Error 8"))
     assert value is None
     captured = capsys.readouterr()
     assert captured.out == (
