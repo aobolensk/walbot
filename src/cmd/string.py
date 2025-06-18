@@ -129,7 +129,7 @@ class StringCommands(BaseCmd):
                 step = await Util.parse_int(
                     execution_ctx, cmd_line[3], f"Step parameter in range '{cmd_line[0]}' should be an integer")
         if start is None or stop is None or step is None:
-            return
+            return None
         result = ''
         for iteration, number in enumerate(range(start, stop, step)):
             if iteration >= const.MAX_RANGE_ITERATIONS:
