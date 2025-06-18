@@ -205,8 +205,8 @@ class BuiltinCommands(BaseCmd):
 
         if execution_ctx.platform == const.BotBackend.DISCORD and not args.plain:
             cur_list = 1
-            total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
-            for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+            total_list = int(math.ceil(len(commands) / const.DISCORD_MAX_EMBED_FIELDS_COUNT))
+            for chunk in Util.split_by_chunks(commands, const.DISCORD_MAX_EMBED_FIELDS_COUNT):
                 title = "Help"
                 if total_list > 1:
                     title += f" ({cur_list}/{total_list})"

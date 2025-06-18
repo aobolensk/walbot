@@ -181,8 +181,8 @@ class _ReminderInternals:
         if execution_ctx.platform == const.BotBackend.DISCORD:
             embed_color = random.randint(0x000000, 0xffffff)
             cur_list = 1
-            total_list = int(math.ceil(reminders_count / const.DISCORD_MAX_EMBED_FILEDS_COUNT))
-            for reminder_chunk in Util.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FILEDS_COUNT):
+            total_list = int(math.ceil(reminders_count / const.DISCORD_MAX_EMBED_FIELDS_COUNT))
+            for reminder_chunk in Util.split_by_chunks(reminder_list, const.DISCORD_MAX_EMBED_FIELDS_COUNT):
                 e = DiscordEmbed()
                 if total_list > 1:
                     e.title(f"List of reminders {cur_list}/{total_list}")
