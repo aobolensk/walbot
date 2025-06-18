@@ -221,7 +221,7 @@ class BuiltinCommands(BaseCmd):
             for cmd_name, cmd_desc in commands:
                 result += f"{cmd_name}: {cmd_desc}\n"
 
-        await Command.send_message(execution_ctx, result, suppress_emdebs=True)
+        await Command.send_message(execution_ctx, result, suppress_embeds=True)
 
     async def _about(self, cmd_line: List[str], execution_ctx: ExecutionContext) -> None:
         """Get information about the bot
