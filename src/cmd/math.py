@@ -107,7 +107,7 @@ class MathCommands(BaseCmd):
             condition = await Util.parse_int(
                 execution_ctx, cmd_line[1], f"Second parameter should be either number or {', '.join(true + false)}")
             if condition is None:
-                return
+                return None
         else:
             # Handle keywords that can be used in conditions
             if condition.lower() in true:
