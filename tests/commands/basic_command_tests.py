@@ -1,9 +1,12 @@
 import asyncio
 
+from src import const
 from src.cmd.builtin import BuiltinCommands
 from src.config import bc
-from src import const
-from tests.fixtures.context import BufferTestExecutionContext, TelegramTestExecutionContext
+from tests.fixtures.context import (
+    BufferTestExecutionContext,
+    TelegramTestExecutionContext
+)
 
 
 def test_empty_executor():
