@@ -81,10 +81,10 @@ class Util:
             else:
                 if result and result[-1] != '.':
                     result += '.'
-        if len(result) > 1 and result[-1] == '.' and path[-3:] != '.py':
-            result = result[:-1]
-        if result[-3:] == '.py':
+        if result.endswith('.py'):
             result = result[:-3]
+        if result.endswith('.'):
+            result = result[:-1]
         return result
 
     @staticmethod
