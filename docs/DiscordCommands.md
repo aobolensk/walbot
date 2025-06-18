@@ -147,7 +147,7 @@ Example: !restart
 **server**: Print information about current server \
 Example: !server
 
-**setmaxexeccmdtime**: Print how many times command was invoked \
+**setmaxexeccmdtime**: Set maximal execution time for a command \
 Example: !setmaxexeccmdtime echo 3
 
 **setmentioncmd**: Set current command which is executed on bot ping \

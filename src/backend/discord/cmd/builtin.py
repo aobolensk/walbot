@@ -202,7 +202,7 @@ class BuiltinCommands(BaseCmd):
 
     @staticmethod
     async def _setmaxexeccmdtime(message, command, silent=False):
-        """Print how many times command was invoked
+        """Set maximal execution time for a command
     Example: !setmaxexeccmdtime echo 3"""
         if not await DiscordUtil.check_args_count(message, command, silent, min=3, max=3):
             return
