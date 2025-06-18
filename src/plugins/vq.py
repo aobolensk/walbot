@@ -358,8 +358,8 @@ class DiscordVideoQueuePlugin(BasePlugin):
     async def on_message(self, execution_ctx: ExecutionContext) -> None:
         # BasePlugin.on_message is abstract and has no implementation,
         # so calling super() here is unnecessary and triggers mypy's
-        # "safe-super" check.  We simply implement an empty handler.
-        return
+        # "safe-super" check. We simply implement an empty handler.
+        return None
 
     async def close(self) -> None:
         await super().close()
