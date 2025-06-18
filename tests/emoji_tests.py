@@ -1,5 +1,3 @@
-import pytest
-
 from src.emoji import get_clock_emoji
 
 
