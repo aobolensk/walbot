@@ -4,10 +4,10 @@ from src.backend.discord.message import Msg
 class DiscordUtil:
     @staticmethod
     async def check_args_count(message, command, silent, min=None, max=None):
-        if min and len(command) < min:
+        if min is not None and len(command) < min:
             await Msg.response(message, f"Too few arguments for command '{command[0]}'", silent)
             return False
-        if max and len(command) > max:
+        if max is not None and len(command) > max:
             await Msg.response(message, f"Too many arguments for command '{command[0]}'", silent)
             return False
         return True
