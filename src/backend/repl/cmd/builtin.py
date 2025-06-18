@@ -30,7 +30,7 @@ class REPLCommands:
     async def channels(self, command):
         """Print list of the channels bot is connected to"""
         guilds = ((channel.id, channel.name) for channel in
-                  itertools.chain.from_iterable(guild.text_channels for guild in bc.guilds))
+                  itertools.chain.from_iterable(guild.text_channels for guild in bc.discord.guilds))
         result = ""
         for guild in guilds:
             result += f"{guild[0]} -> {guild[1]}\n"
