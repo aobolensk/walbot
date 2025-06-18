@@ -197,7 +197,7 @@ class BuiltinCommands(BaseCmd):
                 0, ("Built-in commands", (
                     f"<{const.GIT_REPO_LINK}/blob/" +
                     (version if version != ' ' else "master") + "/" + const.DISCORD_COMMANDS_DOC_PATH + ">")))
-        elif execution_ctx.platform == const.BotBackend.DISCORD:
+        elif execution_ctx.platform == const.BotBackend.TELEGRAM:
             commands.insert(
                 0, ("Built-in commands", (
                     f"<{const.GIT_REPO_LINK}/blob/" +

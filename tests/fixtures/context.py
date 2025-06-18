@@ -36,3 +36,9 @@ class BufferTestExecutionContext(ExecutionContext):
 
     def bot_user_id(self) -> int:
         return 0
+
+
+class TelegramTestExecutionContext(BufferTestExecutionContext):
+    def __init__(self) -> None:
+        super().__init__()
+        self.platform = const.BotBackend.TELEGRAM
