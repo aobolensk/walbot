@@ -127,10 +127,10 @@ class Command:
 
     @staticmethod
     async def check_args_count(execution_ctx, cmd_line, min=None, max=None):
-        if min and len(cmd_line) < min:
+        if min is not None and len(cmd_line) < min:
             await Command.send_message(execution_ctx, f"Too few arguments for command '{cmd_line[0]}'")
             return False
-        if max and len(cmd_line) > max:
+        if max is not None and len(cmd_line) > max:
             await Command.send_message(execution_ctx, f"Too many arguments for command '{cmd_line[0]}'")
             return False
         return True
