@@ -22,4 +22,3 @@ def test_check_args_count_max_zero(capsys):
     assert not result
     captured = capsys.readouterr()
     assert captured.out.strip() == "Too many arguments for command 'cmd'"
-
