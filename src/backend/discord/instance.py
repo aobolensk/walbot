@@ -4,7 +4,7 @@ import importlib
 import itertools
 import re
 import sys
-from typing import Optional
+from typing import Any, Mapping, Optional, cast
 
 import discord
 
@@ -282,11 +282,14 @@ class WalBot(discord.Client):
         return suggestion
 
     async def on_raw_message_edit(self, payload: discord.RawMessageUpdateEvent) -> None:
-        try:
-            log.info(f"<{payload.message_id}> (raw_edit) {payload.data['author']['username']}#"
-                     f"{payload.data['author']['discriminator']} -> {payload.data['content']}")
-        except KeyError:
-            pass
+        data = cast(Mapping[str, Any], payload.data)
+        author = cast(Mapping[str, Any], data.get("author", {}))
+        username = author.get("username", "")
+        discriminator = author.get("discriminator", "")
+        content = data.get("content", "")
+        log.info(
+            f"<{payload.message_id}> (raw_edit) {username}#{discriminator} -> {content}"
+        )
 
     async def on_raw_message_delete(self, payload: discord.RawMessageDeleteEvent) -> None:
         log.info(f"<{payload.message_id}> (delete)")
