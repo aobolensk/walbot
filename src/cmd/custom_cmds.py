@@ -9,9 +9,6 @@ from src.config import bc
 
 
 class CustomCmdsCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["addextcmd"] = Command(
             "custom-commands", "addextcmd", const.Permission.ADMIN, Implementation.FUNCTION,

@@ -13,9 +13,6 @@ from src.utils import Util
 
 
 class ReactionCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["addreaction"] = Command(
             "reaction", "addreaction", const.Permission.MOD, Implementation.FUNCTION,

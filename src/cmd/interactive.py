@@ -73,9 +73,6 @@ class _InteractiveCmdsInternals:
 
 
 class InteractiveCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["poll"] = Command(
             "interactive", "poll", const.Permission.USER, Implementation.FUNCTION,

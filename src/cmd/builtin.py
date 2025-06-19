@@ -57,9 +57,6 @@ class _BuiltinInternals:
 
 
 class BuiltinCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["ping"] = Command(
             "builtin", "ping", const.Permission.USER, Implementation.MESSAGE,

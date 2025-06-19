@@ -9,9 +9,6 @@ from src.utils import Util
 
 
 class StringCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["emojify"] = Command(
             "string", "emojify", const.Permission.USER, Implementation.FUNCTION,

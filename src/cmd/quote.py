@@ -14,9 +14,6 @@ from src.utils import Util
 
 
 class RandomCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self):
         bc.executor.commands["quote"] = Command(
             "quote", "quote", const.Permission.USER, Implementation.FUNCTION,
