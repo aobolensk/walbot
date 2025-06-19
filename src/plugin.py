@@ -59,14 +59,17 @@ class PluginManager:
                 if not func[0].startswith('_')
             ]
             if all(x in actual_functions_list for x in self._plugin_functions_interface):
+                plugin_name = plugin.get_classname()
                 try:
                     p = plugin()
-                    self._plugins[p.get_classname()] = p
-                    self._plugin_modules[p.get_classname()] = module
-                    log.debug(f"Registered plugin '{p.get_classname()}'")
+                    self._plugins[plugin_name] = p
+                    self._plugin_modules[plugin_name] = module
+                    log.debug(f"Registered plugin '{plugin_name}'")
                 except Exception as e:
+                    self._plugins.pop(plugin_name, None)
+                    self._plugin_modules.pop(plugin_name, None)
                     self._handle_register_error(
-                        module, f"Failed to register plugin '{p.get_classname()}'. Error: {e}")
+                        module, f"Failed to register plugin '{plugin_name}'. Error: {e}")
             else:
                 self._handle_register_error(module, "Class does comply with BasePlugin interface")
         elif len(plugins) > 1:
