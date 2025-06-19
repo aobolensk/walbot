@@ -45,7 +45,12 @@ class PluginManager:
 
     def _process_module(self, module: Any, reload: bool = True):
         log.debug2(f"Processing plugins from module: {module}")
-        plugins_file = importlib.import_module(module)
+        try:
+            plugins_file = importlib.import_module(module)
+        except Exception as e:
+            self._handle_register_error(
+                module, f"Failed to import module '{module}'. Error: {e}")
+            return
         if reload:
             importlib.reload(plugins_file)
         plugins = [
