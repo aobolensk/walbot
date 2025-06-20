@@ -60,7 +60,8 @@ class RoleCommands(BaseCmd):
         roles = await execution_ctx.message.guild.fetch_roles()
         result = '\n'.join(sorted((role.name for role in roles)))
         if result:
-            await Command.send_message(execution_ctx, execution_ctx.disable_pings(result))
+            result = await execution_ctx.disable_pings(result)
+            await Command.send_message(execution_ctx, result)
         else:
             await Command.send_message(execution_ctx, "No roles available")
 

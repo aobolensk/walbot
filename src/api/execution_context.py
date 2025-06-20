@@ -24,7 +24,7 @@ class ExecutionContext(ABC):
         pass
 
     @abstractmethod
-    def disable_pings(self, message: str) -> str:
+    async def disable_pings(self, message: str) -> str:
         pass
 
     @abstractmethod

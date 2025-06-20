@@ -64,7 +64,7 @@ class TelegramExecutionContext(ExecutionContext):
             message = message.replace(escape_markdown_text(key), value)
         return message
 
-    def disable_pings(self, message: str) -> str:
+    async def disable_pings(self, message: str) -> str:
         while True:
             r = const.TELEGRAM_MARKDOWN_V2_MENTION_REGEX.search(message)
             if r is None:
