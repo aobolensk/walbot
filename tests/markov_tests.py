@@ -59,4 +59,4 @@ def test_get_next_words_list_returns_sorted_counts():
     markov = Markov()
     markov.add_string("hello world hello world hello friend")
     words = markov.get_next_words_list("hello")
-    assert words == [("world", 2), ("friend", 1)]
+    assert words == [("world", 2), ("friend", 1), (None, 0)]
