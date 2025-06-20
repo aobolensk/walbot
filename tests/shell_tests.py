@@ -1,5 +1,7 @@
 import asyncio
+
 from src.shell import Shell
+
 
 class DummyProcess:
     def __init__(self):
