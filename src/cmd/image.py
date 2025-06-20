@@ -117,9 +117,6 @@ class _ImageInternals:
 
 
 class ImageCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["img"] = Command(
             "image", "img", const.Permission.USER, Implementation.FUNCTION,

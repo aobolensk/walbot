@@ -14,9 +14,6 @@ from src.log import log
 
 
 class AuthCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["authorize"] = Command(
             "auth", "authorize", const.Permission.USER, Implementation.FUNCTION,

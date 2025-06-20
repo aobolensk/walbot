@@ -9,9 +9,6 @@ from src.utils import Util
 
 
 class RandomCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["random"] = Command(
             "random", "random", const.Permission.USER, Implementation.FUNCTION,

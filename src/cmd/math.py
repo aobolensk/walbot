@@ -61,9 +61,6 @@ class MathExprEvaluator:
 
 
 class MathCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["calc"] = Command(
             "math", "calc", const.Permission.USER, Implementation.FUNCTION,

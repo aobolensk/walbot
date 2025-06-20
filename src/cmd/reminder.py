@@ -210,9 +210,6 @@ class _ReminderInternals:
 
 
 class ReminderCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["reminder"] = Command(
             "reminder", "reminder", const.Permission.USER, Implementation.FUNCTION,

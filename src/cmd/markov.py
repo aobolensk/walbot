@@ -11,9 +11,6 @@ from src.utils import Util, null
 
 
 class MarkovCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["markov"] = Command(
             "markov", "markov", const.Permission.USER, Implementation.FUNCTION,

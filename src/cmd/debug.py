@@ -29,9 +29,6 @@ class _DebugCommand:
 
 
 class DebugCommands(BaseCmd):
-    def __init__(self) -> None:
-        pass
-
     def bind(self) -> None:
         bc.executor.commands["dbg"] = Command(
             "debug", "dbg", const.Permission.ADMIN, Implementation.FUNCTION,
