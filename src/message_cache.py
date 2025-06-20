@@ -13,7 +13,7 @@ class MessageCache:
     BUFFER_CAPACITY = 1001
 
     def __init__(self) -> None:
-        self._data: Dict[str, List[str]] = defaultdict(list)
+        self._data: Dict[str, List[CachedMsg]] = defaultdict(list)
 
     def push(self, channel_id: str, message: CachedMsg):
         self._data[channel_id].insert(0, message)
@@ -26,5 +26,5 @@ class MessageCache:
             return
         return self._data[channel_id][index]
 
-    def reset(self, channel_id: str, new_data: List[str]):
+    def reset(self, channel_id: str, new_data: List[CachedMsg]):
         self._data[channel_id] = new_data
