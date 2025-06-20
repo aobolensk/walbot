@@ -32,7 +32,7 @@ class MarkovNode:
             self.total_next -= self.next[word]
             del self.next[word]
 
-    def get_next(self, model: 'Markov', word: str) -> str:
+    def get_next(self, model: 'Markov', word: str) -> 'MarkovNode':
         if not FF.is_enabled("WALBOT_FEATURE_MARKOV_MONGO"):
             if word is not None:
                 return model.model[word]
