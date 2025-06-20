@@ -1,6 +1,10 @@
 import asyncio
+import os
+import shutil
+import tempfile
 
 import pytest  # type:ignore
+import requests  # type:ignore
 
 from src.utils import Util
 from tests.fixtures.context import BufferTestExecutionContext
@@ -57,3 +61,26 @@ class TestPathToModule:
     ])
     def test_path_to_module(self, path, expected):
         assert Util.path_to_module(path) == expected, f"Failed for path: {path}"
+
+
+def test_request_get_file_creates_missing_dir(monkeypatch, tmp_path):
+    class DummyResponse:
+        status_code = 200
+        content = b"file data"
+
+    def dummy_get(*args, **kwargs):
+        return DummyResponse()
+
+    monkeypatch.setattr(requests, "get", dummy_get)
+    monkeypatch.setattr(tempfile, "gettempdir", lambda: str(tmp_path))
+
+    tmp_dir = tmp_path / "walbot"
+    if tmp_dir.exists():
+        shutil.rmtree(tmp_dir)
+
+    file_path = Util.request("http://example.com").get_file(".bin")
+
+    assert tmp_dir.exists()
+    assert os.path.isfile(file_path)
+    with open(file_path, "rb") as f:
+        assert f.read() == b"file data"
