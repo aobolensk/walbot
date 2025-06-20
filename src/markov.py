@@ -1,7 +1,7 @@
 import random
 import re
 from enum import IntEnum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import yaml  # type:ignore
 
@@ -92,11 +92,10 @@ class Markov:
     def find_words(self, regex: str) -> List[str]:
         return [self.model[word].word for word in self.model if re.search(regex, word)]
 
-    def get_next_words_list(self, word: str) -> List[str]:
+    def get_next_words_list(self, word: str) -> List[Tuple[str, int]]:
         if word not in self.model.keys():
             return []
-        # TODO: investigate typing issue
-        return sorted(self.model[word].next.items(), key=lambda x: -x[1])  # type:ignore
+        return sorted(self.model[word].next.items(), key=lambda x: -x[1])
 
     def generate(self, word: str = "") -> str:
         if word not in self.model.keys():
