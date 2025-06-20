@@ -32,8 +32,25 @@ class Shell:
             env: Optional[Dict[str, str]] = None, shell: bool = False) -> ShellCommandResult:
         """Run shell command synchronously and return its result."""
         log.debug("Executing shell command: " + cmd_line)
-        cmd = shlex.split(cmd_line)
-        proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
+        if shell:
+            proc = subprocess.Popen(
+                cmd_line,
+                cwd=cwd,
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+            )
+        else:
+            cmd = shlex.split(cmd_line)
+            proc = subprocess.Popen(
+                cmd,
+                cwd=cwd,
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=False,
+            )
         stdout, stderr = proc.communicate()
         return ShellCommandResult(proc.returncode, stdout.decode('utf-8'), stderr.decode('utf-8'))
 
@@ -49,15 +66,26 @@ class Shell:
         awaited before returning.
         """
         log.debug("Executing shell command: " + cmd_line)
-        cmd = shlex.split(cmd_line)
         if shell:
             proc = await asyncio.create_subprocess_shell(
-                cmd_line, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                cmd_line,
+                cwd=cwd,
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
         else:
+            cmd = shlex.split(cmd_line)
             program = cmd[0]
             program_args = cmd[1:]
             proc = await asyncio.create_subprocess_exec(
-                program, *program_args, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                program,
+                *program_args,
+                cwd=cwd,
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
         try:
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
             ret_code = proc.returncode
