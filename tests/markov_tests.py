@@ -53,3 +53,10 @@ def test_markov_check_broken():
     markov.add_string(LOREM)
     markov.model[""].total_next = 0  # break next count for initial node
     assert markov.check() is False
+
+
+def test_get_next_words_list_returns_sorted_counts():
+    markov = Markov()
+    markov.add_string("hello world hello world hello friend")
+    words = markov.get_next_words_list("hello")
+    assert words == [("world", 2), ("friend", 1), (None, 0)]
