@@ -107,8 +107,11 @@ class Util:
 
     @staticmethod
     def tmp_dir() -> str:
-        """Get walbot temporary directory path inside system temporary directory"""
-        return tempfile.gettempdir() + os.sep + "walbot"
+        """Get walbot temporary directory path inside system temporary directory
+        and ensure it exists"""
+        path = tempfile.gettempdir() + os.sep + "walbot"
+        os.makedirs(path, exist_ok=True)
+        return path
 
     @staticmethod
     def cut_string(string: str, length: int) -> str:
