@@ -34,13 +34,12 @@ class DiscordExecutionContext(ExecutionContext):
             kwargs["files"] = [discord.File(x) for x in kwargs["files"]]
         return await Msg.send_direct_message(bc.discord.get_user(user_id), message, self.silent, *args, **kwargs)
 
-    def disable_pings(self, message: str) -> str:
+    async def disable_pings(self, message: str) -> str:
         while True:
             r = const.DISCORD_USER_ID_REGEX.search(message)
             if r is None:
                 break
-            t = asyncio.create_task(self.message.guild.fetch_member(int(r.group(1))))
-            member: Any = asyncio.run(t)
+            member: Any = await self.message.guild.fetch_member(int(r.group(1)))
             message = const.DISCORD_USER_ID_REGEX.sub(str(member), message, count=1)
         while True:
             r = const.DISCORD_ROLE_ID_REGEX.search(message)

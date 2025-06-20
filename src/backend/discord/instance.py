@@ -206,7 +206,7 @@ class WalBot(discord.Client):
                 message.content = msg_content
                 result = result or ""
                 if not self.config.discord.guilds[message.channel.guild.id].markov_pings:
-                    result = (DiscordExecutionContext(message).disable_pings(result))
+                    result = await DiscordExecutionContext(message).disable_pings(result)
                 await message.channel.send(message.author.mention + ' ' + result)
         elif channel_id in self.config.discord.guilds[message.channel.guild.id].markov_logging_whitelist:
             # If the message is in a channel that is supposed to log markov chains, doesn't mention the bot then
