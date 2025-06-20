@@ -1,4 +1,3 @@
-import asyncio
 import re
 from typing import Any, Optional
 
