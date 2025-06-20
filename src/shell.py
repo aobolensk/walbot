@@ -43,7 +43,11 @@ class Shell:
             env: Optional[Dict[str, str]] = None,
             shell: bool = False,
             timeout: int = 10) -> ShellCommandResult:
-        """Run shell command asynchronously with optional timeout."""
+        """Run shell command asynchronously with optional timeout.
+
+        If the timeout is exceeded, the spawned process is killed and
+        awaited before returning.
+        """
         log.debug("Executing shell command: " + cmd_line)
         cmd = shlex.split(cmd_line)
         if shell:
@@ -58,6 +62,8 @@ class Shell:
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
             ret_code = proc.returncode
         except asyncio.exceptions.TimeoutError:
+            proc.kill()
+            await proc.wait()
             ret_code, stdout, stderr = -1, b'', b''
         return ShellCommandResult(ret_code, stdout.decode('utf-8'), stderr.decode('utf-8'))
 
