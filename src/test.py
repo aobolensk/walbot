@@ -3,7 +3,6 @@ import shlex
 import subprocess
 import sys
 
-from src import const
 from src.log import log
 
 
