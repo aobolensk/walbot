@@ -21,7 +21,6 @@ def start_testing(args):
     if args.cov:
         pytest_args.append("--cov")
     env = os.environ.copy()
-    env["PYTHON_PATH"] = const.WALBOT_DIR
     log.debug(f"Run pytest: {shlex.join(pytest_args)}")
     ret_code = subprocess.call(pytest_args, env=env)
     return ret_code
