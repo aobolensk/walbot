@@ -76,11 +76,10 @@ class Shell:
             )
         else:
             cmd = shlex.split(cmd_line)
-            program = cmd[0]
-            program_args = cmd[1:]
+            program, _ = cmd
             proc = await asyncio.create_subprocess_exec(
                 program,
-                *program_args,
+                cmd,
                 cwd=cwd,
                 env=env,
                 stdout=subprocess.PIPE,

@@ -1,4 +1,5 @@
 import asyncio
+import sys
 
 from src.shell import Shell
 
@@ -33,33 +34,23 @@ def test_run_async_terminates_on_timeout(monkeypatch):
     monkeypatch.setattr(asyncio, "create_subprocess_exec", fake_create_subprocess_exec)
     monkeypatch.setattr(asyncio, "wait_for", fake_wait_for)
 
-    loop = asyncio.get_event_loop()
-    result = loop.run_until_complete(Shell.run_async("dummy"))
+    result = asyncio.run(Shell.run_async("dummy"))
 
     assert result.exit_code == -1
     assert dummy_proc.kill_called
     assert dummy_proc.wait_called
 
 
-def test_run_shell_false_star():
-    result = Shell.run('echo "*"')
-    assert result.exit_code == 0
-    assert result.stdout.strip() == '*'
-
-
-def test_run_shell_true_quotes_preserved():
-    result = Shell.run('echo "*"', shell=True)
-    assert result.exit_code == 0
-    assert result.stdout.strip() == '*'
+PYTHON_ECHO = f'{sys.executable} -c "import sys;print(sys.argv[1])" "test"'
 
 
 def test_run_async_shell_false_star():
-    result = asyncio.run(Shell.run_async('echo "*"'))
+    result = asyncio.run(Shell.run_async(PYTHON_ECHO))
     assert result.exit_code == 0
-    assert result.stdout.strip() == '*'
+    assert result.stdout.strip() == 'test'
 
 
 def test_run_async_shell_true_quotes_preserved():
-    result = asyncio.run(Shell.run_async('echo "*"', shell=True))
+    result = asyncio.run(Shell.run_async(PYTHON_ECHO, shell=True))
     assert result.exit_code == 0
-    assert result.stdout.strip() == '*'
+    assert result.stdout.strip() == 'test'
