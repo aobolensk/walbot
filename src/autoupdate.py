@@ -7,14 +7,14 @@ from src.ff import FF
 from src.log import log
 
 
-def start(args) -> None:
+def start(args) -> const.ExitStatus:
     au = importlib.import_module("src.autoupdate_impl")
     signal.signal(signal.SIGHUP, au.at_exit)
     try:
         context = au.AutoUpdateContext()
     except RuntimeError as e:
         log.error(e)
-        return
+        return const.ExitStatus.GENERAL_ERROR
     au.at_start()
     try:
         while True:
@@ -32,3 +32,4 @@ def start(args) -> None:
     except Exception as e:
         au.at_failure(e)
         raise e
+    return const.ExitStatus.NO_ERROR
