@@ -60,7 +60,7 @@ async def reply(update: Update, text: str, disable_web_page_preview: bool = Fals
     log.info(f"({title}) {reply_message.from_user.username}: {reply_message.text}")
 
 
-def send_message(chat_id: int, text: str) -> None:
+async def send_message(chat_id: int, text: str) -> None:
     log.info(f"({chat_id}) /sendMessage: " + text)
     text = quote_plus(escape_markdown_text(text))
     url = (
@@ -68,6 +68,6 @@ def send_message(chat_id: int, text: str) -> None:
         f"?chat_id={chat_id}&text={text}&parse_mode=MarkdownV2"
     )
     rq = Util.request(url)
-    r = rq.get()
+    r = await rq.get()
     if r.status_code != 200:
         log.error(f"Error sending message to {chat_id}: {r.status_code} {r.json()}")

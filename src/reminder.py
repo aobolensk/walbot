@@ -49,7 +49,7 @@ class ReminderProcessing:
                     elif backend == const.BotBackend.TELEGRAM:
                         result = f"{prereminder} minutes left until reminder\n"
                         result += rem.message + "\n" + rem.notes + "\n"
-                        send_message(rem.channel_id, result)
+                        await send_message(rem.channel_id, result)
                     else:
                         log.error(f"ReminderProcessing: backend '{backend}' is not supported")
                     rem.used_prereminders_list[i] = True
@@ -72,9 +72,9 @@ class ReminderProcessing:
                     clock_emoji = get_clock_emoji(Time().now().strftime("%H:%M"))
                     result += f"{clock_emoji} You asked to remind at {now}\n"
                     result += rem.message + "\n" + rem.notes + "\n"
-                    send_message(rem.channel_id, result)
+                    await send_message(rem.channel_id, result)
                     for user_id in rem.telegram_whisper_users:
-                        send_message(user_id, result)
+                        await send_message(user_id, result)
                 else:
                     log.error(f"ReminderProcessing: backend '{backend}' is not supported")
                 if rem.email_users:
