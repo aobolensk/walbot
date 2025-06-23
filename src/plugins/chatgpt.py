@@ -21,7 +21,13 @@ class ChatGPTPlugin(BasePlugin):
 
     async def init(self) -> None:
         await super().init()
-        self._openai = importlib.import_module("openai")
+        try:
+            self._openai = importlib.import_module("openai")
+        except ImportError:
+            log.error("Failed to import 'openai' module. Disabling ChatGPT plugin")
+            self._enabled = False
+            return
+
         await bc.plugin_manager.register_bot_command(
             self.get_classname(), "chatgpt", const.Permission.USER,
             self._chatgpt, max_execution_time=120, subcommand=True)
