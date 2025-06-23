@@ -148,22 +148,28 @@ class Util:
             else:
                 self.proxies = None
 
-        def get(self) -> requests.Response:
+        async def get(self) -> requests.Response:
             """Get request"""
-            return requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies)
+            return await asyncio.to_thread(
+                requests.get,
+                self.url,
+                timeout=self.timeout,
+                headers=self.headers,
+                proxies=self.proxies,
+            )
 
-        def get_text(self) -> str:
+        async def get_text(self) -> str:
             """Get request text"""
-            response = self.get()
+            response = await self.get()
             if response.status_code == 200:
                 return response.text
             else:
                 log.error(f"Request failed with status code {response.status_code}")
                 raise HTTPRequestException(response)
 
-        def get_file(self, extension='') -> str:
+        async def get_file(self, extension='') -> str:
             """Get file request. Returns path to temporary file"""
-            response = requests.get(self.url, timeout=self.timeout, headers=self.headers, proxies=self.proxies)
+            response = await self.get()
             if response.status_code == 200:
                 with tempfile.NamedTemporaryFile(dir=Util.tmp_dir(), suffix=extension, delete=False) as tmp_file:
                     tmp_file.write(response.content)

@@ -292,7 +292,7 @@ class BuiltinCommands(BaseCmd):
             return None
         try:
             r = Util.request(args.url, use_proxy=args.use_proxy)
-            result = r.get_text()
+            result = await r.get_text()
             await Command.send_message(execution_ctx, result)
             return result
         except Exception as e:

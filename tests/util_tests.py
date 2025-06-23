@@ -78,9 +78,24 @@ def test_request_get_file_creates_missing_dir(monkeypatch, tmp_path):
     if tmp_dir.exists():
         shutil.rmtree(tmp_dir)
 
-    file_path = Util.request("http://example.com").get_file(".bin")
+    file_path = asyncio.run(Util.request("http://example.com").get_file(".bin"))
 
     assert tmp_dir.exists()
     assert os.path.isfile(file_path)
     with open(file_path, "rb") as f:
         assert f.read() == b"file data"
+
+
+def test_request_get_text(monkeypatch):
+    class DummyResponse:
+        status_code = 200
+        text = "hello"
+
+    def dummy_get(*args, **kwargs):
+        return DummyResponse()
+
+    monkeypatch.setattr(requests, "get", dummy_get)
+
+    result = asyncio.run(Util.request("http://example.com").get_text())
+
+    assert result == "hello"

@@ -45,7 +45,8 @@ class TimerCommands(BaseCmd):
                 stderr=subprocess.PIPE,
                 shell=True)
             try:
-                output, err = p.communicate(input=r.get_text().encode("utf-8"), timeout=45)
+                script_text = await r.get_text()
+                output, err = p.communicate(input=script_text.encode("utf-8"), timeout=45)
             except subprocess.TimeoutExpired:
                 p.kill()
                 result += "Speedtest: operation timed out\n"
@@ -96,7 +97,7 @@ class TimerCommands(BaseCmd):
         city = ' '.join(cmd_line[1:])
         try:
             r = Util.request(f"https://wttr.in/{city}?format=4")
-            result = r.get_text()
+            result = await r.get_text()
             await Command.send_message(execution_ctx, result)
             return result
         except HTTPRequestException as e:
@@ -120,7 +121,7 @@ class TimerCommands(BaseCmd):
         city = ' '.join(cmd_line[1:])
         try:
             r = Util.request(f"https://wttr.in/{city}.png?m")
-            file_name = r.get_file(extension=".png")
+            file_name = await r.get_file(extension=".png")
             await Command.send_message(execution_ctx, None, files=[file_name])
             os.unlink(file_name)
         except HTTPRequestException as e:

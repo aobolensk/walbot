@@ -41,7 +41,7 @@ class _ImageInternals:
                     # Unicode emoji
                     if const.UNICODE_EMOJI_REGEX.match(cmd_line[i]):
                         rq = Util.request("https://unicode.org/emoji/charts/full-emoji-list.html")
-                        emojis_page = rq.get_text()
+                        emojis_page = await rq.get_text()
                         emoji_match = r"<img alt='{}' class='imga' src='data:image/png;base64,([^']+)'>"
                         emoji_match = re.findall(emoji_match.format(cmd_line[i]), emojis_page)
                         if emoji_match:
