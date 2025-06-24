@@ -58,10 +58,12 @@ class Shell:
             program_args = cmd[1:]
             proc = await asyncio.create_subprocess_exec(
                 program, *program_args, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        communicate_coro = proc.communicate()
         try:
-            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+            stdout, stderr = await asyncio.wait_for(communicate_coro, timeout=timeout)
             ret_code = proc.returncode
         except asyncio.exceptions.TimeoutError:
+            communicate_coro.close()
             proc.kill()
             await proc.wait()
             ret_code, stdout, stderr = -1, b'', b''
