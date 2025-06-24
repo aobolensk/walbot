@@ -2,11 +2,12 @@ import os
 import shlex
 import subprocess
 import sys
+from argparse import Namespace
 
 from src.log import log
 
 
-def start_testing(args):
+def start_testing(args: Namespace) -> int:
     if args.verbose2:
         args.verbose = True
     pytest_args = []

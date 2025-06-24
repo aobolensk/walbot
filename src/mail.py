@@ -2,11 +2,13 @@ import functools
 import inspect
 import smtplib
 import traceback
-from typing import Any, List
+from typing import Callable, List, TypeVar, cast
 
 from src import const
 from src.config import SecretConfig, bc
 from src.log import log
+
+F = TypeVar("F", bound=Callable[..., object | None])
 
 
 class Mail:
@@ -49,12 +51,12 @@ class Mail:
             log.error(f"Send e-mail failed: {e}", exc_info=True)
 
     @staticmethod
-    def send_exception_info_to_admin_emails(func) -> Any:
+    def send_exception_info_to_admin_emails(func: F) -> F:
         """Catches all exceptions and sends e-mail to admins if it happened.
         It should be used as a decorator"""
         if inspect.iscoroutinefunction(func):
             @functools.wraps(func)
-            async def wrapped(*args, **kwargs):
+            async def wrapped(*args: object, **kwargs: object) -> object | None:
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
@@ -77,9 +79,10 @@ class Mail:
                             f"{bot_info}"
                         )
                     log.error(f"{func.__name__} failed", exc_info=True)
-            return wrapped
+                    return None
+            return cast(F, wrapped)
         else:
-            def inner(*args, **kwargs):
+            def inner(*args: object, **kwargs: object) -> object | None:
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
@@ -102,4 +105,5 @@ class Mail:
                             f"{bot_info}"
                         )
                     log.error(f"{func.__name__} failed", exc_info=True)
-            return inner
+                    return None
+            return cast(F, inner)

@@ -1,12 +1,14 @@
 import importlib
-from typing import Any
+from typing import Callable, TypeVar
 
 import numpy as np
 
 from src.log import log
 
+F = TypeVar("F", bound=Callable[..., object])
 
-def optional_numba_jit(func) -> Any:
+
+def optional_numba_jit(func: F) -> F:
     try:
         numba = importlib.import_module("numba")
     except Exception as e:
@@ -19,7 +21,7 @@ def optional_numba_jit(func) -> Any:
 
 
 @optional_numba_jit
-def levenshtein_distance(a: str, b: str):
+def levenshtein_distance(a: str, b: str) -> int:
     """
     Calculates Levenshtein distance between two strings using dynamic programming.
     Complexity: O(len(a) * len(b))

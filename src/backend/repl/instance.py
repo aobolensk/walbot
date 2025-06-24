@@ -62,7 +62,7 @@ class ReplBotInstance(BotInstance):
             except OSError as e:
                 log.warning(f"REPL: {e}")
 
-    def stop(self, args, main_bot=True) -> None:
+    def stop(self, args, main_bot: bool = True) -> None:
         if self.sock:
             self.sock.close()
 
