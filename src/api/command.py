@@ -1,4 +1,5 @@
 import enum
+import inspect
 from abc import ABC, abstractmethod
 from types import FunctionType
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
@@ -51,7 +52,7 @@ class Command:
         self.max_execution_time = max_execution_time
         if impl_type == Implementation.FUNCTION:
             self._exec = impl_func
-            self.description = self._exec.__doc__
+            self.description = inspect.cleandoc(inspect.getdoc(self._exec))
         elif impl_type == Implementation.MESSAGE:
             self.impl_message = impl_message
             self.description = impl_message

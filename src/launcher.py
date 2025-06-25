@@ -40,7 +40,7 @@ class Launcher:
         subparsers_obj = parser.add_subparsers(dest="action")
         subparsers = {
             cmd: subparsers_obj.add_parser(
-                cmd, help=getattr(self, cmd).__doc__, formatter_class=argparse.RawTextHelpFormatter)
+                cmd, help=inspect.getdoc(getattr(self, cmd)), formatter_class=argparse.RawTextHelpFormatter)
             for cmd in list(filter(lambda _: not _.startswith('_') and not _.startswith('launch_'), dir(self)))
         }
         # Common

@@ -1,3 +1,4 @@
+import inspect
 import math
 import subprocess
 import sys
@@ -177,7 +178,7 @@ class BuiltinCommands(BaseCmd):
                     if cmd.message:
                         result += cmd.message
                     else:
-                        result += bc.discord.commands.data[args.command_name].get_actor().__doc__ or ""
+                        result += inspect.getdoc(bc.discord.commands.data[args.command_name].get_actor()) or ""
             if not result:
                 result = f"Unknown command '{args.command_name}'"
             await Command.send_message(execution_ctx, result)
