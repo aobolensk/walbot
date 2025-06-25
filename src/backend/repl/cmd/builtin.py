@@ -18,9 +18,11 @@ class REPLCommands:
 
     async def help(self, command):
         """Print list of the commands"""
-        commands = [
-            f"{func[0]} -> {func[1].__doc__ or ''}" for func in inspect.getmembers(REPLCommands, inspect.isfunction)
-            if not func[0].startswith('_')]
+        commands = []
+        for func in inspect.getmembers(REPLCommands, inspect.isfunction):
+            if not func[0].startswith('_'):
+                doc = inspect.getdoc(func[1]) or 'No description'
+                commands.append(f"  {func[0]:<10} - {doc}")
         return '\n'.join(commands)
 
     async def ping(self, command):

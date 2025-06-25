@@ -1,4 +1,5 @@
 import functools
+import inspect
 from collections import defaultdict
 from typing import Any, Dict, List
 
@@ -67,11 +68,10 @@ class Commands:
                     s = "**" + name + "**: "
                     try:
                         docstring = "*<No docs provided>*"
-                        if (command.get_actor().__doc__ and
-                                "new function with partial application" not in command.get_actor().__doc__):
-                            docstring = command.get_actor().__doc__
-                        elif name in bc.executor.commands.keys():
-                            docstring = bc.executor.commands[name].description
+                        docstring = inspect.getdoc(command.get_actor())
+                        if not docstring or "new function with partial application" in docstring:
+                            if name in bc.executor.commands:
+                                docstring = bc.executor.commands[name].description
                         s += " \\\n".join(docstring.strip().split('\n'))
                     except (AttributeError, KeyError):
                         to_remove.append(name)
