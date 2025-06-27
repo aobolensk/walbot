@@ -7,7 +7,7 @@ import inspect
 import logging
 import logging.config
 import os
-from typing import Any
+from typing import Callable
 
 from src import const
 
@@ -67,18 +67,18 @@ class Log:
         self.debug3 = functools.partial(self.log.log, const.LogLevel.DEBUG3)
         self.info("Logging system is set up")
 
-    def trace_function(self, func) -> Any:
+    def trace_function(self, func: Callable[..., object]) -> Callable[..., object]:
         """Tracing enter and exit events for functions. It should be used as a decorator"""
         if inspect.iscoroutinefunction(func):
             @functools.wraps(func)
-            async def wrapped(*args):
+            async def wrapped(*args: object, **kwargs: object) -> object:
                 self.debug(f"Function '{func.__name__}' (ENTER)")
-                ret = await func(*args)
+                ret = await func(*args, **kwargs)
                 self.debug(f"Function '{func.__name__}' (EXIT)")
                 return ret
             return wrapped
         else:
-            def inner(*args, **kwargs):
+            def inner(*args: object, **kwargs: object) -> object:
                 self.debug(f"Function '{func.__name__}' (ENTER)")
                 ret = func(*args, **kwargs)
                 self.debug(f"Function '{func.__name__}' (EXIT)")

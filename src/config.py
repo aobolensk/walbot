@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import importlib
 import inspect
 import os
 import sys
 import threading
 import zipfile
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Callable, Dict, TypedDict, cast
 
 import discord
 import yaml
@@ -27,9 +29,17 @@ bc = BotController()
 
 
 class Command:
-    def __init__(self, module_name=None, class_name=None,
-                 perform=None, message=None, cmd_line=None, permission=0, subcommand=False,
-                 max_execution_time=None):
+    def __init__(
+        self,
+        module_name: str | None = None,
+        class_name: str | None = None,
+        perform: str | None = None,
+        message: str | None = None,
+        cmd_line: str | None = None,
+        permission: int = 0,
+        subcommand: bool = False,
+        max_execution_time: int | None = None,
+    ) -> None:
         self.module_name = module_name
         self.class_name = class_name
         self.perform = perform
@@ -38,24 +48,31 @@ class Command:
         self.message = message
         self.cmd_line = cmd_line
         self.is_global = False
-        self.channels = []
+        self.channels: list[int] = []
         self.times_called = 0
         self.max_execution_time = max_execution_time or const.MAX_COMMAND_EXECUTION_TIME
 
-    def is_available(self, channel_id):
+    def is_available(self, channel_id: int) -> bool:
         return self.is_global or (channel_id in self.channels)
 
-    def can_be_subcommand(self):
-        return self.subcommand or self.message or self.cmd_line
+    def can_be_subcommand(self) -> bool:
+        return bool(self.subcommand or self.message or self.cmd_line)
 
-    def get_actor(self):
+    def get_actor(self) -> Callable[..., object]:
         try:
+            assert self.module_name is not None
+            assert self.class_name is not None
             return getattr(getattr(sys.modules[self.module_name], self.class_name), self.perform)
         except (AttributeError, KeyError):
             return getattr(getattr(sys.modules["src.backend.discord.commands"], "DiscordCommandBinding"), self.perform)
 
     @staticmethod
-    async def process_subcommands(content, message, user, safe=False):
+    async def process_subcommands(
+        content: str,
+        message: discord.Message,
+        user: 'User' | None,
+        safe: bool = False,
+    ) -> str | None:
         command_indicators = {
             ')': '(',
             ']': '[',
@@ -72,7 +89,7 @@ class Command:
                             message.content = content[j + 1:i]
                             command = message.content.split()
                             if not command:
-                                return
+                                return None
                             if command[0] not in bc.config.commands.data.keys():
                                 if command[0] in bc.config.commands.aliases.keys():
                                     command[0] = bc.config.commands.aliases[command[0]]
@@ -97,7 +114,13 @@ class Command:
                 break
         return content
 
-    async def run(self, message, command, user, silent=False):
+    async def run(
+        self,
+        message: discord.Message,
+        command: list[str],
+        user: 'User' | None,
+        silent: bool = False,
+    ) -> str | None:
         if len(inspect.stack(0)) >= const.MAX_SUBCOMMAND_DEPTH:
             return null(await message.channel.send("ERROR: Maximum subcommand depth is reached!"))
         log.debug(f"Processing command: {message.content}")
@@ -129,7 +152,7 @@ class Command:
         else:
             log.debug2("Subcommands are not processed!")
         if not message.content:
-            return
+            return None
         command = message.content[1:].split(' ')
         command = list(filter(None, command))
         if self.perform is not None:
@@ -166,35 +189,36 @@ class Command:
             return await Shell.run_and_send_stdout(DiscordExecutionContext(message, silent), cmd_line)
         else:
             await message.channel.send(f"Command '{command[0]}' is not callable")
+        return None
 
 
 class Reaction:
-    def __init__(self, regex, emoji):
+    def __init__(self, regex: str, emoji: str) -> None:
         self.regex = regex
         self.emoji = emoji
 
 
 class Response:
-    def __init__(self, regex, text):
+    def __init__(self, regex: str, text: str) -> None:
         self.regex = regex
         self.text = text
 
 
 class GuildSettings:
-    def __init__(self, id_):
+    def __init__(self, id_: int) -> None:
         self.id = id_
         self.is_whitelisted = False
-        self.whitelist = set()
-        self.markov_logging_whitelist = set()
-        self.markov_responses_whitelist = set()
-        self.responses_whitelist = set()
-        self.reactions_whitelist = set()
+        self.whitelist: set[int] = set()
+        self.markov_logging_whitelist: set[int] = set()
+        self.markov_responses_whitelist: set[int] = set()
+        self.responses_whitelist: set[int] = set()
+        self.reactions_whitelist: set[int] = set()
         self.markov_pings = True
         self.ignored = False
 
 
 class User:
-    def __init__(self, id_):
+    def __init__(self, id_: int) -> None:
         self.id = id_
         self.permission_level = const.Permission.USER.value
         self.data = {
@@ -203,7 +227,7 @@ class User:
 
 
 class Config:
-    def __init__(self):
+    def __init__(self) -> None:
         commands = importlib.import_module("src.backend.discord.commands")
         self.commands: Commands = commands.Commands()
         self.commands.update()
@@ -212,7 +236,11 @@ class Config:
         self.reminders: Dict[int, Reminder] = dict()
         self.responses: Dict[int, Response] = dict()
         self.quotes: Dict[int, Quote] = dict()
-        self.plugins = dict()
+
+        class PluginState(TypedDict):
+            autostart: bool
+
+        self.plugins: dict[str, PluginState] = {}
         self.commands_prefix = "!"
         self.on_mention_command = "markov"
         self.ids = {
@@ -224,26 +252,36 @@ class Config:
             "stopwatch": 1,
             "markov_ignored_prefix": 1,
         }
-        self.saving = {
+
+        class SavingBackup(TypedDict):
+            compress: bool
+            period: int
+
+        class SavingConfig(TypedDict):
+            backup: SavingBackup
+            period: int
+
+        self.saving: SavingConfig = {
             "backup": {
                 "compress": True,
                 "period": 10,
             },
             "period": 10,
         }
-        self.repl = {
+        self.repl: dict[str, int] = {
             "port": 8080,
         }
         self.discord = DiscordConfig()
         self.telegram = TelegramConfig()
         # Executor
-        self.executor = {
+        self.executor: dict[str, dict[str, object]] = {
             "commands_data": dict(),
             "custom_commands": dict(),
         }
 
-    def backup(self, *files):
-        compress_type = zipfile.ZIP_DEFLATED if self.saving["backup"]["compress"] else zipfile.ZIP_STORED
+    def backup(self, *files: str) -> None:
+        backup_cfg = cast(dict[str, bool], self.saving["backup"])
+        compress_type = zipfile.ZIP_DEFLATED if backup_cfg["compress"] else zipfile.ZIP_STORED
         for file in files:
             path = os.path.dirname(file)
             name, ext = os.path.splitext(os.path.basename(file))
@@ -258,7 +296,13 @@ class Config:
             else:
                 log.info(f"Created backup for {file}: {backup_file}")
 
-    def save(self, config_file, markov_file, secret_config_file, wait=False):
+    def save(
+        self,
+        config_file: str,
+        markov_file: str,
+        secret_config_file: str,
+        wait: bool = False,
+    ) -> None:
         config_mutex = threading.Lock()
         with config_mutex:
             log.info("Saving of config is started")
@@ -305,7 +349,7 @@ class Config:
 
 
 class SecretConfig:
-    def __init__(self):
+    def __init__(self) -> None:
         self.version = const.SECRET_CONFIG_VERSION
         self.mail = {
             "smtp_server": None,
@@ -318,6 +362,6 @@ class SecretConfig:
         self.discord = {
             "token": None,
         }
-        self.plugins = {
+        self.plugins: dict[str, object] = {
         }
-        self.admin_email_list = list()
+        self.admin_email_list: list[str] = list()
