@@ -1,4 +1,4 @@
-from src.message_cache import MessageCache, CachedMsg
+from src.message_cache import CachedMsg, MessageCache
 
 
 def test_push_and_get():
