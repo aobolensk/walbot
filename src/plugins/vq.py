@@ -65,7 +65,7 @@ class _VoiceInternals:
                 if not os.path.exists(output_file_name):
                     log.debug(f"Downloading YT video {yt_video_url} ...")
                     await Command.send_message(execution_ctx, f"Downloading YT video {yt_video_url} ...")
-                    loop = asyncio.get_event_loop()
+                    loop = asyncio.get_running_loop()
                     await loop.run_in_executor(None, ydl.download, [yt_video_url])
                     log.debug(f"Downloaded {yt_video_url}")
                 else:
