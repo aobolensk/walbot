@@ -3,6 +3,8 @@ FAQ
 
 .. contents::
 
+See also `Feature flags <FeatureFlags.md>`_ for optional environment variables.
+
 How to setup fast YAML loader and dumper?
 -----------------------------------------
 

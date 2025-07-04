@@ -81,6 +81,7 @@ $ python walbot.py help           # Get help
 
 Patch tool docs: [Read](docs/Patch.md)<br>
 Plugins tutorial: [Read](docs/PluginsTutorial.md)<br>
+Feature flags: [Read](docs/FeatureFlags.md)<br>
 FAQ: [Read](docs/FAQ.rst)<br>
 
 #### Commands
