@@ -103,7 +103,7 @@ class TelegramBotInstance(BotInstance):
                 except Exception as e:
                     log.error(f"Error in processing reminders: {e}")
 
-    def stop(self, args, main_bot=True) -> None:
+    def stop(self, args, main_bot: bool = True) -> None:
         self._is_stopping = True
 
     def has_credentials(self):

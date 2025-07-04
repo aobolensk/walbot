@@ -314,7 +314,7 @@ class DiscordBotInstance(BotInstance):
         except discord.PrivilegedIntentsRequired:
             log.error("Privileged Gateway Intents are not enabled! Shutting down the bot...")
 
-    def stop(self, args, main_bot=True):
+    def stop(self, args, main_bot: bool = True) -> None:
         pass
 
     def has_credentials(self):
