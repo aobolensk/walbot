@@ -18,3 +18,6 @@ See backend specific instructions below:
 
 1. Create bot using [this](https://core.telegram.org/bots#6-botfather) instruction
 1. Paste bot token to secret.yaml
+
+For optional environment variables that enable experimental features see
+[Feature flags](FeatureFlags.md).
