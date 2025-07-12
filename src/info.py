@@ -103,7 +103,7 @@ class BotInfo:
         minutes, seconds = divmod(remainder, 60)
         return f"{days}:{hours:02}:{minutes:02}:{seconds:02}"
 
-    def get_full_info(self, verbosity) -> str:
+    def get_full_info(self, verbosity: int) -> str:
         result = f"{const.INSTANCE_NAME} (WalBot instance)\n"
         result += "Backends:\n"
         if bc.be.is_running(const.BotBackend.DISCORD):

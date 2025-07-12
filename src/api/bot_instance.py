@@ -10,7 +10,7 @@ class BotInstance:
         pass
 
     @abstractmethod
-    def stop(self, args) -> None:
+    def stop(self, args, main_bot: bool = True) -> None:
         pass
 
     @abstractmethod

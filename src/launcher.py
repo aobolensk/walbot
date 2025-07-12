@@ -139,7 +139,7 @@ class Launcher:
         log.info('Stopped the bot!')
         sys.exit(const.ExitStatus.NO_ERROR)
 
-    def _stop_signal_handler_mini(self, sig, frame):
+    def _stop_signal_handler_mini(self, sig: int, frame: FrameType) -> None:
         for backend in self.backends:
             backend.stop(self.args, main_bot=False)
             log.debug2("Stopped backend: " + backend.name)
