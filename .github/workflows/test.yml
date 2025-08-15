@@ -28,7 +28,7 @@ jobs:
           - windows-latest
     runs-on: ${{ matrix.os-image }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -48,7 +48,7 @@ jobs:
   poetry-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -64,7 +64,7 @@ jobs:
   light-docker-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build Docker image
         run: docker build -f docker/light.Dockerfile -t walbot .
       - name: Run tests in Docker
@@ -72,7 +72,7 @@ jobs:
   default-docker-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build Docker image
         run: docker build -f docker/default.Dockerfile -t walbot .
       - name: Run tests in Docker
