@@ -10,7 +10,7 @@ readme = "README.md"
 python = ">=3.9 <3.14"
 numpy = "2.0.2"
 py-cord = {git = "https://github.com/Pycord-Development/pycord", rev = "24c1a8e", extras = ["voice"]}
-requests = "2.32.4"
+requests = "2.32.5"
 psutil = "7.0.0"
 python-dateutil = "2.9.0.post0"
 gitpython = "3.1.45"
