@@ -63,7 +63,7 @@ class BotInfo:
         if repo is None:
             return "<unknown>"
         time = repo.head.object.committed_datetime
-        return time
+        return str(time)
 
     def _get_version_from_requirements_txt(self, dependency_name: str) -> str:
         """Get version of dependency from requirements.txt"""
