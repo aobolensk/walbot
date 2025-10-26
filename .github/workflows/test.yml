@@ -27,6 +27,10 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
+        exclude:
+          # Skip Windows + Python 3.14 due to experimental NumPy wheels
+          - os-image: windows-latest
+            python-version: '3.14'
     runs-on: ${{ matrix.os-image }}
     steps:
       - uses: actions/checkout@v5
