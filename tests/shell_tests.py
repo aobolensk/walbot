@@ -33,8 +33,12 @@ def test_run_async_terminates_on_timeout(monkeypatch):
     monkeypatch.setattr(asyncio, "create_subprocess_exec", fake_create_subprocess_exec)
     monkeypatch.setattr(asyncio, "wait_for", fake_wait_for)
 
-    loop = asyncio.get_event_loop()
-    result = loop.run_until_complete(Shell.run_async("dummy"))
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        result = loop.run_until_complete(Shell.run_async("dummy"))
+    finally:
+        loop.close()
 
     assert result.exit_code == -1
     assert dummy_proc.kill_called

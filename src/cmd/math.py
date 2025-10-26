@@ -42,8 +42,9 @@ class MathExprEvaluator:
     }
 
     def _evaluate_expr_node(self, node):
-        if isinstance(node, ast.Num):
-            return node.n
+        if isinstance(node, ast.Constant):
+            value = node.value
+            return int(value) if isinstance(value, bool) else value
         if isinstance(node, ast.BinOp):
             return self._ops[type(node.op)](self._evaluate_expr_node(node.left), self._evaluate_expr_node(node.right))
         if isinstance(node, ast.BoolOp):
